@@ -15,9 +15,14 @@ permit_packets/
     property_lookup.py         Address to city, building outlines, lot lines and an aerial
     property_plan.py           A property to scale, with named markers and an optional route
     site_plan.py               The to-scale site plan page, drawn from a list of markers
-    pdf_base.py                Page look, build_document, cover_page, review_page, application_page, load_page
+    pdf_base.py                Page look, build_document, cover_page (with the city stamp box), review_page, application_page, load_page, diagram fitting
+    layout.py                  Letter (8.5x11 portrait) and tabloid (11x17 landscape) sheet geometry
+    title_block.py             The title block on every packet page: address, parcel, sheet E-n, contractor, designer sign-off
+    panel_data.py              Fault current / AIC check, existing GEC check (Table 250.66), panel details for the one-line
+    heat.py                    NEC 310.15(B)(1) temperature correction for outdoor runs
     job_inputs.py              Sample-mode address, request plan to PropertyPlan
     preview.py                 Page images, one-file-per-document ZIP
+    panel_schedule.py          Panel schedule: entered circuits only, a blank field-verify grid otherwise
     checks.py                  Check: one engineering check on a packet
     schemas.py                 Request models every job type shares
   jurisdictions/               What each city asks for, one checklist per job type
@@ -67,9 +72,13 @@ DEMO_PASSWORD=choose-one uvicorn app:app --reload
 
 Sign in with `DEMO_PASSWORD`. `PERMIT_CLIENT` picks which client's job types are on (default `demo`); an unknown name fails at the first request. It deploys to Vercel on every push to `main`, with `DEMO_PASSWORD` set as a production environment variable.
 
+## City settings
+
+`Jurisdiction` fields beyond the checklist: `sheet_size` (letter or tabloid default; the request's `sheet_size` overrides it), `stamp_box_in` (empty stamp square on the cover), `single_pdf_only` (no split-file ZIP), `design_ambient_f` and `design_ambient_source` (ASHRAE 2% design temperature for outdoor conductor derating). Cities with no checklist get the general checklist plus `STATE_AMENDMENTS`. `tests/test_city_compliance.py` builds a complete packet for every city and job type and fails if anything is not Ready, so a new requirement must be taught to the packet.
+
 ## Golden packets
 
-`tests/golden/cases` holds request payloads and `tests/golden/snapshots` holds the packets the app made for them: the response JSON, the page count, each page's text and the ZIP file names. `tests/test_ev_golden.py` replays every case, so a refactor can't change a packet unnoticed. A deliberate change to a packet means regenerating the snapshots, and the diff shows exactly what changed. `to_current_request` in that test maps the stored payloads to whatever the routes take today.
+`tests/golden/cases` holds request payloads and `tests/golden/snapshots` holds the packets the app made for them: the response JSON, the page count, each page's text and the ZIP file names. `tests/test_ev_golden.py` replays every case, so a refactor can't change a packet unnoticed. A deliberate change to a packet means regenerating the snapshots (`DEMO_PASSWORD=snap PYTHONPATH=. python tests/golden/make_snapshots.py`), and the diff shows exactly what changed. `to_current_request` in that test maps the stored payloads to whatever the routes take today.
 
 ## Adding a job type
 
