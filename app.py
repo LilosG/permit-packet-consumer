@@ -4,6 +4,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import hmac
+import json
 import os
 import secrets
 import time
@@ -17,10 +18,10 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
-from permit_packets.clients import current_client
-from permit_packets.core.pdf_base import CONTRACTOR_LOGO
+from permit_packets.clients import CLIENTS, DEFAULT_CLIENT, Client, validate
+from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
 from permit_packets.core.preview import packet_documents_zip, packet_page_images
-from permit_packets.jurisdictions import jurisdiction_by_key
+from permit_packets.jurisdictions import KNOWN, jurisdiction_by_key
 from permit_packets.core.property_lookup import (
     AddressNotFound,
     AerialUnavailable,
@@ -43,6 +44,7 @@ from permit_packets.jurisdictions import jurisdiction_json
 
 STATIC = Path(__file__).parent / "permit_packets" / "static"
 ASSETS = STATIC / "assets"
+KNOWN_BY_KEY = {j.key: j for j in KNOWN.values()}
 SESSION_COOKIE = "permit_demo_session"
 SESSION_SECONDS = 12 * 60 * 60
 
@@ -65,27 +67,54 @@ INDEX_HTML = (STATIC / "index.html").read_text(encoding="utf-8").replace("{{ASSE
 app.mount("/assets", StaticFiles(directory=ASSETS), name="assets")
 
 
-def _demo_password() -> str:
-    password = os.environ.get("DEMO_PASSWORD")
-    if not password:
-        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "DEMO_PASSWORD is not set")
-    return password
+def _client_passwords() -> dict[str, str]:
+    """Each client's password: CLIENT_PASSWORDS ({"client_key": "password"}) plus DEMO_PASSWORD for the demo."""
+    passwords: dict[str, str] = {}
+    raw = os.environ.get("CLIENT_PASSWORDS")
+    if raw:
+        try:
+            loaded = json.loads(raw)
+            if not isinstance(loaded, dict) or not all(isinstance(v, str) and v for v in loaded.values()):
+                raise ValueError
+        except ValueError as error:
+            raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "CLIENT_PASSWORDS is not valid JSON") from error
+        passwords.update({key: value for key, value in loaded.items() if key in CLIENTS})
+    if os.environ.get("DEMO_PASSWORD"):
+        passwords.setdefault(DEFAULT_CLIENT, os.environ["DEMO_PASSWORD"])
+    if not passwords:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "No passwords are set")
+    return passwords
 
 
-def _signature(expires: str, password: str) -> str:
-    return hmac.new(password.encode(), f"session:{expires}".encode(), hashlib.sha256).hexdigest()
+def _signature(expires: str, client_key: str, password: str) -> str:
+    return hmac.new(password.encode(), f"session:{expires}:{client_key}".encode(), hashlib.sha256).hexdigest()
 
 
-def _signed_in(request: Request) -> bool:
-    expires, _, signature = request.cookies.get(SESSION_COOKIE, "").partition(".")
+def session_client(request: Request) -> Client | None:
+    """The client this session signed in as, or None when not signed in."""
+    expires, _, rest = request.cookies.get(SESSION_COOKIE, "").partition(".")
+    client_key, _, signature = rest.partition(".")
     if not expires.isdigit() or int(expires) < time.time():
-        return False
-    return secrets.compare_digest(signature, _signature(expires, _demo_password()))
+        return None
+    password = _client_passwords().get(client_key)
+    if password is None or client_key not in CLIENTS:
+        return None
+    if not secrets.compare_digest(signature, _signature(expires, client_key, password)):
+        return None
+    return validate(CLIENTS[client_key])
 
 
-def require_session(request: Request) -> None:
-    if not _signed_in(request):
+def require_session(request: Request) -> Client:
+    client = session_client(request)
+    if client is None:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Sign in to continue")
+    return client
+
+
+def _allowed_city(client: Client, jurisdiction) -> None:
+    if not client.allows(jurisdiction.key):
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN, f"{jurisdiction.label} isn't one of the cities set up for {client.company_name}")
 
 
 def _page(name: str) -> FileResponse:
@@ -94,30 +123,55 @@ def _page(name: str) -> FileResponse:
 
 @app.get("/")
 def demo_page(request: Request) -> Response:
-    if not _signed_in(request):
+    if session_client(request) is None:
         return _page("signin.html")
     return HTMLResponse(INDEX_HTML, headers={"Cache-Control": "no-store"})
 
 
 @app.get("/dashboard")
 def dashboard_page(request: Request) -> Response:
-    if not _signed_in(request):
+    if session_client(request) is None:
         return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
     return _page("dashboard.html")
 
 
 @app.post("/api/signin")
 def sign_in(payload: LoginRequest, request: Request, response: Response) -> dict:
-    password = _demo_password()
-    if not secrets.compare_digest(payload.password.encode(), password.encode()):
+    entered = payload.password.encode()
+    matched = None
+    for client_key, password in _client_passwords().items():  # no early exit: every password is compared
+        if secrets.compare_digest(entered, password.encode()) and matched is None:
+            matched = client_key
+    if matched is None:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "That password isn't right")
     expires = str(int(time.time()) + SESSION_SECONDS)
     response.set_cookie(
-        SESSION_COOKIE, f"{expires}.{_signature(expires, password)}", max_age=SESSION_SECONDS,
-        httponly=True, samesite="lax",
+        SESSION_COOKIE, f"{expires}.{matched}.{_signature(expires, matched, _client_passwords()[matched])}",
+        max_age=SESSION_SECONDS, httponly=True, samesite="lax",
         secure=request.headers.get("x-forwarded-proto", request.url.scheme) == "https",
     )
     return {"ok": True}
+
+
+def _sample_address(jurisdiction_key: str) -> str:
+    city = KNOWN_BY_KEY[jurisdiction_key]
+    return f"123 Sample St, {city.name}, {city.state}"
+
+
+@app.get("/api/client")
+def client_info(client: Client = Depends(require_session)) -> dict:
+    cities = [KNOWN_BY_KEY[key] for key in client.jurisdiction_keys if key in KNOWN_BY_KEY]
+    return {
+        "key": client.key,
+        "company_name": client.company_name,
+        "website": client.website,
+        "logo": f"/assets/logos/{client.logo}" if client.logo else "",
+        "demo": client.is_demo,
+        "cities": [
+            {"key": c.key, "name": c.name, "state": c.state, "label": c.label, "sample_address": _sample_address(c.key)}
+            for c in cities
+        ],
+    }
 
 
 @app.post("/api/property/suggest", dependencies=[Depends(require_session)])
@@ -158,16 +212,18 @@ def _property_json(found: FoundProperty, job_type: str) -> dict:
 
 
 @app.post("/api/property", dependencies=[Depends(require_session)])
-def look_up_property(payload: LookupRequest) -> dict:
+def look_up_property(payload: LookupRequest, client: Client = Depends(require_session)) -> dict:
     job_type = _known_job_type(payload.job_type)
     try:
-        return _property_json(find_property(payload.address), job_type)
+        found = find_property(payload.address)
     except AddressNotFound as error:
         raise HTTPException(status.HTTP_404_NOT_FOUND, str(error)) from error
+    _allowed_city(client, found.jurisdiction)
+    return _property_json(found, job_type)
 
 
 @app.post("/api/property/view", dependencies=[Depends(require_session)])
-def change_property_view(payload: PropertyViewRequest) -> dict:
+def change_property_view(payload: PropertyViewRequest, client: Client = Depends(require_session)) -> dict:
     fields = dict(
         address=payload.address, city=payload.city, state=payload.state,
         county_fips=payload.county_fips, house_number=payload.house_number,
@@ -175,13 +231,15 @@ def change_property_view(payload: PropertyViewRequest) -> dict:
     job_type = _known_job_type(payload.job_type)
     view = PlanView(payload.latitude, payload.longitude, payload.scale_ft_per_in)
     if payload.tap:
-        return _property_json(
-            property_at(**fields, point=view.to_latlon(*payload.tap), located_by="tap"), job_type)
-    scale = zoomed_scale(payload.scale_ft_per_in, payload.zoom or 0)
-    return _property_json(property_at(
-        **fields, point=(payload.anchor_latitude, payload.anchor_longitude), located_by=payload.located_by,
-        scale=scale, center=(payload.latitude, payload.longitude),
-    ), job_type)
+        found = property_at(**fields, point=view.to_latlon(*payload.tap), located_by="tap")
+    else:
+        scale = zoomed_scale(payload.scale_ft_per_in, payload.zoom or 0)
+        found = property_at(
+            **fields, point=(payload.anchor_latitude, payload.anchor_longitude), located_by=payload.located_by,
+            scale=scale, center=(payload.latitude, payload.longitude),
+        )
+    _allowed_city(client, found.jurisdiction)
+    return _property_json(found, job_type)
 
 
 @app.post("/api/property/aerial", dependencies=[Depends(require_session)])
@@ -194,9 +252,9 @@ def property_aerial(payload: AerialRequest) -> dict:
     return {"image": base64.b64encode(image).decode(), "credit": credit}
 
 
-def _enabled_job_type(slug: str) -> JobType:
+def _enabled_job_type(slug: str, client: Client) -> JobType:
     job_type = get_job_type(slug)
-    if job_type is None or job_type.key not in current_client().job_types:
+    if job_type is None or job_type.key not in client.job_types:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "That job type isn't available")
     return job_type
 
@@ -218,8 +276,8 @@ def _job_type_json(job_type: JobType) -> dict:
 
 
 @app.get("/api/job-types", dependencies=[Depends(require_session)])
-def job_types() -> dict:
-    return {"job_types": [_job_type_json(REGISTRY[key]) for key in current_client().job_types]}
+def job_types(client: Client = Depends(require_session)) -> dict:
+    return {"job_types": [_job_type_json(REGISTRY[key]) for key in client.job_types]}
 
 
 MAX_LOGO_BASE64 = 700_000
@@ -241,23 +299,35 @@ def _contractor_logo(payload: dict[str, Any]) -> bytes | None:
     return logo
 
 
-def _build(slug: str, payload: dict[str, Any]) -> tuple[JobType, PacketResult]:
-    job_type = _enabled_job_type(slug)
+def _build(slug: str, payload: dict[str, Any], client: Client) -> tuple[JobType, PacketResult]:
+    job_type = _enabled_job_type(slug, client)
+    city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
+    _allowed_city(client, city)
     logo = _contractor_logo(payload)
+    if not client.is_demo:  # a client's packets carry their own logo and the city's rules, not a link's
+        logo = client.logo_bytes()
+        payload.pop("sheet_size", None)
+        if client.sheet_size:
+            payload["sheet_size"] = client.sheet_size
     try:
         request = job_type.request_model.model_validate(payload)
     except ValidationError as error:
         raise RequestValidationError(error.errors(include_url=False)) from error
-    token = CONTRACTOR_LOGO.set(logo)
+    tokens = (
+        (CONTRACTOR_LOGO, CONTRACTOR_LOGO.set(logo)),
+        (DEMO_MARKS, DEMO_MARKS.set(client.is_demo)),
+        (COMPANY_NAME, COMPANY_NAME.set(client.company_name)),
+    )
     try:
         return job_type, job_type.build_response(request)
     finally:
-        CONTRACTOR_LOGO.reset(token)
+        for var, token in tokens:
+            var.reset(token)
 
 
 @app.post("/api/jobs/{slug}/packet", dependencies=[Depends(require_session)])
-def build_packet(slug: str, payload: dict[str, Any] = Body(...)) -> dict:
-    _, result = _build(slug, payload)
+def build_packet(slug: str, payload: dict[str, Any] = Body(...), client: Client = Depends(require_session)) -> dict:
+    _, result = _build(slug, payload, client)
     return {
         **result.body,
         "pages": [base64.b64encode(page).decode() for page in packet_page_images(result.pdf)],
@@ -266,14 +336,16 @@ def build_packet(slug: str, payload: dict[str, Any] = Body(...)) -> dict:
 
 
 @app.post("/api/jobs/{slug}/documents", dependencies=[Depends(require_session)])
-def packet_documents(slug: str, payload: dict[str, Any] = Body(...)) -> Response:
+def packet_documents(slug: str, payload: dict[str, Any] = Body(...), client: Client = Depends(require_session)) -> Response:
+    _enabled_job_type(slug, client)
     city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
-    if city.single_pdf_only:
+    _allowed_city(client, city)
+    if client.single_pdf_only_for(city):
         raise HTTPException(
             status.HTTP_409_CONFLICT,
             f"{city.name} takes one combined PDF and does not accept plan sheets as separate files",
         )
-    job_type, result = _build(slug, payload)
+    job_type, result = _build(slug, payload, client)
     stems = tuple(document.file_stem for document in job_type.documents)
     return Response(
         content=packet_documents_zip(result.pdf, stems),

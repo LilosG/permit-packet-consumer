@@ -185,11 +185,20 @@ tbody tr:last-child td { border-bottom: 0; }
 <div class="toast" id="toast"></div>
 
 <script>
-(() => {
+(async () => {
   const params = new URLSearchParams(location.search);
-  const company = params.get("company") || params.get("contractor") || "Your company";
-  const cities = (params.get("cities") || "San Francisco,Daly City,San Mateo,South San Francisco,Millbrae")
-    .split(",").map(s => s.trim()).filter(Boolean);
+  let me = { demo: true, key: "demo", company_name: "", cities: [] };
+  try { const r = await fetch("/api/client"); if (r.ok) me = await r.json(); } catch (e) { /* demo look */ }
+  const STORE = me.demo ? "pp-demo-jobs" : `pp-jobs-${me.key}`;
+  const company = me.demo ? (params.get("company") || params.get("contractor") || "Your company") : me.company_name;
+  const cities = me.demo
+    ? (params.get("cities") || "San Francisco,Daly City,San Mateo,South San Francisco,Millbrae").split(",").map(s => s.trim()).filter(Boolean)
+    : me.cities.map(c => c.name);
+  if (!me.demo) {
+    document.querySelector(".demo-tag").textContent = "Preview";
+    document.querySelector(".foot").textContent = "Preview: jobs are saved in this browser only.";
+    document.getElementById("sub").insertAdjacentHTML("afterend", '<div class="sub" id="preview-note">Preview: jobs are saved in this browser only.</div>');
+  }
   document.getElementById("org-name").textContent = company;
   document.getElementById("org-initials").textContent =
     company.split(/\s+/).filter(w => /^[A-Za-z]/.test(w)).slice(0, 2).map(w => w[0].toUpperCase()).join("") || "PP";
@@ -225,7 +234,7 @@ tbody tr:last-child td { border-bottom: 0; }
     ["303 Laurel St", "N. Shah", "ev", "issued", 5, "48 A Tesla Wall Connector, garage"],
     ["77 Seacliff Ave", "C. Morgan", "service", "closed", 40, "Service upgrade with meter relocation"],
   ];
-  let jobs = seed.map(([addr, cust, type, stage, upd, scope], i) => ({
+  let jobs = (me.demo ? seed : []).map(([addr, cust, type, stage, upd, scope], i) => ({
     id: i + 1, addr, cust, type, stage, scope, city: city(i), updated: day(upd),
     created: day(upd + 3 + (i % 5)),
     permit: ["draft", "review"].includes(stage) ? "" : `E-2026-${String(48213 + i * 37).padStart(6, "0")}`,
@@ -234,7 +243,7 @@ tbody tr:last-child td { border-bottom: 0; }
   // Packets built in the builder on this browser, newest first.
   try {
     const typeKey = { "EV charger": "ev", "Panel / service upgrade": "service", "Subpanel / feeder": "subpanel", "240 V circuit": "circuit" };
-    JSON.parse(localStorage.getItem("pp-demo-jobs") || "[]").forEach((b, i) => {
+    JSON.parse(localStorage.getItem(STORE) || "[]").forEach((b, i) => {
       jobs.unshift({
         id: 1000 + i, addr: b.addr, cust: b.cust, type: typeKey[b.typeLabel] || "ev", stage: b.stage,
         scope: "Built in the packet builder", city: b.city || city(i), updated: new Date(b.updated),
@@ -257,7 +266,8 @@ tbody tr:last-child td { border-bottom: 0; }
       ["Issued, last 30 days", issued, "Packets built here", "neutral"],
       ["Needs attention", fix, fix ? "Corrections requested" : "All clear", fix ? "neutral" : ""],
     ].map(([l, v, d, c]) => `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="delta ${c}">${d}</div></div>`).join("");
-    $("sub").textContent = `${company} · ${jobs.length} permits across ${new Set(jobs.map(j => j.city)).size} cities`;
+    const n = new Set(jobs.map(j => j.city)).size;
+    $("sub").textContent = `${company} · ${jobs.length} permit${jobs.length === 1 ? "" : "s"} across ${n} cit${n === 1 ? "y" : "ies"}`;
     $("nav-count").textContent = active;
   }
 

@@ -9,7 +9,10 @@
     .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 
   const TICK_MS = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 320;
-  const SAMPLE = { address: '123 Sample St, Oro Valley, AZ 85737', jurisdiction_key: 'oro-valley-az', label: 'Oro Valley, AZ' };
+  /* Replaced by the signed-in client's first city once /api/client answers. */
+  let SAMPLE = { address: '123 Sample St, Oro Valley, AZ 85737', jurisdiction_key: 'oro-valley-az', label: 'Oro Valley, AZ' };
+  let client = { demo: true, key: 'demo', company_name: '', logo: '', cities: [] };
+  const storeKey = () => (client.demo ? 'pp-demo-jobs' : `pp-jobs-${client.key}`);
   const ICON_ATTRS = 'viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
   const ICONS = {
     ev: `<svg ${ICON_ATTRS}><rect x="4" y="3" width="12" height="22" rx="2"/><path d="M11 8l-3 5h4l-3 5"/><path d="M16 13h4a3 3 0 0 1 3 3v5"/><rect x="20" y="21" width="6" height="4" rx="1"/></svg>`,
@@ -88,6 +91,12 @@
 
   /* One type reads "EV permit packets"; several read "Permit packets". */
   function renderHeader() {
+    if (!client.demo && client.company_name) {
+      const name = esc(client.company_name);
+      $('#brand').innerHTML = client.logo ? `<img src="${esc(client.logo)}" alt="${name}" class="brand-logo">` : name;
+      document.title = `${client.company_name} Permit Packets`;
+      return;
+    }
     const brand = multiple() ? 'Permit packets' : `${jobTypes[0].short_label} permit packets`;
     $('#brand').textContent = brand;
     document.title = brand.replace('packets', 'Packets').replace('permit', 'Permit');
@@ -403,7 +412,7 @@
     } catch (error) {
       property = null;
       $('#site').hidden = true;
-      $('#bar-city').textContent = 'Demo';
+      $('#bar-city').textContent = client.demo ? 'Demo' : client.cities.map((city) => city.label).join(' · ');
       $('#find-error').textContent = error.message;
       $('#find-error').hidden = false;
     } finally {
@@ -456,14 +465,14 @@
   /* Packets built here show up on the demo dashboard (this browser only). */
   function rememberJob(job, result, stage) {
     try {
-      const saved = JSON.parse(localStorage.getItem('pp-demo-jobs') || '[]');
+      const saved = JSON.parse(localStorage.getItem(storeKey()) || '[]');
       const key = `${result.address}|${job.customer}`;
       const entry = {
         key, addr: String(result.address || '').split(',')[0], cust: job.customer,
         city: result.jurisdiction?.name || '', typeLabel: lastType?.label || '', stage, updated: Date.now(),
       };
       const rest = saved.filter((item) => item.key !== key);
-      localStorage.setItem('pp-demo-jobs', JSON.stringify([entry, ...rest].slice(0, 20)));
+      localStorage.setItem(storeKey(), JSON.stringify([entry, ...rest].slice(0, 20)));
     } catch { /* storage unavailable: the dashboard just shows its sample jobs */ }
   }
 
@@ -636,6 +645,19 @@
 
   /* ---- Start: learn which job types this client has ---- */
   async function start() {
+    try {
+      const me = await fetch('/api/client');
+      if (me.ok) {
+        client = await me.json();
+        const first = client.cities[0];
+        if (!client.demo && first) {
+          SAMPLE = { address: first.sample_address, jurisdiction_key: first.key, label: first.label };
+          if (client.company_name) form.elements.contractor.value = client.company_name;
+          $('#bar-city').textContent = client.cities.map((city) => city.label).join(' · ');
+          $('#address').placeholder = `Job address in ${client.cities.map((city) => city.label).join(' or ')}`;
+        }
+      }
+    } catch { /* the demo look */ }
     try {
       const response = await fetch('/api/job-types');
       if (response.status === 401) { location.reload(); return; }

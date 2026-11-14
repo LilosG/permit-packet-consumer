@@ -60,7 +60,7 @@ def test_an_unknown_slug_is_a_404(client):
 
 
 def test_a_registered_type_the_client_did_not_buy_is_a_404(client, monkeypatch):
-    monkeypatch.setattr(app_module, "current_client", lambda: Client("other", "Other Co", ()))
+    monkeypatch.setitem(CLIENTS, "demo", Client("demo", "Other Co", (), jurisdiction_keys=("general",)))
     assert client.get("/api/job-types").json() == {"job_types": []}
     assert client.post("/api/jobs/ev-charger/packet", json=_sample("ev_charger")).status_code == 404
     assert client.post("/api/jobs/ev-charger/documents", json=_sample("ev_charger")).status_code == 404

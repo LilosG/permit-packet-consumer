@@ -7,7 +7,7 @@ Turns a job address and one short form into a draft permit packet for a licensed
 ```
 app.py                         The private demo: sign-in, generic job routes, the page
 permit_packets/
-  clients.py                   Which job types a deployment sells (PERMIT_CLIENT, default "demo")
+  clients.py                   Each client: company, logo, cities, job types, optional sheet/PDF overrides
   core/                        The shared engine
     circuits.py                Code rules any electrical permit uses (wire, breaker, conduit)
     conductors.py              Service conductors, grounding electrode conductors, service conduit, solar 120% rule, feeders to a subpanel, branch circuits to a 240 V appliance
@@ -70,7 +70,7 @@ pytest -q tests
 DEMO_PASSWORD=choose-one uvicorn app:app --reload
 ```
 
-Sign in with `DEMO_PASSWORD`. `PERMIT_CLIENT` picks which client's job types are on (default `demo`); an unknown name fails at the first request. It deploys to Vercel on every push to `main`, with `DEMO_PASSWORD` set as a production environment variable.
+One deployment serves every client. Each signs in with their own password, set in `CLIENT_PASSWORDS` as JSON (`{"erke": "...", "elc": "..."}`); `DEMO_PASSWORD` still signs in the demo client. The session carries the client key, and that client's cities, logo and job types are all they see. A packet or property lookup for a city outside their list is a 403. Client logins print no demo banner or watermark; the demo login keeps both. The dashboard is browser-stored (localStorage) and labeled as a preview. It deploys to Vercel on every push to `main`, with `CLIENT_PASSWORDS` and `DEMO_PASSWORD` set as production environment variables.
 
 ## City settings
 
@@ -116,5 +116,7 @@ A job type is one `JobType` value plus the code behind it. Use `job_types/ev_cha
    - A request with a bad value returns 422.
 
 ### Setting up a client
+
+Add a `Client` to `CLIENTS` in `clients.py` (company, website, `logo` file in `static/assets/logos/`, `jurisdiction_keys` with the default city first, job types, optional `sheet_size` and `single_pdf_only` overrides that beat the city's), add its password to `CLIENT_PASSWORDS`, and add it to `tests/test_clients.py`.
 
 A client's cities need a checklist for every job type they bought. Before enabling a type for a client, add that type's checklist to each of the client's cities. The page says "General checklist" for any city that doesn't have one yet.
