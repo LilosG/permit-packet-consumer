@@ -95,6 +95,10 @@
         <label class="field">Underground part (ft)<input name="trench_ft" type="number" min="0" max="500" value="0" required></label>
         <label class="field">Main panel size (A)<input name="service_amps" type="number" min="60" max="800" value="200" required></label>
       </div>
+      <div class="grid" style="margin-top:14px">
+        <label class="field">Does the charger need venting?<select name="charger_venting_required"><option value="">Not answered</option><option value="no">No, sealed-battery vehicles only</option><option value="yes">Yes, a mechanical plan is needed</option></select></label>
+        <label class="field">HOA or subdivision approval<select name="hoa_approval"><option value="">Not answered</option><option value="not_required">No HOA</option><option value="approved">Approved</option></select></label>
+      </div>
     </div>
     </div>
     <div data-job-type="service_upgrade">
@@ -339,6 +343,7 @@
         <label class="field">Available fault current at the service (A)<input name="available_fault_current_a" type="number" min="1" max="200000" step="1" placeholder="e.g. 10000"><span class="hint">From the utility's fault current letter or published table</span></label>
         <label class="field">Panel and breaker interrupting rating (kA)<input name="equipment_aic_ka" type="number" min="1" max="200" step="1" value="10" required><span class="hint">From the utility's fault current letter or published table</span></label>
       </div>
+      <label class="flag" style="margin-top:10px"><input type="checkbox" name="data_sheet_attached"><span>I'm attaching the manufacturer's data sheet myself (equipment not in the library)</span></label>
       <div class="grid" style="margin-top:14px">
         <label class="field">Panel location<input name="panel_location" maxlength="80" placeholder="Garage, east wall" autocomplete="off"></label>
         <label class="field" data-hide-for="service_upgrade">Panel bus rating (A)<input name="panel_bus_amps" type="number" min="60" max="800" step="1" placeholder="e.g. 200"></label>

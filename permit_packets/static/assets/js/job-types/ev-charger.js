@@ -41,6 +41,8 @@
       ['charger_amps', 'run_ft', 'trench_ft', 'service_amps', 'open_breaker_spaces'].forEach((name) => {
         job[name] = Number(data.get(name));
       });
+      if (data.get('charger_venting_required')) job.charger_venting_required = data.get('charger_venting_required') === 'yes';
+      if (data.get('hoa_approval')) job.hoa_approval = data.get('hoa_approval');
       const peak = Number(data.get('peak_demand_kw'));
       if (peak > 0) {
         job.peak_demand_kw = peak;

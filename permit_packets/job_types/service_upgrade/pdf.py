@@ -283,7 +283,12 @@ def _checklist_row(packet: ServicePacket, section: str) -> tuple[str, str]:
     if section == "equipment":
         if find_equipment(job.panel_model, "panel"):
             return f"Page {SECTION_PAGES['equipment']} + manufacturer data sheet", "Ready"
+        if job.data_sheet_attached:
+            return f"Page {SECTION_PAGES['equipment']} + data sheet attached by the electrician", "Ready"
         return f"Page {SECTION_PAGES['equipment']}: add manufacturer sheets", "Attach"
+    if section not in SECTION_PAGES:
+        # A requirement this packet has no page for is never shown as done.
+        return "Not in this packet: add it by hand", "Open"
     return f"Page {SECTION_PAGES[section]}", "Ready"
 
 

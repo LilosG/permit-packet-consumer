@@ -14,6 +14,8 @@ class EvChargerRequest(JobRequestBase):
     charger_model: str = Field(default="", max_length=120)
     connection: Literal["hardwired", "receptacle"] = "hardwired"
     has_solar: bool = False
+    charger_venting_required: bool | None = None  # None: not answered yet
+    hoa_approval: Literal["approved", "not_required"] | None = None  # None: not answered yet
     location: Literal["attached_garage", "detached_garage", "exterior_wall"]
     run_ft: int = Field(gt=0, le=500)
     trench_ft: int = Field(default=0, ge=0, le=500)

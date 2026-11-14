@@ -74,6 +74,7 @@ class SubpanelJob:
     panel_bus_amps: int | None = None
     panel_main: str | None = None
     gec_size: str = ""
+    data_sheet_attached: bool = False
 
     @property
     def sun_exposed(self) -> bool:

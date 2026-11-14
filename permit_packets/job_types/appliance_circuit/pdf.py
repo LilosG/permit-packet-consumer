@@ -257,7 +257,12 @@ def _checklist_row(packet: AppliancePacket, section: str) -> tuple[str, str]:
             return f"Page 3: to scale, 1 in = {printed_scale(plan)} ft", "Ready"
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
+        if job.data_sheet_attached:
+            return f"Page {SECTION_PAGES[section]} + data sheet attached by the electrician", "Ready"
         return f"Page {SECTION_PAGES[section]}: add manufacturer sheets", "Attach"
+    if section not in SECTION_PAGES:
+        # A requirement this packet has no page for is never shown as done.
+        return "Not in this packet: add it by hand", "Open"
     return f"Page {SECTION_PAGES[section]}", "Ready"
 
 

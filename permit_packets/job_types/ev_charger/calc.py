@@ -62,6 +62,9 @@ class EvJob:
     panel_bus_amps: int | None = None
     panel_main: str | None = None
     gec_size: str = ""
+    data_sheet_attached: bool = False
+    charger_venting_required: bool | None = None
+    hoa_approval: str | None = None
 
     @property
     def sun_exposed(self) -> bool:
@@ -141,10 +144,12 @@ def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int 
         flags.append("EV receptacles need GFCI protection. Confirm a listed GFCI breaker for this panel.")
     if job.has_solar:
         flags.append("This home has solar. Check the panel's bus rating and solar breaker before adding this load.")
+    charger = find_equipment(job.charger_model, "charger") if job.charger_model else None
     if not job.charger_model:
         flags.append("Add the charger make and model, then attach its data sheet.")
-    elif not (charger := find_equipment(job.charger_model, "charger")):
-        flags.append(f"Attach the {job.charger_model} data sheet behind the equipment page. It isn't in the equipment library yet.")
+    elif charger is None:
+        if not job.data_sheet_attached:
+            flags.append(f"Attach the {job.charger_model} data sheet behind the equipment page. It isn't in the equipment library yet.")
     elif charger.max_amps < job.charger_amps:
         flags.append(f"The {charger.name} is rated {charger.max_amps} A, below the {job.charger_amps} A set here.")
     if job.trench_ft:

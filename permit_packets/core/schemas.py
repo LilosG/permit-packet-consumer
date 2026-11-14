@@ -73,6 +73,9 @@ class JobRequestBase(BaseModel):
     available_fault_current_a: int | None = Field(default=None, ge=1, le=200_000)
     equipment_aic_ka: int = Field(default=10, ge=1, le=200)
     # The existing panel, for the panel schedule and the one-line.
+    # True when the electrician attaches the manufacturer's data sheet themselves, for equipment that
+    # isn't in the library. Library chargers and panels attach their own sheet.
+    data_sheet_attached: bool = False
     panel_location: str = Field(default="", max_length=80)
     panel_bus_amps: int | None = Field(default=None, ge=60, le=800)
     panel_main: Literal["main breaker", "main lug"] | None = None

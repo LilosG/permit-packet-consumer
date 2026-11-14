@@ -266,11 +266,24 @@ def _checklist_row(packet: EvPacket, section: str) -> tuple[str, str]:
     if section == "equipment":
         if find_equipment(job.charger_model, "charger"):
             return f"Page {SECTION_PAGES['equipment']} + manufacturer data sheet", "Ready"
+        if job.data_sheet_attached:
+            return f"Page {SECTION_PAGES['equipment']} + data sheet attached by the electrician", "Ready"
         return f"Page {SECTION_PAGES['equipment']}: add manufacturer sheets", "Attach"
     if section == "ventilation":
-        return "Only if this charger requires venting", "Check"
+        if job.charger_venting_required is None:
+            return "Only if this charger requires venting", "Check"
+        if job.charger_venting_required:
+            return "Venting required: add the mechanical plan behind the one-line", "Open"
+        return "Not required: the charger needs no venting (625.52)", "Ready"
     if section == "hoa":
+        if job.hoa_approval == "approved":
+            return "HOA approval received, on file with the contractor", "Ready"
+        if job.hoa_approval == "not_required":
+            return "No HOA or subdivision approval needed", "Ready"
         return "Homeowner to confirm before work starts", "Open"
+    if section not in SECTION_PAGES:
+        # A requirement this packet has no page for is never shown as done.
+        return "Not in this packet: add it by hand", "Open"
     return f"Page {SECTION_PAGES[section]}", "Ready"
 
 

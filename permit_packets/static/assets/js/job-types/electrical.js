@@ -18,6 +18,7 @@
     if (main) fields.panel_main = main;
     fields.panel_location = (data.get('panel_location') || '').trim();
     fields.gec_size = (data.get('gec_size') || '').trim();
+    if (data.has('data_sheet_attached')) fields.data_sheet_attached = true;
     return fields;
   };
 })();
