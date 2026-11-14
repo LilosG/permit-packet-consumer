@@ -74,7 +74,7 @@ Sign in with `DEMO_PASSWORD`. `PERMIT_CLIENT` picks which client's job types are
 
 ## City settings
 
-`Jurisdiction` fields beyond the checklist: `sheet_size` (letter or tabloid default; the request's `sheet_size` overrides it), `stamp_box_in` (empty stamp square on the cover), `single_pdf_only` (no split-file ZIP), `design_ambient_f` and `design_ambient_source` (ASHRAE 2% design temperature for outdoor conductor derating). Cities with no checklist get the general checklist plus `STATE_AMENDMENTS`. `tests/test_city_compliance.py` builds a complete packet for every city and job type and fails if anything is not Ready, so a new requirement must be taught to the packet.
+`Jurisdiction` fields beyond the checklist: `sheet_size` (letter or tabloid default; the request's `sheet_size` overrides it), `stamp_box_in` (empty stamp square on the cover), `title_sheet_blank_area_in` (an empty agency-stamp area: beside the stamp box when it fits, else a blank last sheet), `single_pdf_only` (no split-file ZIP), `design_ambient_f` and `design_ambient_source` (ASHRAE 2% design temperature for outdoor conductor derating). Cities with no checklist get the general checklist plus `STATE_AMENDMENTS`. `tests/test_city_compliance.py` builds a complete packet for every city and job type and fails if anything is not Ready, so a new requirement must be taught to the packet.
 
 ## Golden packets
 

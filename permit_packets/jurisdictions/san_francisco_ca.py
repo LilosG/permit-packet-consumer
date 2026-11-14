@@ -39,11 +39,19 @@ SAN_FRANCISCO = Jurisdiction(
     # DBI, "How to create PDFs of your plans or addenda" (PDF_RULES_URL) and "Prepare your plans" (PLANS_URL):
     # drawings go in as a single PDF; every sheet carries the preparer's scanned signature and PDF stamp;
     # each title block reserves a stamp area at least 2 in wide by 2 in tall in the same place on every
-    # sheet; the title sheet carries a blank 8.5 x 11 in area for agency stamps. The square field below
-    # holds the 2 in title-block stamp area; the larger blank area on a full-size title sheet is not
-    # drawn. DBI states no minimum sheet size on those pages (it accepts sheets larger than 22 x 34 in,
+    # sheet; the title sheet carries a blank 8.5 x 11 in area for agency stamps. stamp_box_in is the 2 in
+    # title-block stamp area; title_sheet_blank_area_in is the 8.5 x 11 in area, which no cover sheet here
+    # can hold beside the checklist, so the packet ends with a sheet that is that area. DBI states no minimum sheet size on those pages (it accepts sheets larger than 22 x 34 in,
     # 11 x 17 in for signs only, and 8.5 x 11 in for supplemental forms), so sheet_size stays at the default.
     stamp_box_in=2.0,
+    title_sheet_blank_area_in=(8.5, 11.0),
+    # ASHRAE 2% annual cooling dry-bulb design temperature, San Francisco International (WMO 724940).
+    # Every ambient from 78 to 86 F (26 to 30 C) falls in the same NEC 310.15(B)(1) row, so 90 C conductors
+    # get a factor of 1.00; 77 F and below would get 1.04. CONFIRM the exact 2% figure on the station page below.
+    design_ambient_f=78,
+    design_ambient_source=(
+        "https://ashrae-meteo.info/v3.0/index.php?lat=37.62&lng=-122.37&place=%27%27&wmo=724940&ashrae_version=2017"
+    ),
     single_pdf_only=True,
     code_note=CODE_NOTE,
     fallback_notes=(
@@ -73,6 +81,9 @@ SAN_FRANCISCO = Jurisdiction(
             source_label="From DBI Information Sheet E-02",
             code_note=CODE_NOTE,
             notes=(
+                Note("always", "DBI's plan-prep pages ask for an empty 8.5 x 11 in area on the title sheet for agency "
+                     "stamps. It does not fit beside this cover, so the last page of the packet is that blank area, "
+                     "drawn at true size. Move it up to the title sheet if DBI wants it there.", PLANS_URL),
                 Note("always", "DBI E-02: store the coupling means of the charger not less than 18 in and not more "
                      "than 48 in above the finished floor (CEC 625.50).", E02_URL),
                 Note("always", "DBI E-02: the charger is permanently connected and fastened in place per the "

@@ -181,3 +181,49 @@ def test_a_city_without_a_surge_requirement_is_not_held_to_one():
     payload = complete_inputs("service_upgrade", ORO_VALLEY)
     payload["surge_protection"] = None
     assert "Surge protection" not in {c["name"] for c in build("service_upgrade", payload).body["checks"]}
+
+
+@pytest.mark.parametrize("sheet_size", ["letter", "tabloid"])
+def test_san_francisco_packet_ends_with_the_blank_dbi_area_at_true_size(sheet_size):
+    from permit_packets.jurisdictions.san_francisco_ca import SAN_FRANCISCO
+
+    assert SAN_FRANCISCO.title_sheet_blank_area_in == (8.5, 11.0)
+    payload = {**complete_inputs("ev_charger", SAN_FRANCISCO), "sheet_size": sheet_size}
+    result = build("ev_charger", payload)
+    pages = packet_pages(result.pdf)
+    assert len(pages) == len(result.body["documents"])
+    assert result.body["documents"][-1]["title"] == "Reserved for DBI"
+    assert "Reserved for DBI" in pages[-1] and "Reserved for DBI" not in pages[0]
+    document = pypdfium2.PdfDocument(result.pdf)
+    try:
+        last = document[len(document) - 1]
+        sides = sorted(round(x) for o in last.get_objects() if o.type == pypdfium2.raw.FPDF_PAGEOBJ_PATH
+                       for x in ((o.get_bounds()[2] - o.get_bounds()[0]), (o.get_bounds()[3] - o.get_bounds()[1])))
+        assert any(abs(s - 612) <= 2.5 for s in sides), "an 8.5 in side is drawn"
+        assert any(abs(s - 792) <= 2.5 for s in sides), "an 11 in side is drawn"
+    finally:
+        document.close()
+    for number, text in enumerate(pages, start=1):
+        assert f"E-{number}" in text and payload["address"] in text
+
+
+def test_a_blank_area_that_fits_goes_on_the_cover_beside_the_stamp_box(monkeypatch):
+    from dataclasses import replace
+
+    from permit_packets.jurisdictions.san_francisco_ca import SAN_FRANCISCO
+
+    small = replace(SAN_FRANCISCO, title_sheet_blank_area_in=(3.0, 3.0))
+    monkeypatch.setitem(KNOWN, ("san francisco", "CA"), small)
+    payload = {**complete_inputs("ev_charger", small), "sheet_size": "tabloid"}
+    result = build("ev_charger", payload)
+    pages = packet_pages(result.pdf)
+    assert "Reserved for DBI" in pages[0] and "Reserved for city stamp" in pages[0]
+    assert len(pages) == len(result.body["documents"]) == len(REGISTRY["ev_charger"].documents)
+
+
+def test_a_city_without_a_blank_area_gets_no_extra_sheet():
+    from permit_packets.jurisdictions.mesa_az import MESA
+
+    result = build("ev_charger", complete_inputs("ev_charger", MESA))
+    assert len(packet_pages(result.pdf)) == len(REGISTRY["ev_charger"].documents)
+    assert not any("Reserved for DBI" in text for text in packet_pages(result.pdf))

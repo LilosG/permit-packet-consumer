@@ -4,6 +4,7 @@ from __future__ import annotations
 from fastapi import HTTPException, status
 
 from permit_packets.core.layout import resolve_sheet, use_sheet
+from permit_packets.core.pdf_base import blank_sheet_needed, use_blank_area
 from permit_packets.core.property_plan import PropertyPlan
 from permit_packets.core.schemas import JobRequestBase
 from permit_packets.jurisdictions import jurisdiction_by_key
@@ -46,7 +47,13 @@ def build_on_sheet(request: JobRequestBase, build):
     Every page is drawn natively at that size. The result's body says which sheet it is."""
     from permit_packets.job_types import PacketResult
 
-    sheet = resolve_sheet(request.sheet_size, jurisdiction_by_key(request.jurisdiction_key, request.city, request.state))
-    with use_sheet(sheet):
+    city = jurisdiction_by_key(request.jurisdiction_key, request.city, request.state)
+    sheet = resolve_sheet(request.sheet_size, city)
+    with use_sheet(sheet), use_blank_area(city.title_sheet_blank_area_in):
         result = build(request)
-    return PacketResult(pdf=result.pdf, body={**result.body, "sheet_size": sheet.key})
+        body = {**result.body, "sheet_size": sheet.key}
+        if blank_sheet_needed():
+            documents = body["documents"]
+            body["documents"] = [*documents, {"file_stem": f"{len(documents) + 1:02d}-reserved-for-dbi",
+                                              "title": "Reserved for DBI"}]
+    return PacketResult(pdf=result.pdf, body=body)

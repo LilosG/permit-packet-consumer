@@ -55,6 +55,9 @@ class Jurisdiction:
     sheet_size: str = "letter"  # "tabloid" where the city wants 11" x 17" sheets
     # Side, in inches, of the empty square the city reserves for its stamp on the cover sheet.
     stamp_box_in: float | None = None
+    # (width, height) in inches of the empty area the city reserves on the title sheet for agency stamps.
+    # Drawn beside the stamp box on the cover when it fits, else on a blank sheet at the end of the packet.
+    title_sheet_blank_area_in: tuple[float, float] | None = None
     # True where the city takes one combined PDF and refuses plan sheets uploaded as separate files.
     single_pdf_only: bool = False
     # ASHRAE 2% annual cooling dry-bulb design temperature (F) for the station nearest the city. Outdoor

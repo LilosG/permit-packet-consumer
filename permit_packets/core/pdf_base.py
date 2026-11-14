@@ -1,7 +1,9 @@
 """What every permit packet shares: the page look, the cover and the review page."""
 from __future__ import annotations
 
+from contextlib import contextmanager
 from contextvars import ContextVar
+from dataclasses import dataclass
 from io import BytesIO
 from xml.sax.saxutils import escape
 
@@ -175,6 +177,9 @@ def build_document(sections: list[list], *, title: str, block: TitleBlock, sheet
         if index:
             story.append(PageBreak())
         story += [SheetMark(sheet_title)] + section
+    if blank_sheet_needed():
+        story += [PageBreak(), SheetMark("Reserved for DBI"), BlankSheet(BLANK_AREA.get())]
+        sheet_titles = [*sheet_titles, "Reserved for DBI"]
     buffer = BytesIO()
     doc = BaseDocTemplate(
         buffer, pagesize=(sheet.width, sheet.height), leftMargin=sheet.margin, rightMargin=sheet.margin,
@@ -190,6 +195,94 @@ def build_document(sections: list[list], *, title: str, block: TitleBlock, sheet
 
     doc.build(story, canvasmaker=canvas_maker)
     return buffer.getvalue()
+
+
+@dataclass
+class BlankArea:
+    """The empty area a city reserves on its title sheet, and whether the cover already carries it."""
+
+    width_in: float
+    height_in: float
+    on_cover: bool = False
+
+
+BLANK_AREA: ContextVar[BlankArea | None] = ContextVar("blank_area", default=None)
+BLANK_MIN_FLAGS_W = 220.0  # the cover's flag list needs at least this much width beside the boxes
+BLANK_MAX_BAND = 0.4  # and the boxes at most this share of the cover's height
+
+
+@contextmanager
+def use_blank_area(inches: tuple[float, float] | None):
+    area = BlankArea(*inches) if inches else None
+    token = BLANK_AREA.set(area)
+    try:
+        yield area
+    finally:
+        BLANK_AREA.reset(token)
+
+
+def _blank_size_on_cover(area: BlankArea, stamp: float) -> tuple[float, float] | None:
+    """The area's (width, height) in points, in the orientation that fits beside the stamp box, else None."""
+    sheet = current_sheet()
+    for w, h in ((area.width_in * inch, area.height_in * inch), (area.height_in * inch, area.width_in * inch)):
+        if max(stamp, h) + 4 <= BLANK_MAX_BAND * sheet.content_h and sheet.content_w - stamp - w - 32 >= BLANK_MIN_FLAGS_W:
+            return w, h
+    return None
+
+
+class BlankAreaBox(Flowable):
+    """An empty rectangle at its true size, labeled for the agency that stamps it."""
+
+    def __init__(self, width: float, height: float) -> None:
+        super().__init__()
+        self.box_w, self.box_h = width, height
+
+    def wrap(self, available_width, available_height):
+        return self.box_w, self.box_h
+
+    def draw(self) -> None:
+        _draw_blank(self.canv, 0, 0, self.box_w, self.box_h)
+
+
+def _draw_blank(c, x: float, y: float, w: float, h: float) -> None:
+    c.saveState()
+    c.setStrokeColor(INK)
+    c.setLineWidth(0.8)
+    c.setDash(4, 3)
+    c.rect(x, y, w, h, stroke=1, fill=0)
+    c.setDash()
+    c.setFillColor(MUTED)
+    c.setFont("Helvetica", 9)
+    c.drawCentredString(x + w / 2, y + h - 14, "Reserved for DBI")
+    c.setFont("Helvetica", 6.6)
+    c.drawCentredString(x + w / 2, y + h - 25, f"Empty {w / inch:g} in x {h / inch:g} in area for agency stamps")
+    c.restoreState()
+
+
+class BlankSheet(Flowable):
+    """A sheet that is the blank area: a letter page cannot hold an 8.5 x 11 in area inside its margins, so
+    the rectangle is drawn at the page edge, at its true size."""
+
+    def __init__(self, area: BlankArea) -> None:
+        super().__init__()
+        self.area = area
+
+    def wrap(self, available_width, available_height):
+        return 0, 0
+
+    def draw(self) -> None:
+        sheet = current_sheet()
+        w, h = self.area.width_in * inch, self.area.height_in * inch
+        if h > sheet.height or w > sheet.width:
+            w, h = h, w
+        # A zero-height flowable is drawn at the top left of the frame, (margin, height - top_margin) on the page.
+        _draw_blank(self.canv, -sheet.margin, sheet.top_margin - sheet.height, min(w, sheet.width), min(h, sheet.height))
+
+
+def blank_sheet_needed() -> bool:
+    """True when the title sheet's blank area could not go on the cover and gets a sheet of its own."""
+    area = BLANK_AREA.get()
+    return area is not None and not area.on_cover
 
 
 class StampBox(Flowable):
@@ -302,13 +395,18 @@ def cover_page(
         columns = 3 if sheet.landscape else 2
         return [KeepInFrame(width, height - 4, top + [flag_columns(columns, width)], mode="shrink")]
     stamp = stamp_box_in * inch
-    band = stamp + 4
-    flags_w = width - stamp - 16
+    area = BLANK_AREA.get()
+    blank = _blank_size_on_cover(area, stamp) if area else None
+    if blank:
+        area.on_cover = True
+    blank_w = blank[0] + 16 if blank else 0
+    band = max(stamp, blank[1] if blank else 0) + 4
+    flags_w = width - stamp - blank_w - 16
     main_h = height - band - 12
     lower = Table(
         [[KeepInFrame(flags_w, band, [flag_columns(2 if sheet.landscape else 1, flags_w)], mode="shrink"),
-          StampBox(stamp)]],
-        colWidths=[flags_w + 16, stamp], rowHeights=[band],
+          *([BlankAreaBox(*blank)] if blank else []), StampBox(stamp)]],
+        colWidths=[flags_w + 16, *([blank_w] if blank else []), stamp], rowHeights=[band],
         style=TableStyle([("VALIGN", (0, 0), (-1, -1), "BOTTOM"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
                           ("RIGHTPADDING", (0, 0), (-1, -1), 0), ("TOPPADDING", (0, 0), (-1, -1), 0),
                           ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]),
