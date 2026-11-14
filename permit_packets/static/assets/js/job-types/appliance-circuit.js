@@ -96,7 +96,7 @@
         job.continuous = data.has('ac_continuous');
         job.needs_neutral = data.has('ac_neutral');
       }
-      return job;
+      return { ...job, ...window.PermitJobTypes.electricalFields(data) };
     },
     planFields(marks) {
       return { markers: { panel: marks.points.panel, appliance: marks.points.appliance }, route: marks.bends };

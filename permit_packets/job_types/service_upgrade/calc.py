@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.panel_data import interrupting_rating_check
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.checks import Check
 from permit_packets.core.conductors import (
@@ -84,6 +85,8 @@ class ServiceJob:
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
     existing_circuits: tuple[ExistingCircuit, ...] = ()
+    available_fault_current_a: int | None = None
+    equipment_aic_ka: int = 10
 
 
 @dataclass(frozen=True)
@@ -180,6 +183,7 @@ def build_service_packet(job: ServiceJob) -> ServicePacket:
             f"limit {BUS_AND_MAIN_FACTOR * job.bus_amps:.0f} A",
             solar_fits(job.bus_amps, job.new_service_amps, job.pv_breaker_amps),
         ))
+    checks.append(interrupting_rating_check(job))
     return ServicePacket(
         job=job, load=load, existing_load=existing_load, conductor=conductor, gecs=gecs,
         conduit_size=conduit, checks=checks, flags=_flags(job, gecs),

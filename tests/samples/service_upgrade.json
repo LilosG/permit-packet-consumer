@@ -12,7 +12,10 @@
   "material": "copper",
   "conduit": "PVC",
   "se_length_ft": 8,
-  "electrodes": ["rods", "water_pipe"],
+  "electrodes": [
+    "rods",
+    "water_pipe"
+  ],
   "bus_amps": 200,
   "home": {
     "square_feet": 2400,
@@ -21,5 +24,11 @@
     "water_heater_va": 4500,
     "cooling_va": 7200
   },
-  "planned_loads": [{"label": "EV charger", "va": 11520}]
+  "planned_loads": [
+    {
+      "label": "EV charger",
+      "va": 11520
+    }
+  ],
+  "available_fault_current_a": 10000
 }

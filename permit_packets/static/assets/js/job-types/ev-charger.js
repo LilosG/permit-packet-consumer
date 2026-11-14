@@ -46,7 +46,7 @@
         job.peak_demand_kw = peak;
         job.demand_source = data.get('demand_source');
       }
-      return job;
+      return { ...job, ...window.PermitJobTypes.electricalFields(data) };
     },
     planFields(marks) {
       return { markers: { panel: marks.points.panel, charger: marks.points.charger }, route: marks.bends };

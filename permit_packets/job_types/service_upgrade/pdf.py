@@ -16,6 +16,7 @@ from permit_packets.core.pdf_base import (
     CELL_BOLD, CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
+from permit_packets.core.panel_data import one_line_data
 from permit_packets.core.title_block import title_block_for
 from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.service_upgrade.calc import (
@@ -420,7 +421,7 @@ def _riser(packet: ServicePacket) -> list:
         _p("Riser Diagram", H1),
         _p("Service conductors, conduit, grounding electrode conductors and bonding.", SMALL),
         Spacer(1, 10),
-        diagram(Riser(packet)),
+        diagram(Riser(packet), legend=one_line_data(packet.job)),
         Spacer(1, 10),
         _p("Conductor and conduit schedule", H2),
         _table([_heads("Segment", "Conductors", "Conduit", "Protection")]

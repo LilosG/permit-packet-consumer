@@ -4,6 +4,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.checks import Check
+from permit_packets.core.panel_data import interrupting_rating_check
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.equipment import find_equipment
 from permit_packets.core.circuits import Circuit, conduit_size, size_circuit
@@ -53,15 +55,10 @@ class EvJob:
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
     existing_circuits: tuple[ExistingCircuit, ...] = ()
+    available_fault_current_a: int | None = None
+    equipment_aic_ka: int = 10
     peak_demand_kw: float | None = None
     demand_source: str = "utility_12_month"
-
-
-@dataclass(frozen=True)
-class Check:
-    name: str
-    result: str
-    passed: bool
 
 
 @dataclass(frozen=True)
@@ -202,6 +199,7 @@ def build_ev_packet(job: EvJob) -> EvPacket:
             else f"A {job.charger_amps} A charger must be hardwired",
             circuit.breaker <= LARGEST_RECEPTACLE_BREAKER,
         ))
+    checks.append(interrupting_rating_check(job))
     return EvPacket(
         job=job,
         charger_va=charger_va,

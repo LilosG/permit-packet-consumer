@@ -21,7 +21,14 @@
     "cooling_va": 7200
   },
   "loads": [
-    {"label": "Shop circuits", "va": 3000},
-    {"label": "Mini-split", "va": 3600}
-  ]
+    {
+      "label": "Shop circuits",
+      "va": 3000
+    },
+    {
+      "label": "Mini-split",
+      "va": 3600
+    }
+  ],
+  "available_fault_current_a": 10000
 }

@@ -21,5 +21,6 @@
     "dryer_va": 5000,
     "water_heater_va": 4500,
     "cooling_va": 7200
-  }
+  },
+  "available_fault_current_a": 10000
 }

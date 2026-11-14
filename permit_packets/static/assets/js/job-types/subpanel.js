@@ -140,7 +140,7 @@
       [['subpanel_amps', 'sp_subpanel_amps'], ['feeder_breaker_amps', 'sp_breaker_amps'], ['run_ft', 'sp_run_ft'],
         ['trench_ft', 'sp_trench_ft'], ['service_amps', 'sp_service_amps'], ['open_breaker_spaces', 'sp_spaces']]
         .forEach(([key, name]) => { job[key] = Number(data.get(name)); });
-      return job;
+      return { ...job, ...window.PermitJobTypes.electricalFields(data) };
     },
     planFields(marks) {
       return { markers: { panel: marks.points.panel, subpanel: marks.points.subpanel }, route: marks.bends };

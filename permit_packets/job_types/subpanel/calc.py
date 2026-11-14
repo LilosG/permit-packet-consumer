@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.panel_data import interrupting_rating_check
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.checks import Check
 from permit_packets.core.conductors import (
@@ -66,6 +67,8 @@ class SubpanelJob:
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
     existing_circuits: tuple[ExistingCircuit, ...] = ()
+    available_fault_current_a: int | None = None
+    equipment_aic_ka: int = 10
 
 
 @dataclass(frozen=True)
@@ -162,6 +165,7 @@ def build_subpanel_packet(job: SubpanelJob) -> SubpanelPacket:
               feeder.vd_percent <= MAX_FEEDER_VOLTAGE_DROP_PERCENT),
         Check("Conduit fill", f"4 wires in {conduit_size} {job.conduit}, 40% fill", True),
     ]
+    checks.append(interrupting_rating_check(job))
     return SubpanelPacket(
         job=job, load=load, feeder=feeder, feeder_load_amps=feeder_load, loads_assumed=assumed,
         conduit_size=conduit_size, checks=checks, flags=_flags(job, load, feeder, assumed),

@@ -333,6 +333,13 @@
         <div class="contents" data-job-type="ev_charger"><label class="choice"><input type="checkbox" name="has_solar"><span>Solar</span></label></div>
       </div></fieldset>
     </div>
+    <div class="block">
+      <h2>Service and panel</h2>
+      <div class="grid">
+        <label class="field">Available fault current at the service (A)<input name="available_fault_current_a" type="number" min="1" max="200000" step="1" placeholder="e.g. 10000"><span class="hint">From the utility's fault current letter or published table</span></label>
+        <label class="field">Panel and breaker interrupting rating (kA)<input name="equipment_aic_ka" type="number" min="1" max="200" step="1" value="10" required><span class="hint">From the utility's fault current letter or published table</span></label>
+      </div>
+    </div>
     <div>
       <details>
         <summary id="details-summary">Exact nameplate values and contractor</summary>
@@ -430,6 +437,7 @@
 </main>
 
 <script>window.PermitJobTypes = { modules: {}, register(key, module) { this.modules[key] = module; } };</script>
+<script src="/assets/js/job-types/electrical.js?v={{ASSET_VERSION}}"></script>
 <script src="/assets/js/job-types/ev-charger.js?v={{ASSET_VERSION}}"></script>
 <script src="/assets/js/job-types/service-upgrade.js?v={{ASSET_VERSION}}"></script>
 <script src="/assets/js/job-types/subpanel.js?v={{ASSET_VERSION}}"></script>

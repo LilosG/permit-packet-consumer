@@ -155,7 +155,7 @@
       ['existing_service_amps', 'new_service_amps', 'se_length_ft', 'bus_amps'].forEach((name) => {
         job[name] = Number(data.get(name));
       });
-      return job;
+      return { ...job, ...window.PermitJobTypes.electricalFields(data) };
     },
     planFields(marks) {
       return { markers: { meter: marks.points.meter, panel: marks.points.panel }, route: marks.bends };
