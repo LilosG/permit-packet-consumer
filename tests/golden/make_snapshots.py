@@ -1,13 +1,14 @@
 """Writes the golden EV cases and the packets they produce today.
 
-Run once, against the app as it was before the job-type refactor:
+Run after a deliberate change to a packet, once the change is complete:
 
     DEMO_PASSWORD=snap PYTHONPATH=. python tests/golden/make_snapshots.py
 
 The case files are request payloads in the original /api/ev/* shape (the plan
-uses "panel" and "charger"). The snapshots are the contract: every later
-change has to reproduce them. tests/test_ev_golden.py replays the cases and
-maps them to whatever the current routes expect.
+uses "panel" and "charger"); they are mapped to the current generic route with
+the same to_current_request the test uses. The snapshots are the contract: the
+diff after regenerating shows exactly what changed. tests/test_ev_golden.py
+replays the cases.
 """
 from __future__ import annotations
 
@@ -24,6 +25,7 @@ from PIL import Image
 os.environ.setdefault("DEMO_PASSWORD", "snap")
 
 from app import app  # noqa: E402  (needs DEMO_PASSWORD first)
+from tests.test_ev_golden import DOCUMENTS_URL, PACKET_URL, to_current_request  # noqa: E402
 
 HERE = Path(__file__).parent
 CASES = HERE / "cases"
@@ -96,11 +98,12 @@ def page_text(pdf: bytes) -> list[str]:
 
 
 def snapshot(client: TestClient, payload: dict) -> dict:
-    packet = client.post("/api/ev/packet", json=payload)
+    payload = to_current_request(payload)
+    packet = client.post(PACKET_URL, json=payload)
     assert packet.status_code == 200, packet.text
     body = packet.json()
     pdf = base64.b64decode(body["pdf"])
-    documents = client.post("/api/ev/documents", json=payload)
+    documents = client.post(DOCUMENTS_URL, json=payload)
     assert documents.status_code == 200, documents.text
     from zipfile import ZipFile
 
