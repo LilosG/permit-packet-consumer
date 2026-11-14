@@ -231,7 +231,7 @@ def test_the_sample_checks_read_as_specified(client):
     checks = _checks(_packet(client))
     assert [name for name in checks] == [
         "Service capacity", "Panel spaces", "Feeder breaker", "Feeder conductors", "Feeder load",
-        "Voltage drop", "Conduit fill", "Interrupting rating"]
+        "Voltage drop", "Conduit fill", "Interrupting rating", "Panel schedule"]
     assert checks["Service capacity"]["result"] == "137.8 A computed on the 200 A service"
     assert checks["Panel spaces"]["result"] == "4 open, 2 needed"
     assert checks["Feeder breaker"]["result"] == "100 A breaker on a 100 A subpanel"

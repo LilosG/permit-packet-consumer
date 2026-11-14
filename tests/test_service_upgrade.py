@@ -350,14 +350,14 @@ def test_the_drop_decides_which_clearance_flag_shows(client):
 
 
 def test_flags_come_in_the_order_the_job_needs_them(client):
-    flags = _packet(client, relocated=True, has_solar=True, pv_breaker_amps=40)["flags"]
+    flags = _packet(client, relocated=True, has_solar=True, pv_breaker_amps=40, existing_circuits=[])["flags"]
     assert flags[0].startswith("Check the existing loads")
     assert flags[1].startswith("Submit the utility service request (page 7)")
     assert flags[3].startswith("Relocating the meter")
     assert flags[-1] == "Confirm the adopted code edition."
     assert flags[-2].startswith("This site plan is a schematic")
     assert flags[-5].startswith("This home has solar")
-    assert flags[-4].startswith("The panel schedule lists")
+    assert flags[-4] == "Enter the panel's existing circuits for the panel schedule."
     assert flags[-3].startswith("Enter the panel's location")
 
 

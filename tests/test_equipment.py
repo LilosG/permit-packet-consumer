@@ -94,15 +94,21 @@ def test_the_panel_schedule_lists_entered_circuits_and_marks_the_new_breaker(cli
     schedule = next(text for text in pages if "Panel Schedule" in text)
     assert "Range" in schedule and "50 A" in schedule and "EV charger, 48 A (this permit)" in schedule
     assert "Open spaces: 4 before, 2 after" in schedule
-    assert not any("panel schedule lists the circuits" in flag for flag in body["flags"])
+    assert "Enter the panel's existing circuits for the panel schedule." not in body["flags"]
 
 
-def test_without_entered_circuits_the_schedule_comes_from_the_load_calc_and_is_flagged(client):
+def test_without_entered_circuits_the_schedule_is_a_blank_grid_and_the_packet_is_not_ready(client):
     body = _ev(client, "")
     pages = [page.extract_text() for page in PdfReader(BytesIO(base64.b64decode(body["pdf"]))).pages]
-    schedule = next(text for text in pages if "Panel Schedule" in text)
-    assert "Verify on site" in schedule and "Kitchen small-appliance circuits" in schedule
-    assert any("panel schedule lists the circuits" in flag for flag in body["flags"])
+    schedule = next(text for text in pages if "Circuit directory" in text)
+    assert "Field verify and fill in" in schedule
+    assert "Kitchen small-appliance" not in schedule and "General lighting" not in schedule
+    assert "Verify on site" not in schedule
+    assert "Enter the panel's existing circuits for the panel schedule." in body["flags"]
+    panel = next(check for check in body["checks"] if check["name"] == "Panel schedule")
+    assert panel["passed"] is False and body["ready"] is False
+    row = next(r for r in body["checklist_status"] if r["item"].startswith("Panel schedule"))
+    assert row["status"] == "Open" and "field verify" in row["where"]
 
 
 def test_tabloid_draws_every_page_natively_at_11_x_17(client):

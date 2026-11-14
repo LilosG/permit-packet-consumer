@@ -30,5 +30,17 @@
       "va": 11520
     }
   ],
-  "available_fault_current_a": 10000
+  "available_fault_current_a": 10000,
+  "existing_circuits": [
+    {
+      "label": "Kitchen counter",
+      "amps": 20,
+      "poles": 1
+    },
+    {
+      "label": "Range",
+      "amps": 50,
+      "poles": 2
+    }
+  ]
 }

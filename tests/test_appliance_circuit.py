@@ -233,7 +233,7 @@ def test_a_sauna_is_continuous_and_sized_from_its_kw(client):
     assert body["conductor"] == "#8 Cu"  # 240.4(D) keeps #10 off a 35 A breaker
     assert [check["name"] for check in body["checks"]] == [
         "Service capacity", "Panel spaces", "Breaker", "Conductors", "Voltage drop", "Conduit fill",
-        "Interrupting rating"]
+        "Interrupting rating", "Panel schedule"]
 
 
 def test_other_appliance_continuous_is_the_users_call(client):

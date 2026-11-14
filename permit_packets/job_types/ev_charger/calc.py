@@ -6,7 +6,7 @@ from typing import Literal
 
 from permit_packets.core.checks import Check
 from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
-from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
+from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG, panel_schedule_check
 from permit_packets.core.equipment import find_equipment
 from permit_packets.core.circuits import Circuit, conduit_size, size_circuit
 from permit_packets.jurisdictions import ORO_VALLEY, Jurisdiction
@@ -205,6 +205,7 @@ def build_ev_packet(job: EvJob) -> EvPacket:
             circuit.breaker <= LARGEST_RECEPTACLE_BREAKER,
         ))
     checks.append(interrupting_rating_check(job))
+    checks.append(panel_schedule_check(job))
     gec = gec_check(job, service_amps=job.service_amps)
     if gec:
         checks.append(gec)

@@ -11,7 +11,9 @@ from reportlab.platypus import Flowable, Spacer
 
 from permit_packets.core.conductors import wire_label
 from permit_packets.core.equipment import attach_data_sheets, find_equipment
-from permit_packets.core.panel_schedule import ScheduleRow, existing_rows, panel_schedule_page
+from permit_packets.core.panel_schedule import (
+    PANEL_SCHEDULE_ITEM, ScheduleRow, existing_rows, panel_schedule_page, panel_schedule_row,
+)
 from permit_packets.core.pdf_base import (
     CELL_BOLD, CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
@@ -285,6 +287,14 @@ def _checklist_row(packet: ServicePacket, section: str) -> tuple[str, str]:
     return f"Page {SECTION_PAGES[section]}", "Ready"
 
 
+def checklist_rows(packet) -> list[tuple[str, str, str]]:
+    """Every checklist line: the city's, then the panel schedule every packet carries."""
+    job = packet.job
+    rows = [(requirement.item, *_checklist_row(packet, requirement.section))
+            for requirement in job.jurisdiction.checklist_for("service_upgrade").items]
+    return rows + [(PANEL_SCHEDULE_ITEM, *panel_schedule_row(job, SECTION_PAGES["panel_schedule"]))]
+
+
 def _cover(packet: ServicePacket) -> list:
     job = packet.job
     jurisdiction = job.jurisdiction
@@ -302,8 +312,7 @@ def _cover(packet: ServicePacket) -> list:
                   f"Customer: {job.customer}"),
         contractor_cell=f"{job.contractor}\nLicense {job.license_number}",
         checklist_cell=checklist_cell,
-        checklist_rows=[(requirement.item, *_checklist_row(packet, requirement.section))
-                        for requirement in jurisdiction.checklist_for("service_upgrade").items],
+        checklist_rows=checklist_rows(packet),
         checks=[(check.name, check.result, check.passed) for check in packet.checks],
         flags=packet.flags,
         stamp_box_in=job.jurisdiction.stamp_box_in,
@@ -520,7 +529,7 @@ def _review(packet: ServicePacket) -> list:
 
 def _panel_schedule(packet: ServicePacket) -> list:
     job = packet.job
-    rows = existing_rows(job.home, job.existing_circuits, status="Transferred")
+    rows = existing_rows(job.existing_circuits, status="Transferred")
     rows += [ScheduleRow(f"{item.label} ({item.va:,} VA)", "Space reserved", 2 if item.va > 2400 else 1, "Planned")
              for item in job.planned_loads]
     return panel_schedule_page(

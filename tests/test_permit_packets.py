@@ -30,6 +30,7 @@ from permit_packets.core.property_lookup import (
     suggest_addresses,
     tidy_address,
 )
+from permit_packets.core.panel_schedule import ExistingCircuit
 from permit_packets.core.property_plan import PlanView, PropertyPlan, clip_to, plan_scale, zoomed_scale
 
 os.environ["DEMO_PASSWORD"] = "test-password"
@@ -77,6 +78,7 @@ def _job(**changes) -> EvJob:
         license_number="ROC 000000", home=HOME, service_amps=200, open_breaker_spaces=2,
         charger_amps=48, location="detached_garage", run_ft=58, trench_ft=55,
         available_fault_current_a=10000,
+        existing_circuits=(ExistingCircuit("Kitchen counter", 20), ExistingCircuit("Range", 50, 2)),
     )
     return EvJob(**{**values, **changes})
 
@@ -88,6 +90,8 @@ def _payload(**changes) -> dict:
         license_number="ROC 000000", home=home, service_amps=200, open_breaker_spaces=4,
         charger_amps=40, location="attached_garage", run_ft=30, trench_ft=0,
         available_fault_current_a=10000,
+        existing_circuits=[{"label": "Kitchen counter", "amps": 20, "poles": 1},
+                           {"label": "Range", "amps": 50, "poles": 2}],
     )
     return {**values, **changes}
 

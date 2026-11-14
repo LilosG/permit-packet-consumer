@@ -10,7 +10,7 @@ from permit_packets.core.site_plan import printed_scale
 from permit_packets.core.preview import pdf_page_count
 from permit_packets.job_types import Document, PacketResult
 from permit_packets.job_types.ev_charger.calc import EvJob, EvPacket, build_ev_packet
-from permit_packets.job_types.ev_charger.pdf import application_fields, render_ev_packet_pdf, scope_of_work
+from permit_packets.job_types.ev_charger.pdf import checklist_rows, application_fields, render_ev_packet_pdf, scope_of_work
 from permit_packets.job_types.ev_charger.schema import EvChargerRequest
 from permit_packets.jurisdictions import jurisdiction_by_key, jurisdiction_json
 
@@ -107,6 +107,9 @@ def _build_response(request: BaseModel) -> PacketResult:
             for check in packet.checks
         ],
         "flags": packet.flags,
+        "checklist_status": [
+            {"item": item, "where": where, "status": status} for item, where, status in checklist_rows(packet)
+        ],
         "jurisdiction": jurisdiction_json(jurisdiction, JOB_TYPE_KEY),
         "address": packet.job.address,
         "fields": [

@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
-from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
+from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG, panel_schedule_check
 from permit_packets.core.checks import Check
 from permit_packets.core.circuits import CONTINUOUS_FACTOR
 from permit_packets.core.conductors import (
@@ -268,6 +268,7 @@ def build_appliance_packet(job: ApplianceJob) -> AppliancePacket:
             f"{job.disconnect_distance_ft} ft from the spa, {MIN_DISCONNECT_DISTANCE_FT} ft minimum",
             job.disconnect_distance_ft >= MIN_DISCONNECT_DISTANCE_FT))
     checks.append(interrupting_rating_check(job))
+    checks.append(panel_schedule_check(job))
     gec = gec_check(job, service_amps=job.service_amps)
     if gec:
         checks.append(gec)

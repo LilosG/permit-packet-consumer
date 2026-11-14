@@ -19,6 +19,7 @@ from permit_packets.job_types.appliance_circuit.calc import (
     sentence_case,
 )
 from permit_packets.job_types.appliance_circuit.pdf import (
+    checklist_rows,
     application_fields,
     render_appliance_packet_pdf,
     scope_of_work,
@@ -137,6 +138,9 @@ def _build_response(request: BaseModel) -> PacketResult:
             for check in packet.checks
         ],
         "flags": packet.flags,
+        "checklist_status": [
+            {"item": item, "where": where, "status": status} for item, where, status in checklist_rows(packet)
+        ],
         "jurisdiction": jurisdiction_json(jurisdiction, JOB_TYPE_KEY),
         "address": packet.job.address,
         "fields": [
