@@ -9,8 +9,7 @@ general NEC checklist, with the Metro items below that Metro does publish, and t
 Electric utility is Nashville Electric Service (NES), which approves service work separately.
 
 Not found published, so not in the packet: the exact text of Metro's local NEC amendments (Metro Code
-Chapter 16.20 on Municode, which blocked direct download), the Tennessee statewide NEC edition, and the
-ASHRAE 2% design temperature for Nashville (design_ambient_f stays unset).
+Chapter 16.20 on Municode, which blocked direct download) and the Tennessee statewide NEC edition.
 """
 from __future__ import annotations
 
@@ -81,6 +80,13 @@ NASHVILLE = Jurisdiction(
     ),
     needs_parcel_number=True,
     # No residential sheet size, stamp box or single-PDF rule is published, so these stay at the defaults.
+    # ASHRAE 2% annual cooling dry-bulb design temperature, Nashville International (WMO 723270). Every
+    # ambient from 87 to 95 F (31 to 35 C) falls in the same NEC 310.15(B)(1) row, so 90 C conductors
+    # get a factor of 0.96. CONFIRM the exact 2% figure on the station page below.
+    design_ambient_f=92,
+    design_ambient_source=(
+        "https://ashrae-meteo.info/v3.0/index.php?lat=36.12&lng=-86.69&place=%27%27&wmo=723270&ashrae_version=2017"
+    ),
     code_note=CODE_NOTE,
     fallback_notes=(NEC_AMENDMENTS, NES_RELEASE),
     utility="Nashville Electric Service (NES)",
