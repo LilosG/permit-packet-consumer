@@ -15,6 +15,7 @@ PASSWORDS = {key: f"pw-{key}-0123456789" for key in CLIENTS if key != "demo"}
 CITIES = {"erke": "nashville-tn", "elc": "san-francisco-ca", "thee-electrician": "san-francisco-ca", "jbee": "mesa-az"}
 LOGOS = {"erke": "erke.png", "elc": "elc.png", "thee-electrician": "thee.png", "jbee": "jbee.png"}
 BY_KEY = {j.key: j for j in KNOWN.values()}
+EXTRA_CITIES = {"jbee": ("chandler-az",)}
 OTHER = {"erke": "mesa-az", "elc": "nashville-tn", "thee-electrician": "mesa-az", "jbee": "san-francisco-ca"}
 
 
@@ -43,7 +44,8 @@ def test_the_five_clients_are_set_up():
     assert set(CLIENTS) == {"demo", *PASSWORDS}
     for key, city in CITIES.items():
         client = CLIENTS[key]
-        assert client.jurisdiction_keys == (city,)
+        assert client.jurisdiction_keys[0] == city
+        assert client.jurisdiction_keys == (city,) + EXTRA_CITIES.get(key, ())
         assert client.job_types == ALL_JOB_TYPES
         assert client.logo == LOGOS[key]
         assert client.company_name and client.website.startswith("https://")
@@ -58,7 +60,7 @@ def test_client_sees_only_their_cities_logo_and_all_job_types(key):
     session = sign_in(PASSWORDS[key])
     info = session.get("/api/client").json()
     assert info["key"] == key and info["demo"] is False
-    assert [c["key"] for c in info["cities"]] == [CITIES[key]]
+    assert [c["key"] for c in info["cities"]] == [CITIES[key], *EXTRA_CITIES.get(key, ())]
     assert info["company_name"] == CLIENTS[key].company_name
     assert info["logo"] == (f"/assets/logos/{LOGOS[key]}" if LOGOS[key] else "")
     types = [t["key"] for t in session.get("/api/job-types").json()["job_types"]]
