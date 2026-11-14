@@ -106,11 +106,11 @@ MESA = Jurisdiction(
                      "that is replaced or upgraded."),
                 Note("always", "2023 NEC 230.85: one- and two-family dwellings need an outdoor emergency "
                      "disconnect, readily accessible and marked."),
-                Note("always", "SRP reconnects only after Mesa passes the service inspection and sends its "
-                     "clearance; SRP asks to allow three to four days for the clearance to process."),
+                Note("always", "SRP reconnects after Mesa passes the service inspection and sends its clearance "
+                     "(allow three to four days). Downtown Mesa is Mesa Electric and some areas APS: confirm the "
+                     "utility on the bill."),
                 Note("always", "Mesa's Residential Utility Repair permit in DIMES lists installing a residential "
                      "200 A panel with no plan upload. Confirm with Permit Services that the scope fits it."),
-                UTILITY_CHECK,
             ),
         ),
         SUBPANEL: Checklist(

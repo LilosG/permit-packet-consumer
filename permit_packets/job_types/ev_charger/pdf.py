@@ -261,7 +261,7 @@ def _checklist_row(packet: EvPacket, section: str) -> tuple[str, str]:
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
         if find_equipment(job.charger_model, "charger"):
-            return f"Page {SECTION_PAGES['equipment']}, with the manufacturer's data sheet attached", "Ready"
+            return f"Page {SECTION_PAGES['equipment']} + manufacturer data sheet", "Ready"
         return f"Page {SECTION_PAGES['equipment']}: add manufacturer sheets", "Attach"
     if section == "ventilation":
         return "Only if this charger requires venting", "Check"

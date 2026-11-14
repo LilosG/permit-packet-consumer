@@ -278,7 +278,7 @@ def _checklist_row(packet: ServicePacket, section: str) -> tuple[str, str]:
         return f"Page {SECTION_PAGES['utility']}: send to the utility", "Send"
     if section == "equipment":
         if find_equipment(job.panel_model, "panel"):
-            return f"Page {SECTION_PAGES['equipment']}, with the manufacturer's data sheet attached", "Ready"
+            return f"Page {SECTION_PAGES['equipment']} + manufacturer data sheet", "Ready"
         return f"Page {SECTION_PAGES['equipment']}: add manufacturer sheets", "Attach"
     return f"Page {SECTION_PAGES[section]}", "Ready"
 

@@ -256,7 +256,7 @@ def _checklist_row(packet: SubpanelPacket, section: str) -> tuple[str, str]:
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
         if find_equipment(job.subpanel_model, "panel"):
-            return f"Page {SECTION_PAGES['equipment']}, with the manufacturer's data sheet attached", "Ready"
+            return f"Page {SECTION_PAGES['equipment']} + manufacturer data sheet", "Ready"
         return f"Page {SECTION_PAGES['equipment']}: add manufacturer sheets", "Attach"
     return f"Page {SECTION_PAGES[section]}", "Ready"
 

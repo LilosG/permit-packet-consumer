@@ -12,6 +12,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import (
+    KeepInFrame,
     BaseDocTemplate,
     Frame,
     Image,
@@ -232,7 +233,9 @@ def cover_page(
             ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
         ]),
     ))
-    return story
+    # The cover is always one page: a long flag list shrinks to fit rather than pushing every
+    # later page (and every "Page N" reference) back by one.
+    return [KeepInFrame(CONTENT, HEIGHT - 1.25 * inch, story, mode="shrink")]
 
 
 def review_page(items: list[str]) -> list:
