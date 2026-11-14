@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.heat import exposure_flags
 from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG, panel_schedule_check
 from permit_packets.core.checks import Check
@@ -74,6 +75,16 @@ class SubpanelJob:
     panel_main: str | None = None
     gec_size: str = ""
 
+    @property
+    def sun_exposed(self) -> bool:
+        """Outdoors or in the sun: an underground run with risers, or a feeder out to a detached building."""
+        return self.trench_ft > 0 or self.location == "detached_building"
+
+    @property
+    def design_ambient_f(self) -> int | None:
+        """The city's design ambient, when part of this run is exposed to it."""
+        return self.jurisdiction.design_ambient_f if self.sun_exposed else None
+
 
 @dataclass(frozen=True)
 class SubpanelPacket:
@@ -125,6 +136,7 @@ def _flags(job: SubpanelJob, load: LoadCalculation, feeder: Feeder, assumed: boo
         flags.append("No loads listed, so the feeder load assumes 80% of the breaker. Add the planned loads.")
     if job.jurisdiction.state == "CA":
         flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
+    flags += exposure_flags(job)
     if not job.existing_circuits:
         flags.append(MISSING_FLAG)
     flags += panel_flags(job, service_amps=job.service_amps)
@@ -148,7 +160,8 @@ def build_subpanel_packet(job: SubpanelJob) -> SubpanelPacket:
         else sum(item.va for item in job.loads) / FEEDER_VOLTS
     )
     feeder = size_feeder(
-        job.feeder_breaker_amps, job.material, feeder_load, job.run_ft, whole_dwelling=job.whole_dwelling)
+        job.feeder_breaker_amps, job.material, feeder_load, job.run_ft, whole_dwelling=job.whole_dwelling,
+        ambient_f=job.design_ambient_f)
     conduit_size = feeder_conduit(feeder, job.conduit)
     metal = MATERIAL_ABBREVIATIONS[job.material]
     size = wire_label(feeder.conductor.size)
@@ -170,6 +183,8 @@ def build_subpanel_packet(job: SubpanelJob) -> SubpanelPacket:
               feeder.vd_percent <= MAX_FEEDER_VOLTAGE_DROP_PERCENT),
         Check("Conduit fill", f"4 wires in {conduit_size} {job.conduit}, 40% fill", True),
     ]
+    if feeder.heat:
+        checks.append(Check("Temperature correction", feeder.heat.line, feeder.heat.passed))
     checks.append(interrupting_rating_check(job))
     checks.append(panel_schedule_check(job))
     gec = gec_check(job, service_amps=job.service_amps)

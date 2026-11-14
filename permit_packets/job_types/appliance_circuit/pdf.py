@@ -15,7 +15,7 @@ from permit_packets.core.panel_schedule import (
 )
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
-    diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
+    diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.panel_data import one_line_data, panel_header
 from permit_packets.core.title_block import title_block_for
@@ -409,7 +409,7 @@ def _circuit_schedule(packet: AppliancePacket) -> list[tuple[str, str, str]]:
 def _one_line(packet: AppliancePacket) -> list:
     job = packet.job
     rows = [["Branch circuit", _wire_text(packet), _conduit(packet), f"{packet.breaker} A, 2-pole"]]
-    return [
+    story = [
         _p("One-Line Diagram", H1),
         _p("Main panel, breaker, disconnect, conductors and the appliance.", SMALL),
         Spacer(1, 10),
@@ -425,6 +425,7 @@ def _one_line(packet: AppliancePacket) -> list:
                + [[_p(a), _p(b), _p(c)] for a, b, c in _circuit_schedule(packet)],
                [1.5 * inch, content_w() - 4.2 * inch, 2.7 * inch]),
     ]
+    return fit_page(story + heat_block(packet.branch.heat, job.jurisdiction))
 
 
 def _load(packet: AppliancePacket) -> list:

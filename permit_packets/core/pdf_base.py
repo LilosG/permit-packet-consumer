@@ -464,3 +464,35 @@ class FittedDiagram(Flowable):
 def diagram(inner: Flowable, *, legend: list[str] | None = None, share: float = 0.38) -> FittedDiagram:
     """Fit a diagram to the sheet: at most `share` of the page height, scaled up from the letter drawing."""
     return FittedDiagram(inner, legend=legend, max_h=current_sheet().content_h * share)
+
+
+def fit_page(story: list) -> list:
+    """Keep a page to one sheet: content that runs long shrinks to fit rather than spilling onto another."""
+    sheet = current_sheet()
+    return [KeepInFrame(sheet.content_w, sheet.content_h - 4, story, mode="shrink")]
+
+
+def heat_block(heat, jurisdiction) -> list:
+    """The temperature correction worked out on the one-line page: base ampacity, factor, corrected ampacity, breaker."""
+    if heat is None:
+        return []
+    degree = "\N{DEGREE SIGN}"
+    carries = heat.carries_label.capitalize() if heat.carries_label == "breaker" else heat.carries_label
+    rows = [
+        _heads("Conductor", f"Base ampacity, 90{degree}C", "Correction factor", "Corrected ampacity",
+               f"Limit, {heat.cap_column}{degree}C terminals", carries, "Result"),
+        [_p(heat.wire), _p(f"{heat.base_90c} A"), _p(f"{heat.factor:.2f}"), _p(f"{heat.corrected_a:.1f} A"),
+         _p(f"{heat.cap_a} A"), _p(f"{heat.carries_a:g} A"), _p("OK" if heat.passed else "Too small", CELL_BOLD)],
+    ]
+    w = content_w()
+    source = f" Source: {jurisdiction.design_ambient_source}" if jurisdiction.design_ambient_source else ""
+    return [
+        Spacer(1, 10),
+        _p("Temperature correction, outdoor conductors (NEC 310.15(B)(1))", H2),
+        _table(rows, [w * 0.18, w * 0.15, w * 0.13, w * 0.15, w * 0.16, w * 0.12, w * 0.11]),
+        Spacer(1, 3),
+        _p(f"{heat.line}.", SMALL),
+        _p(f"Design ambient {heat.ambient_f}{degree}F ({heat.ambient_c:.1f}{degree}C): ASHRAE 2% annual cooling "
+           f"dry-bulb for {jurisdiction.name}.{source} The corrected ampacity is limited to the "
+           f"{heat.cap_column}{degree}C terminal rating (NEC 110.14(C)).", SMALL),
+    ]

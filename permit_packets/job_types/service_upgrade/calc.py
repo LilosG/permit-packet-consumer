@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.heat import HeatCalc, exposure_flags, heat_calc
 from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG, panel_schedule_check
 from permit_packets.core.checks import Check
@@ -92,6 +93,16 @@ class ServiceJob:
     panel_main: str | None = None
     gec_size: str = ""
 
+    @property
+    def sun_exposed(self) -> bool:
+        """Outdoors or in the sun: the service entrance conductors run outdoors from the weatherhead or riser to the meter."""
+        return True
+
+    @property
+    def design_ambient_f(self) -> int | None:
+        """The city's design ambient, when part of this run is exposed to it."""
+        return self.jurisdiction.design_ambient_f if self.sun_exposed else None
+
 
 @dataclass(frozen=True)
 class ServicePacket:
@@ -103,6 +114,7 @@ class ServicePacket:
     conduit_size: str | None
     checks: list[Check]
     flags: list[str] = field(default_factory=list)
+    heat: HeatCalc | None = None
 
     @property
     def ready(self) -> bool:
@@ -136,6 +148,7 @@ def _flags(job: ServiceJob, gecs: dict[str, str]) -> list[str]:
     ]
     if job.jurisdiction.state == "CA":
         flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
+    flags += exposure_flags(job)
     if job.has_solar:
         flags.append("This home has solar. Confirm the PV breaker sits at the opposite end of the bus from the main.")
     if not job.existing_circuits:
@@ -155,7 +168,7 @@ def build_service_packet(job: ServiceJob) -> ServicePacket:
     added = [LoadLine(planned.label, PLANNED_LOAD_BASIS, planned.va) for planned in job.planned_loads]
     load = calculate_load(job.home, service_amps=job.new_service_amps, added_loads=added, volts=VOLTS)
     existing_load = calculate_load(job.home, service_amps=job.existing_service_amps, added_loads=added, volts=VOLTS)
-    conductor = service_conductor(job.new_service_amps, job.material)
+    conductor = service_conductor(job.new_service_amps, job.material, job.design_ambient_f)
     gecs = {
         electrode: gec_size(conductor, job.material, electrode)
         for electrode in ELECTRODE_LABELS if electrode in job.electrodes
@@ -163,6 +176,10 @@ def build_service_packet(job: ServiceJob) -> ServicePacket:
     conduit = service_conduit(conductor, job.conduit) if job.conduit != "none" else None
     metal = MATERIAL_ABBREVIATIONS[job.material]
     required = SERVICE_CONDUCTOR_FACTOR * job.new_service_amps
+    heat = (
+        heat_calc(conductor.size, job.material, job.design_ambient_f, cap_a=conductor.ampacity_75c, carries_a=required)
+        if job.design_ambient_f is not None else None
+    )
     checks = [
         Check("Service capacity",
               f"{load.computed_amps:.1f} A computed on the new {job.new_service_amps} A service",
@@ -188,6 +205,8 @@ def build_service_packet(job: ServiceJob) -> ServicePacket:
             f"limit {BUS_AND_MAIN_FACTOR * job.bus_amps:.0f} A",
             solar_fits(job.bus_amps, job.new_service_amps, job.pv_breaker_amps),
         ))
+    if heat:
+        checks.append(Check("Temperature correction", heat.line, heat.passed))
     checks.append(interrupting_rating_check(job))
     checks.append(panel_schedule_check(job))
     gec = gec_check(job, service_amps=job.new_service_amps, material=job.material, electrodes=tuple(gecs))
@@ -195,5 +214,5 @@ def build_service_packet(job: ServiceJob) -> ServicePacket:
         checks.append(gec)
     return ServicePacket(
         job=job, load=load, existing_load=existing_load, conductor=conductor, gecs=gecs,
-        conduit_size=conduit, checks=checks, flags=_flags(job, gecs),
+        conduit_size=conduit, checks=checks, flags=_flags(job, gecs), heat=heat,
     )

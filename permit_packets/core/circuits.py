@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from permit_packets.core.heat import HeatCalc, heat_calc, survives
+
 CONTINUOUS_FACTOR = 1.25
 MAX_VOLTAGE_DROP_PERCENT = 3.0
 # Resistance constant for copper in the voltage drop formula.
@@ -60,6 +62,7 @@ class Circuit:
     voltage_drop_volts: float
     voltage_drop_percent: float
     upsized_for_voltage_drop: bool
+    heat: HeatCalc | None = None  # the temperature correction, when the run is outdoors
 
 
 def size_breaker(required_amps: float) -> int:
@@ -92,10 +95,16 @@ def voltage_drop(amps: float, one_way_ft: float, wire: Wire, volts: int = 240) -
     return drop, drop / volts * 100
 
 
-def size_circuit(load_amps: float, one_way_ft: float, *, continuous: bool, volts: int = 240) -> Circuit:
+def size_circuit(
+    load_amps: float, one_way_ft: float, *, continuous: bool, volts: int = 240, ambient_f: int | None = None,
+) -> Circuit:
     required = load_amps * (CONTINUOUS_FACTOR if continuous else 1)
     breaker = size_breaker(required)
-    candidates = [wire for wire in WIRES if protected_by(wire, breaker)]
+    candidates = [
+        wire for wire in WIRES
+        if protected_by(wire, breaker)
+        and survives(wire.size, "copper", ambient_f, cap_a=wire.ampacity_75c, carries_a=breaker)
+    ]
     if not candidates:
         raise ValueError(f"no listed wire size carries {breaker} A")
     smallest = candidates[0]
@@ -114,6 +123,8 @@ def size_circuit(load_amps: float, one_way_ft: float, *, continuous: bool, volts
         voltage_drop_volts=drop,
         voltage_drop_percent=percent,
         upsized_for_voltage_drop=wire is not smallest,
+        heat=heat_calc(wire.size, "copper", ambient_f, cap_a=wire.ampacity_75c, carries_a=breaker)
+        if ambient_f is not None else None,
     )
 
 

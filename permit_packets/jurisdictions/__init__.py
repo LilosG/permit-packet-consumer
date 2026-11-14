@@ -55,6 +55,10 @@ class Jurisdiction:
     stamp_box_in: float | None = None
     # True where the city takes one combined PDF and refuses plan sheets uploaded as separate files.
     single_pdf_only: bool = False
+    # ASHRAE 2% annual cooling dry-bulb design temperature (F) for the station nearest the city. Outdoor
+    # and sun-exposed conductors are corrected for it (NEC 310.15(B)(1)). None: not set up for this city.
+    design_ambient_f: int | None = None
+    design_ambient_source: str = ""  # where that figure comes from, a URL
     checklists: dict[str, Checklist] = field(default_factory=dict)
 
     @property

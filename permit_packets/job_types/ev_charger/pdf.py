@@ -15,7 +15,7 @@ from permit_packets.core.panel_schedule import (
 )
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
-    diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
+    diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.panel_data import one_line_data, panel_header
 from permit_packets.core.title_block import title_block_for
@@ -407,10 +407,11 @@ def _one_line(packet: EvPacket) -> list:
                + [[_p(cell) for cell in row] for row in rows],
                [1.6 * inch, 1.9 * inch, 1.6 * inch, content_w() - 5.1 * inch]),
     ]
+    story += heat_block(packet.circuit.heat, packet.job.jurisdiction)
     story += _notes_block(packet)
     if packet.underground_conduit:
         story += [Spacer(1, 12), _p("Trench detail", H2), diagram(Trench(packet.underground_conduit), share=0.17)]
-    return story
+    return fit_page(story)
 
 
 def _load(packet: EvPacket) -> list:

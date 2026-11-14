@@ -16,7 +16,7 @@ from permit_packets.core.panel_schedule import (
 )
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
-    diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
+    diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.panel_data import one_line_data, panel_header
 from permit_packets.core.title_block import title_block_for
@@ -384,7 +384,7 @@ def _one_line(packet: SubpanelPacket) -> list:
     if job.location == "detached_building":
         rows.append(["Grounding electrode", "Electrode per 250.52, GEC per 250.66", "As required (250.64)",
                      "Listed clamp or weld (250.70)"])
-    return [
+    story = [
         _p("One-Line Diagram", H1),
         _p("Main panel, feeder conductors, subpanel and grounding.", SMALL),
         Spacer(1, 10),
@@ -395,6 +395,7 @@ def _one_line(packet: SubpanelPacket) -> list:
                + [[_p(cell) for cell in row] for row in rows],
                [1.4 * inch, 2.2 * inch, 1.5 * inch, content_w() - 5.1 * inch]),
     ]
+    return fit_page(story + heat_block(packet.feeder.heat, job.jurisdiction))
 
 
 def _feeder_schedule(packet: SubpanelPacket) -> list:

@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.heat import exposure_flags
 from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG, panel_schedule_check
 from permit_packets.core.checks import Check
@@ -82,6 +83,16 @@ class ApplianceJob:
     panel_bus_amps: int | None = None
     panel_main: str | None = None
     gec_size: str = ""
+
+    @property
+    def sun_exposed(self) -> bool:
+        """Outdoors or in the sun: an outdoor or detached appliance, or conduit risers out of a trench."""
+        return self.location in ("outdoor", "detached") or self.trench_ft > 0
+
+    @property
+    def design_ambient_f(self) -> int | None:
+        """The city's design ambient, when part of this run is exposed to it."""
+        return self.jurisdiction.design_ambient_f if self.sun_exposed else None
 
     @property
     def is_hvac(self) -> bool:
@@ -196,6 +207,7 @@ def _flags(job: ApplianceJob, load: LoadCalculation, branch: Branch) -> list[str
         flags.append("Size the circuit from the appliance's nameplate and instructions.")
     if job.jurisdiction.state == "CA":
         flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
+    flags += exposure_flags(job)
     if not job.existing_circuits:
         flags.append(MISSING_FLAG)
     flags += panel_flags(job, service_amps=job.service_amps)
@@ -227,7 +239,7 @@ def build_appliance_packet(job: ApplianceJob) -> AppliancePacket:
         breaker = job.manufacturer_breaker or minimum
     branch = size_branch(
         breaker=breaker, load_amps=load_amps, run_ft=job.run_ft, terminals_75c=job.terminals_75c,
-        hvac_mca=job.mca if job.is_hvac else None,
+        hvac_mca=job.mca if job.is_hvac else None, ambient_f=job.design_ambient_f,
     )
     conduit_size = (
         None if job.wiring == "cable" else branch_conduit(branch, job.conductors_in_conduit, job.wiring)
@@ -267,6 +279,8 @@ def build_appliance_packet(job: ApplianceJob) -> AppliancePacket:
             "Disconnect distance",
             f"{job.disconnect_distance_ft} ft from the spa, {MIN_DISCONNECT_DISTANCE_FT} ft minimum",
             job.disconnect_distance_ft >= MIN_DISCONNECT_DISTANCE_FT))
+    if branch.heat:
+        checks.append(Check("Temperature correction", branch.heat.line, branch.heat.passed))
     checks.append(interrupting_rating_check(job))
     checks.append(panel_schedule_check(job))
     gec = gec_check(job, service_amps=job.service_amps)

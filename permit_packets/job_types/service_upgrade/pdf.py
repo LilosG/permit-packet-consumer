@@ -16,7 +16,7 @@ from permit_packets.core.panel_schedule import (
 )
 from permit_packets.core.pdf_base import (
     CELL_BOLD, CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
-    diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
+    diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.panel_data import one_line_data, panel_header
 from permit_packets.core.title_block import title_block_for
@@ -426,7 +426,7 @@ def _riser(packet: ServicePacket) -> list:
          "Listed clamp or weld (250.70)"]
         for electrode, size in packet.gecs.items()
     ]
-    return [
+    story = [
         _p("Riser Diagram", H1),
         _p("Service conductors, conduit, grounding electrode conductors and bonding.", SMALL),
         Spacer(1, 10),
@@ -437,6 +437,7 @@ def _riser(packet: ServicePacket) -> list:
                + [[_p(cell) for cell in row] for row in rows],
                [1.6 * inch, 1.9 * inch, 1.6 * inch, content_w() - 5.1 * inch]),
     ]
+    return fit_page(story + heat_block(packet.heat, job.jurisdiction))
 
 
 def _load(packet: ServicePacket) -> list:

@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from permit_packets.core.checks import Check
+from permit_packets.core.heat import exposure_flags
 from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG, panel_schedule_check
 from permit_packets.core.equipment import find_equipment
@@ -61,6 +62,16 @@ class EvJob:
     panel_bus_amps: int | None = None
     panel_main: str | None = None
     gec_size: str = ""
+
+    @property
+    def sun_exposed(self) -> bool:
+        """Outdoors or in the sun: the charger on an exterior wall, or conduit risers out of a trench."""
+        return self.location == "exterior_wall" or self.trench_ft > 0
+
+    @property
+    def design_ambient_f(self) -> int | None:
+        """The city's design ambient, when part of this run is exposed to it."""
+        return self.jurisdiction.design_ambient_f if self.sun_exposed else None
     peak_demand_kw: float | None = None
     demand_source: str = "utility_12_month"
 
@@ -142,6 +153,7 @@ def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int 
         flags.append("Confirm the disconnect location and type with the city.")
     if job.location == "detached_garage":
         flags.append("Confirm grounding requirements at the detached garage.")
+    flags += exposure_flags(job)
     if not job.existing_circuits:
         flags.append(MISSING_FLAG)
     flags += panel_flags(job, service_amps=job.service_amps)
@@ -164,7 +176,7 @@ def build_ev_packet(job: EvJob) -> EvPacket:
         added_loads=[LoadLine("EV charger", f"{job.charger_amps} A x {VOLTS} V, 100%", charger_va)],
         volts=VOLTS,
     )
-    circuit = size_circuit(job.charger_amps, job.run_ft, continuous=True, volts=VOLTS)
+    circuit = size_circuit(job.charger_amps, job.run_ft, continuous=True, volts=VOLTS, ambient_f=job.design_ambient_f)
     disconnect = (
         circuit.breaker
         if job.location == "detached_garage" or job.charger_amps > DISCONNECT_REQUIRED_ABOVE_AMPS
@@ -204,6 +216,8 @@ def build_ev_packet(job: EvJob) -> EvPacket:
             else f"A {job.charger_amps} A charger must be hardwired",
             circuit.breaker <= LARGEST_RECEPTACLE_BREAKER,
         ))
+    if circuit.heat:
+        checks.append(Check("Temperature correction", circuit.heat.line, circuit.heat.passed))
     checks.append(interrupting_rating_check(job))
     checks.append(panel_schedule_check(job))
     gec = gec_check(job, service_amps=job.service_amps)

@@ -35,8 +35,6 @@ UTILITY_CHECK = Note(
 )
 EMT_EGC = Note("always", "Mesa Electrical Code 250.118(A)(4): EMT counts as the equipment grounding "
                "path only with an additional equipment grounding conductor pulled in it.")
-HOT_CLIMATE = Note("always", "Mesa summers pass 115°F: apply the ambient temperature correction "
-                   "(NEC 310.15(B)(1)) to conductors in conduit exposed to the sun.")
 APPLICATION = Requirement("DIMES residential electrical permit: address/APN, scope and valuation", "application")
 LICENSE = Requirement("Contractor Licensure Verification Form and Arizona ROC electrical license", "application")
 AZ_811 = Note(
@@ -63,6 +61,14 @@ MESA = Jurisdiction(
     stamp_box_in=4.0,
     # Same document: "DO NOT submit individual plan sheets as separate PDF documents".
     single_pdf_only=True,
+    # ASHRAE 2% annual cooling dry-bulb design temperature, Phoenix Sky Harbor (WMO 722780), the
+    # reporting station nearest Mesa. 109 F lies between the 1% (110.2 F) and 2.5% (108.1 F) values
+    # published for that station, and every ambient from 106 to 113 F falls in the same NEC
+    # 310.15(B)(1) row (41-45 C, factor 0.87). CONFIRM the exact 2% figure on the station page below.
+    design_ambient_f=109,
+    design_ambient_source=(
+        "https://ashrae-meteo.info/v3.0/index.php?lat=33.44&lng=-111.99&place=%27%27&wmo=722780&ashrae_version=2017"
+    ),
     utility="SRP (Salt River Project)",
     utility_short="SRP",
     checklists={
@@ -85,8 +91,6 @@ MESA = Jurisdiction(
                 Note("disconnect", "Mesa Electrical Code 625.43: over 60 A or 150 V to ground, the EVSE "
                      "disconnect must be lockable open, 15 to 50 ft from the equipment, with a plaque on "
                      "the equipment showing where it is."),
-                Note("always", "Mesa summers pass 115°F: apply the ambient temperature correction "
-                     "(NEC 310.15(B)(1)) to conductors in conduit exposed to the sun."),
                 UTILITY_CHECK,
                 AZ_811,
             ),
@@ -137,7 +141,6 @@ MESA = Jurisdiction(
                 Note("always", "Subpanel in a detached building: add a grounding electrode there (NEC 250.32) and a "
                      "disconnect at the building (NEC 225.31)."),
                 EMT_EGC,
-                HOT_CLIMATE,
                 AZ_811,
             ),
         ),
@@ -158,7 +161,6 @@ MESA = Jurisdiction(
                 Note("always", "Air conditioners, heat pumps and motor-driven appliances need a disconnect within "
                      "sight of the unit (NEC 440.14, 422.31)."),
                 EMT_EGC,
-                HOT_CLIMATE,
                 AZ_811,
             ),
         ),

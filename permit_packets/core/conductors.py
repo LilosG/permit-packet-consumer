@@ -8,6 +8,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
+from permit_packets.core.heat import HeatCalc, heat_calc, survives
+
 Material = Literal["copper", "aluminum"]
 Electrode = Literal["rods", "concrete_encased", "water_pipe"]
 
@@ -75,12 +77,14 @@ def wire_label(size: str) -> str:
     return f"{size} kcmil" if int(size.split("/")[0]) >= 250 else f"#{size}"
 
 
-def service_conductor(service_amps: int, material: Material) -> Conductor:
-    """The smallest conductor rated for 83% of the service (NEC 310.12)."""
+def service_conductor(service_amps: int, material: Material, ambient_f: int | None = None) -> Conductor:
+    """The smallest conductor rated for 83% of the service (NEC 310.12), after temperature correction
+    when the run is outdoors."""
     required = SERVICE_CONDUCTOR_FACTOR * service_amps
     table = _TABLES[material]
     for conductor in table:
-        if conductor.ampacity_75c >= required:
+        if conductor.ampacity_75c >= required and survives(
+                conductor.size, material, ambient_f, cap_a=conductor.ampacity_75c, carries_a=required):
             return conductor
     raise ValueError(f"no listed conductor carries {required:g} A in {material}")
 
@@ -144,6 +148,7 @@ class Feeder:
     upsized: bool
     vd_volts: float
     vd_percent: float
+    heat: HeatCalc | None = None
 
 
 def _ground_properties(size: str) -> tuple[int, float]:
@@ -154,12 +159,15 @@ def _ground_properties(size: str) -> tuple[int, float]:
     return conductor.circular_mils, conductor.area_sq_in
 
 
-def feeder_conductor(breaker: int, material: Material, whole_dwelling: bool = False) -> Conductor:
+def feeder_conductor(
+    breaker: int, material: Material, whole_dwelling: bool = False, ambient_f: int | None = None,
+) -> Conductor:
     """The smallest conductor rated for the breaker (NEC 240.4), or 83% of it when the
-    feeder carries a whole dwelling (NEC 310.12)."""
+    feeder carries a whole dwelling (NEC 310.12), after temperature correction outdoors."""
     required = breaker * (SERVICE_CONDUCTOR_FACTOR if whole_dwelling else 1)
     for conductor in _TABLES[material]:
-        if conductor.ampacity_75c >= required:
+        if conductor.ampacity_75c >= required and survives(
+                conductor.size, material, ambient_f, cap_a=conductor.ampacity_75c, carries_a=required):
             return conductor
     raise ValueError(f"no listed conductor carries {required:g} A in {material}")
 
@@ -189,10 +197,11 @@ def _feeder_egc(breaker: int, material: Material, start: Conductor, chosen: Cond
 
 def size_feeder(
     breaker: int, material: Material, load_amps: float, one_way_ft: float, whole_dwelling: bool = False,
+    ambient_f: int | None = None,
 ) -> Feeder:
     """Start at the breaker's conductor, then step up until voltage drop is within 3%, up to 350 kcmil."""
     table = _TABLES[material]
-    start = feeder_conductor(breaker, material, whole_dwelling)
+    start = feeder_conductor(breaker, material, whole_dwelling, ambient_f)
     last = _order(table, LARGEST_FEEDER_SIZE)
     chosen = start
     for conductor in table[_order(table, start.size):last + 1]:
@@ -200,9 +209,12 @@ def size_feeder(
         if feeder_voltage_drop(load_amps, one_way_ft, conductor, material)[1] <= MAX_FEEDER_VOLTAGE_DROP_PERCENT:
             break
     volts, percent = feeder_voltage_drop(load_amps, one_way_ft, chosen, material)
+    required = breaker * (SERVICE_CONDUCTOR_FACTOR if whole_dwelling else 1)
     return Feeder(
         conductor=chosen, egc=_feeder_egc(breaker, material, start, chosen),
         upsized=chosen is not start, vd_volts=volts, vd_percent=percent,
+        heat=heat_calc(chosen.size, material, ambient_f, cap_a=chosen.ampacity_75c, carries_a=required)
+        if ambient_f is not None else None,
     )
 
 
@@ -256,14 +268,20 @@ class Branch:
     upsized: bool
     vd_volts: float
     vd_percent: float
+    heat: HeatCalc | None = None
 
 
 def _branch_start(
-    breaker: int, terminals_75c: bool, hvac_mca: float | None,
+    breaker: int, terminals_75c: bool, hvac_mca: float | None, ambient_f: int | None = None,
 ) -> BranchConductor:
     """The smallest wire for the circuit before voltage drop. A non-HVAC wire must carry the
     breaker and be allowed on it (NEC 240.4(D)); an HVAC wire carries the MCA (240.4(G), 440)."""
+    carries = hvac_mca if hvac_mca is not None else breaker
+    column = 75 if terminals_75c else 60
     for wire in BRANCH_COPPER:
+        if not survives(wire.size, "copper", ambient_f, cap_a=wire.ampacity(terminals_75c),
+                        cap_column=column, carries_a=carries):
+            continue
         if hvac_mca is not None:
             if wire.ampacity(terminals_75c) >= hvac_mca:
                 return wire
@@ -287,10 +305,11 @@ def _branch_egc(breaker: int, start: BranchConductor, chosen: BranchConductor) -
 
 def size_branch(
     *, breaker: int, load_amps: float, run_ft: float, terminals_75c: bool, hvac_mca: float | None = None,
+    ambient_f: int | None = None,
 ) -> Branch:
     """Start at the smallest wire the breaker (or HVAC MCA) allows, then step up until voltage
     drop at the load is within 3%, up to #1."""
-    start = _branch_start(breaker, terminals_75c, hvac_mca)
+    start = _branch_start(breaker, terminals_75c, hvac_mca, ambient_f)
     chosen = start
     for wire in BRANCH_COPPER[BRANCH_COPPER.index(start):]:
         chosen = wire
@@ -301,6 +320,11 @@ def size_branch(
     return Branch(
         wire=chosen, egc=_branch_egc(breaker, start, chosen), upsized=chosen is not start,
         vd_volts=drop, vd_percent=drop / FEEDER_VOLTS * 100,
+        heat=heat_calc(chosen.size, "copper", ambient_f, cap_a=chosen.ampacity(terminals_75c),
+                       cap_column=75 if terminals_75c else 60,
+                       carries_a=hvac_mca if hvac_mca is not None else breaker,
+                       carries_label="MCA" if hvac_mca is not None else "breaker")
+        if ambient_f is not None else None,
     )
 
 

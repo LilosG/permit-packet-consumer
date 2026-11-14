@@ -119,6 +119,6 @@ def one_line_data(job) -> list[str]:
         f"Available fault current at the service: {f'{fault:,} A' if fault else 'not entered'}",
         f"Panel and breaker interrupting rating: {job.equipment_aic_ka} kA (NEC 110.9, 110.10)",
         f"Panel location: {details['Panel location']}",
-        f"Panel bus {details['Bus rating']}, main: {details['Main']}",
+        f"Panel bus rating: {details['Bus rating']}; main: {details['Main']}",
         f"Existing grounding electrode conductor: {details['Existing GEC']} (NEC 250.66)",
     ]
