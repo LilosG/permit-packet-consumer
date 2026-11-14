@@ -30,6 +30,7 @@ DOCUMENTS = (
 def to_job(request: EvChargerRequest) -> EvJob:
     fields = request.model_dump(exclude={"home", "plan", "city", "state", "jurisdiction_key", "sample_mode"})
     fields["existing_circuits"] = existing_circuits(fields["existing_circuits"])
+    fields.pop("sheet_size", None)  # applied to the finished PDF, not the job
     if request.sample_mode:
         fields["address"] = sample_address(request)
     return EvJob(

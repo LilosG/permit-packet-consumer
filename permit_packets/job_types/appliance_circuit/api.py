@@ -45,6 +45,7 @@ def to_job(request: ApplianceCircuitRequest) -> ApplianceJob:
         "home", "plan", "city", "state", "jurisdiction_key", "sample_mode", "needs_neutral",
     })
     fields["existing_circuits"] = existing_circuits(fields["existing_circuits"])
+    fields.pop("sheet_size", None)  # applied to the finished PDF, not the job
     if request.sample_mode:
         fields["address"] = sample_address(request)
     needs_neutral = (

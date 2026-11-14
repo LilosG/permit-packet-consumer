@@ -103,3 +103,25 @@ def test_without_entered_circuits_the_schedule_comes_from_the_load_calc_and_is_f
     schedule = next(text for text in pages if "Panel Schedule" in text)
     assert "Verify on site" in schedule and "Kitchen small-appliance circuits" in schedule
     assert any("panel schedule lists the circuits" in flag for flag in body["flags"])
+
+
+def test_tabloid_puts_two_letter_pages_on_each_sheet_at_full_size(client):
+    payload = dict(
+        customer="Sample", address="123 Sample St", contractor="Sample Electric", license_number="ROC 000000",
+        home={"square_feet": 2000, "range_va": 12000, "cooling_va": 7200}, service_amps=200,
+        open_breaker_spaces=4, charger_amps=48, location="attached_garage", run_ft=30, trench_ft=0,
+        sheet_size="tabloid",
+    )
+    body = client.post("/api/jobs/ev-charger/packet", json=payload).json()
+    assert body["sheet_size"] == "tabloid"
+    sheets = PdfReader(BytesIO(base64.b64decode(body["pdf"]))).pages
+    assert len(sheets) == (len(body["pages"]) + 1) // 2
+    assert (float(sheets[0].mediabox.width), float(sheets[0].mediabox.height)) == (1224.0, 792.0)
+    zipped = client.post("/api/jobs/ev-charger/documents", json=payload).content
+    with ZipFile(BytesIO(zipped)) as archive:
+        site_plan = PdfReader(BytesIO(archive.read("03-site-plan.pdf"))).pages[0]
+        assert (float(site_plan.mediabox.width), float(site_plan.mediabox.height)) == (792.0, 1224.0)
+
+
+def test_letter_is_the_default_sheet(client):
+    assert _ev(client, "")["sheet_size"] == "letter"

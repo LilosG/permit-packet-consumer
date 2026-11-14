@@ -50,6 +50,7 @@ class Jurisdiction:
     needs_parcel_number: bool = False
     utility: str = ""
     utility_short: str = ""
+    sheet_size: str = "letter"  # "tabloid" where the city wants 11" x 17" sheets
     checklists: dict[str, Checklist] = field(default_factory=dict)
 
     @property

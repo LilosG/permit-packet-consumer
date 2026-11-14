@@ -44,6 +44,7 @@ def to_job(request: ServiceUpgradeRequest) -> ServiceJob:
         "home", "plan", "city", "state", "jurisdiction_key", "sample_mode", "planned_loads", "electrodes",
     })
     fields["existing_circuits"] = existing_circuits(fields["existing_circuits"])
+    fields.pop("sheet_size", None)  # applied to the finished PDF, not the job
     if request.sample_mode:
         fields["address"] = sample_address(request)
     plan = property_plan(request, ("meter", "panel"))

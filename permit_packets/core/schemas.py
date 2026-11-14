@@ -66,6 +66,7 @@ class JobRequestBase(BaseModel):
     jurisdiction_key: str | None = Field(default=None, max_length=40)
     plan: PropertyPlanRequest | None = None
     existing_circuits: list[ExistingCircuitRequest] = Field(default_factory=list, max_length=60)
+    sheet_size: Literal["letter", "tabloid"] | None = None  # None: the city's preference
 
 
 class LookupRequest(BaseModel):

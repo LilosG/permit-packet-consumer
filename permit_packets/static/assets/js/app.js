@@ -485,6 +485,7 @@
     };
     if (contractorLogo) job.contractor_logo_base64 = contractorLogo;
     job.existing_circuits = parseCircuits(data.get('existing_circuits') || '');
+    if (data.get('sheet_size')) job.sheet_size = data.get('sheet_size');
     if (current.uses_home_loads) {
       job.home = {};
       $$('[data-home]').forEach((input) => { job.home[input.name] = Number(input.value); });
