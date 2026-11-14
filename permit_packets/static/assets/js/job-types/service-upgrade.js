@@ -155,7 +155,8 @@
       ['existing_service_amps', 'new_service_amps', 'se_length_ft', 'bus_amps'].forEach((name) => {
         job[name] = Number(data.get(name));
       });
-      return { ...job, ...window.PermitJobTypes.electricalFields(data) };
+      /* The panel's bus is asked for once, in the service block above. */
+      return { ...job, ...window.PermitJobTypes.electricalFields(data), panel_bus_amps: job.bus_amps };
     },
     planFields(marks) {
       return { markers: { meter: marks.points.meter, panel: marks.points.panel }, route: marks.bends };

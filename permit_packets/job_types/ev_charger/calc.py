@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from permit_packets.core.checks import Check
-from permit_packets.core.panel_data import interrupting_rating_check
+from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.equipment import find_equipment
 from permit_packets.core.circuits import Circuit, conduit_size, size_circuit
@@ -57,6 +57,10 @@ class EvJob:
     existing_circuits: tuple[ExistingCircuit, ...] = ()
     available_fault_current_a: int | None = None
     equipment_aic_ka: int = 10
+    panel_location: str = ""
+    panel_bus_amps: int | None = None
+    panel_main: str | None = None
+    gec_size: str = ""
     peak_demand_kw: float | None = None
     demand_source: str = "utility_12_month"
 
@@ -140,6 +144,7 @@ def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int 
         flags.append("Confirm grounding requirements at the detached garage.")
     if not job.existing_circuits:
         flags.append(MISSING_FLAG)
+    flags += panel_flags(job, service_amps=job.service_amps)
     if job.plan is None:
         flags.append("This site plan is a schematic. Replace it with the property's plan before submitting.")
     if job.jurisdiction.needs_parcel_number and not (job.plan and job.plan.parcel_number):
@@ -200,6 +205,9 @@ def build_ev_packet(job: EvJob) -> EvPacket:
             circuit.breaker <= LARGEST_RECEPTACLE_BREAKER,
         ))
     checks.append(interrupting_rating_check(job))
+    gec = gec_check(job, service_amps=job.service_amps)
+    if gec:
+        checks.append(gec)
     return EvPacket(
         job=job,
         charger_va=charger_va,

@@ -356,8 +356,9 @@ def test_flags_come_in_the_order_the_job_needs_them(client):
     assert flags[3].startswith("Relocating the meter")
     assert flags[-1] == "Confirm the adopted code edition."
     assert flags[-2].startswith("This site plan is a schematic")
-    assert flags[-4].startswith("This home has solar")
-    assert flags[-3].startswith("The panel schedule lists")
+    assert flags[-5].startswith("This home has solar")
+    assert flags[-4].startswith("The panel schedule lists")
+    assert flags[-3].startswith("Enter the panel's location")
 
 
 def test_a_plan_removes_the_schematic_flag(client):

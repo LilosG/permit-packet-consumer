@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-from permit_packets.core.panel_data import interrupting_rating_check
+from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.checks import Check
 from permit_packets.core.conductors import (
@@ -87,6 +87,10 @@ class ServiceJob:
     existing_circuits: tuple[ExistingCircuit, ...] = ()
     available_fault_current_a: int | None = None
     equipment_aic_ka: int = 10
+    panel_location: str = ""
+    panel_bus_amps: int | None = None
+    panel_main: str | None = None
+    gec_size: str = ""
 
 
 @dataclass(frozen=True)
@@ -136,6 +140,7 @@ def _flags(job: ServiceJob, gecs: dict[str, str]) -> list[str]:
         flags.append("This home has solar. Confirm the PV breaker sits at the opposite end of the bus from the main.")
     if not job.existing_circuits:
         flags.append(MISSING_FLAG)
+    flags += panel_flags(job, service_amps=job.new_service_amps, material=job.material, electrodes=tuple(gecs))
     if job.plan is None:
         flags.append("This site plan is a schematic. Replace it with the property's plan before submitting.")
     if job.jurisdiction.needs_parcel_number and not (job.plan and job.plan.parcel_number):
@@ -184,6 +189,9 @@ def build_service_packet(job: ServiceJob) -> ServicePacket:
             solar_fits(job.bus_amps, job.new_service_amps, job.pv_breaker_amps),
         ))
     checks.append(interrupting_rating_check(job))
+    gec = gec_check(job, service_amps=job.new_service_amps, material=job.material, electrodes=tuple(gecs))
+    if gec:
+        checks.append(gec)
     return ServicePacket(
         job=job, load=load, existing_load=existing_load, conductor=conductor, gecs=gecs,
         conduit_size=conduit, checks=checks, flags=_flags(job, gecs),

@@ -63,3 +63,9 @@ class ServiceUpgradeRequest(JobRequestBase):
         if self.has_solar and self.pv_breaker_amps <= 0:
             raise ValueError("a home with solar needs the PV breaker size")
         return self
+
+    @model_validator(mode="after")
+    def panel_bus_is_entered_once(self) -> "ServiceUpgradeRequest":
+        if self.panel_bus_amps is not None and self.panel_bus_amps != self.bus_amps:
+            raise ValueError("the panel bus rating is entered twice with different values")
+        return self

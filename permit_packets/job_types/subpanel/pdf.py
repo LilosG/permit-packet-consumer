@@ -16,7 +16,7 @@ from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
-from permit_packets.core.panel_data import one_line_data
+from permit_packets.core.panel_data import one_line_data, panel_header
 from permit_packets.core.title_block import title_block_for
 from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.subpanel.calc import (
@@ -504,6 +504,7 @@ def _panel_schedule(packet: SubpanelPacket) -> list:
         entered=bool(job.existing_circuits),
         spaces_note=f"Main panel open spaces: {job.open_breaker_spaces} before, "
                     f"{max(job.open_breaker_spaces - SPACES_NEEDED, 0)} after the feeder breaker.",
+        header=panel_header(job),
     )
 
 

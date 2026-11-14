@@ -99,7 +99,8 @@
     $('#download').setAttribute('download', `${slugName}-permit-packet-demo.pdf`);
     $$('[data-job-type]').forEach((element) => { element.hidden = element.dataset.jobType !== current.key; });
     $$('[data-uses]').forEach((element) => { element.hidden = !current[`uses_${element.dataset.uses}`]; });
-    [...form.elements].forEach((field) => { field.disabled = Boolean(field.closest('[data-job-type][hidden], [data-uses][hidden]')); });
+    $$('[data-hide-for]').forEach((element) => { element.hidden = element.dataset.hideFor === current.key; });
+    [...form.elements].forEach((field) => { field.disabled = Boolean(field.closest('[data-job-type][hidden], [data-uses][hidden], [data-hide-for][hidden]')); });
     $('#details-summary').textContent = current.uses_home_loads ? 'Exact nameplate values and contractor' : 'Contractor';
     renderTools();
     tool = firstTool();

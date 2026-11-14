@@ -339,6 +339,12 @@
         <label class="field">Available fault current at the service (A)<input name="available_fault_current_a" type="number" min="1" max="200000" step="1" placeholder="e.g. 10000"><span class="hint">From the utility's fault current letter or published table</span></label>
         <label class="field">Panel and breaker interrupting rating (kA)<input name="equipment_aic_ka" type="number" min="1" max="200" step="1" value="10" required><span class="hint">From the utility's fault current letter or published table</span></label>
       </div>
+      <div class="grid" style="margin-top:14px">
+        <label class="field">Panel location<input name="panel_location" maxlength="80" placeholder="Garage, east wall" autocomplete="off"></label>
+        <label class="field" data-hide-for="service_upgrade">Panel bus rating (A)<input name="panel_bus_amps" type="number" min="60" max="800" step="1" placeholder="e.g. 200"></label>
+        <label class="field">Main<select name="panel_main"><option value="">Not entered</option><option value="main breaker">Main breaker</option><option value="main lug">Main lug</option></select></label>
+        <label class="field">Existing grounding electrode conductor<input name="gec_size" maxlength="20" placeholder="#4 Cu" autocomplete="off"><span class="hint">Checked against NEC Table 250.66 for the service conductors</span></label>
+      </div>
     </div>
     <div>
       <details>

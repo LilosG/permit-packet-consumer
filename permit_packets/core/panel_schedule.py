@@ -95,8 +95,16 @@ def _panel_tables(rows: list[ScheduleRow]):
                                    ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]))
 
 
+def _header_table(header: list[tuple[str, str]]):
+    from permit_packets.core.pdf_base import LABEL
+
+    width = current_sheet().content_w
+    return _table([[_p(label.upper(), LABEL) for label, _ in header], [_p(value, CELL_BOLD) for _, value in header]],
+                  [width / len(header)] * len(header))
+
+
 def panel_schedule_page(panels: list[tuple[str, list[ScheduleRow]]], *, entered: bool,
-                        spaces_note: str | None = None) -> list:
+                        spaces_note: str | None = None, header: list[tuple[str, str]] | None = None) -> list:
     """One table per panel. `panels` pairs a heading (e.g. "Main panel, 200 A") with its rows."""
     story = [
         _p("Panel Schedule", H1),
@@ -106,6 +114,8 @@ def panel_schedule_page(panels: list[tuple[str, list[ScheduleRow]]], *, entered:
               "actual directory before submitting."), SMALL),
         Spacer(1, 8),
     ]
+    if header:
+        story += [_header_table(header), Spacer(1, 8)]
     for heading, rows in panels:
         story += [_p(heading, H2), _panel_tables(rows), Spacer(1, 10)]
     if spaces_note:

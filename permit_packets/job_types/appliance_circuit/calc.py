@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-from permit_packets.core.panel_data import interrupting_rating_check
+from permit_packets.core.panel_data import gec_check, interrupting_rating_check, panel_flags
 from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.checks import Check
 from permit_packets.core.circuits import CONTINUOUS_FACTOR
@@ -78,6 +78,10 @@ class ApplianceJob:
     existing_circuits: tuple[ExistingCircuit, ...] = ()
     available_fault_current_a: int | None = None
     equipment_aic_ka: int = 10
+    panel_location: str = ""
+    panel_bus_amps: int | None = None
+    panel_main: str | None = None
+    gec_size: str = ""
 
     @property
     def is_hvac(self) -> bool:
@@ -194,6 +198,7 @@ def _flags(job: ApplianceJob, load: LoadCalculation, branch: Branch) -> list[str
         flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
     if not job.existing_circuits:
         flags.append(MISSING_FLAG)
+    flags += panel_flags(job, service_amps=job.service_amps)
     if job.plan is None:
         flags.append("This site plan is a schematic. Replace it with the property's plan before submitting.")
     if job.jurisdiction.needs_parcel_number and not (job.plan and job.plan.parcel_number):
@@ -263,6 +268,9 @@ def build_appliance_packet(job: ApplianceJob) -> AppliancePacket:
             f"{job.disconnect_distance_ft} ft from the spa, {MIN_DISCONNECT_DISTANCE_FT} ft minimum",
             job.disconnect_distance_ft >= MIN_DISCONNECT_DISTANCE_FT))
     checks.append(interrupting_rating_check(job))
+    gec = gec_check(job, service_amps=job.service_amps)
+    if gec:
+        checks.append(gec)
     return AppliancePacket(
         job=job, load=load, load_amps=load_amps, minimum_breaker=minimum, breaker=breaker,
         branch=branch, conduit_size=conduit_size, checks=checks, flags=_flags(job, load, branch),

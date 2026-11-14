@@ -2,7 +2,9 @@ import base64
 import binascii
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from permit_packets.core.panel_data import GEC_FORMAT, parse_gec
 
 MAX_VA = 60000
 MAX_AERIAL_BASE64 = 2_000_000
@@ -70,6 +72,18 @@ class JobRequestBase(BaseModel):
     # The utility's available fault current at the service, and the panel and breaker interrupting rating.
     available_fault_current_a: int | None = Field(default=None, ge=1, le=200_000)
     equipment_aic_ka: int = Field(default=10, ge=1, le=200)
+    # The existing panel, for the panel schedule and the one-line.
+    panel_location: str = Field(default="", max_length=80)
+    panel_bus_amps: int | None = Field(default=None, ge=60, le=800)
+    panel_main: Literal["main breaker", "main lug"] | None = None
+    gec_size: str = Field(default="", max_length=20)  # the existing grounding electrode conductor, e.g. "#4 Cu"
+
+    @field_validator("gec_size")
+    @classmethod
+    def gec_size_reads_as_a_wire_size(cls, value: str) -> str:
+        if value.strip() and parse_gec(value) is None:
+            raise ValueError(f"the grounding electrode conductor size isn't readable. {GEC_FORMAT}")
+        return value.strip()
 
 
 class LookupRequest(BaseModel):
