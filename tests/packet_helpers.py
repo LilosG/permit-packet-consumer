@@ -45,3 +45,55 @@ def packet_pages(pdf: bytes) -> list[str]:
         after, count = span
         return texts[:after] + texts[after + count:]
     return texts
+
+
+def plan_for(key: str, scale: int = 30, parcel: str = "482-110-22-00") -> dict:
+    """A to-scale plan with an aerial, lot and parcel number, marked the way each job type needs."""
+    import base64
+    from io import BytesIO
+
+    from PIL import Image
+
+    buffer = BytesIO()
+    Image.new("RGB", (600, 600), "#8a9a7b").save(buffer, format="JPEG")
+    markers = {
+        "ev_charger": {"panel": [400, 500], "charger": [700, 300]},
+        "service_upgrade": {"meter": [300, 500], "panel": [400, 500]},
+        "subpanel": {"panel": [400, 500], "subpanel": [700, 300]},
+        "appliance_circuit": {"panel": [400, 500], "appliance": [700, 300]},
+    }[key]
+    return {
+        "scale_ft_per_in": scale, "markers": markers, "route": [[550, 500]],
+        "buildings": [[[350, 350], [650, 350], [650, 650], [350, 650]]], "primary_building": 0,
+        "lot": [[250, 250], [750, 250], [750, 750], [250, 750]], "parcel_number": parcel,
+        "aerial_base64": base64.b64encode(buffer.getvalue()).decode(), "credits": ["Credit"],
+    }
+
+
+LIBRARY_PANEL = "Square D Homeline HOM3060M200PC, 200 A main breaker"
+
+
+def complete_inputs(key: str, jurisdiction) -> dict:
+    """Everything a packet can be asked: every field filled, a library charger or panel, the panel's
+    existing circuits, the utility's fault current, a plan with a parcel number. In `jurisdiction`."""
+    payload = {
+        **sample(key),
+        "jurisdiction_key": jurisdiction.key, "city": jurisdiction.name, "state": jurisdiction.state,
+        "plan": plan_for(key),
+        "existing_circuits": [{"label": "Kitchen counter", "amps": 20, "poles": 1},
+                              {"label": "Range", "amps": 50, "poles": 2},
+                              {"label": "Dryer", "amps": 30, "poles": 2}],
+        "available_fault_current_a": 8_000, "equipment_aic_ka": 10,
+        "panel_location": "Garage, east wall", "panel_main": "main breaker", "gec_size": "#4 Cu",
+    }
+    payload.pop("sheet_size", None)
+    if key == "ev_charger":
+        payload.update(charger_model="Tesla Wall Connector", charger_venting_required=False,
+                       hoa_approval="not_required", panel_bus_amps=200)
+    elif key == "service_upgrade":
+        payload.update(panel_model=LIBRARY_PANEL, panel_bus_amps=payload["bus_amps"])
+    elif key == "subpanel":
+        payload.update(subpanel_model=LIBRARY_PANEL, panel_bus_amps=200)
+    else:
+        payload.update(appliance_model="Sample Spa 4000", data_sheet_attached=True, panel_bus_amps=200)
+    return payload
