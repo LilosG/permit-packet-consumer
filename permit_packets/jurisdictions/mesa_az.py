@@ -61,6 +61,8 @@ MESA = Jurisdiction(
     # Mesa, "Submission and Formatting Requirements for Electronic Plans":
     # https://mesaaz.gov/home/showpublisheddocument/22231/637570186539370000
     stamp_box_in=4.0,
+    # Same document: "DO NOT submit individual plan sheets as separate PDF documents".
+    single_pdf_only=True,
     utility="SRP (Salt River Project)",
     utility_short="SRP",
     checklists={

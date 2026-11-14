@@ -1,4 +1,7 @@
 """Per-job-type checklists: a city's own, else the general one."""
+import os
+
+os.environ.setdefault("DEMO_PASSWORD", "test-password")
 from permit_packets.jurisdictions import (
     ORO_VALLEY,
     Checklist,
@@ -33,7 +36,7 @@ def test_jurisdiction_json_has_exactly_the_keys_the_page_reads():
     assert set(jurisdiction_json(ORO_VALLEY, "ev_charger")) == {
         "key", "name", "state", "known", "code_name", "code_note", "department", "phone", "email",
         "website", "website_label", "submit_how", "source_url", "sets_required", "needs_parcel_number",
-        "label", "checklist",
+        "label", "checklist", "single_pdf_only", "sheet_size",
     }
     body = jurisdiction_json(ORO_VALLEY, "ev_charger")
     assert body["known"] is True
@@ -171,3 +174,26 @@ def test_mesa_and_charlotte_cover_all_four_job_types():
     for jurisdiction in (MESA, CHARLOTTE):
         for job_type in ("ev_charger", "service_upgrade", "subpanel", "appliance_circuit"):
             assert jurisdiction.known_for(job_type), (jurisdiction.key, job_type)
+
+
+def test_a_single_pdf_city_refuses_the_split_file_zip():
+    import os
+
+    from fastapi.testclient import TestClient
+
+    from app import app
+    from permit_packets.jurisdictions import MESA
+    from tests.packet_helpers import sample
+
+    os.environ["DEMO_PASSWORD"] = "test-password"
+    client = TestClient(app)
+    assert client.post("/api/signin", json={"password": "test-password"}).status_code == 200
+    assert MESA.single_pdf_only is True and ORO_VALLEY.single_pdf_only is False
+    assert jurisdiction_json(MESA, "ev_charger")["single_pdf_only"] is True
+    mesa = {**sample("ev_charger"), "jurisdiction_key": "mesa-az", "city": "Mesa", "state": "AZ"}
+    refused = client.post("/api/jobs/ev-charger/documents", json=mesa)
+    assert refused.status_code == 409
+    assert "one combined PDF" in refused.json()["detail"]
+    packet = client.post("/api/jobs/ev-charger/packet", json=mesa)
+    assert packet.status_code == 200 and packet.json()["jurisdiction"]["single_pdf_only"] is True
+    assert client.post("/api/jobs/ev-charger/documents", json=sample("ev_charger")).status_code == 200

@@ -267,6 +267,12 @@ def build_packet(slug: str, payload: dict[str, Any] = Body(...)) -> dict:
 
 @app.post("/api/jobs/{slug}/documents", dependencies=[Depends(require_session)])
 def packet_documents(slug: str, payload: dict[str, Any] = Body(...)) -> Response:
+    city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
+    if city.single_pdf_only:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"{city.name} takes one combined PDF and does not accept plan sheets as separate files",
+        )
     job_type, result = _build(slug, payload)
     stems = tuple(document.file_stem for document in job_type.documents)
     return Response(

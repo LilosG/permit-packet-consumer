@@ -53,6 +53,8 @@ class Jurisdiction:
     sheet_size: str = "letter"  # "tabloid" where the city wants 11" x 17" sheets
     # Side, in inches, of the empty square the city reserves for its stamp on the cover sheet.
     stamp_box_in: float | None = None
+    # True where the city takes one combined PDF and refuses plan sheets uploaded as separate files.
+    single_pdf_only: bool = False
     checklists: dict[str, Checklist] = field(default_factory=dict)
 
     @property
@@ -115,6 +117,8 @@ def jurisdiction_json(jurisdiction: Jurisdiction, job_type: str) -> dict:
         "source_url": checklist.source_url,
         "sets_required": jurisdiction.sets_required,
         "needs_parcel_number": jurisdiction.needs_parcel_number,
+        "single_pdf_only": jurisdiction.single_pdf_only,
+        "sheet_size": jurisdiction.sheet_size,
         "label": jurisdiction.label,
         "checklist": [requirement.item for requirement in checklist.items],
     }

@@ -558,6 +558,7 @@
     $('#how-text').textContent = `${place.submit_how}${sets}`;
     const contact = [place.department, place.phone].filter(Boolean).join(', ');
     $('#how-contact').textContent = contact;
+    $('#documents').hidden = Boolean(place.single_pdf_only);
     const portal = $('#portal');
     portal.hidden = !place.website;
     if (place.website) { portal.href = place.website; portal.textContent = `Open ${place.website_label}`; }
