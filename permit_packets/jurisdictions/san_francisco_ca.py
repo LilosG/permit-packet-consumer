@@ -11,10 +11,17 @@ from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirem
 
 EV_CHARGER = "ev_charger"
 
+# DBI Information Sheet E-02 (December 21, 2020), hosted by SFMTA. It still cites the 2019 codes.
 E02_URL = "https://sfmta.com/media/36888/download"
+E01_URL = "https://SF.gov/sites/default/files/2022-08/IS%20E-01.pdf"
+WORKSHEET_URL = "https://media.api.sf.gov/documents/DBI_Worksheet_for_Electrical_Permits.pdf"
+DBI_URL = "https://www.sf.gov/departments--department-building-inspection"
+PDF_RULES_URL = "https://www.sf.gov/information--how-create-pdfs-your-plans-or-addenda"
+PLANS_URL = "https://www.sf.gov/reports--october-2023--prepare-your-plans-your-site-permit-application"
 CODE_NOTE = (
     "San Francisco enforces the 2025 San Francisco Electrical Code: the 2025 California "
-    "Electrical Code (2023 NEC base) with local amendments, operative January 1, 2026."
+    "Electrical Code (2023 NEC base) with local amendments, operative January 1, 2026. DBI: filings on or "
+    "after January 1, 2026 use the 2025 California Codes and the 2025 San Francisco amendments."
 )
 
 SAN_FRANCISCO = Jurisdiction(
@@ -29,31 +36,54 @@ SAN_FRANCISCO = Jurisdiction(
         "permit for an EV charger instantly. Have the work inspected before covering wiring."
     ),
     needs_parcel_number=True,
+    # DBI, "How to create PDFs of your plans or addenda" (PDF_RULES_URL) and "Prepare your plans" (PLANS_URL):
+    # drawings go in as a single PDF; every sheet carries the preparer's scanned signature and PDF stamp;
+    # each title block reserves a stamp area at least 2 in wide by 2 in tall in the same place on every
+    # sheet; the title sheet carries a blank 8.5 x 11 in area for agency stamps. The square field below
+    # holds the 2 in title-block stamp area; the larger blank area on a full-size title sheet is not
+    # drawn. DBI states no minimum sheet size on those pages (it accepts sheets larger than 22 x 34 in,
+    # 11 x 17 in for signs only, and 8.5 x 11 in for supplemental forms), so sheet_size stays at the default.
+    stamp_box_in=2.0,
+    single_pdf_only=True,
+    code_note=CODE_NOTE,
+    fallback_notes=(
+        Note("always", "DBI Information Sheet E-01 (2019) routes electrical systems alterations, such as electric "
+             "service upgrades, to DBI's electrical plan review with Title 24 compliance certificates on the plans, "
+             "and DBI's electrical permit worksheet asks for the service, feeder and panelboard numbers and sizes. "
+             "Confirm with DBI whether the job needs plan review.", E01_URL),
+        Note("always", "DBI's electrical permit worksheet requires a valid California contractor license and a "
+             "valid San Francisco business tax registration.", WORKSHEET_URL),
+    ),
     utility="Pacific Gas and Electric (PG&E)",
     utility_short="PG&E",
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Application: address, block/lot, owner, contractor, license number and phone", "application"),
-                Requirement("Existing load, electrical service and equipment documented", "load"),
-                Requirement("Load calculation (CEC 220), unless the registered contractor verifies one charger fits the panel", "load"),
-                Requirement("One-line diagram: charger, panel, raceway, wire types and sizes, main breaker and service voltage", "one_line"),
-                Requirement("Site plan, approximately to scale: panel, meter and charger", "site_plan"),
-                Requirement("Charger manufacturer specifications and installation guidelines", "equipment"),
-                Requirement("NRTL listing mark on all equipment (UL 2594 / UL 2202)", "equipment"),
-                Requirement("Mechanical ventilation, only if the manufacturer requires it", "ventilation"),
+                Requirement("Application: address, block/lot, owner, contractor, license number and phone", "application", E02_URL),
+                Requirement("Existing load, electrical service and equipment documented", "load", E02_URL),
+                Requirement("Load calculation (CEC 220), unless the registered contractor verifies one charger fits the panel", "load", E02_URL),
+                Requirement("One-line diagram: charger, panel, raceway, wire types and sizes, main breaker and service voltage", "one_line", E02_URL),
+                Requirement("Site plan, approximately to scale: panel, meter and charger", "site_plan", E02_URL),
+                Requirement("Charger manufacturer specifications and installation guidelines", "equipment", E02_URL),
+                Requirement("NRTL listing mark on all equipment (UL 2594 / UL 2202)", "equipment", E02_URL),
+                Requirement("Mechanical ventilation, only if the manufacturer requires it", "ventilation", E02_URL),
+                Requirement("Panel schedule (CEC 220)", "panel_schedule", E02_URL),
             ),
             source_url=E02_URL,
             source_label="From DBI Information Sheet E-02",
             code_note=CODE_NOTE,
             notes=(
-                Note("always", "Mount the connector holster 18 to 48 in above the floor indoors, or 24 to 48 in "
-                     "above grade outdoors (CEC 625.50)."),
-                Note("always", "Equipment must be permanently connected and fastened in place per the "
-                     "manufacturer's instructions (DBI E-02)."),
-                Note("disconnect", "DBI E-02: over 60 A or 150 V to ground, the disconnect must be readily "
-                     "accessible, within sight of and within 50 ft of the charger, and lockable open (CEC 625.43)."),
-                Note("trench", "Trenching per CEC 300.5: call USA North 811 at least 2 working days before digging."),
+                Note("always", "DBI E-02: store the coupling means of the charger not less than 18 in and not more "
+                     "than 48 in above the finished floor (CEC 625.50).", E02_URL),
+                Note("always", "DBI E-02: the charger is permanently connected and fastened in place per the "
+                     "manufacturer's instructions.", E02_URL),
+                Note("always", "DBI E-02: the electrical plan and calculations are signed and stamped by a California "
+                     "registered electrical engineer or by the licensed electrical contractor responsible for the "
+                     "design and installation.", E02_URL),
+                Note("disconnect", "DBI E-02: for a charger rated over 60 A or over 150 V to ground, the disconnecting "
+                     "means is readily accessible, in line of sight and within 50 ft of the charger.", E02_URL),
+                Note("trench", "DBI E-02: when trenching is required, all work complies with CEC 225 and CEC 300.",
+                     E02_URL),
             ),
         ),
     },
