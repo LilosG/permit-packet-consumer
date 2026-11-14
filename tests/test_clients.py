@@ -13,7 +13,7 @@ from tests.packet_helpers import complete_inputs, page_texts
 
 PASSWORDS = {key: f"pw-{key}-0123456789" for key in CLIENTS if key != "demo"}
 CITIES = {"erke": "nashville-tn", "elc": "san-francisco-ca", "thee-electrician": "san-francisco-ca", "jbee": "mesa-az"}
-LOGOS = {"erke": "", "elc": "elc.png", "thee-electrician": "thee.png", "jbee": "jbee.png"}
+LOGOS = {"erke": "erke.png", "elc": "elc.png", "thee-electrician": "thee.png", "jbee": "jbee.png"}
 BY_KEY = {j.key: j for j in KNOWN.values()}
 OTHER = {"erke": "mesa-az", "elc": "nashville-tn", "thee-electrician": "mesa-az", "jbee": "san-francisco-ca"}
 
@@ -83,8 +83,6 @@ def test_client_packet_has_no_demo_marks_and_names_the_company(key):
     text = text_of(response.json()["pdf"])
     assert "DEMO" not in text
     assert "NOT FOR SUBMISSION" not in text
-    if not LOGOS[key]:
-        assert CLIENTS[key].company_name in text
 
 
 def test_demo_login_keeps_its_demo_marks_and_every_city():
@@ -118,3 +116,48 @@ def test_overrides_beat_the_city_default():
 def test_bad_client_passwords_json_is_a_503(monkeypatch):
     monkeypatch.setenv("CLIENT_PASSWORDS", "not json")
     assert TestClient(app).post("/api/signin", json={"password": "x"}).status_code == 503
+
+
+def _title(pdf_b64: str) -> str:
+    import base64
+    import pypdfium2
+    document = pypdfium2.PdfDocument(base64.b64decode(pdf_b64))
+    try:
+        return document.get_metadata_dict().get("Title", "")
+    finally:
+        document.close()
+
+
+@pytest.mark.parametrize("job_type,slug", [
+    ("ev_charger", "ev-charger"), ("service_upgrade", "service-upgrade"),
+    ("subpanel", "subpanel"), ("appliance_circuit", "appliance-circuit"),
+])
+def test_demo_in_titles_and_zip_names_is_for_the_demo_login_only(job_type, slug):
+    client_session, demo_session = sign_in(PASSWORDS["erke"]), sign_in("demo-password")
+    mine = client_session.post(f"/api/jobs/{slug}/packet", json=payload("nashville-tn", job_type)).json()
+    demo = demo_session.post(f"/api/jobs/{slug}/packet", json=payload("nashville-tn", job_type)).json()
+    assert "demo" not in _title(mine["pdf"]).lower()
+    assert _title(demo["pdf"]).endswith("(demo)")
+    mine_zip = client_session.post(f"/api/jobs/{slug}/documents", json=payload("nashville-tn", job_type))
+    demo_zip = demo_session.post(f"/api/jobs/{slug}/documents", json=payload("nashville-tn", job_type))
+    assert "demo" not in mine_zip.headers["content-disposition"]
+    assert mine_zip.headers["content-disposition"].endswith('-documents.zip"')
+    assert "-demo.zip" in demo_zip.headers["content-disposition"]
+
+
+def _sheet_size(response) -> str:
+    return response.json()["sheet_size"]
+
+
+def test_request_sheet_size_overrides_client_and_city_for_client_logins(monkeypatch):
+    session = sign_in(PASSWORDS["elc"])  # San Francisco's default is its own sheet size
+    city_default = BY_KEY["san-francisco-ca"].sheet_size
+    other = "letter" if city_default == "tabloid" else "tabloid"
+    base = payload("san-francisco-ca")
+    base.pop("sheet_size", None)
+    assert _sheet_size(session.post("/api/jobs/ev-charger/packet", json=base)) == city_default
+    assert _sheet_size(session.post("/api/jobs/ev-charger/packet", json={**base, "sheet_size": other})) == other
+    # A client override beats the city default, and the request still beats the client override.
+    monkeypatch.setitem(CLIENTS, "elc", Client(**{**CLIENTS["elc"].__dict__, "sheet_size": other}))
+    assert _sheet_size(session.post("/api/jobs/ev-charger/packet", json=base)) == other
+    assert _sheet_size(session.post("/api/jobs/ev-charger/packet", json={**base, "sheet_size": city_default})) == city_default

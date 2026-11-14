@@ -167,6 +167,7 @@ def client_info(client: Client = Depends(require_session)) -> dict:
         "website": client.website,
         "logo": f"/assets/logos/{client.logo}" if client.logo else "",
         "demo": client.is_demo,
+        "sheet_size": client.sheet_size or "",
         "cities": [
             {"key": c.key, "name": c.name, "state": c.state, "label": c.label, "sample_address": _sample_address(c.key)}
             for c in cities
@@ -306,9 +307,8 @@ def _build(slug: str, payload: dict[str, Any], client: Client) -> tuple[JobType,
     logo = _contractor_logo(payload)
     if not client.is_demo:  # a client's packets carry their own logo and the city's rules, not a link's
         logo = client.logo_bytes()
-        payload.pop("sheet_size", None)
-        if client.sheet_size:
-            payload["sheet_size"] = client.sheet_size
+        if client.sheet_size and not payload.get("sheet_size"):
+            payload["sheet_size"] = client.sheet_size  # the request's own choice still wins
     try:
         request = job_type.request_model.model_validate(payload)
     except ValidationError as error:
@@ -346,12 +346,13 @@ def packet_documents(slug: str, payload: dict[str, Any] = Body(...), client: Cli
             f"{city.name} takes one combined PDF and does not accept plan sheets as separate files",
         )
     job_type, result = _build(slug, payload, client)
+    zip_name = job_type.zip_name if client.is_demo else job_type.zip_name.replace("-demo.zip", ".zip")
     stems = tuple(document.file_stem for document in job_type.documents)
     return Response(
         content=packet_documents_zip(result.pdf, stems),
         media_type="application/zip",
         headers={
-            "Content-Disposition": f'attachment; filename="{job_type.zip_name}"',
+            "Content-Disposition": f'attachment; filename="{zip_name}"',
             "Cache-Control": "private, no-store",
         },
     )

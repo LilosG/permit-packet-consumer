@@ -50,7 +50,7 @@ def _client(key: str, company: str, website: str, logo: str, city: str) -> Clien
 CLIENTS: dict[str, Client] = {
     # The demo sees every city, plus the general fallback for any other address.
     "demo": Client("demo", "", ALL_JOB_TYPES, jurisdiction_keys=tuple(j.key for j in KNOWN.values()) + ("general",)),
-    "erke": _client("erke", "Erke Electric", "https://er-ke.com", "", "nashville-tn"),
+    "erke": _client("erke", "Erke Electric", "https://er-ke.com", "erke.png", "nashville-tn"),
     "elc": _client("elc", "ELC Contractor LLC", "https://electricelc.com", "elc.png", "san-francisco-ca"),
     "thee-electrician": _client(
         "thee-electrician", "Thee Electrician", "https://theeelectrician.co", "thee.png", "san-francisco-ca"),

@@ -45,6 +45,11 @@ CONTRACTOR_LOGO: ContextVar[bytes | None] = ContextVar("contractor_logo", defaul
 # A client login prints no demo marks and shows the company name where there is no logo.
 DEMO_MARKS: ContextVar[bool] = ContextVar("demo_marks", default=True)
 COMPANY_NAME: ContextVar[str] = ContextVar("company_name", default="")
+
+
+def demo_title(title: str) -> str:
+    """A packet's PDF title: marked "(demo)" only for the demo login."""
+    return f"{title} (demo)" if DEMO_MARKS.get() else title
 HEADER_LOGO_H = 0.3 * inch
 COVER_LOGO_W = 1.9 * inch
 COVER_LOGO_H = 1.0 * inch

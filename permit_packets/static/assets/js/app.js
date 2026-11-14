@@ -105,7 +105,7 @@
   /* Shows the form sections that belong to this type, and keeps hidden fields out of the payload. */
   function applyType() {
     const slugName = current.short_label.toLowerCase();
-    $('#download').setAttribute('download', `${slugName}-permit-packet-demo.pdf`);
+    $('#download').setAttribute('download', `${slugName}-permit-packet${client.demo ? '-demo' : ''}.pdf`);
     $$('[data-job-type]').forEach((element) => { element.hidden = element.dataset.jobType !== current.key; });
     $$('[data-uses]').forEach((element) => { element.hidden = !current[`uses_${element.dataset.uses}`]; });
     $$('[data-hide-for]').forEach((element) => { element.hidden = element.dataset.hideFor === current.key; });
@@ -623,7 +623,7 @@
       const named = /filename="([^"]+)"/.exec(response.headers.get('Content-Disposition') || '');
       const link = document.createElement('a');
       link.href = URL.createObjectURL(await response.blob());
-      link.download = named ? named[1] : `${lastType.short_label.toLowerCase()}-permit-documents-demo.zip`;
+      link.download = named ? named[1] : `${lastType.short_label.toLowerCase()}-permit-documents${client.demo ? '-demo' : ''}.zip`;
       link.click();
       URL.revokeObjectURL(link.href);
     } catch (error) {
@@ -652,6 +652,7 @@
         const first = client.cities[0];
         if (!client.demo && first) {
           SAMPLE = { address: first.sample_address, jurisdiction_key: first.key, label: first.label };
+          if (client.sheet_size) $('#sheet-size').options[0].textContent = `Default (${client.sheet_size === 'tabloid' ? '11 x 17' : 'Letter'})`;
           if (client.company_name) form.elements.contractor.value = client.company_name;
           $('#bar-city').textContent = client.cities.map((city) => city.label).join(' · ');
           $('#address').placeholder = `Job address in ${client.cities.map((city) => city.label).join(' or ')}`;
