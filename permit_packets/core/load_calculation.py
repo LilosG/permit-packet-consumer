@@ -110,3 +110,36 @@ def calculate_load(
         computed_amps=total / volts,
         service_amps=service_amps,
     )
+
+
+DEMAND_SOURCES = {
+    "utility_12_month": "Utility maximum demand, 12 months",
+    "recorded_30_day": "Recorded maximum demand, 30 days (15-minute average)",
+}
+
+
+@dataclass(frozen=True)
+class MeasuredDemand:
+    """NEC 220.87: the existing load from measured maximum demand, at 125%, plus the new load."""
+    peak_kw: float
+    source: str
+    new_label: str
+    new_va: float
+    service_amps: int
+    volts: int = 240
+
+    @property
+    def existing_va(self) -> float:
+        return self.peak_kw * 1000 * 1.25
+
+    @property
+    def total_va(self) -> float:
+        return self.existing_va + self.new_va
+
+    @property
+    def amps(self) -> float:
+        return self.total_va / self.volts
+
+    @property
+    def fits(self) -> bool:
+        return self.amps <= self.service_amps

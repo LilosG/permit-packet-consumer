@@ -413,6 +413,7 @@ def _load(packet: EvPacket) -> list:
         method=f"Optional dwelling method, {packet.job.jurisdiction.code_name} 220.82, with the EV charger "
                "added at 100% of nameplate. Confirm the method the city accepts.",
         service_rows=[("Existing service", f"{load.service_amps} A"), ("Spare capacity", result)],
+        measured=packet.measured,
     )
 
 

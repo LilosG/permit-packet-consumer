@@ -41,6 +41,11 @@
       ['charger_amps', 'run_ft', 'trench_ft', 'service_amps', 'open_breaker_spaces'].forEach((name) => {
         job[name] = Number(data.get(name));
       });
+      const peak = Number(data.get('peak_demand_kw'));
+      if (peak > 0) {
+        job.peak_demand_kw = peak;
+        job.demand_source = data.get('demand_source');
+      }
       return job;
     },
     planFields(marks) {

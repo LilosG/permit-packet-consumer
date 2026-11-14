@@ -9,6 +9,7 @@ from permit_packets.core.equipment import find_equipment
 from permit_packets.core.circuits import Circuit, conduit_size, size_circuit
 from permit_packets.jurisdictions import ORO_VALLEY, Jurisdiction
 from permit_packets.core.load_calculation import (
+    MeasuredDemand,
     HomeLoads,
     LoadCalculation,
     LoadLine,
@@ -52,6 +53,8 @@ class EvJob:
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
     existing_circuits: tuple[ExistingCircuit, ...] = ()
+    peak_demand_kw: float | None = None
+    demand_source: str = "utility_12_month"
 
 
 @dataclass(frozen=True)
@@ -73,6 +76,7 @@ class EvPacket:
     interior_ft: int
     checks: list[Check]
     flags: list[str] = field(default_factory=list)
+    measured: MeasuredDemand | None = None
 
     @property
     def ready(self) -> bool:
@@ -85,9 +89,19 @@ def largest_charger_that_fits(load: LoadCalculation, charger_va: int) -> int | N
     return next((amps for amps in CHARGER_SIZES if amps <= room_amps), None)
 
 
-def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int | None, charger_va: int) -> list[str]:
+def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int | None, charger_va: int,
+           measured: MeasuredDemand | None = None) -> list[str]:
     flags = ["Check the existing loads against the home. They drive the service result."]
-    if load.computed_amps > job.service_amps:
+    if measured:
+        flags.append("Attach the demand report (12 months from the utility, or the 30-day recording) "
+                     "behind the load calculation (220.87).")
+        if load.computed_amps > job.service_amps and measured.fits:
+            flags.append(f"The 220.82 calculation shows {load.computed_amps:.1f} A; this packet relies on "
+                         "measured demand (220.87). Confirm the city accepts it.")
+        if job.has_solar:
+            flags.append("This home has solar. The 2023 NEC limits using demand data where solar or peak "
+                         "shaving masks the load (220.87). Confirm with the city.")
+    if load.computed_amps > job.service_amps and not (measured and measured.fits):
         fits = largest_charger_that_fits(load, charger_va)
         option = f"A {fits} A charger fits this service" if fits else "No common charger size fits this service"
         flags.append(
@@ -154,10 +168,20 @@ def build_ev_packet(job: EvJob) -> EvPacket:
         if job.location == "detached_garage" or job.charger_amps > DISCONNECT_REQUIRED_ABOVE_AMPS
         else None
     )
+    measured = (
+        MeasuredDemand(job.peak_demand_kw, job.demand_source, f"EV charger at 125% ({job.charger_amps} A)",
+                       charger_va * 1.25, job.service_amps, VOLTS)
+        if job.peak_demand_kw else None
+    )
+    capacity = (
+        Check("Service capacity", f"{measured.amps:.1f} A by measured demand (220.87) on a {job.service_amps} A service",
+              measured.fits)
+        if measured else
+        Check("Service capacity", f"{load.computed_amps:.1f} A computed on a {job.service_amps} A service",
+              load.computed_amps <= job.service_amps)
+    )
     checks = [
-        Check("Service capacity",
-              f"{load.computed_amps:.1f} A computed on a {job.service_amps} A service",
-              load.computed_amps <= job.service_amps),
+        capacity,
         Check("Panel spaces", f"{job.open_breaker_spaces} open, 2 needed",
               job.open_breaker_spaces >= 2),
         Check("Circuit",
@@ -188,5 +212,6 @@ def build_ev_packet(job: EvJob) -> EvPacket:
         interior_conduit=conduit_size(circuit, "EMT"),
         interior_ft=max(job.run_ft - job.trench_ft, 0),
         checks=checks,
-        flags=_flags(job, load, circuit, disconnect, charger_va),
+        flags=_flags(job, load, circuit, disconnect, charger_va, measured),
+        measured=measured,
     )

@@ -17,6 +17,8 @@ class EvChargerRequest(JobRequestBase):
     location: Literal["attached_garage", "detached_garage", "exterior_wall"]
     run_ft: int = Field(gt=0, le=500)
     trench_ft: int = Field(default=0, ge=0, le=500)
+    peak_demand_kw: float | None = Field(default=None, gt=0, le=200)
+    demand_source: Literal["utility_12_month", "recorded_30_day"] = "utility_12_month"
 
     @model_validator(mode="after")
     def plan_marks_the_panel_and_charger(self) -> "EvChargerRequest":

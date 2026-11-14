@@ -125,3 +125,24 @@ def test_tabloid_puts_two_letter_pages_on_each_sheet_at_full_size(client):
 
 def test_letter_is_the_default_sheet(client):
     assert _ev(client, "")["sheet_size"] == "letter"
+
+
+def test_measured_demand_220_87_can_carry_a_home_the_220_82_calculation_rejects(client):
+    payload = dict(
+        customer="Sample", address="123 Sample St", contractor="Sample Electric", license_number="ROC 000000",
+        home={"square_feet": 3500, "range_va": 12000, "dryer_va": 5000, "water_heater_va": 4500, "cooling_va": 10000,
+              "hot_tub_or_pool_va": 6000},
+        service_amps=100, open_breaker_spaces=4, charger_amps=32, location="attached_garage", run_ft=30, trench_ft=0,
+    )
+    without = client.post("/api/jobs/ev-charger/packet", json=payload).json()
+    assert without["ready"] is False
+    body = client.post("/api/jobs/ev-charger/packet", json={**payload, "peak_demand_kw": 9.5}).json()
+    capacity = next(check for check in body["checks"] if check["name"] == "Service capacity")
+    # 9.5 kW x 1.25 = 11,875 VA, plus 32 A x 240 V x 1.25 = 9,600 VA: 21,475 VA / 240 V = 89.5 A
+    assert capacity["result"] == "89.5 A by measured demand (220.87) on a 100 A service"
+    assert capacity["passed"] is True
+    assert len(body["pages"]) == len(without["pages"])
+    assert any("relies on measured demand" in flag for flag in body["flags"])
+    pages = [page.extract_text() for page in PdfReader(BytesIO(base64.b64decode(body["pdf"]))).pages]
+    load_page = next(text for text in pages if "Load Calculation" in text)
+    assert "measured demand (NEC 220.87)" in load_page and "89.5 A" in load_page

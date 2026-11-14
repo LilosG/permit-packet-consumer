@@ -321,6 +321,7 @@
       <div class="grid three">
         <label class="field">Square feet<input data-home name="square_feet" type="number" min="1" max="30000" value="3100" required></label>
         <div class="contents" data-job-type="ev_charger"><label class="field">Open breaker spaces<input name="open_breaker_spaces" type="number" min="0" max="60" value="2" required></label></div>
+        <div class="contents" data-job-type="ev_charger"><label class="field">Peak demand, kW (optional, 220.87)<input name="peak_demand_kw" type="number" min="0" max="200" step="0.01" placeholder="From the utility"></label><label class="field">Demand data<select name="demand_source"><option value="utility_12_month">Utility, 12 months</option><option value="recorded_30_day">Recorded, 30 days</option></select></label></div>
       </div>
       <fieldset style="margin-top:14px"><legend>What's in the home</legend><div class="choices" id="appliances">
         <label class="choice"><input type="checkbox" data-load="range_va" data-va="12000" checked><span>Electric range</span></label>

@@ -270,7 +270,7 @@ def application_page(
     ]
 
 
-def load_page(load, *, method: str, service_rows: list[tuple[str, str]]) -> list:
+def load_page(load, *, method: str, service_rows: list[tuple[str, str]], measured=None) -> list:
     """The load calculation table. `service_rows` are the lines under the computed load."""
     right = lambda text, style: Paragraph(
         f"{text:,.0f}", ParagraphStyle(f"{style.name}-right", parent=style, alignment=2))
@@ -304,4 +304,26 @@ def load_page(load, *, method: str, service_rows: list[tuple[str, str]]) -> list
             head=False,
             extra=[("BACKGROUND", (0, 0), (-1, 0), SOFT)],
         ),
+    ] + (_measured_demand(measured) if measured else [])
+
+
+def _measured_demand(measured) -> list:
+    """The NEC 220.87 check, under the 220.82 calculation, when demand data is supplied."""
+    from permit_packets.core.load_calculation import DEMAND_SOURCES
+    rows = [
+        [_p("Maximum demand"), _p(f"{measured.peak_kw:g} kW, {DEMAND_SOURCES[measured.source].lower()}")],
+        [_p("Existing load at 125%"), _p(f"{measured.peak_kw:g} kW x 1,000 x 125% = {measured.existing_va:,.0f} VA")],
+        [_p(measured.new_label), _p(f"{measured.new_va:,.0f} VA")],
+        [_p("Total", CELL_BOLD), _p(f"{measured.total_va:,.0f} VA / {measured.volts} V = {measured.amps:.1f} A on a "
+                                     f"{measured.service_amps} A service", CELL_BOLD)],
+        [_p("Result"), _p(f"{measured.service_amps - measured.amps:.1f} A to spare" if measured.fits
+                          else f"Over by {measured.amps - measured.service_amps:.1f} A")],
+    ]
+    return [
+        Spacer(1, 14),
+        _p("Existing load by measured demand (NEC 220.87)", H2),
+        _p("Maximum demand at 125% plus the new load must not exceed the service rating. "
+           "Attach the demand report behind this page.", SMALL),
+        Spacer(1, 6),
+        _table(rows, [2.5 * inch, CONTENT - 2.5 * inch], head=False),
     ]
