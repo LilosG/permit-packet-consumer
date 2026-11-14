@@ -17,7 +17,7 @@ from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
-from permit_packets.core.panel_data import one_line_data, panel_header
+from permit_packets.core.panel_data import checklist_row as panel_row, one_line_data, panel_header
 from permit_packets.core.title_block import title_block_for
 from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.ev_charger.calc import BURIAL_DEPTH_IN, LOCATION_LABELS, EvPacket
@@ -281,6 +281,9 @@ def _checklist_row(packet: EvPacket, section: str) -> tuple[str, str]:
         if job.hoa_approval == "not_required":
             return "No HOA or subdivision approval needed", "Ready"
         return "Homeowner to confirm before work starts", "Open"
+    shown = panel_row(job, section, SECTION_PAGES['one_line'], burial=(SECTION_PAGES['one_line'], f"{BURIAL_DEPTH_IN} in minimum cover"))
+    if shown:
+        return shown
     if section not in SECTION_PAGES:
         # A requirement this packet has no page for is never shown as done.
         return "Not in this packet: add it by hand", "Open"

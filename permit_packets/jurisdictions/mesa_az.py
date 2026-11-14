@@ -43,14 +43,22 @@ def _checklist_note(text: str, when: str = "always") -> Note:
 # a residential service, feeder or branch circuit are carried over.
 CL_CLEARANCES = _checklist_note("show working clearances around all electrical equipment (NEC 110.26) and the "
                                 "dedicated equipment space with dimensions (NEC 110.26(E)).")
-CL_FAULT_CURRENT = _checklist_note("identify the fault current and verify equipment AIC ratings (NEC 110.9, 110.10).")
 CL_LABEL = _checklist_note("label every piece of equipment on the one-line as new, existing or relocated (NEC 110.22(A)).")
-CL_EGC_SIZE = _checklist_note("identify the size of the equipment grounding conductors (NEC 250.122).")
-CL_PANEL = _checklist_note("identify each panel as new, existing or relocated, with its location, voltage, phase, "
-                           "bus rating and main breaker or main lugs (NEC 110.22(A), 408.4(A), 408.36, 240.4).")
-CL_BURIAL = _checklist_note("identify burial depths (the checklist cites NEC Table 300.7(A)).", "trench")
 CL_AFCI = _checklist_note("provide arc-fault circuit interrupter protection where required (NEC 210.12).")
 CL_SPD = _checklist_note("provide surge protection (NEC 215.18, 230.67).")
+
+# The same checklist's items that the packet draws, so they are Requirements it shows as Ready.
+# The checklist's panel item also asks for voltage, phase and new/existing/relocated, which the packet does
+# not show as such, so the panel Requirement covers only location, bus rating and main.
+FAULT_CURRENT = Requirement("Fault current identified and equipment AIC ratings verified (NEC 110.9, 110.10)",
+                            "fault_current", CHECKLIST_URL)
+EGC_SIZE = Requirement("Equipment grounding conductor size identified (NEC 250.122)", "egc_size", CHECKLIST_URL)
+PANEL_DETAILS = Requirement("Panel location, bus rating and main breaker or main lugs identified "
+                            "(NEC 408.4(A), 408.36, 240.4)", "panel_details", CHECKLIST_URL)
+BURIAL = Requirement("Burial depth identified for underground runs (NEC 300.5)", "burial", CHECKLIST_URL)
+GEC = Requirement("Grounding electrode conductor sized (NEC 250.50, 250.66)", "gec", CHECKLIST_URL)
+SURGE = Requirement("Surge protective device, Type 1 or Type 2, shown on the riser (NEC 230.67)", "surge",
+                    CHECKLIST_URL)
 
 UTILITY_CHECK = Note(
     "always",
@@ -108,6 +116,7 @@ MESA = Jurisdiction(
                             "(Mesa 250.118(A)(4))", "one_line"),
                 Requirement("Charger data sheet and NRTL listing (UL 2594 / UL 2202)", "equipment"),
                 Requirement("Site plan showing the panel, charger and route", "site_plan"),
+                FAULT_CURRENT, EGC_SIZE, PANEL_DETAILS, BURIAL,
             ),
             source_url=NEC_AMENDMENTS_URL,
             source_label=SOURCE_LABEL,
@@ -120,7 +129,7 @@ MESA = Jurisdiction(
                      "the equipment showing where it is."),
                 UTILITY_CHECK,
                 AZ_811,
-                CL_CLEARANCES, CL_FAULT_CURRENT, CL_LABEL, CL_EGC_SIZE, CL_PANEL, CL_BURIAL, CL_AFCI,
+                CL_CLEARANCES, CL_LABEL, CL_AFCI,
             ),
         ),
         SERVICE_UPGRADE: Checklist(
@@ -132,6 +141,7 @@ MESA = Jurisdiction(
                 Requirement("Panel and meter socket listing; meter socket per SRP Electric Service Specifications", "equipment"),
                 Requirement("Site plan showing the meter and main panel", "site_plan"),
                 Requirement("SRP service request; SRP reconnects after Mesa sends its clearance", "utility"),
+                FAULT_CURRENT, PANEL_DETAILS, GEC, SURGE,
             ),
             source_url=NEC_AMENDMENTS_URL,
             source_label=SOURCE_LABEL,
@@ -139,8 +149,6 @@ MESA = Jurisdiction(
             notes=(
                 Note("always", "Mesa Electrical Code 230.70(B): service disconnect labels need engraved or "
                      "raised letters fastened with screws or rivets. Plastic tape labels are not accepted."),
-                Note("always", "2023 NEC 230.67: surge protection (SPD) is required on a dwelling service "
-                     "that is replaced or upgraded."),
                 Note("always", "2023 NEC 230.85: one- and two-family dwellings need an outdoor emergency "
                      "disconnect, readily accessible and marked."),
                 Note("always", "SRP reconnects after Mesa passes the service inspection and sends its clearance "
@@ -148,9 +156,9 @@ MESA = Jurisdiction(
                      "utility on the bill."),
                 Note("always", "Mesa's Residential Utility Repair permit in DIMES lists installing a residential "
                      "200 A panel with no plan upload. Confirm with Permit Services that the scope fits it."),
-                CL_CLEARANCES, CL_FAULT_CURRENT, CL_LABEL, CL_EGC_SIZE, CL_PANEL, CL_SPD,
+                CL_CLEARANCES, CL_LABEL,
                 _checklist_note("show the service disconnect location, rating and grouping (NEC 230.70, 230.71) "
-                                "and the grounding electrode system with conductor sizing (NEC 250.50, 250.66)."),
+                                "and the grounding electrode system (NEC 250.50)."),
                 _checklist_note("provide emergency disconnects for dwelling units (the checklist cites NEC 225.41)."),
             ),
         ),
@@ -163,6 +171,7 @@ MESA = Jurisdiction(
                             "(Mesa 250.118(A)(4))", "one_line"),
                 Requirement("Subpanel specifications and listing", "equipment"),
                 Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
+                FAULT_CURRENT, EGC_SIZE, PANEL_DETAILS, BURIAL,
             ),
             source_url=NEC_AMENDMENTS_URL,
             source_label=SOURCE_LABEL,
@@ -174,7 +183,7 @@ MESA = Jurisdiction(
                      "disconnect at the building (NEC 225.31)."),
                 EMT_EGC,
                 AZ_811,
-                CL_CLEARANCES, CL_FAULT_CURRENT, CL_LABEL, CL_EGC_SIZE, CL_PANEL, CL_BURIAL, CL_AFCI, CL_SPD,
+                CL_CLEARANCES, CL_LABEL, CL_AFCI, CL_SPD,
             ),
         ),
         APPLIANCE_CIRCUIT: Checklist(
@@ -186,6 +195,7 @@ MESA = Jurisdiction(
                             "(Mesa 250.118(A)(4))", "one_line"),
                 Requirement("Appliance data sheet with nameplate rating and listing", "equipment"),
                 Requirement("Site plan showing the panel, the appliance and the route", "site_plan"),
+                FAULT_CURRENT, EGC_SIZE, PANEL_DETAILS,
             ),
             source_url=NEC_AMENDMENTS_URL,
             source_label=SOURCE_LABEL,
@@ -195,7 +205,8 @@ MESA = Jurisdiction(
                      "sight of the unit (NEC 440.14, 422.31)."),
                 EMT_EGC,
                 AZ_811,
-                CL_CLEARANCES, CL_FAULT_CURRENT, CL_LABEL, CL_EGC_SIZE, CL_PANEL, CL_BURIAL, CL_AFCI,
+                CL_CLEARANCES, CL_LABEL, CL_AFCI,
+                _checklist_note("identify burial depths (the checklist cites NEC Table 300.7(A)).", "trench"),
             ),
         ),
     },

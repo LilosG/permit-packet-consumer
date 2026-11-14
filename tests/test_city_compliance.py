@@ -156,3 +156,28 @@ def test_the_test_would_catch_a_requirement_the_packet_cannot_show_as_ready(monk
     body = build("subpanel", complete_inputs("subpanel", stricter)).body
     row = next(r for r in body["checklist_status"] if r["item"].startswith("Structural letter"))
     assert row["status"] == "Open"
+
+
+def test_mesa_service_upgrade_needs_a_surge_device_and_shows_it_on_the_riser():
+    from permit_packets.jurisdictions.mesa_az import MESA
+
+    payload = complete_inputs("service_upgrade", MESA)
+    result = build("service_upgrade", payload)
+    row = next(r for r in result.body["checklist_status"] if "Surge protective device" in r["item"])
+    assert row["status"] == "Ready"
+    assert any("Type 2 SPD" in text and "230.67" in text for text in packet_pages(result.pdf))
+
+    payload["surge_protection"] = None
+    body = build("service_upgrade", payload).body
+    check = next(c for c in body["checks"] if c["name"] == "Surge protection")
+    assert check["passed"] is False and body["ready"] is False
+    row = next(r for r in body["checklist_status"] if "Surge protective device" in r["item"])
+    assert row["status"] == "Open"
+
+
+def test_a_city_without_a_surge_requirement_is_not_held_to_one():
+    from permit_packets.jurisdictions.oro_valley_az import ORO_VALLEY
+
+    payload = complete_inputs("service_upgrade", ORO_VALLEY)
+    payload["surge_protection"] = None
+    assert "Surge protection" not in {c["name"] for c in build("service_upgrade", payload).body["checks"]}

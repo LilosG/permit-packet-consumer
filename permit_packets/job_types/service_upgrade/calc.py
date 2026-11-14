@@ -82,6 +82,7 @@ class ServiceJob:
     meter_number: str = ""
     has_solar: bool = False
     pv_breaker_amps: int = 0
+    surge_protection: str | None = None
     planned_loads: tuple[PlannedLoadLine, ...] = ()
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
@@ -124,6 +125,16 @@ class ServicePacket:
     @property
     def largest_gec(self) -> str:
         return min(self.gecs.values(), key=int)
+
+
+SPD_LABELS = {"type_1": "Type 1", "type_2": "Type 2"}
+
+
+def surge_check(job: ServiceJob) -> Check:
+    """NEC 230.67: a dwelling service that is replaced or upgraded gets a Type 1 or Type 2 surge protective device."""
+    if job.surge_protection not in SPD_LABELS:
+        return Check("Surge protection", "Choose a Type 1 or Type 2 surge protective device (230.67)", False)
+    return Check("Surge protection", f"{SPD_LABELS[job.surge_protection]} SPD at the service (230.67)", True)
 
 
 def _flags(job: ServiceJob, gecs: dict[str, str]) -> list[str]:
@@ -206,6 +217,8 @@ def build_service_packet(job: ServiceJob) -> ServicePacket:
         ))
     if heat:
         checks.append(Check("Temperature correction", heat.line, heat.passed))
+    if any(r.section == "surge" for r in job.jurisdiction.checklist_for("service_upgrade").items):
+        checks.append(surge_check(job))
     checks.append(interrupting_rating_check(job))
     checks.append(panel_schedule_check(job))
     gec = gec_check(job, service_amps=job.new_service_amps, material=job.material, electrodes=tuple(gecs))

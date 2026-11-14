@@ -122,3 +122,30 @@ def one_line_data(job) -> list[str]:
         f"Panel bus rating: {details['Bus rating']}; main: {details['Main']}",
         f"Existing grounding electrode conductor: {details['Existing GEC']} (NEC 250.66)",
     ]
+
+
+def checklist_row(job, section: str, page: int, *, burial: tuple[int, str] | None = None) -> tuple[str, str] | None:
+    """The checklist row for the sections every packet's one-line covers, or None for any other section.
+
+    `burial` is the page and line where a packet shows its underground cover (None: it shows none, so the row stays open).
+    """
+    if section == "fault_current":
+        if not job.available_fault_current_a:
+            return f"Page {page}: {MISSING_FAULT_CURRENT.lower()}", "Open"
+        return (f"Page {page}: {job.available_fault_current_a:,} A available, "
+                f"{job.equipment_aic_ka} kA equipment rating"), "Ready"
+    if section == "panel_details":
+        missing = [label for label, value in (
+            ("location", job.panel_location), ("bus rating", panel_bus(job)), ("main type", job.panel_main)) if not value]
+        if missing:
+            return f"Page {page}: enter the panel's " + ", ".join(missing), "Open"
+        return f"Page {page}: location, bus rating and main", "Ready"
+    if section == "egc_size":
+        return f"Page {page}: EGC size on the one-line", "Ready"
+    if section == "burial":
+        if not getattr(job, "trench_ft", 0):
+            return "No underground run", "Ready"
+        if burial is None:
+            return "Not in this packet: add it by hand", "Open"
+        return f"Page {burial[0]}: {burial[1]}", "Ready"
+    return None

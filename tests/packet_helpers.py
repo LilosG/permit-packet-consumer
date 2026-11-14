@@ -91,7 +91,7 @@ def complete_inputs(key: str, jurisdiction) -> dict:
         payload.update(charger_model="Tesla Wall Connector", charger_venting_required=False,
                        hoa_approval="not_required", panel_bus_amps=200)
     elif key == "service_upgrade":
-        payload.update(panel_model=LIBRARY_PANEL, panel_bus_amps=payload["bus_amps"])
+        payload.update(panel_model=LIBRARY_PANEL, panel_bus_amps=payload["bus_amps"], surge_protection="type_2")
     elif key == "subpanel":
         payload.update(subpanel_model=LIBRARY_PANEL, panel_bus_amps=200)
     else:

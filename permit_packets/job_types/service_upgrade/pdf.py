@@ -18,7 +18,7 @@ from permit_packets.core.pdf_base import (
     CELL_BOLD, CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
-from permit_packets.core.panel_data import one_line_data, panel_header
+from permit_packets.core.panel_data import checklist_row as panel_row, one_line_data, panel_header
 from permit_packets.core.title_block import title_block_for
 from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.service_upgrade.calc import (
@@ -26,6 +26,7 @@ from permit_packets.job_types.service_upgrade.calc import (
     ELECTRODE_LABELS,
     EQUIPMENT_LABELS,
     MATERIAL_ABBREVIATIONS,
+    SPD_LABELS,
     ServicePacket,
 )
 
@@ -278,6 +279,15 @@ def _checklist_row(packet: ServicePacket, section: str) -> tuple[str, str]:
         if plan:
             return f"Page 3: to scale, 1 in = {printed_scale(plan)} ft", "Ready"
         return "Page 3: schematic only, replace it", "Open"
+    if section == "surge":
+        if job.surge_protection in SPD_LABELS:
+            return f"Page {SECTION_PAGES['one_line']}: {SPD_LABELS[job.surge_protection]} SPD on the riser", "Ready"
+        return f"Page {SECTION_PAGES['one_line']}: choose the surge protective device", "Open"
+    if section == "gec":
+        return f"Page {SECTION_PAGES['one_line']}: GEC sizes in the conductor schedule", "Ready"
+    shown = panel_row(job, section, SECTION_PAGES["one_line"])
+    if shown:
+        return shown
     if section == "utility":
         return f"Page {SECTION_PAGES['utility']}: send to the utility", "Send"
     if section == "equipment":
@@ -419,6 +429,12 @@ def _site_plan(packet: ServicePacket) -> list:
     )
 
 
+def _surge_line(job) -> list[str]:
+    if job.surge_protection not in SPD_LABELS:
+        return []
+    return [f"Surge protective device: {SPD_LABELS[job.surge_protection]}, at the service (NEC 230.67)"]
+
+
 def _riser(packet: ServicePacket) -> list:
     job = packet.job
     rows = [
@@ -435,7 +451,7 @@ def _riser(packet: ServicePacket) -> list:
         _p("Riser Diagram", H1),
         _p("Service conductors, conduit, grounding electrode conductors and bonding.", SMALL),
         Spacer(1, 10),
-        diagram(Riser(packet), legend=one_line_data(packet.job)),
+        diagram(Riser(packet), legend=one_line_data(packet.job) + _surge_line(job)),
         Spacer(1, 10),
         _p("Conductor and conduit schedule", H2),
         _table([_heads("Segment", "Conductors", "Conduit", "Protection")]

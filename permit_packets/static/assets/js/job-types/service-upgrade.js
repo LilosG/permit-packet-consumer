@@ -148,7 +148,7 @@
         relocated: data.get('relocated') === 'yes', material: data.get('material'), conduit: data.get('conduit'),
         electrodes: data.getAll('electrodes'), panel_model: data.get('panel_model').trim(),
         existing_brand: data.get('existing_brand'), utility: data.get('utility').trim(),
-        meter_number: data.get('meter_number').trim(), has_solar: solar,
+        meter_number: data.get('meter_number').trim(), has_solar: solar, surge_protection: data.get('surge_protection') || null,
         pv_breaker_amps: solar ? Number(data.get('pv_breaker_amps')) : 0,
         planned_loads: plannedLoads(),
       };

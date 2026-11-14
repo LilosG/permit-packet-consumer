@@ -29,6 +29,7 @@ class ServiceUpgradeRequest(JobRequestBase):
     utility: str = Field(default="", max_length=60)
     meter_number: str = Field(default="", max_length=30)
     has_solar: bool = False
+    surge_protection: Literal["type_1", "type_2"] | None = None  # the service SPD (NEC 230.67)
     pv_breaker_amps: int = Field(default=0, ge=0, le=100)
     planned_loads: list[PlannedLoad] = Field(default_factory=list, max_length=4)
 
