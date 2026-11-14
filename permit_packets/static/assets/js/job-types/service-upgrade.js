@@ -139,6 +139,7 @@
     onSample() {
       syncService();
       field('se_length_ft').value = SAMPLE_WIRE_FT;
+      field('surge_protection').value = 'type_2';
       document.getElementById('wire-hint').textContent = '';
     },
     jobFields(data) {

@@ -175,12 +175,19 @@ def test_mesa_service_upgrade_needs_a_surge_device_and_shows_it_on_the_riser():
     assert row["status"] == "Open"
 
 
-def test_a_city_without_a_surge_requirement_is_not_held_to_one():
-    from permit_packets.jurisdictions.oro_valley_az import ORO_VALLEY
+def test_every_city_and_the_general_checklist_hold_a_service_upgrade_to_surge_protection():
+    from permit_packets.jurisdictions import GENERAL_CHECKLISTS, jurisdiction_by_key
 
-    payload = complete_inputs("service_upgrade", ORO_VALLEY)
-    payload["surge_protection"] = None
-    assert "Surge protection" not in {c["name"] for c in build("service_upgrade", payload).body["checks"]}
+    assert any(r.section == "surge" for r in GENERAL_CHECKLISTS["service_upgrade"].items)
+    unknown = jurisdiction_by_key(None, "Nowhere", "ZZ")
+    for jurisdiction in (*KNOWN.values(), unknown):
+        assert any(r.section == "surge" for r in jurisdiction.checklist_for("service_upgrade").items), jurisdiction.key
+        payload = complete_inputs("service_upgrade", jurisdiction)
+        assert build("service_upgrade", payload).body["ready"] is True
+        payload["surge_protection"] = None
+        body = build("service_upgrade", payload).body
+        assert next(c for c in body["checks"] if c["name"] == "Surge protection")["passed"] is False, jurisdiction.key
+        assert body["ready"] is False
 
 
 @pytest.mark.parametrize("sheet_size", ["letter", "tabloid"])

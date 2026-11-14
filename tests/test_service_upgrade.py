@@ -187,7 +187,7 @@ def test_packet_route_returns_eight_pages_and_the_response_contract(client):
     assert [row["label"] for row in body["summary"]] == ["Calculated load", "New service", "Service wire", "GEC"]
     assert [row["value"] for row in body["summary"]] == ["158.3 A", "200 A", "#2/0 Cu", "#4 Cu"]
     assert body["build_steps"] == [
-        "Oro Valley, AZ checklist applied, 6 items",
+        "Oro Valley, AZ checklist applied, 7 items",
         "Load calculation: 158.3 A on the new 200 A service",
         "Service conductors sized: 3 #2/0 Cu",
         "Grounding electrode conductor sized",
@@ -377,6 +377,7 @@ def test_oro_valley_falls_back_to_the_general_service_checklist(client):
         "Load calculation",
         "Panel and meter equipment specifications and listing",
         "Utility service request",
+        "Surge protective device, Type 1 or Type 2, shown on the riser (NEC 230.67)",
     ]
     assert "General checklist, city rules added in setup" in _text(body)
     assert "Page 7: send to the utility" in _text(body)

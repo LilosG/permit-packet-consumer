@@ -10,7 +10,7 @@ what any reviewer or inspector asks of a stand-alone trade permit. Utility: Duke
 """
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
+from permit_packets.jurisdictions import SURGE_PROTECTION, Checklist, Jurisdiction, Note, Requirement
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -79,14 +79,13 @@ CHARLOTTE = Jurisdiction(
                 Requirement("Panel and meter base specifications and listing", "equipment"),
                 Requirement("Site plan showing the meter and main panel", "site_plan"),
                 Requirement("Duke Energy service request and disconnect/reconnect scheduling", "utility"),
+                SURGE_PROTECTION,
             ),
             source_url=CODE_CHANGES_URL,
             source_label=SOURCE_LABEL,
             code_note=CODE_NOTE,
             notes=(
                 NO_PUBLISHED_CHECKLIST,
-                Note("always", "2023 NEC 230.67: surge protection (SPD) is required on a dwelling service "
-                     "that is replaced or upgraded."),
                 Note("always", "2023 NEC 230.85: one- and two-family dwellings need an outdoor emergency "
                      "disconnect, readily accessible and marked."),
                 Note("always", "Coordinate the meter pull, disconnect and reconnect with Duke Energy before "

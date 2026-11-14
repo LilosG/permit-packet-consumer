@@ -13,7 +13,7 @@ Chapter 16.20 on Municode, which blocked direct download) and the Tennessee stat
 """
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
+from permit_packets.jurisdictions import SURGE_PROTECTION, Checklist, Jurisdiction, Note, Requirement
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -116,6 +116,7 @@ NASHVILLE = Jurisdiction(
                 Requirement("Site plan to scale showing the meter and main panel", "site_plan", PV_URL),
                 Requirement("Nashville Electric Service (NES) service request and disconnect/reconnect scheduling", "utility",
                             NES_RULES_URL),
+                SURGE_PROTECTION,
             ),
             source_url=EPERMITS_GUIDE_URL,
             source_label=SOURCE_LABEL,

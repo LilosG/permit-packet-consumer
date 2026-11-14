@@ -1,7 +1,7 @@
 """The fallback checklist for each job type, for cities not set up yet."""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Note, Requirement
+from permit_packets.jurisdictions import SURGE_PROTECTION, Checklist, Note, Requirement
 
 GENERAL_CHECKLISTS: dict[str, Checklist] = {
     "ev_charger": Checklist(items=(
@@ -18,6 +18,7 @@ GENERAL_CHECKLISTS: dict[str, Checklist] = {
         Requirement("Load calculation", "load"),
         Requirement("Panel and meter equipment specifications and listing", "equipment"),
         Requirement("Utility service request", "utility"),
+        SURGE_PROTECTION,
     )),
     "subpanel": Checklist(items=(
         Requirement("Permit application", "application"),

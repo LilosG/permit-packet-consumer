@@ -19,6 +19,12 @@ class Requirement:
     source: str = ""  # URL of the page or form this item comes from
 
 
+# NEC 230.67 (2020 NEC and later, so every city here): a dwelling service that is replaced or upgraded gets a
+# Type 1 or Type 2 surge protective device. A city's own checklist may carry a sourced copy of it instead.
+SURGE_PROTECTION = Requirement(
+    "Surge protective device, Type 1 or Type 2, shown on the riser (NEC 230.67)", "surge")
+
+
 @dataclass(frozen=True)
 class Note:
     when: str  # always, disconnect or trench

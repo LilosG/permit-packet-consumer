@@ -42,5 +42,6 @@
       "amps": 50,
       "poles": 2
     }
-  ]
+  ],
+  "surge_protection": "type_2"
 }
