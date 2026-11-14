@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.equipment import find_equipment
 from permit_packets.core.circuits import Circuit, conduit_size, size_circuit
 from permit_packets.jurisdictions import ORO_VALLEY, Jurisdiction
 from permit_packets.core.load_calculation import (
@@ -114,6 +115,10 @@ def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int 
         flags.append("This home has solar. Check the panel's bus rating and solar breaker before adding this load.")
     if not job.charger_model:
         flags.append("Add the charger make and model, then attach its data sheet.")
+    elif not (charger := find_equipment(job.charger_model, "charger")):
+        flags.append(f"Attach the {job.charger_model} data sheet behind page 6. It isn't in the equipment library yet.")
+    elif charger.max_amps < job.charger_amps:
+        flags.append(f"The {charger.name} is rated {charger.max_amps} A, below the {job.charger_amps} A set here.")
     if job.trench_ft:
         flags.append("Call 811 before trenching and field verify the route.")
     if disconnect:

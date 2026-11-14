@@ -9,6 +9,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.platypus import Flowable, Spacer
 
+from permit_packets.core.equipment import attach_data_sheets, find_equipment
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
@@ -258,6 +259,8 @@ def _checklist_row(packet: EvPacket, section: str) -> tuple[str, str]:
             return f"Page 3: to scale, 1 in = {plan.scale_ft_per_in} ft", "Ready"
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
+        if find_equipment(job.charger_model, "charger"):
+            return "Page 6, with the manufacturer's data sheet attached", "Ready"
         return "Page 6: add manufacturer sheets", "Attach"
     if section == "ventilation":
         return "Only if this charger requires venting", "Check"
@@ -413,11 +416,12 @@ def _load(packet: EvPacket) -> list:
 
 
 def _equipment(packet: EvPacket) -> list:
+    sheet = find_equipment(packet.job.charger_model, "charger")
     rows = [
         ("EV charger",
-         f"{packet.job.charger_model or 'Level 2'}, {packet.job.charger_amps} A, 240 V, "
+         f"{sheet.name if sheet else packet.job.charger_model or 'Level 2'}, {packet.job.charger_amps} A, 240 V, "
          f"{packet.charger_va:,} VA, {packet.job.connection}",
-         f"UL listed, {packet.job.jurisdiction.code_name} Article 625"),
+         sheet.listing if sheet else f"UL listed, {packet.job.jurisdiction.code_name} Article 625"),
         ("Breaker", f"{packet.circuit.breaker} A, 2-pole, matched to existing panel", "Listed for the panel"),
     ]
     if packet.disconnect_amps:
@@ -428,7 +432,8 @@ def _equipment(packet: EvPacket) -> list:
         rows.append(("Above ground conduit", f"{packet.interior_conduit} EMT", "Listed"))
     return [
         _p("Equipment Data", H1),
-        _p("Attach the manufacturer's data sheets and UL listing information behind this page.", SMALL),
+        _p(f"The {sheet.name} data sheet from the manufacturer follows this page." if sheet else
+           "Attach the manufacturer's data sheets and UL listing information behind this page.", SMALL),
         Spacer(1, 10),
         _table([_heads("Item", "Specification", "Listing")] + [[_p(a), _p(b), _p(c)] for a, b, c in rows],
                [1.5 * inch, CONTENT - 3.2 * inch, 1.7 * inch]),
@@ -501,8 +506,10 @@ def _site_plan(packet: EvPacket) -> list:
 
 
 def render_ev_packet_pdf(packet: EvPacket) -> bytes:
-    return build_document(
+    pdf = build_document(
         [_cover(packet), _application(packet), _site_plan(packet), _one_line(packet),
          _load(packet), _equipment(packet), _review(packet)],
         title="EV Charger Permit Packet (demo)",
     )
+    sheet = find_equipment(packet.job.charger_model, "charger")
+    return attach_data_sheets(pdf, [sheet] if sheet else [], after_title="Equipment Data")

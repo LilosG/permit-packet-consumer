@@ -67,7 +67,7 @@
     <p class="lead" id="job-lead"></p>
     <div class="block grid">
       <label class="field">Customer<input name="customer" value="Sample Homeowner" required maxlength="120"></label>
-      <div class="contents" data-job-type="ev_charger"><label class="field">Charger make and model<input name="charger_model" placeholder="Example: Tesla Wall Connector" maxlength="120"></label></div>
+      <div class="contents" data-job-type="ev_charger"><label class="field">Charger make and model<input name="charger_model" list="charger-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"><datalist id="charger-models"><option value="Tesla Wall Connector (Gen 3)"></option><option value="Tesla Universal Wall Connector"></option><option value="ChargePoint Home Flex (CPH50)"></option><option value="Emporia Level 2 EV Charger"></option><option value="Wallbox Pulsar Plus (North America)"></option></datalist></label></div>
     </div>
     <label class="flag" style="margin-top:10px"><input type="checkbox" name="sample_mode"><span>Sample mode: hide the real address and parcel number, for sharing outside your team</span></label>
     <div data-job-type="ev_charger">
@@ -160,7 +160,7 @@
     <div class="block">
       <h2>Equipment and utility</h2>
       <div class="grid">
-        <label class="field">New panel make and model<input name="panel_model" placeholder="Example: Square D QO 40-space" maxlength="120"></label>
+        <label class="field">New panel make and model<input name="panel_model" list="panel-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"><datalist id="panel-models"><option value="Square D Homeline HOM3060M200PC, 200 A main breaker"></option><option value="Square D Homeline HOM3060L225PGC, 225 A main lug"></option><option value="Milbank U5168-XTL-200 meter-main, 200 A"></option></datalist></label>
         <label class="field">Bus rating (A)<input name="bus_amps" type="number" min="100" max="400" value="200" required></label>
       </div>
       <fieldset style="margin-top:14px"><legend>Existing panel</legend><div class="choices">
@@ -220,7 +220,7 @@
           <label class="choice"><input type="radio" name="sp_breaker_amps" value="200"><span>200 A</span></label>
         </div></fieldset>
       </div>
-      <label class="field" style="margin-top:14px">Subpanel make and model<input name="sp_model" placeholder="Example: Square D QO 20-space" maxlength="120"></label>
+      <label class="field" style="margin-top:14px">Subpanel make and model<input name="sp_model" list="panel-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"></label>
       <label class="flag" id="sp-whole-field" style="margin-top:10px"><input type="checkbox" name="sp_whole" id="sp-whole"><span>Feeds the whole home</span></label>
     </div>
     <div class="block">

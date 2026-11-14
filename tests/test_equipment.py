@@ -1,0 +1,81 @@
+import base64
+import os
+from io import BytesIO
+from zipfile import ZipFile
+
+import pytest
+from fastapi.testclient import TestClient
+
+from pypdf import PdfReader
+
+from permit_packets.core.equipment import LIBRARY, attachment_span, find_equipment
+from permit_packets.core.preview import packet_documents_zip
+
+os.environ["DEMO_PASSWORD"] = "test-password"
+from app import app  # noqa: E402
+
+
+def test_every_library_item_has_its_data_sheet():
+    for item in LIBRARY:
+        assert item.data_sheet_path().is_file(), item.name
+        assert len(PdfReader(str(item.data_sheet_path())).pages) >= 1
+
+
+def test_models_are_found_by_name_or_alias():
+    assert find_equipment("Tesla Wall Connector (Gen 3)", "charger").max_amps == 48
+    assert find_equipment("tesla wall connector", "charger").data_sheet == "tesla-gen3-wall-connector.pdf"
+    assert find_equipment("ChargePoint CPH50", "charger").name.startswith("ChargePoint")
+    assert find_equipment("HOM3060M200PC", "panel").max_amps == 200
+    assert find_equipment("Some other charger", "charger") is None
+    assert find_equipment("", "charger") is None
+    assert find_equipment("Tesla Wall Connector", "panel") is None
+
+
+def test_index_lists_every_library_model():
+    page = open("permit_packets/static/index.html").read()
+    for item in LIBRARY:
+        assert f'value="{item.name}"' in page
+
+
+
+
+@pytest.fixture
+def client():
+    signed_in = TestClient(app)
+    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
+    return signed_in
+
+
+def _ev(client, model):
+    payload = dict(
+        customer="Sample", address="123 Sample St", contractor="Sample Electric", license_number="ROC 000000",
+        home={"square_feet": 2000, "range_va": 12000, "cooling_va": 7200}, service_amps=200,
+        open_breaker_spaces=4, charger_amps=48, location="attached_garage", run_ft=30, trench_ft=0,
+        charger_model=model,
+    )
+    response = client.post("/api/jobs/ev-charger/packet", json=payload)
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+def test_a_library_charger_attaches_its_data_sheet_after_the_equipment_page(client):
+    body = _ev(client, "Tesla Wall Connector (Gen 3)")
+    pdf = base64.b64decode(body["pdf"])
+    pages = [page.extract_text() for page in PdfReader(BytesIO(pdf)).pages]
+    equipment = next(i for i, text in enumerate(pages) if "Equipment Data" in text)
+    assert "data sheet from the manufacturer follows this page" in pages[equipment]
+    assert "Product Specifications" in pages[equipment + 1]
+    assert "Pre-Submittal Review" in pages[-1]
+    assert attachment_span(pdf) == (equipment + 1, 2)
+    assert not any("data sheet" in flag for flag in body["flags"])
+    with ZipFile(BytesIO(packet_documents_zip(pdf, tuple(d["file_stem"] for d in body["documents"])))) as archive:
+        equipment_doc = PdfReader(BytesIO(archive.read("06-equipment-data.pdf")))
+        assert len(equipment_doc.pages) == 3
+        assert "Pre-Submittal Review" in PdfReader(BytesIO(archive.read("07-pre-submittal-review.pdf"))).pages[0].extract_text()
+
+
+def test_an_unknown_charger_still_asks_for_its_data_sheet(client):
+    body = _ev(client, "Acme Charger 9000")
+    pdf = base64.b64decode(body["pdf"])
+    assert attachment_span(pdf) is None
+    assert any("Acme Charger 9000 data sheet" in flag for flag in body["flags"])

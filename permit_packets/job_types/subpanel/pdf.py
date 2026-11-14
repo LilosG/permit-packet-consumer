@@ -10,6 +10,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import Flowable, Spacer
 
 from permit_packets.core.conductors import feeder_conductor, wire_label
+from permit_packets.core.equipment import attach_data_sheets, find_equipment
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
@@ -251,6 +252,8 @@ def _checklist_row(packet: SubpanelPacket, section: str) -> tuple[str, str]:
             return f"Page 3: to scale, 1 in = {plan.scale_ft_per_in} ft", "Ready"
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
+        if find_equipment(job.subpanel_model, "panel"):
+            return "Page 7, with the manufacturer's data sheet attached", "Ready"
         return "Page 7: add manufacturer sheets", "Attach"
     return f"Page {SECTION_PAGES[section]}", "Ready"
 
@@ -457,17 +460,19 @@ def _load(packet: SubpanelPacket) -> list:
 def _equipment(packet: SubpanelPacket) -> list:
     job = packet.job
     code = job.jurisdiction.code_name
+    sheet = find_equipment(job.subpanel_model, "panel")
     rows = [
         ("Subpanel",
-         f"{job.subpanel_model or 'Add make and model'}, {job.subpanel_amps} A bus, "
+         f"{sheet.name if sheet else job.subpanel_model or 'Add make and model'}, {job.subpanel_amps} A bus, "
          f"{job.feeder_breaker_amps} A feeder breaker",
-         "Attach manufacturer data and NRTL listing"),
+         sheet.listing if sheet else "Attach manufacturer data and NRTL listing"),
         ("Feeder breaker", f"{job.feeder_breaker_amps} A, 2-pole, matched to the main panel", "Listed for the panel"),
         ("Feeder conductors", f"{_wire_text(packet)}, {_conduit(packet)}", f"Listed, {code} 310.16"),
     ]
     return [
         _p("Equipment Data", H1),
-        _p("Attach the manufacturer's data sheets and listing information behind this page.", SMALL),
+        _p(f"The {sheet.name} data sheet from the manufacturer follows this page." if sheet else
+           "Attach the manufacturer's data sheets and listing information behind this page.", SMALL),
         Spacer(1, 10),
         _table([_heads("Item", "Specification", "Listing")] + [[_p(a), _p(b), _p(c)] for a, b, c in rows],
                [1.5 * inch, CONTENT - 3.4 * inch, 1.9 * inch]),
@@ -490,8 +495,10 @@ def _review(packet: SubpanelPacket) -> list:
 
 
 def render_subpanel_packet_pdf(packet: SubpanelPacket) -> bytes:
-    return build_document(
+    pdf = build_document(
         [_cover(packet), _application(packet), _site_plan(packet), _one_line(packet),
          _feeder_schedule(packet), _load(packet), _equipment(packet), _review(packet)],
         title="Subpanel Permit Packet (demo)",
     )
+    sheet = find_equipment(packet.job.subpanel_model, "panel")
+    return attach_data_sheets(pdf, [sheet] if sheet else [], after_title="Equipment Data")
