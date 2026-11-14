@@ -16,12 +16,14 @@ DEFAULT_CODE_NOTE = "Confirm the adopted code edition."
 class Requirement:
     item: str
     section: str
+    source: str = ""  # URL of the page or form this item comes from
 
 
 @dataclass(frozen=True)
 class Note:
     when: str  # always, disconnect or trench
     text: str
+    source: str = ""  # URL of the page or form this note comes from
 
 
 @dataclass(frozen=True)
@@ -59,6 +61,9 @@ class Jurisdiction:
     # and sun-exposed conductors are corrected for it (NEC 310.15(B)(1)). None: not set up for this city.
     design_ambient_f: int | None = None
     design_ambient_source: str = ""  # where that figure comes from, a URL
+    # What this city enforces, for job types it publishes no checklist for (they use the general one).
+    code_note: str = ""
+    fallback_notes: tuple[Note, ...] = ()
     checklists: dict[str, Checklist] = field(default_factory=dict)
 
     @property
@@ -67,7 +72,19 @@ class Jurisdiction:
 
     def checklist_for(self, job_type: str) -> Checklist:
         """This city's checklist for the job type, else the general NEC one, plus the state's amendments."""
-        base = self.checklists.get(job_type) or GENERAL_CHECKLISTS[job_type]
+        base = self.checklists.get(job_type)
+        if base is None:
+            base = GENERAL_CHECKLISTS[job_type]
+            if self.known:
+                base = replace(
+                    base,
+                    code_note=self.code_note or base.code_note,
+                    notes=base.notes + (Note(
+                        "always",
+                        f"{self.name} publishes no {job_type.replace('_', ' ')} checklist. This is the general NEC "
+                        f"checklist. {self.code_note}".strip()
+                    ),) + self.fallback_notes,
+                )
         added = tuple(note for note in STATE_AMENDMENTS.get(self.state, ()) if note not in base.notes)
         return replace(base, notes=base.notes + added) if added else base
 

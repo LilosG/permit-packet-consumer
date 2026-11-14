@@ -22,11 +22,35 @@ NEC_AMENDMENTS_URL = (
     "https://www.mesaaz.gov/files/assets/public/v/3/business-development/devsvcs/codeamendments/"
     "2023-nec-amendment.pdf"
 )
+CHECKLIST_URL = (
+    "https://www.mesaaz.gov/files/assets/public/v/3/business-development/devsvcs/checklists/"
+    "ned-checklist-electric-code.pdf"
+)
+FORMAT_URL = "https://mesaaz.gov/home/showpublisheddocument/22231/637570186539370000"
 CODE_NOTE = (
     "Mesa enforces the 2024 International Codes and the 2023 NEC with Mesa amendments "
     "(the Mesa Electrical Code), for applications submitted on or after January 8, 2026."
 )
 SOURCE_LABEL = "From City of Mesa Development Services and the Mesa Electrical Code"
+
+
+def _checklist_note(text: str, when: str = "always") -> Note:
+    return Note(when, "Mesa electrical plan checklist: " + text, CHECKLIST_URL)
+
+
+# Items from Mesa's Electrical Plan Submittal Checklist (2023 NEC, with Mesa amendments) that apply to
+# these residential jobs. The checklist is one document for all occupancies, so only the items that touch
+# a residential service, feeder or branch circuit are carried over.
+CL_CLEARANCES = _checklist_note("show working clearances around all electrical equipment (NEC 110.26) and the "
+                                "dedicated equipment space with dimensions (NEC 110.26(E)).")
+CL_FAULT_CURRENT = _checklist_note("identify the fault current and verify equipment AIC ratings (NEC 110.9, 110.10).")
+CL_LABEL = _checklist_note("label every piece of equipment on the one-line as new, existing or relocated (NEC 110.22(A)).")
+CL_EGC_SIZE = _checklist_note("identify the size of the equipment grounding conductors (NEC 250.122).")
+CL_PANEL = _checklist_note("identify each panel as new, existing or relocated, with its location, voltage, phase, "
+                           "bus rating and main breaker or main lugs (NEC 110.22(A), 408.4(A), 408.36, 240.4).")
+CL_BURIAL = _checklist_note("identify burial depths (the checklist cites NEC Table 300.7(A)).", "trench")
+CL_AFCI = _checklist_note("provide arc-fault circuit interrupter protection where required (NEC 210.12).")
+CL_SPD = _checklist_note("provide surge protection (NEC 215.18, 230.67).")
 
 UTILITY_CHECK = Note(
     "always",
@@ -34,7 +58,7 @@ UTILITY_CHECK = Note(
     "confirm the utility on the customer's bill.",
 )
 EMT_EGC = Note("always", "Mesa Electrical Code 250.118(A)(4): EMT counts as the equipment grounding "
-               "path only with an additional equipment grounding conductor pulled in it.")
+               "path only with an additional equipment grounding conductor pulled in it.", NEC_AMENDMENTS_URL)
 APPLICATION = Requirement("DIMES residential electrical permit: address/APN, scope and valuation", "application")
 LICENSE = Requirement("Contractor Licensure Verification Form and Arizona ROC electrical license", "application")
 AZ_811 = Note(
@@ -56,10 +80,12 @@ MESA = Jurisdiction(
         "set for the job site from the same DIMES record."
     ),
     needs_parcel_number=True,
-    # Mesa, "Submission and Formatting Requirements for Electronic Plans":
-    # https://mesaaz.gov/home/showpublisheddocument/22231/637570186539370000
+    # Mesa, "Submission and Formatting Requirements for Electronic Plans" (FORMAT_URL): a 4-inch by 4-inch
+    # empty box on the cover sheet for City stamps; plan sheets are not submitted as separate PDFs; each
+    # sheet is electronically sealed and signed by the designer of record. The same document says a wrong
+    # sheet size, scale, margins or orientation is not accepted, but the size itself is not in the text
+    # we could read, so sheet_size stays at the default until Mesa's number is confirmed.
     stamp_box_in=4.0,
-    # Same document: "DO NOT submit individual plan sheets as separate PDF documents".
     single_pdf_only=True,
     # ASHRAE 2% annual cooling dry-bulb design temperature, Phoenix Sky Harbor (WMO 722780), the
     # reporting station nearest Mesa. 109 F lies between the 1% (110.2 F) and 2.5% (108.1 F) values
@@ -69,6 +95,7 @@ MESA = Jurisdiction(
     design_ambient_source=(
         "https://ashrae-meteo.info/v3.0/index.php?lat=33.44&lng=-111.99&place=%27%27&wmo=722780&ashrae_version=2017"
     ),
+    code_note=CODE_NOTE,
     utility="SRP (Salt River Project)",
     utility_short="SRP",
     checklists={
@@ -93,6 +120,7 @@ MESA = Jurisdiction(
                      "the equipment showing where it is."),
                 UTILITY_CHECK,
                 AZ_811,
+                CL_CLEARANCES, CL_FAULT_CURRENT, CL_LABEL, CL_EGC_SIZE, CL_PANEL, CL_BURIAL, CL_AFCI,
             ),
         ),
         SERVICE_UPGRADE: Checklist(
@@ -120,6 +148,10 @@ MESA = Jurisdiction(
                      "utility on the bill."),
                 Note("always", "Mesa's Residential Utility Repair permit in DIMES lists installing a residential "
                      "200 A panel with no plan upload. Confirm with Permit Services that the scope fits it."),
+                CL_CLEARANCES, CL_FAULT_CURRENT, CL_LABEL, CL_EGC_SIZE, CL_PANEL, CL_SPD,
+                _checklist_note("show the service disconnect location, rating and grouping (NEC 230.70, 230.71) "
+                                "and the grounding electrode system with conductor sizing (NEC 250.50, 250.66)."),
+                _checklist_note("provide emergency disconnects for dwelling units (the checklist cites NEC 225.41)."),
             ),
         ),
         SUBPANEL: Checklist(
@@ -142,6 +174,7 @@ MESA = Jurisdiction(
                      "disconnect at the building (NEC 225.31)."),
                 EMT_EGC,
                 AZ_811,
+                CL_CLEARANCES, CL_FAULT_CURRENT, CL_LABEL, CL_EGC_SIZE, CL_PANEL, CL_BURIAL, CL_AFCI, CL_SPD,
             ),
         ),
         APPLIANCE_CIRCUIT: Checklist(
@@ -162,6 +195,7 @@ MESA = Jurisdiction(
                      "sight of the unit (NEC 440.14, 422.31)."),
                 EMT_EGC,
                 AZ_811,
+                CL_CLEARANCES, CL_FAULT_CURRENT, CL_LABEL, CL_EGC_SIZE, CL_PANEL, CL_BURIAL, CL_AFCI,
             ),
         ),
     },
