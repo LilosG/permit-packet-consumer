@@ -34,7 +34,7 @@ PACKET_URL = "/api/jobs/service-upgrade/packet"
 DOCUMENTS_URL = "/api/jobs/service-upgrade/documents"
 STEMS = [
     "01-checklist-and-checks", "02-permit-application-data", "03-site-plan", "04-riser-diagram",
-    "05-load-calculation", "06-utility-service-request", "07-equipment-data", "08-pre-submittal-review",
+    "05-load-calculation", "06-panel-schedule", "07-utility-service-request", "08-equipment-data", "09-pre-submittal-review",
 ]
 SQUARE_LOT = [[250, 250], [750, 250], [750, 750], [250, 750]]
 
@@ -175,7 +175,7 @@ def test_a_same_size_replacement_is_accepted(client):
 
 def test_packet_route_returns_eight_pages_and_the_response_contract(client):
     body = _packet(client)
-    assert len(body["pages"]) == 8
+    assert len(body["pages"]) == 9
     assert base64.b64decode(body["pdf"]).startswith(b"%PDF")
     assert body["job_type"] == "service_upgrade"
     assert body["ready"] is True
@@ -192,7 +192,7 @@ def test_packet_route_returns_eight_pages_and_the_response_contract(client):
         "Service conductors sized: 3 #2/0 Cu",
         "Grounding electrode conductor sized",
         "Schematic site plan drawn",
-        "Permit and utility data filled in, 8 pages built",
+        "Permit and utility data filled in, 9 pages built",
     ]
     assert body["submission_email"]["subject"] == "Service upgrade permit submittal: 123 Sample St"
     assert body["submission_email"]["body"].endswith("Thank you,\nSample Electric, LLC")
@@ -232,7 +232,7 @@ def test_routes_need_a_session():
 def test_every_site_plan_stays_eight_pages(client, plan):
     changes = {"plan": plan} if plan else {}
     body = _packet(client, **changes)
-    assert len(body["pages"]) == 8
+    assert len(body["pages"]) == 9
     if plan:
         assert "Site plan drawn to scale at 1 in = 30 ft" in body["build_steps"]
 
@@ -246,12 +246,12 @@ def test_a_worst_case_packet_still_fits_on_eight_pages(client):
         meter_number="1234567890",
         planned_loads=[{"label": f"Planned load {n}", "va": 5000} for n in range(4)],
     )
-    assert len(body["pages"]) == 8
+    assert len(body["pages"]) == 9
 
 
 def test_markup_in_typed_text_does_not_break_the_pdf(client):
     body = _packet(client, panel_model="<b>Panel</b> & <i>co", utility="A&B <u>Power", customer="<x>")
-    assert len(body["pages"]) == 8
+    assert len(body["pages"]) == 9
 
 
 # ---- The checks ----
@@ -352,11 +352,12 @@ def test_the_drop_decides_which_clearance_flag_shows(client):
 def test_flags_come_in_the_order_the_job_needs_them(client):
     flags = _packet(client, relocated=True, has_solar=True, pv_breaker_amps=40)["flags"]
     assert flags[0].startswith("Check the existing loads")
-    assert flags[1].startswith("Submit the utility service request (page 6)")
+    assert flags[1].startswith("Submit the utility service request (page 7)")
     assert flags[3].startswith("Relocating the meter")
     assert flags[-1] == "Confirm the adopted code edition."
     assert flags[-2].startswith("This site plan is a schematic")
-    assert flags[-3].startswith("This home has solar")
+    assert flags[-4].startswith("This home has solar")
+    assert flags[-3].startswith("The panel schedule lists")
 
 
 def test_a_plan_removes_the_schematic_flag(client):
@@ -377,7 +378,7 @@ def test_oro_valley_falls_back_to_the_general_service_checklist(client):
         "Utility service request",
     ]
     assert "General checklist, city rules added in setup" in _text(body)
-    assert "Page 6: send to the utility" in _text(body)
+    assert "Page 7: send to the utility" in _text(body)
     assert jurisdiction_json(ORO_VALLEY, "service_upgrade")["known"] is False
     assert jurisdiction_json(ORO_VALLEY, "ev_charger")["known"] is True
     assert "service_upgrade" not in ORO_VALLEY.checklists
@@ -414,7 +415,7 @@ def test_the_job_types_list_is_ev_then_service(client):
     assert [document["file_stem"] for document in service["documents"]] == STEMS
     assert [document["title"] for document in service["documents"]] == [
         "Checklist and checks", "Permit data", "Site plan", "Riser diagram", "Load calculation",
-        "Utility request", "Equipment data", "Pre-submittal review"]
+        "Panel schedule", "Utility request", "Equipment data", "Pre-submittal review"]
     assert REGISTRY["service_upgrade"].zip_name == "service-upgrade-permit-documents-demo.zip"
 
 

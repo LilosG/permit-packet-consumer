@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.checks import Check
 from permit_packets.core.conductors import (
     SERVICE_CONDUCTOR_FACTOR,
@@ -82,6 +83,7 @@ class ServiceJob:
     planned_loads: tuple[PlannedLoadLine, ...] = ()
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
+    existing_circuits: tuple[ExistingCircuit, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -107,7 +109,7 @@ class ServicePacket:
 def _flags(job: ServiceJob, gecs: dict[str, str]) -> list[str]:
     flags = [
         "Check the existing loads against the home. They drive the service result.",
-        "Submit the utility service request (page 6). The utility sets the disconnect and reconnect.",
+        "Submit the utility service request (page 7). The utility sets the disconnect and reconnect.",
     ]
     if job.service_drop == "overhead":
         flags.append("Confirm mast, weatherhead and drip-loop clearances against the utility's service requirements.")
@@ -129,6 +131,8 @@ def _flags(job: ServiceJob, gecs: dict[str, str]) -> list[str]:
         flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
     if job.has_solar:
         flags.append("This home has solar. Confirm the PV breaker sits at the opposite end of the bus from the main.")
+    if not job.existing_circuits:
+        flags.append(MISSING_FLAG)
     if job.plan is None:
         flags.append("This site plan is a schematic. Replace it with the property's plan before submitting.")
     if job.jurisdiction.needs_parcel_number and not (job.plan and job.plan.parcel_number):

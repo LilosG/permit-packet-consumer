@@ -4,6 +4,7 @@ from __future__ import annotations
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 
+from permit_packets.core.panel_schedule import existing_circuits
 from permit_packets.core.conductors import wire_label
 from permit_packets.core.job_inputs import display_number, property_plan, sample_address
 from permit_packets.core.load_calculation import HomeLoads
@@ -32,8 +33,9 @@ DOCUMENTS = (
     Document("03-site-plan", "Site plan"),
     Document("04-one-line-diagram", "One-line diagram"),
     Document("05-load-calculation", "Load calculation"),
-    Document("06-equipment-data", "Equipment data"),
-    Document("07-pre-submittal-review", "Pre-submittal review"),
+    Document("06-panel-schedule", "Panel schedule"),
+    Document("07-equipment-data", "Equipment data"),
+    Document("08-pre-submittal-review", "Pre-submittal review"),
 )
 HAS_NEUTRAL_BY_DEFAULT = ("hot_tub", "other")
 
@@ -42,6 +44,7 @@ def to_job(request: ApplianceCircuitRequest) -> ApplianceJob:
     fields = request.model_dump(exclude={
         "home", "plan", "city", "state", "jurisdiction_key", "sample_mode", "needs_neutral",
     })
+    fields["existing_circuits"] = existing_circuits(fields["existing_circuits"])
     if request.sample_mode:
         fields["address"] = sample_address(request)
     needs_neutral = (

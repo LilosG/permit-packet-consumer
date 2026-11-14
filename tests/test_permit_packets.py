@@ -181,7 +181,7 @@ def test_attached_garage_under_60_amps_skips_the_disconnect():
 def test_pdf_is_seven_pages_for_every_layout(location, trench_ft):
     pdf = render_ev_packet_pdf(build_ev_packet(_job(location=location, trench_ft=trench_ft)))
     assert pdf.startswith(b"%PDF")
-    assert len(re.findall(rb"/Type\s*/Page[^s]", pdf)) == 7
+    assert len(re.findall(rb"/Type\s*/Page[^s]", pdf)) == 8
 
 
 def test_pdf_survives_markup_in_typed_text():
@@ -195,7 +195,7 @@ def test_packet_route_returns_results_pages_and_pdf(client):
     body = response.json()
     assert body["ready"] is True
     assert (body["breaker"], body["wire"]) == (50, "#8 AWG Cu")
-    assert len(body["pages"]) == 7
+    assert len(body["pages"]) == 8
     assert base64.b64decode(body["pages"][0]).startswith(b"\xff\xd8")
     assert base64.b64decode(body["pdf"]).startswith(b"%PDF")
     assert any(field["label"] == "Scope of work" for field in body["fields"])
@@ -205,7 +205,7 @@ def test_documents_route_returns_one_pdf_per_page(client):
     response = client.post("/api/jobs/ev-charger/documents", json=_payload())
     assert response.status_code == 200
     names = ZipFile(BytesIO(response.content)).namelist()
-    assert len(names) == 7
+    assert len(names) == 8
     assert names[2] == "03-site-plan.pdf"
 
 
@@ -214,7 +214,7 @@ def test_a_plan_with_an_aerial_goes_through_the_route(client):
             "aerial_base64": base64.b64encode(_aerial()).decode(), "credits": ["Credit"]}
     response = client.post("/api/jobs/ev-charger/packet", json=_payload(plan=plan))
     assert response.status_code == 200
-    assert len(response.json()["pages"]) == 7
+    assert len(response.json()["pages"]) == 8
 
 
 def test_sample_mode_hides_the_address_and_parcel(client):
@@ -338,7 +338,7 @@ def test_worst_case_packet_stays_seven_pages(jurisdiction, plan):
     job = _job(jurisdiction=jurisdiction, plan=site, service_amps=100, open_breaker_spaces=0, charger_amps=80,
                run_ft=400, trench_ft=300, connection="receptacle")
     pdf = render_ev_packet_pdf(build_ev_packet(job))
-    assert len(re.findall(rb"/Type\s*/Page[^s]", pdf)) == 7
+    assert len(re.findall(rb"/Type\s*/Page[^s]", pdf)) == 8
 
 
 CENSUS_MATCH = {"result": {"addressMatches": [{

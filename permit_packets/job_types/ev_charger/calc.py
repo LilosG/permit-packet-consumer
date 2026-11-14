@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.equipment import find_equipment
 from permit_packets.core.circuits import Circuit, conduit_size, size_circuit
 from permit_packets.jurisdictions import ORO_VALLEY, Jurisdiction
@@ -50,6 +51,7 @@ class EvJob:
     has_solar: bool = False
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
+    existing_circuits: tuple[ExistingCircuit, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -116,7 +118,7 @@ def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int 
     if not job.charger_model:
         flags.append("Add the charger make and model, then attach its data sheet.")
     elif not (charger := find_equipment(job.charger_model, "charger")):
-        flags.append(f"Attach the {job.charger_model} data sheet behind page 6. It isn't in the equipment library yet.")
+        flags.append(f"Attach the {job.charger_model} data sheet behind the equipment page. It isn't in the equipment library yet.")
     elif charger.max_amps < job.charger_amps:
         flags.append(f"The {charger.name} is rated {charger.max_amps} A, below the {job.charger_amps} A set here.")
     if job.trench_ft:
@@ -125,6 +127,8 @@ def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int 
         flags.append("Confirm the disconnect location and type with the city.")
     if job.location == "detached_garage":
         flags.append("Confirm grounding requirements at the detached garage.")
+    if not job.existing_circuits:
+        flags.append(MISSING_FLAG)
     if job.plan is None:
         flags.append("This site plan is a schematic. Replace it with the property's plan before submitting.")
     if job.jurisdiction.needs_parcel_number and not (job.plan and job.plan.parcel_number):

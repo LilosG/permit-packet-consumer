@@ -36,7 +36,7 @@ PACKET_URL = "/api/jobs/subpanel/packet"
 DOCUMENTS_URL = "/api/jobs/subpanel/documents"
 STEMS = [
     "01-checklist-and-checks", "02-permit-application-data", "03-site-plan", "04-one-line-diagram",
-    "05-feeder-schedule", "06-load-calculation", "07-equipment-data", "08-pre-submittal-review",
+    "05-feeder-schedule", "06-load-calculation", "07-panel-schedule", "08-equipment-data", "09-pre-submittal-review",
 ]
 SQUARE_LOT = [[250, 250], [750, 250], [750, 750], [250, 750]]
 
@@ -200,7 +200,7 @@ def test_defaults_are_aluminum_and_pvc(client):
 
 def test_packet_route_returns_eight_pages_and_the_response_contract(client):
     body = _packet(client)
-    assert len(body["pages"]) == 8
+    assert len(body["pages"]) == 9
     assert base64.b64decode(body["pdf"]).startswith(b"%PDF")
     assert body["job_type"] == "subpanel"
     assert body["ready"] is True
@@ -216,7 +216,7 @@ def test_packet_route_returns_eight_pages_and_the_response_contract(client):
         "Feeder sized: 2 #3 Cu, #8 EGC",
         "Voltage drop: 0.5% over 90 ft",
         "Schematic site plan drawn",
-        "Permit data filled in, 8 pages built",
+        "Permit data filled in, 9 pages built",
     ]
     assert body["submission_email"]["subject"] == "Subpanel permit submittal: 123 Sample St"
     assert body["submission_email"]["body"].endswith("Thank you,\nSample Electric, LLC")
@@ -276,7 +276,7 @@ def test_routes_need_a_session():
 ])
 def test_every_site_plan_stays_eight_pages(client, changes):
     body = _packet(client, **changes)
-    assert len(body["pages"]) == 8
+    assert len(body["pages"]) == 9
     if changes.get("plan"):
         assert "Site plan drawn to scale at 1 in = 30 ft" in body["build_steps"]
 
@@ -288,13 +288,13 @@ def test_a_worst_case_packet_still_fits_on_eight_pages(client):
         trench_ft=500, open_breaker_spaces=0, subpanel_model="Square D QO 40-space",
         loads=[{"label": f"Planned load {n}", "va": 9000} for n in range(6)],
     )
-    assert len(body["pages"]) == 8
+    assert len(body["pages"]) == 9
 
 
 def test_markup_in_typed_text_does_not_break_the_pdf(client):
     body = _packet(client, subpanel_model="<b>Panel</b> & <i>co", customer="<x>",
                    loads=[{"label": "<u>Shop & co", "va": 3000}])
-    assert len(body["pages"]) == 8
+    assert len(body["pages"]) == 9
 
 
 # ---- The checks ----
@@ -430,7 +430,7 @@ def test_the_job_types_list_has_ev_service_and_subpanel(client):
     assert subpanel["feature_page"] == 2
     assert [document["title"] for document in subpanel["documents"]] == [
         "Checklist and checks", "Permit data", "Site plan", "One-line diagram", "Feeder schedule",
-        "Load calculation", "Equipment data", "Pre-submittal review"]
+        "Load calculation", "Panel schedule", "Equipment data", "Pre-submittal review"]
     assert REGISTRY["subpanel"].zip_name == "subpanel-permit-documents-demo.zip"
 
 

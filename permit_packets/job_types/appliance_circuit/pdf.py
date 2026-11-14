@@ -10,12 +10,14 @@ from reportlab.lib.units import inch
 from reportlab.platypus import Flowable, Spacer
 
 from permit_packets.core.conductors import wire_label
+from permit_packets.core.panel_schedule import ScheduleRow, existing_rows, panel_schedule_page
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.site_plan import AerialSitePlan, PlanMarker
 from permit_packets.job_types.appliance_circuit.calc import (
+    SPACES_NEEDED,
     APPLIANCE_LABELS,
     APPLIANCE_TITLES,
     BURIAL_COVER_IN,
@@ -26,7 +28,8 @@ from permit_packets.job_types.appliance_circuit.calc import (
     sentence_case,
 )
 
-SECTION_PAGES = {"application": 2, "site_plan": 3, "one_line": 4, "load": 5, "equipment": 6, "review": 7}
+SECTION_PAGES = {"application": 2, "site_plan": 3, "one_line": 4, "load": 5, "panel_schedule": 6, "equipment": 7,
+                 "review": 8}
 LISTING_NOTE = "Attach the manufacturer's installation instructions and NRTL listing"
 
 
@@ -496,9 +499,21 @@ def _review(packet: AppliancePacket) -> list:
     return review_page(items)
 
 
+def _panel_schedule(packet: AppliancePacket) -> list:
+    job = packet.job
+    rows = existing_rows(job.home, job.existing_circuits)
+    rows.append(ScheduleRow(f"{sentence_case(_appliance(packet))} (this permit)", f"{packet.breaker} A",
+                            SPACES_NEEDED, "New"))
+    return panel_schedule_page(
+        [(f"Main panel, {job.service_amps} A", rows)], entered=bool(job.existing_circuits),
+        spaces_note=f"Open spaces: {job.open_breaker_spaces} before, "
+                    f"{max(job.open_breaker_spaces - SPACES_NEEDED, 0)} after the new breaker.",
+    )
+
+
 def render_appliance_packet_pdf(packet: AppliancePacket) -> bytes:
     return build_document(
         [_cover(packet), _application(packet), _site_plan(packet), _one_line(packet),
-         _load(packet), _equipment(packet), _review(packet)],
+         _load(packet), _panel_schedule(packet), _equipment(packet), _review(packet)],
         title=f"{APPLIANCE_TITLES[packet.job.appliance]} Circuit Permit Packet (demo)",
     )

@@ -11,12 +11,14 @@ from reportlab.platypus import Flowable, Spacer
 
 from permit_packets.core.conductors import feeder_conductor, wire_label
 from permit_packets.core.equipment import attach_data_sheets, find_equipment
+from permit_packets.core.panel_schedule import ScheduleRow, existing_rows, panel_schedule_page
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.site_plan import AerialSitePlan, PlanMarker
 from permit_packets.job_types.subpanel.calc import (
+    SPACES_NEEDED,
     BURIAL_COVER_IN,
     LOCATION_LABELS,
     MATERIAL_ABBREVIATIONS,
@@ -24,7 +26,8 @@ from permit_packets.job_types.subpanel.calc import (
 )
 
 SECTION_PAGES = {
-    "application": 2, "site_plan": 3, "one_line": 4, "feeder": 5, "load": 6, "equipment": 7, "review": 8,
+    "application": 2, "site_plan": 3, "one_line": 4, "feeder": 5, "load": 6, "panel_schedule": 7, "equipment": 8,
+    "review": 9,
 }
 DEGREE = "\N{DEGREE SIGN}"
 
@@ -253,8 +256,8 @@ def _checklist_row(packet: SubpanelPacket, section: str) -> tuple[str, str]:
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
         if find_equipment(job.subpanel_model, "panel"):
-            return "Page 7, with the manufacturer's data sheet attached", "Ready"
-        return "Page 7: add manufacturer sheets", "Attach"
+            return f"Page {SECTION_PAGES['equipment']}, with the manufacturer's data sheet attached", "Ready"
+        return f"Page {SECTION_PAGES['equipment']}: add manufacturer sheets", "Attach"
     return f"Page {SECTION_PAGES[section]}", "Ready"
 
 
@@ -494,10 +497,25 @@ def _review(packet: SubpanelPacket) -> list:
     return review_page(items)
 
 
+def _panel_schedule(packet: SubpanelPacket) -> list:
+    job = packet.job
+    main = existing_rows(job.home, job.existing_circuits)
+    main.append(ScheduleRow(f"Feeder to the {job.subpanel_amps} A subpanel (this permit)",
+                            f"{job.feeder_breaker_amps} A", SPACES_NEEDED, "New"))
+    sub = [ScheduleRow(f"{item.label} ({item.va:,} VA)", "Size per load", 2 if item.va > 2400 else 1, "New")
+           for item in job.loads] or [ScheduleRow("Circuits to be added", "Size per load", 1, "New")]
+    return panel_schedule_page(
+        [(f"Main panel, {job.service_amps} A", main), (f"Subpanel, {job.subpanel_amps} A", sub)],
+        entered=bool(job.existing_circuits),
+        spaces_note=f"Main panel open spaces: {job.open_breaker_spaces} before, "
+                    f"{max(job.open_breaker_spaces - SPACES_NEEDED, 0)} after the feeder breaker.",
+    )
+
+
 def render_subpanel_packet_pdf(packet: SubpanelPacket) -> bytes:
     pdf = build_document(
         [_cover(packet), _application(packet), _site_plan(packet), _one_line(packet),
-         _feeder_schedule(packet), _load(packet), _equipment(packet), _review(packet)],
+         _feeder_schedule(packet), _load(packet), _panel_schedule(packet), _equipment(packet), _review(packet)],
         title="Subpanel Permit Packet (demo)",
     )
     sheet = find_equipment(packet.job.subpanel_model, "panel")

@@ -467,6 +467,15 @@
   }
 
   /* ---- The job ---- */
+  // "Kitchen counter, 20, 1" per line. Lines that don't parse are skipped.
+  function parseCircuits(text) {
+    return text.split('\n').map((line) => line.split(',').map((part) => part.trim())).flatMap(([label, amps, poles]) => {
+      const breaker = parseInt(amps, 10);
+      if (!label || !(breaker >= 15 && breaker <= 200)) return [];
+      return [{ label: label.slice(0, 60), amps: breaker, poles: poles === '2' ? 2 : 1 }];
+    }).slice(0, 60);
+  }
+
   function jobData() {
     const data = new FormData(form);
     const job = {
@@ -475,6 +484,7 @@
       ...typeModule().jobFields(data),
     };
     if (contractorLogo) job.contractor_logo_base64 = contractorLogo;
+    job.existing_circuits = parseCircuits(data.get('existing_circuits') || '');
     if (current.uses_home_loads) {
       job.home = {};
       $$('[data-home]').forEach((input) => { job.home[input.name] = Number(input.value); });

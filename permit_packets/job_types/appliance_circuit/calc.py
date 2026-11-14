@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.checks import Check
 from permit_packets.core.circuits import CONTINUOUS_FACTOR
 from permit_packets.core.conductors import (
@@ -73,6 +74,7 @@ class ApplianceJob:
     disconnect_distance_ft: int | None = None
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
+    existing_circuits: tuple[ExistingCircuit, ...] = ()
 
     @property
     def is_hvac(self) -> bool:
@@ -187,6 +189,8 @@ def _flags(job: ApplianceJob, load: LoadCalculation, branch: Branch) -> list[str
         flags.append("Size the circuit from the appliance's nameplate and instructions.")
     if job.jurisdiction.state == "CA":
         flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
+    if not job.existing_circuits:
+        flags.append(MISSING_FLAG)
     if job.plan is None:
         flags.append("This site plan is a schematic. Replace it with the property's plan before submitting.")
     if job.jurisdiction.needs_parcel_number and not (job.plan and job.plan.parcel_number):

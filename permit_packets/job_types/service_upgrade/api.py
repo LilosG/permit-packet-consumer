@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
+from permit_packets.core.panel_schedule import existing_circuits
 from permit_packets.core.conductors import wire_label
 from permit_packets.core.job_inputs import display_number, property_plan, sample_address
 from permit_packets.core.load_calculation import HomeLoads
@@ -31,9 +32,10 @@ DOCUMENTS = (
     Document("03-site-plan", "Site plan"),
     Document("04-riser-diagram", "Riser diagram"),
     Document("05-load-calculation", "Load calculation"),
-    Document("06-utility-service-request", "Utility request"),
-    Document("07-equipment-data", "Equipment data"),
-    Document("08-pre-submittal-review", "Pre-submittal review"),
+    Document("06-panel-schedule", "Panel schedule"),
+    Document("07-utility-service-request", "Utility request"),
+    Document("08-equipment-data", "Equipment data"),
+    Document("09-pre-submittal-review", "Pre-submittal review"),
 )
 
 
@@ -41,6 +43,7 @@ def to_job(request: ServiceUpgradeRequest) -> ServiceJob:
     fields = request.model_dump(exclude={
         "home", "plan", "city", "state", "jurisdiction_key", "sample_mode", "planned_loads", "electrodes",
     })
+    fields["existing_circuits"] = existing_circuits(fields["existing_circuits"])
     if request.sample_mode:
         fields["address"] = sample_address(request)
     plan = property_plan(request, ("meter", "panel"))

@@ -69,9 +69,9 @@ def test_a_library_charger_attaches_its_data_sheet_after_the_equipment_page(clie
     assert attachment_span(pdf) == (equipment + 1, 2)
     assert not any("data sheet" in flag for flag in body["flags"])
     with ZipFile(BytesIO(packet_documents_zip(pdf, tuple(d["file_stem"] for d in body["documents"])))) as archive:
-        equipment_doc = PdfReader(BytesIO(archive.read("06-equipment-data.pdf")))
+        equipment_doc = PdfReader(BytesIO(archive.read("07-equipment-data.pdf")))
         assert len(equipment_doc.pages) == 3
-        assert "Pre-Submittal Review" in PdfReader(BytesIO(archive.read("07-pre-submittal-review.pdf"))).pages[0].extract_text()
+        assert "Pre-Submittal Review" in PdfReader(BytesIO(archive.read("08-pre-submittal-review.pdf"))).pages[0].extract_text()
 
 
 def test_an_unknown_charger_still_asks_for_its_data_sheet(client):
@@ -79,3 +79,27 @@ def test_an_unknown_charger_still_asks_for_its_data_sheet(client):
     pdf = base64.b64decode(body["pdf"])
     assert attachment_span(pdf) is None
     assert any("Acme Charger 9000 data sheet" in flag for flag in body["flags"])
+
+
+def test_the_panel_schedule_lists_entered_circuits_and_marks_the_new_breaker(client):
+    payload_circuits = [{"label": "Range", "amps": 50, "poles": 2}, {"label": "Kitchen", "amps": 20, "poles": 1}]
+    payload = dict(
+        customer="Sample", address="123 Sample St", contractor="Sample Electric", license_number="ROC 000000",
+        home={"square_feet": 2000, "range_va": 12000, "cooling_va": 7200}, service_amps=200,
+        open_breaker_spaces=4, charger_amps=48, location="attached_garage", run_ft=30, trench_ft=0,
+        existing_circuits=payload_circuits,
+    )
+    body = client.post("/api/jobs/ev-charger/packet", json=payload).json()
+    pages = [page.extract_text() for page in PdfReader(BytesIO(base64.b64decode(body["pdf"]))).pages]
+    schedule = next(text for text in pages if "Panel Schedule" in text)
+    assert "Range" in schedule and "50 A" in schedule and "EV charger, 48 A (this permit)" in schedule
+    assert "Open spaces: 4 before, 2 after" in schedule
+    assert not any("panel schedule lists the circuits" in flag for flag in body["flags"])
+
+
+def test_without_entered_circuits_the_schedule_comes_from_the_load_calc_and_is_flagged(client):
+    body = _ev(client, "")
+    pages = [page.extract_text() for page in PdfReader(BytesIO(base64.b64decode(body["pdf"]))).pages]
+    schedule = next(text for text in pages if "Panel Schedule" in text)
+    assert "Verify on site" in schedule and "Kitchen small-appliance circuits" in schedule
+    assert any("panel schedule lists the circuits" in flag for flag in body["flags"])

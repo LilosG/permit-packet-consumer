@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
+from permit_packets.core.panel_schedule import existing_circuits
 from permit_packets.core.job_inputs import display_number, property_plan, sample_address
 from permit_packets.core.load_calculation import HomeLoads
 from permit_packets.core.preview import pdf_page_count
@@ -20,13 +21,15 @@ DOCUMENTS = (
     Document("03-site-plan", "Site plan"),
     Document("04-one-line-diagram", "One-line diagram"),
     Document("05-load-calculation", "Load calculation"),
-    Document("06-equipment-data", "Equipment data"),
-    Document("07-pre-submittal-review", "Pre-submittal review"),
+    Document("06-panel-schedule", "Panel schedule"),
+    Document("07-equipment-data", "Equipment data"),
+    Document("08-pre-submittal-review", "Pre-submittal review"),
 )
 
 
 def to_job(request: EvChargerRequest) -> EvJob:
     fields = request.model_dump(exclude={"home", "plan", "city", "state", "jurisdiction_key", "sample_mode"})
+    fields["existing_circuits"] = existing_circuits(fields["existing_circuits"])
     if request.sample_mode:
         fields["address"] = sample_address(request)
     return EvJob(

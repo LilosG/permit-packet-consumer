@@ -351,6 +351,9 @@
           <label class="field">Small appliance circuits<input data-home name="small_appliance_circuits" type="number" min="2" max="12" value="2"></label>
           <label class="field">Laundry circuits<input data-home name="laundry_circuits" type="number" min="0" max="3" value="1"></label>
         </div>
+        <label class="field" style="margin-top:14px">Existing panel circuits, for the panel schedule (optional)
+          <textarea name="existing_circuits" rows="5" maxlength="4000" placeholder="One per line: name, breaker amps, poles&#10;Kitchen counter, 20, 1&#10;Range, 50, 2"></textarea>
+        </label>
         <div class="grid" id="contractor-grid" style="margin-top:14px">
           <label class="field">Contractor<input name="contractor" value="Sample Electric, LLC" required maxlength="120"></label>
           <label class="field">License number<input name="license_number" value="000000" required maxlength="60"></label>

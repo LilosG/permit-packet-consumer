@@ -46,7 +46,7 @@ def test_job_types_lists_only_what_the_client_bought(client):
     assert (ev["slug"], ev["short_label"], ev["icon"], ev["feature_page"]) == ("ev-charger", "EV", "ev", 2)
     assert ev["route_between"] == ["panel", "charger"]
     assert [marker["letter"] for marker in ev["markers"]] == ["P", "EV"]
-    assert len(ev["documents"]) == 7
+    assert len(ev["documents"]) == 8
 
 
 def test_job_types_need_a_session():
@@ -125,7 +125,7 @@ def test_ev_response_carries_the_review_copy(client):
     body = client.post("/api/jobs/ev-charger/packet", json=_sample("ev_charger")).json()
     assert [row["label"] for row in body["summary"]] == ["Service load", "Spare capacity", "Breaker", "Wire"]
     assert body["build_steps"][0] == "Oro Valley, AZ checklist applied, 7 items"
-    assert body["build_steps"][-1] == "Permit data filled in, 7 pages built"
+    assert body["build_steps"][-1] == "Permit data filled in, 8 pages built"
     assert body["build_steps"][3] == "Schematic site plan drawn"
     assert body["submission_email"]["subject"] == "EV charger permit submittal: 123 Sample St"
     assert body["submission_email"]["body"].endswith("Thank you,\nSample Electric, LLC")

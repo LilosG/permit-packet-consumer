@@ -10,6 +10,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import Flowable, Spacer
 
 from permit_packets.core.equipment import attach_data_sheets, find_equipment
+from permit_packets.core.panel_schedule import ScheduleRow, existing_rows, panel_schedule_page
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
@@ -19,7 +20,7 @@ from permit_packets.job_types.ev_charger.calc import BURIAL_DEPTH_IN, LOCATION_L
 
 PLAN_COPPER = colors.HexColor("#c8682a")  # the EV dot on the site plan, same as on screen
 SECTION_PAGES = {
-    "application": 2, "site_plan": 3, "one_line": 4, "load": 5, "equipment": 6, "review": 7,
+    "application": 2, "site_plan": 3, "one_line": 4, "load": 5, "panel_schedule": 6, "equipment": 7, "review": 8,
 }
 
 
@@ -260,8 +261,8 @@ def _checklist_row(packet: EvPacket, section: str) -> tuple[str, str]:
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
         if find_equipment(job.charger_model, "charger"):
-            return "Page 6, with the manufacturer's data sheet attached", "Ready"
-        return "Page 6: add manufacturer sheets", "Attach"
+            return f"Page {SECTION_PAGES['equipment']}, with the manufacturer's data sheet attached", "Ready"
+        return f"Page {SECTION_PAGES['equipment']}: add manufacturer sheets", "Attach"
     if section == "ventilation":
         return "Only if this charger requires venting", "Check"
     if section == "hoa":
@@ -440,6 +441,17 @@ def _equipment(packet: EvPacket) -> list:
     ] + _notes_block(packet)
 
 
+def _panel_schedule(packet: EvPacket) -> list:
+    job = packet.job
+    rows = existing_rows(job.home, job.existing_circuits)
+    rows.append(ScheduleRow(f"EV charger, {job.charger_amps} A (this permit)", f"{packet.circuit.breaker} A", 2, "New"))
+    return panel_schedule_page(
+        [(f"Main panel, {job.service_amps} A", rows)], entered=bool(job.existing_circuits),
+        spaces_note=f"Open spaces: {job.open_breaker_spaces} before, {max(job.open_breaker_spaces - 2, 0)} "
+                    "after the new 2-pole breaker.",
+    )
+
+
 def _review(packet: EvPacket) -> list:
     items = [
         "Existing loads match the home",
@@ -508,7 +520,7 @@ def _site_plan(packet: EvPacket) -> list:
 def render_ev_packet_pdf(packet: EvPacket) -> bytes:
     pdf = build_document(
         [_cover(packet), _application(packet), _site_plan(packet), _one_line(packet),
-         _load(packet), _equipment(packet), _review(packet)],
+         _load(packet), _panel_schedule(packet), _equipment(packet), _review(packet)],
         title="EV Charger Permit Packet (demo)",
     )
     sheet = find_equipment(packet.job.charger_model, "charger")

@@ -47,6 +47,13 @@ class PropertyPlanRequest(BaseModel):
             raise ValueError("the aerial image is not valid") from error
 
 
+class ExistingCircuitRequest(BaseModel):
+    """One circuit already in the panel, for the panel schedule."""
+    label: str = Field(min_length=1, max_length=60)
+    amps: int = Field(ge=15, le=200)
+    poles: int = Field(default=1, ge=1, le=2)
+
+
 class JobRequestBase(BaseModel):
     """What every job type asks for: who it's for, where, and the optional site plan."""
     customer: str = Field(min_length=1, max_length=120)
@@ -58,6 +65,7 @@ class JobRequestBase(BaseModel):
     state: str | None = Field(default=None, max_length=2)
     jurisdiction_key: str | None = Field(default=None, max_length=40)
     plan: PropertyPlanRequest | None = None
+    existing_circuits: list[ExistingCircuitRequest] = Field(default_factory=list, max_length=60)
 
 
 class LookupRequest(BaseModel):

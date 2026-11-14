@@ -11,6 +11,7 @@ from reportlab.platypus import Flowable, Spacer
 
 from permit_packets.core.conductors import wire_label
 from permit_packets.core.equipment import attach_data_sheets, find_equipment
+from permit_packets.core.panel_schedule import ScheduleRow, existing_rows, panel_schedule_page
 from permit_packets.core.pdf_base import (
     CELL_BOLD, CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
@@ -25,7 +26,8 @@ from permit_packets.job_types.service_upgrade.calc import (
 )
 
 SECTION_PAGES = {
-    "application": 2, "site_plan": 3, "one_line": 4, "load": 5, "utility": 6, "equipment": 7, "review": 8,
+    "application": 2, "site_plan": 3, "one_line": 4, "load": 5, "panel_schedule": 6, "utility": 7, "equipment": 8,
+    "review": 9,
 }
 # Where each electrode hangs under the riser diagram, in the order it is drawn.
 ELECTRODE_NOTES = {
@@ -273,11 +275,11 @@ def _checklist_row(packet: ServicePacket, section: str) -> tuple[str, str]:
             return f"Page 3: to scale, 1 in = {plan.scale_ft_per_in} ft", "Ready"
         return "Page 3: schematic only, replace it", "Open"
     if section == "utility":
-        return "Page 6: send to the utility", "Send"
+        return f"Page {SECTION_PAGES['utility']}: send to the utility", "Send"
     if section == "equipment":
         if find_equipment(job.panel_model, "panel"):
-            return "Page 7, with the manufacturer's data sheet attached", "Ready"
-        return "Page 7: add manufacturer sheets", "Attach"
+            return f"Page {SECTION_PAGES['equipment']}, with the manufacturer's data sheet attached", "Ready"
+        return f"Page {SECTION_PAGES['equipment']}: add manufacturer sheets", "Attach"
     return f"Page {SECTION_PAGES[section]}", "Ready"
 
 
@@ -521,10 +523,21 @@ def _review(packet: ServicePacket) -> list:
     return review_page(items)
 
 
+def _panel_schedule(packet: ServicePacket) -> list:
+    job = packet.job
+    rows = existing_rows(job.home, job.existing_circuits, status="Transferred")
+    rows += [ScheduleRow(f"{item.label} ({item.va:,} VA)", "Space reserved", 2 if item.va > 2400 else 1, "Planned")
+             for item in job.planned_loads]
+    return panel_schedule_page(
+        [(f"New panel, {job.bus_amps} A bus, {job.new_service_amps} A main", rows)],
+        entered=bool(job.existing_circuits),
+    )
+
+
 def render_service_packet_pdf(packet: ServicePacket) -> bytes:
     pdf = build_document(
         [_cover(packet), _application(packet), _site_plan(packet), _riser(packet),
-         _load(packet), _utility(packet), _equipment(packet), _review(packet)],
+         _load(packet), _panel_schedule(packet), _utility(packet), _equipment(packet), _review(packet)],
         title=f"{_title(packet)} (demo)",
     )
     sheet = find_equipment(packet.job.panel_model, "panel")

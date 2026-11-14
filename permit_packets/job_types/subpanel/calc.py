@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from permit_packets.core.panel_schedule import ExistingCircuit, MISSING_FLAG
 from permit_packets.core.checks import Check
 from permit_packets.core.conductors import (
     FEEDER_VOLTS,
@@ -64,6 +65,7 @@ class SubpanelJob:
     loads: tuple[SubpanelLoadLine, ...] = ()
     jurisdiction: Jurisdiction = ORO_VALLEY
     plan: PropertyPlan | None = None
+    existing_circuits: tuple[ExistingCircuit, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -116,6 +118,8 @@ def _flags(job: SubpanelJob, load: LoadCalculation, feeder: Feeder, assumed: boo
         flags.append("No loads listed, so the feeder load assumes 80% of the breaker. Add the planned loads.")
     if job.jurisdiction.state == "CA":
         flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
+    if not job.existing_circuits:
+        flags.append(MISSING_FLAG)
     if job.plan is None:
         flags.append("This site plan is a schematic. Replace it with the property's plan before submitting.")
     if job.jurisdiction.needs_parcel_number and not (job.plan and job.plan.parcel_number):

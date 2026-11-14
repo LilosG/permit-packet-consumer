@@ -32,7 +32,7 @@ PACKET_URL = "/api/jobs/appliance-circuit/packet"
 DOCUMENTS_URL = "/api/jobs/appliance-circuit/documents"
 STEMS = [
     "01-checklist-and-checks", "02-permit-application-data", "03-site-plan", "04-one-line-diagram",
-    "05-load-calculation", "06-equipment-data", "07-pre-submittal-review",
+    "05-load-calculation", "06-panel-schedule", "07-equipment-data", "08-pre-submittal-review",
 ]
 SQUARE_LOT = [[250, 250], [750, 250], [750, 750], [250, 750]]
 HEAT_PUMP = {"appliance": "heat_pump", "mca": 28.5, "mocp": 45, "location": "outdoor", "run_ft": 30,
@@ -373,7 +373,7 @@ def test_sample_mode_hides_the_address_and_parcel(client):
 
 def test_the_route_returns_seven_pages_the_stems_and_the_zip_name(client):
     body = _packet(client)
-    assert len(body["pages"]) == 7
+    assert len(body["pages"]) == 8
     assert [document["file_stem"] for document in body["documents"]] == STEMS
     assert body["feature_page"] == 2
     response = client.post(DOCUMENTS_URL, json=_payload())
@@ -431,7 +431,7 @@ def test_the_response_contract_matches_subpanel(client):
     assert body["build_steps"][2] == "Circuit sized: 50 A breaker, #6 Cu"
     assert body["build_steps"][3] == "Voltage drop: 0.7% over 40 ft"
     assert body["build_steps"][4] == "Schematic site plan drawn"
-    assert body["build_steps"][-1] == "Permit data filled in, 7 pages built"
+    assert body["build_steps"][-1] == "Permit data filled in, 8 pages built"
     assert body["submission_email"]["subject"] == "Hot tub circuit permit submittal: 123 Sample St"
     assert body["submission_email"]["body"].endswith("Thank you,\nSample Electric, LLC")
     assert {field["label"] for field in body["fields"]} >= {"Permit type", "Scope of work"}
@@ -467,7 +467,7 @@ def test_the_job_types_list_has_the_four_types_in_order(client):
     assert circuit["feature_page"] == 2
     assert [document["title"] for document in circuit["documents"]] == [
         "Checklist and checks", "Permit data", "Site plan", "One-line diagram", "Load calculation",
-        "Equipment data", "Pre-submittal review"]
+        "Panel schedule", "Equipment data", "Pre-submittal review"]
     assert REGISTRY["appliance_circuit"].zip_name == "appliance-circuit-permit-documents-demo.zip"
 
 
