@@ -1,10 +1,16 @@
-"""Nashville, TN (Metro Nashville-Davidson County): from Metro Codes' published guidance.
+"""Nashville, TN (Metro Nashville-Davidson County), audited against Metro Codes' published pages.
 
-Metro does not publish a residential EV charger checklist. These items follow what
-Metro Codes publishes for electrical submittals (its PV permit page asks for an
-electrical diagram, spec sheets and a to-scale site plan), the ePermits user guide,
-and the code list adopted by BL2025-898. Electric utility is Nashville Electric
-Service (NES), which approves service work separately.
+What Metro publishes: the adopted-codes list (the 2023 NEC with local amendments), the ePermits user
+guide, and a solar PV permit page (an electrical diagram, spec sheets, a to-scale site plan, a Tennessee
+license and Metro registration). Metro publishes no residential EV charger, service upgrade, subpanel or
+240 V circuit checklist, and no residential sheet size, stamp box or single-PDF rule: its ePlans system
+(GeoCivix, from September 8, 2025) is described only for commercial permits. So every job type uses the
+general NEC checklist, with the Metro items below that Metro does publish, and the packet says so.
+Electric utility is Nashville Electric Service (NES), which approves service work separately.
+
+Not found published, so not in the packet: the exact text of Metro's local NEC amendments (Metro Code
+Chapter 16.20 on Municode, which blocked direct download), the Tennessee statewide NEC edition, and the
+ASHRAE 2% design temperature for Nashville (design_ambient_f stays unset).
 """
 from __future__ import annotations
 
@@ -15,24 +21,52 @@ SERVICE_UPGRADE = "service_upgrade"
 
 ADOPTED_CODES_URL = "https://www.nashville.gov/departments/codes/codes-administration/adopted-codes-list"
 EPERMITS_GUIDE_URL = "https://filetransfer.nashville.gov/Portals/0/SiteContent/Codes/docs/ePermitsUserGuide.pdf"
-CODE_NOTE = "Metro Nashville enforces the 2023 NEC with local amendments in Metro Code 16.20.150 (BL2025-898)."
-AMENDMENTS_URL = "https://nashville.legistar.com/gateway.aspx?m=l&id=/matter.aspx?key=19170"
+PV_URL = "https://www.nashville.gov/departments/codes/construction-and-permits/trades-permits/solar-panel-photovoltaic-permits"
+MUNICODE_URL = (
+    "https://library.municode.com/tn/metro_government_of_nashville_and_davidson_county/codes/code_of_ordinances"
+    "?nodeId=CD_TIT16BUCO_CH16.20ELCO_ARTIVIN"
+)
+NES_RULES_URL = "https://www.nespower.com/-/media/project/nes/common/pdfs/schedule-of-rules--regulations-10012023-lt.pdf"
+NES_GUIDELINES_URL = (
+    "https://www.nespower.com/-/media/project/nes/common/pdfs/builders-and-developers/electric-service-guidelines-v21.pdf"
+)
+CODE_NOTE = (
+    "Metro Nashville lists the 2023 NEC as adopted with local amendments (Metro Code Chapter 16.20). "
+    "Confirm the amendments with Metro Codes."
+)
+SOURCE_LABEL = "General NEC checklist plus what Metro Codes publishes (Metro has no residential checklist for this job)"
 
-LISTED_CONDUIT = Note(
+NO_PUBLISHED_CHECKLIST = Note(
     "always",
-    "Metro Codes inspectors are rejecting unlisted PVC. Use conduit bearing an approved listing stamp.",
+    "Metro Codes publishes no residential {job} checklist, so this is the general NEC checklist with the 2023 NEC "
+    "Metro has adopted. Keep this packet in the job file and attach it in ePermits if the reviewer asks.",
+    ADOPTED_CODES_URL,
 )
-TORQUE = Note(
+NEC_AMENDMENTS = Note(
     "always",
-    "Metro amendment to 110.14(D): use a calibrated torque tool on specified terminations, and mark "
-    "service and feeder terminations after torquing, before inspection.",
+    "Metro Code Chapter 16.20 adopts the 2023 NEC with local amendments, including 230.1 (the meter location "
+    "provision), 210.70(C), 334.15(C) and 680.14. Read the chapter for the exact wording before design.",
+    MUNICODE_URL,
 )
-POWER_FOR_FINAL = Note("always", "Metro amendment to 110.12: power must be on at the building for the final inspection.")
-NO_PUBLISHED_EV_CHECKLIST = Note(
+NES_RELEASE = Note(
     "always",
-    "Metro has no published residential EV checklist. Keep this packet in the job file and attach "
-    "it in ePermits if the reviewer asks.",
+    "NES requires an inspection and release of the electrical installation by the State Fire Marshal's Office or "
+    "Metro Codes before it provides service.",
+    NES_RULES_URL,
 )
+
+APPLICATION = Requirement(
+    "ePermits electrical application: address/parcel, scope, contract value and quantities", "application",
+    EPERMITS_GUIDE_URL,
+)
+LICENSE = Requirement(
+    "Tennessee contractor license (licensed and bonded) and Metro Codes registration", "application", PV_URL,
+)
+
+
+def _note(job: str) -> Note:
+    return Note(NO_PUBLISHED_CHECKLIST.when, NO_PUBLISHED_CHECKLIST.text.format(job=job), NO_PUBLISHED_CHECKLIST.source)
+
 
 NASHVILLE = Jurisdiction(
     key="nashville-tn", name="Nashville", state="TN", known=True,
@@ -42,60 +76,50 @@ NASHVILLE = Jurisdiction(
     website="https://epermits.nashville.gov",
     website_label="Metro Nashville ePermits",
     submit_how=(
-        "Apply in ePermits as a standalone electrical permit (not under a building permit), "
-        "using the contractor's Metro-registered account. Schedule inspections in ePermits or at (615) 862-6560."
+        "Apply in ePermits with the contractor's Metro-registered account. Metro's ePlans system "
+        "(GeoCivix) is described only for commercial permits, so upload this packet in ePermits."
     ),
     needs_parcel_number=True,
+    # No residential sheet size, stamp box or single-PDF rule is published, so these stay at the defaults.
+    code_note=CODE_NOTE,
+    fallback_notes=(NEC_AMENDMENTS, NES_RELEASE),
     utility="Nashville Electric Service (NES)",
     utility_short="NES",
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("ePermits electrical application: address/parcel, scope, contract value and quantities", "application"),
-                Requirement("Tennessee contractor license and Metro Codes electrical registration", "application"),
+                APPLICATION,
+                LICENSE,
                 Requirement("Load calculation with the charger at 100% of its rating (NEC 220, 625.42)", "load"),
                 Requirement("One-line diagram with breaker, conductors, conduit, and disconnect (if required)", "one_line"),
                 Requirement("Charger data sheet and NRTL listing (UL 2594 / UL 2202)", "equipment"),
-                Requirement("Site plan showing the panel, charger and route", "site_plan"),
+                Requirement("Site plan to scale showing the panel, charger and route", "site_plan", PV_URL),
             ),
             source_url=EPERMITS_GUIDE_URL,
-            source_label="From Metro Codes' published guidance",
+            source_label=SOURCE_LABEL,
             code_note=CODE_NOTE,
-            notes=(
-                NO_PUBLISHED_EV_CHECKLIST,
-                LISTED_CONDUIT,
-                TORQUE,
-                POWER_FOR_FINAL,
-                Note("disconnect", "Metro's amended 625.43: EVSE over 60 A or 150 V to ground needs a readily "
-                     "accessible disconnect, lockable open. One- and two-family dwellings need no separate emergency disconnect."),
-                Note("trench", "Call Tennessee 811 at least 3 working days before trenching."),
-            ),
+            notes=(_note("EV charger"), NEC_AMENDMENTS),
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
-                Requirement("ePermits electrical application: address/parcel, scope, contract value and quantities", "application"),
-                Requirement("Tennessee contractor license and Metro Codes electrical registration", "application"),
+                APPLICATION,
+                LICENSE,
                 Requirement("Load calculation", "load"),
                 Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
                 Requirement("Panel and meter base specifications and listing", "equipment"),
-                Requirement("Site plan showing the meter and main panel", "site_plan"),
-                Requirement("Nashville Electric Service (NES) service request and disconnect/reconnect scheduling", "utility"),
+                Requirement("Site plan to scale showing the meter and main panel", "site_plan", PV_URL),
+                Requirement("Nashville Electric Service (NES) service request and disconnect/reconnect scheduling", "utility",
+                            NES_RULES_URL),
             ),
-            source_url=ADOPTED_CODES_URL,
-            source_label="From Metro Codes' published guidance",
+            source_url=EPERMITS_GUIDE_URL,
+            source_label=SOURCE_LABEL,
             code_note=CODE_NOTE,
             notes=(
-                LISTED_CONDUIT,
-                TORQUE,
-                POWER_FOR_FINAL,
-                Note("always", "Metro amendment to 230.1: NES sets the meter base location."),
-                Note("always", "Metro amendment to 230.70(A)(1): the main disconnect must be within 5 ft of where "
-                     "the service conductors leave the meter base."),
-                Note("always", "Metro amendment to 230.43: service entrance conductors in conduit on brick, stone, "
-                     "masonry or metal walls."),
-                Note("always", "Metro amendment to 250.50: bond all grounding electrodes; a concrete-encased "
-                     "electrode must be visible at the service inspection where reachable."),
-                Note("always", "Build the meter base and service to NES Electric Service Guidelines (current version) and confirm with NES."),
+                _note("service upgrade"),
+                NEC_AMENDMENTS,
+                NES_RELEASE,
+                Note("always", "Build the meter base and service to the NES Electric Service Guidelines (current "
+                     "version) and confirm with NES.", NES_GUIDELINES_URL),
             ),
         ),
     },

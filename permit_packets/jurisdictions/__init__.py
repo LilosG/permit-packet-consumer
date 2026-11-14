@@ -75,9 +75,10 @@ class Jurisdiction:
         base = self.checklists.get(job_type)
         if base is None:
             base = GENERAL_CHECKLISTS[job_type]
-            if self.known:
+            if self.known and (self.code_note or self.fallback_notes):
                 base = replace(
                     base,
+                    source_label="General NEC checklist (the city publishes none for this job)",
                     code_note=self.code_note or base.code_note,
                     notes=base.notes + (Note(
                         "always",
