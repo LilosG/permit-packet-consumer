@@ -57,7 +57,8 @@ Every packet is marked as a demo. Results are drafts and need review before anyo
 | Address and city | US Census geocoder | Free public service |
 | Building outlines | FEMA/ORNL USA Structures | Public data |
 | Aerial | USGS National Map, NAIP Plus | Public domain, credit requested |
-| Lot lines | County GIS, set in `COUNTIES` (Pima, San Diego, Clark) | Check each county's terms before a paid build |
+| Lot lines | County GIS, set in `COUNTIES` (Pima, San Diego, Clark, Maricopa, Pinal and others) | Check each county's terms before a paid build |
+| Lot lines, Pinal County | Arizona Department of Water Resources statewide parcel service, Pinal layer (`azwatermaps.azwater.gov`, built from county parcel data). Pinal County's own GIS host (`gismaps.pinalcountyaz.gov`) did not resolve when checked | Public service; the layer's description states no license or terms. Only parcel and address fields are read, never owner fields. Confirm terms with ADWR before a paid build |
 | Sharper, faster aerial (optional) | Mapbox satellite, when `MAPBOX_TOKEN` is set | Attribution required |
 
 Don't use Google imagery here. Its terms bar exporting or tracing Maps content, and commercial use of satellite imagery is restricted.

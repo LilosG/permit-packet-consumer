@@ -23,6 +23,8 @@ from permit_packets.core.load_calculation import HomeLoads, LoadLine, calculate_
 from permit_packets.core.property_lookup import (
     AddressNotFound,
     COUNTIES,
+    Match,
+    parcel_for_address,
     AerialUnavailable,
     fetch_aerial,
     find_property,
@@ -473,6 +475,28 @@ def test_clark_county_reads_only_parcel_and_address_fields():
     assert county.parcel_field == "PARCEL"
     assert county.address_fields == "STRNO"
     assert county.address_where("10", "O'NEIL") == "STRNO=10 AND STRNAME='O''NEIL'"
+
+
+def test_pinal_county_finds_a_san_tan_valley_parcel_by_address():
+    county = COUNTIES["04021"]
+    assert county.parcel_field == "APN" and county.address_fields == "SITE_ADDRESS"
+    assert county.address_where("2431", "Sunset") == "SITE_ADDRESS LIKE '2431 %SUNSET%'"
+    assert county.type_where("Way") == "SITE_ADDRESS LIKE '% WAY'"
+    ring = [[-111.5921, 33.2007], [-111.5920, 33.2007], [-111.5920, 33.2008], [-111.5921, 33.2008], [-111.5921, 33.2007]]
+    seen = []
+
+    def service(request):
+        seen.append(request)
+        feature = {"attributes": {"APN": "509034460", "SITE_ADDRESS": "2431 W SUNSET WAY"}, "geometry": {"rings": [ring]}}
+        return httpx.Response(200, json={"features": [feature]})
+
+    match = Match(address="2431 W SUNSET WAY, SAN TAN VALLEY, AZ, 85144", latitude=33.2007, longitude=-111.5921,
+                  city="San Tan Valley", state="AZ", county_fips="04021", house_number="2431",
+                  street_name="SUNSET", street_type="WAY")
+    parcel = parcel_for_address(httpx.Client(transport=httpx.MockTransport(service)), match)
+    assert parcel and parcel.number == "509034460" and parcel.house_number == "2431"
+    assert seen[0].url.host == "azwatermaps.azwater.gov"
+    assert seen[0].url.params["outFields"] == "APN,SITE_ADDRESS"
 
 
 def test_an_unknown_address_says_so():

@@ -121,6 +121,15 @@ COUNTIES = {
         lambda attributes: str(attributes.get("PHYSICAL_STREET_NUM") or "").strip(),
         lambda street_type: f"PHYSICAL_STREET_TYPE='{_quoted(street_type.upper())}'",
     ),
+    "04021": County(
+        # Pinal County's own GIS host does not resolve; this is Arizona Department of Water Resources' public
+        # statewide parcel service (Pinal layer, built from the county's parcel data).
+        "https://azwatermaps.azwater.gov/arcgis/rest/services/General/Parcels/MapServer/11/query",
+        "APN", "Lot lines: Pinal County parcels via Arizona Department of Water Resources", "SITE_ADDRESS",
+        lambda number, street: f"SITE_ADDRESS LIKE '{_quoted(number)} %{_quoted(street.upper())}%'",
+        lambda attributes: str(attributes.get("SITE_ADDRESS") or "").split(" ", 1)[0],
+        lambda street_type: f"SITE_ADDRESS LIKE '% {_quoted(street_type.upper())}'",
+    ),
     "06073": County(
         "https://gis-public.sandiegocounty.gov/arcgis/rest/services/DPW/LEAMS_Reference/MapServer/16/query",
         "APN", "Lot lines: San Diego County GIS", "SITUS_ADDRESS",
