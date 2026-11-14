@@ -46,7 +46,7 @@ def _document_pages(page_count: int, attachments: tuple[int, int] | None) -> lis
     return documents
 
 
-def packet_documents_zip(pdf: bytes, file_stems: tuple[str, ...], *, tabloid: bool = False) -> bytes:
+def packet_documents_zip(pdf: bytes, file_stems: tuple[str, ...]) -> bytes:
     """Portals often want each document as its own upload, one file per page."""
     from permit_packets.core.equipment import attachment_span
 
@@ -61,11 +61,7 @@ def packet_documents_zip(pdf: bytes, file_stems: tuple[str, ...], *, tabloid: bo
                 page = BytesIO()
                 single.save(page)
                 single.close()
-                document = page.getvalue()
-                if tabloid:
-                    from permit_packets.core.sheets import centered_tabloid
-                    document = centered_tabloid(document)
-                archive.writestr(f"{name}.pdf", document)
+                archive.writestr(f"{name}.pdf", page.getvalue())
     finally:
         source.close()
     return buffer.getvalue()

@@ -9,8 +9,9 @@ from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase.pdfmetrics import stringWidth
-from reportlab.platypus import Flowable
+from reportlab.platypus import Flowable, Spacer, Table, TableStyle
 
+from permit_packets.core.layout import Sheet, current_sheet
 from permit_packets.core.property_plan import PLAN_UNITS, PLAN_WIDTH_IN, Point, PropertyPlan
 
 INK = colors.HexColor("#15212c")
@@ -22,6 +23,31 @@ MAX_LOT_LABELS = 12
 MIN_LOT_LABEL_FT = 12
 # Where along a lot line its dimension can go, tried in order so markers don't hide it.
 LABEL_POSITIONS = (0.5, 0.35, 0.65, 0.2, 0.8, 0.1, 0.9)
+
+
+HEADING_ALLOWANCE = 58.0  # page heading, spacers and the credit line, above and below the plan
+
+
+def plan_print(plan: PropertyPlan, sheet: Sheet | None = None) -> tuple[float, int]:
+    """(side in points, feet per printed inch) of the plan square on this sheet.
+
+    The plan covers a fixed ground extent. On letter it prints 7 in square, so the engineer's scale
+    the plan was made at is the printed scale. On a tabloid sheet it prints as large as fits, at the
+    smallest whole number of feet per inch that keeps it on the page, so the stated scale is still
+    exactly what a ruler on the page reads.
+    """
+    sheet = sheet or current_sheet()
+    extent_ft = plan.scale_ft_per_in * PLAN_WIDTH_IN
+    if not sheet.landscape:
+        return PLAN_PT, plan.scale_ft_per_in
+    room_in = (sheet.content_h - HEADING_ALLOWANCE) / inch
+    ft_per_in = min(plan.scale_ft_per_in, max(1, math.ceil(extent_ft / room_in)))
+    return extent_ft / ft_per_in * inch, ft_per_in
+
+
+def printed_scale(plan: PropertyPlan) -> int:
+    """The feet per inch the site plan states on the current sheet."""
+    return plan_print(plan)[1]
 
 
 @dataclass(frozen=True)
@@ -36,22 +62,25 @@ class AerialSitePlan(Flowable):
 
     def __init__(
         self, plan: PropertyPlan, *, markers: list[PlanMarker], underground: bool, width: float,
+        side: float | None = None, ft_per_in: int | None = None,
     ) -> None:
         super().__init__()
         self.plan = plan
         self.markers = markers
         self.underground = underground
         self.width = width
-        self.height = PLAN_PT
-        self.left = (width - PLAN_PT) / 2
+        self.side = side or PLAN_PT
+        self.ft_per_in = ft_per_in or plan.scale_ft_per_in
+        self.height = self.side
+        self.left = (width - self.side) / 2
         self.placed: list[tuple[float, float, float, float]] = []
 
     def wrap(self, available_width, available_height):
         return self.width, self.height
 
     def _xy(self, point: Point) -> tuple[float, float]:
-        k = PLAN_PT / PLAN_UNITS
-        return self.left + point[0] * k, PLAN_PT - point[1] * k
+        k = self.side / PLAN_UNITS
+        return self.left + point[0] * k, self.side - point[1] * k
 
     def _polyline(self, points: list[Point], *, close: bool = False) -> None:
         path = self.canv.beginPath()
@@ -95,7 +124,7 @@ class AerialSitePlan(Flowable):
 
     def _north_and_scale(self) -> None:
         c = self.canv
-        x0, top = self.left + 8, PLAN_PT - 8
+        x0, top = self.left + 8, self.side - 8
         c.setFillColor(colors.white)
         c.setStrokeColor(INK)
         c.setLineWidth(0.4)
@@ -111,7 +140,7 @@ class AerialSitePlan(Flowable):
         c.setFont("Helvetica-Bold", 7.5)
         c.drawCentredString(x0 + 12, top - 35, "N")
 
-        scale = self.plan.scale_ft_per_in
+        scale = self.ft_per_in
         bar_ft = scale
         bar_pt = inch
         bx, by = self.left + 8, 8
@@ -131,13 +160,13 @@ class AerialSitePlan(Flowable):
         plan = self.plan
         c.saveState()
         clip = c.beginPath()
-        clip.rect(self.left, 0, PLAN_PT, PLAN_PT)
+        clip.rect(self.left, 0, self.side, self.side)
         c.clipPath(clip, stroke=0, fill=0)
         if plan.aerial_jpeg:
-            c.drawImage(ImageReader(BytesIO(plan.aerial_jpeg)), self.left, 0, PLAN_PT, PLAN_PT)
+            c.drawImage(ImageReader(BytesIO(plan.aerial_jpeg)), self.left, 0, self.side, self.side)
         else:
             c.setFillColor(PAPER)
-            c.rect(self.left, 0, PLAN_PT, PLAN_PT, stroke=0, fill=1)
+            c.rect(self.left, 0, self.side, self.side, stroke=0, fill=1)
 
         # The photo already shows the buildings, and outline data can sit a few feet off.
         if not plan.aerial_jpeg:
@@ -194,4 +223,40 @@ class AerialSitePlan(Flowable):
         c.restoreState()
         c.setStrokeColor(INK)
         c.setLineWidth(0.8)
-        c.rect(self.left, 0, PLAN_PT, PLAN_PT, stroke=1, fill=0)
+        c.rect(self.left, 0, self.side, self.side, stroke=1, fill=0)
+
+
+def site_plan_page(
+    *, address: str, plan: PropertyPlan, markers: list[PlanMarker], underground: bool,
+    legend: list[str], measures: list[str],
+) -> list:
+    """The whole site plan sheet. On letter the plan sits over its legend; on tabloid it sits
+    beside it, printed as large as the sheet allows with its scale stated for that size."""
+    from permit_packets.core.pdf_base import CREDIT, H1, SMALL, _p, _table
+
+    sheet = current_sheet()
+    side, ft_per_in = plan_print(plan, sheet)
+    measures = [*measures, f"Scale 1 in = {ft_per_in} ft when printed at 100%",
+                "Not a survey. Field verify all dimensions."]
+    credit = _p(". ".join(credit.rstrip(".") for credit in plan.credits) + ".", CREDIT)
+    drawing = AerialSitePlan(plan, markers=markers, underground=underground,
+                             width=side if sheet.landscape else sheet.content_w, side=side, ft_per_in=ft_per_in)
+    head = [_p("Site Plan", H1), _p(address + (f". Parcel {plan.parcel_number}." if plan.parcel_number else "."), SMALL),
+            Spacer(1, 6)]
+    if not sheet.landscape:
+        return head + [
+            drawing, Spacer(1, 6),
+            _table([[_p("\n".join(legend)), _p("\n".join(measures))]],
+                   [sheet.content_w / 2, sheet.content_w / 2], head=False),
+            Spacer(1, 3), credit,
+        ]
+    gap = 18
+    side_w = sheet.content_w - side - gap
+    panel = [_p("Legend", SMALL), _p("\n".join(legend)), Spacer(1, 12), _p("Measurements", SMALL),
+             _p("\n".join(measures)), Spacer(1, 12), credit]
+    return head + [Table(
+        [[drawing, panel]], colWidths=[side + gap, side_w],
+        style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                          ("RIGHTPADDING", (0, 0), (-1, -1), 0), ("TOPPADDING", (0, 0), (-1, -1), 0),
+                          ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]),
+    )]

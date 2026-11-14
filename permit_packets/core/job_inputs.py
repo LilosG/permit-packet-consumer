@@ -3,8 +3,10 @@ from __future__ import annotations
 
 from fastapi import HTTPException, status
 
+from permit_packets.core.layout import resolve_sheet, use_sheet
 from permit_packets.core.property_plan import PropertyPlan
 from permit_packets.core.schemas import JobRequestBase
+from permit_packets.jurisdictions import jurisdiction_by_key
 
 SAMPLE_PARCEL = "000-00-000-000"
 
@@ -36,3 +38,15 @@ def property_plan(request: JobRequestBase, route_between: tuple[str, str] | None
 def display_number(value: float) -> str:
     """A number the way the page prints it: 170.0 is 170."""
     return str(int(value)) if value == int(value) else str(value)
+
+
+def build_on_sheet(request: JobRequestBase, build):
+    """Run a job's build on the sheet the request asked for, else the city's: letter or tabloid.
+
+    Every page is drawn natively at that size. The result's body says which sheet it is."""
+    from permit_packets.job_types import PacketResult
+
+    sheet = resolve_sheet(request.sheet_size, jurisdiction_by_key(request.jurisdiction_key, request.city, request.state))
+    with use_sheet(sheet):
+        result = build(request)
+    return PacketResult(pdf=result.pdf, body={**result.body, "sheet_size": sheet.key})

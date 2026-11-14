@@ -20,7 +20,6 @@ from pydantic import ValidationError
 from permit_packets.clients import current_client
 from permit_packets.core.pdf_base import CONTRACTOR_LOGO
 from permit_packets.core.preview import packet_documents_zip, packet_page_images
-from permit_packets.core.sheets import two_up_tabloid
 from permit_packets.jurisdictions import jurisdiction_by_key
 from permit_packets.core.property_lookup import (
     AddressNotFound,
@@ -242,14 +241,6 @@ def _contractor_logo(payload: dict[str, Any]) -> bytes | None:
     return logo
 
 
-def _sheet_size(payload: dict[str, Any]) -> str:
-    """The sheet size asked for, else the city's preference."""
-    asked = payload.get("sheet_size")
-    if asked in ("letter", "tabloid"):
-        return asked
-    return jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state")).sheet_size
-
-
 def _build(slug: str, payload: dict[str, Any]) -> tuple[JobType, PacketResult]:
     job_type = _enabled_job_type(slug)
     logo = _contractor_logo(payload)
@@ -266,24 +257,20 @@ def _build(slug: str, payload: dict[str, Any]) -> tuple[JobType, PacketResult]:
 
 @app.post("/api/jobs/{slug}/packet", dependencies=[Depends(require_session)])
 def build_packet(slug: str, payload: dict[str, Any] = Body(...)) -> dict:
-    sheet_size = _sheet_size(payload)
     _, result = _build(slug, payload)
-    pdf = two_up_tabloid(result.pdf) if sheet_size == "tabloid" else result.pdf
     return {
         **result.body,
-        "sheet_size": sheet_size,
         "pages": [base64.b64encode(page).decode() for page in packet_page_images(result.pdf)],
-        "pdf": base64.b64encode(pdf).decode(),
+        "pdf": base64.b64encode(result.pdf).decode(),
     }
 
 
 @app.post("/api/jobs/{slug}/documents", dependencies=[Depends(require_session)])
 def packet_documents(slug: str, payload: dict[str, Any] = Body(...)) -> Response:
-    sheet_size = _sheet_size(payload)
     job_type, result = _build(slug, payload)
     stems = tuple(document.file_stem for document in job_type.documents)
     return Response(
-        content=packet_documents_zip(result.pdf, stems, tabloid=sheet_size == "tabloid"),
+        content=packet_documents_zip(result.pdf, stems),
         media_type="application/zip",
         headers={
             "Content-Disposition": f'attachment; filename="{job_type.zip_name}"',

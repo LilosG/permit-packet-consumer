@@ -36,8 +36,14 @@ class Sheet:
         return self.height - self.top_margin - self.frame_y
 
 
-LETTER = Sheet("letter", 612.0, 792.0)
-SHEETS = {"letter": LETTER}
+LETTER = Sheet("letter", 612.0, 792.0)  # 8.5 x 11, portrait
+TABLOID = Sheet("tabloid", 1224.0, 792.0, block_h=58.0)  # 11 x 17, landscape
+SHEETS = {"letter": LETTER, "tabloid": TABLOID}
+
+
+def resolve_sheet(asked: str | None, jurisdiction) -> Sheet:
+    """The sheet the request asked for, else the city's preference."""
+    return SHEETS.get(asked or "") or SHEETS.get(jurisdiction.sheet_size, LETTER)
 
 _CURRENT: ContextVar[Sheet] = ContextVar("sheet", default=LETTER)
 

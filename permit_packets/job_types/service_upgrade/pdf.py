@@ -14,10 +14,10 @@ from permit_packets.core.equipment import attach_data_sheets, find_equipment
 from permit_packets.core.panel_schedule import ScheduleRow, existing_rows, panel_schedule_page
 from permit_packets.core.pdf_base import (
     CELL_BOLD, CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
-    _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
+    diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.title_block import title_block_for
-from permit_packets.core.site_plan import AerialSitePlan, PlanMarker
+from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.service_upgrade.calc import (
     BRAND_LABELS,
     ELECTRODE_LABELS,
@@ -273,7 +273,7 @@ def _checklist_row(packet: ServicePacket, section: str) -> tuple[str, str]:
             "Open" if missing else "Ready")
     if section == "site_plan":
         if plan:
-            return f"Page 3: to scale, 1 in = {plan.scale_ft_per_in} ft", "Ready"
+            return f"Page 3: to scale, 1 in = {printed_scale(plan)} ft", "Ready"
         return "Page 3: schematic only, replace it", "Open"
     if section == "utility":
         return f"Page {SECTION_PAGES['utility']}: send to the utility", "Send"
@@ -383,7 +383,7 @@ def _site_plan(packet: ServicePacket) -> list:
             _p("Site Plan", H1),
             _p("Shows the location of the meter, the main panel and the service.", SMALL),
             Spacer(1, 10),
-            SitePlan(packet),
+            diagram(SitePlan(packet), share=0.8),
         ]
     together = plan.markers["meter"] == plan.markers["panel"]
     legend = ["M/P  Meter and main panel, same spot" if together else "M  Meter",
@@ -398,18 +398,10 @@ def _site_plan(packet: ServicePacket) -> list:
     setback = plan.distance_to_lot_line_ft(plan.markers["panel"])
     if setback is not None:
         measures.append(f"Panel to nearest lot line: {setback} ft")
-    measures.append(f"Scale 1 in = {plan.scale_ft_per_in} ft when printed at 100%")
-    measures.append("Not a survey. Field verify all dimensions.")
-    return [
-        _p("Site Plan", H1),
-        _p(job.address + (f". Parcel {plan.parcel_number}." if plan.parcel_number else "."), SMALL),
-        Spacer(1, 6),
-        AerialSitePlan(plan, markers=_plan_markers(packet), underground=job.service_drop == "underground", width=CONTENT),
-        Spacer(1, 6),
-        _table([[_p("\n".join(legend)), _p("\n".join(measures))]], [CONTENT / 2, CONTENT / 2], head=False),
-        Spacer(1, 3),
-        _p(". ".join(credit.rstrip(".") for credit in plan.credits) + ".", CREDIT),
-    ]
+    return site_plan_page(
+        address=job.address, plan=plan, markers=_plan_markers(packet), underground=job.service_drop == "underground",
+        legend=legend, measures=measures,
+    )
 
 
 def _riser(packet: ServicePacket) -> list:
@@ -428,12 +420,12 @@ def _riser(packet: ServicePacket) -> list:
         _p("Riser Diagram", H1),
         _p("Service conductors, conduit, grounding electrode conductors and bonding.", SMALL),
         Spacer(1, 10),
-        Riser(packet),
+        diagram(Riser(packet)),
         Spacer(1, 10),
         _p("Conductor and conduit schedule", H2),
         _table([_heads("Segment", "Conductors", "Conduit", "Protection")]
                + [[_p(cell) for cell in row] for row in rows],
-               [1.6 * inch, 1.9 * inch, 1.6 * inch, CONTENT - 5.1 * inch]),
+               [1.6 * inch, 1.9 * inch, 1.6 * inch, content_w() - 5.1 * inch]),
     ]
 
 
@@ -477,7 +469,7 @@ def _utility(packet: ServicePacket) -> list:
         _p("Utility Service Request Data", H1),
         _p("Prepared for transfer to the utility's service request. This page is not the utility's form.", SMALL),
         Spacer(1, 10),
-        _table([[_p(a, CELL_BOLD), _p(b)] for a, b in rows], [2.4 * inch, CONTENT - 2.4 * inch], head=False),
+        _table([[_p(a, CELL_BOLD), _p(b)] for a, b in rows], [2.4 * inch, content_w() - 2.4 * inch], head=False),
     ]
 
 
@@ -503,7 +495,7 @@ def _equipment(packet: ServicePacket) -> list:
            "Attach the manufacturer's data sheets and listing information behind this page.", SMALL),
         Spacer(1, 10),
         _table([_heads("Item", "Specification", "Listing")] + [[_p(a), _p(b), _p(c)] for a, b, c in rows],
-               [1.5 * inch, CONTENT - 3.4 * inch, 1.9 * inch]),
+               [1.5 * inch, content_w() - 3.4 * inch, 1.9 * inch]),
     ]
 
 

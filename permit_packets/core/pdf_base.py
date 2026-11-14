@@ -12,7 +12,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
-from permit_packets.core.layout import Sheet, current_sheet
+from permit_packets.core.layout import Sheet, content_w, current_sheet
 from permit_packets.core.title_block import TitleBlock, draw_title_block
 from reportlab.platypus import (
     KeepInFrame,
@@ -324,11 +324,11 @@ def review_page(items: list[str]) -> list:
         Spacer(1, 10),
         _table([_heads("Item", "Reviewed by", "Done")]
                + [[_p(item), _p("Electrician"), _p("[  ]")] for item in items],
-               [CONTENT - 2 * inch, 1.4 * inch, 0.6 * inch]),
+               [content_w() - 2 * inch, 1.4 * inch, 0.6 * inch]),
         Spacer(1, 14),
         _p("Approval", H2),
         _table([[_p("Reviewed by"), _p("")], [_p("Signature"), _p("")], [_p("Date"), _p("")]],
-               [2 * inch, CONTENT - 2 * inch], head=False),
+               [2 * inch, content_w() - 2 * inch], head=False),
     ]
 
 
@@ -340,14 +340,14 @@ def application_page(
         _p("Permit Application Data", H1),
         _p("Prepared for transfer to the city's permit application. This page is not the city's form.", SMALL),
         Spacer(1, 10),
-        _table([[_p(a, CELL_BOLD), _p(b)] for a, b in rows], [2.4 * inch, CONTENT - 2.4 * inch], head=False),
+        _table([[_p(a, CELL_BOLD), _p(b)] for a, b in rows], [2.4 * inch, content_w() - 2.4 * inch], head=False),
         Spacer(1, 14),
         _p("Scope of work", H2),
         _p(scope, BODY),
         Spacer(1, 14),
         _p("Inspection plan", H2),
         _table([_heads("Stage", "What's inspected")] + [[_p(a), _p(b)] for a, b in inspections],
-               [1.4 * inch, CONTENT - 1.4 * inch]),
+               [1.4 * inch, content_w() - 1.4 * inch]),
     ]
 
 
@@ -375,13 +375,13 @@ def load_page(load, *, method: str, service_rows: list[tuple[str, str]], measure
         _p("Load Calculation", H1),
         _p(method, SMALL),
         Spacer(1, 10),
-        _table(rows, [2.5 * inch, CONTENT - 3.5 * inch, 1 * inch]),
+        _table(rows, [2.5 * inch, content_w() - 3.5 * inch, 1 * inch]),
         Spacer(1, 10),
         _table(
             [[_p("Computed load", CELL_BOLD),
               _p(f"{load.total_va:,.0f} VA / 240 V = {load.computed_amps:.1f} A", CELL_BOLD)]]
             + [[_p(label), _p(value)] for label, value in service_rows],
-            [2.5 * inch, CONTENT - 2.5 * inch],
+            [2.5 * inch, content_w() - 2.5 * inch],
             head=False,
             extra=[("BACKGROUND", (0, 0), (-1, 0), SOFT)],
         ),
@@ -406,5 +406,61 @@ def _measured_demand(measured) -> list:
         _p("Maximum demand at 125% plus the new load must not exceed the service rating. "
            "Attach the demand report behind this page.", SMALL),
         Spacer(1, 6),
-        _table(rows, [2.5 * inch, CONTENT - 2.5 * inch], head=False),
+        _table(rows, [2.5 * inch, content_w() - 2.5 * inch], head=False),
     ]
+
+
+class FittedDiagram(Flowable):
+    """A diagram drawn at the letter content width, scaled up to the sheet, with its data strip below.
+
+    The strip is drawn at true size under the diagram, so every line stays readable at 100%.
+    """
+
+    def __init__(self, inner: Flowable, *, legend: list[str] | None = None, max_h: float | None = None) -> None:
+        super().__init__()
+        self.inner = inner
+        self.legend = legend or []
+        self.max_h = max_h
+
+    def _legend_height(self, width: float) -> float:
+        if not self.legend:
+            return 0
+        columns = 2 if width > 400 and len(self.legend) > 3 else 1
+        rows = -(-len(self.legend) // columns)
+        return rows * 10.5 + 10
+
+    def wrap(self, available_width, available_height):
+        width = content_w()
+        legend_h = self._legend_height(width)
+        room = min(available_height, self.max_h or available_height) - legend_h - 6
+        self.factor = min(width / CONTENT, room / self.inner.height)
+        self.legend_h = legend_h
+        self.width = width
+        self.height = self.inner.height * self.factor + legend_h + (6 if legend_h else 0)
+        return self.width, self.height
+
+    def draw(self) -> None:
+        c = self.canv
+        c.saveState()
+        c.translate((self.width - CONTENT * self.factor) / 2, self.legend_h + (6 if self.legend_h else 0))
+        c.scale(self.factor, self.factor)
+        self.inner.drawOn(c, 0, 0)
+        c.restoreState()
+        if self.legend:
+            columns = 2 if self.width > 400 and len(self.legend) > 3 else 1
+            rows = -(-len(self.legend) // columns)
+            c.saveState()
+            c.setStrokeColor(INK)
+            c.setLineWidth(0.6)
+            c.rect(0, 0, self.width, self.legend_h, stroke=1, fill=0)
+            c.setFillColor(INK)
+            c.setFont("Helvetica", 7.6)
+            for index, line in enumerate(self.legend):
+                column, row = divmod(index, rows)
+                c.drawString(6 + column * self.width / columns, self.legend_h - 11 - row * 10.5, line)
+            c.restoreState()
+
+
+def diagram(inner: Flowable, *, legend: list[str] | None = None, share: float = 0.38) -> FittedDiagram:
+    """Fit a diagram to the sheet: at most `share` of the page height, scaled up from the letter drawing."""
+    return FittedDiagram(inner, legend=legend, max_h=current_sheet().content_h * share)

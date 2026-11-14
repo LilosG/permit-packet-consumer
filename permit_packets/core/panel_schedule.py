@@ -10,10 +10,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from reportlab.lib.units import inch
-from reportlab.platypus import Spacer
+from reportlab.platypus import Spacer, Table, TableStyle
+
+from permit_packets.core.layout import current_sheet
 
 from permit_packets.core.load_calculation import HomeLoads
-from permit_packets.core.pdf_base import BODY, CELL_BOLD, CONTENT, H1, H2, SMALL, _heads, _p, _table
+from permit_packets.core.pdf_base import BODY, CELL_BOLD, H1, H2, SMALL, _heads, _p, _table, content_w
 
 VERIFY = "Verify on site"
 DIRECTORY_NOTE = ("Update the panel directory on site so every circuit is legibly identified "
@@ -69,13 +71,28 @@ def existing_circuits(entered: list[dict]) -> tuple[ExistingCircuit, ...]:
     return tuple(ExistingCircuit(**circuit) for circuit in entered)
 
 
-def _rows_table(rows: list[ScheduleRow]):
+def _rows_table(rows: list[ScheduleRow], width: float):
     body = [_heads("Circuit", "Breaker", "Poles", "Status")]
     for row in rows:
         style = CELL_BOLD if row.status == "New" else None
         cell = (lambda text: _p(text, style)) if style else _p
         body.append([cell(row.label), cell(row.breaker), cell(str(row.poles)), cell(row.status)])
-    return _table(body, [CONTENT - 3.3 * inch, 1.3 * inch, 0.8 * inch, 1.2 * inch])
+    return _table(body, [width - 3.3 * inch, 1.3 * inch, 0.8 * inch, 1.2 * inch])
+
+
+def _panel_tables(rows: list[ScheduleRow]):
+    """One table on letter. On a tabloid sheet a long directory runs in two columns side by side."""
+    sheet = current_sheet()
+    if not sheet.landscape or len(rows) < 12:
+        return _rows_table(rows, sheet.content_w)
+    half = -(-len(rows) // 2)
+    gap = 18
+    each = (sheet.content_w - gap) / 2
+    return Table([[_rows_table(rows[:half], each), _rows_table(rows[half:], each)]],
+                 colWidths=[each + gap, each],
+                 style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                                   ("RIGHTPADDING", (0, 0), (-1, -1), 0), ("TOPPADDING", (0, 0), (-1, -1), 0),
+                                   ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]))
 
 
 def panel_schedule_page(panels: list[tuple[str, list[ScheduleRow]]], *, entered: bool,
@@ -90,7 +107,7 @@ def panel_schedule_page(panels: list[tuple[str, list[ScheduleRow]]], *, entered:
         Spacer(1, 8),
     ]
     for heading, rows in panels:
-        story += [_p(heading, H2), _rows_table(rows), Spacer(1, 10)]
+        story += [_p(heading, H2), _panel_tables(rows), Spacer(1, 10)]
     if spaces_note:
         story.append(_p(spaces_note, BODY))
         story.append(Spacer(1, 4))

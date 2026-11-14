@@ -5,8 +5,9 @@ from pydantic import BaseModel
 
 from permit_packets.core.panel_schedule import existing_circuits
 from permit_packets.core.conductors import wire_label
-from permit_packets.core.job_inputs import display_number, property_plan, sample_address
+from permit_packets.core.job_inputs import build_on_sheet, display_number, property_plan, sample_address
 from permit_packets.core.load_calculation import HomeLoads
+from permit_packets.core.site_plan import printed_scale
 from permit_packets.core.preview import pdf_page_count
 from permit_packets.job_types import Document, PacketResult
 from permit_packets.job_types.subpanel.calc import (
@@ -80,7 +81,7 @@ def _summary(packet: SubpanelPacket) -> list[dict]:
 def _build_steps(packet: SubpanelPacket, checklist_items: int, page_count: int) -> list[str]:
     job = packet.job
     site = (
-        f"Site plan drawn to scale at 1 in = {job.plan.scale_ft_per_in} ft"
+        f"Site plan drawn to scale at 1 in = {printed_scale(job.plan)} ft"
         if job.plan else "Schematic site plan drawn"
     )
     return [
@@ -106,7 +107,7 @@ def _submission_email(packet: SubpanelPacket) -> dict:
     }
 
 
-def build_response(request: BaseModel) -> PacketResult:
+def _build_response(request: BaseModel) -> PacketResult:
     assert isinstance(request, SubpanelRequest)
     packet = build_subpanel_packet(to_job(request))
     pdf = render_subpanel_packet_pdf(packet)
@@ -139,3 +140,7 @@ def build_response(request: BaseModel) -> PacketResult:
         "submission_email": _submission_email(packet),
     }
     return PacketResult(pdf=pdf, body=body)
+
+
+def build_response(request: BaseModel) -> PacketResult:
+    return build_on_sheet(request, _build_response)

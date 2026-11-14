@@ -13,10 +13,10 @@ from permit_packets.core.conductors import wire_label
 from permit_packets.core.panel_schedule import ScheduleRow, existing_rows, panel_schedule_page
 from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
-    _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
+    diagram, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.title_block import title_block_for
-from permit_packets.core.site_plan import AerialSitePlan, PlanMarker
+from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.appliance_circuit.calc import (
     SPACES_NEEDED,
     APPLIANCE_LABELS,
@@ -251,7 +251,7 @@ def _checklist_row(packet: AppliancePacket, section: str) -> tuple[str, str]:
             "Open" if missing else "Ready")
     if section == "site_plan":
         if plan:
-            return f"Page 3: to scale, 1 in = {plan.scale_ft_per_in} ft", "Ready"
+            return f"Page 3: to scale, 1 in = {printed_scale(plan)} ft", "Ready"
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
         return f"Page {SECTION_PAGES[section]}: add manufacturer sheets", "Attach"
@@ -341,7 +341,7 @@ def _site_plan(packet: AppliancePacket) -> list:
             _p("Site Plan", H1),
             _p(f"Shows the location of the main panel, the {_appliance(packet)} and the new circuit.", SMALL),
             Spacer(1, 10),
-            SitePlan(packet),
+            diagram(SitePlan(packet), share=0.8),
         ]
     legend = [
         f"P  Main panel, {job.service_amps} A (existing)",
@@ -358,18 +358,10 @@ def _site_plan(packet: AppliancePacket) -> list:
     setback = plan.distance_to_lot_line_ft(plan.markers["appliance"])
     if setback is not None:
         measures.append(f"{sentence_case(_appliance(packet))} to nearest lot line: {setback} ft")
-    measures.append(f"Scale 1 in = {plan.scale_ft_per_in} ft when printed at 100%")
-    measures.append("Not a survey. Field verify all dimensions.")
-    return [
-        _p("Site Plan", H1),
-        _p(job.address + (f". Parcel {plan.parcel_number}." if plan.parcel_number else "."), SMALL),
-        Spacer(1, 6),
-        AerialSitePlan(plan, markers=_plan_markers(packet), underground=bool(job.trench_ft), width=CONTENT),
-        Spacer(1, 6),
-        _table([[_p("\n".join(legend)), _p("\n".join(measures))]], [CONTENT / 2, CONTENT / 2], head=False),
-        Spacer(1, 3),
-        _p(". ".join(credit.rstrip(".") for credit in plan.credits) + ".", CREDIT),
-    ]
+    return site_plan_page(
+        address=job.address, plan=plan, markers=_plan_markers(packet), underground=bool(job.trench_ft),
+        legend=legend, measures=measures,
+    )
 
 
 def _circuit_schedule(packet: AppliancePacket) -> list[tuple[str, str, str]]:
@@ -411,17 +403,17 @@ def _one_line(packet: AppliancePacket) -> list:
         _p("One-Line Diagram", H1),
         _p("Main panel, breaker, disconnect, conductors and the appliance.", SMALL),
         Spacer(1, 10),
-        OneLine(packet),
+        diagram(OneLine(packet)),
         Spacer(1, 6),
         _p("Conductor and conduit schedule", H2),
         _table([_heads("Segment", "Conductors", "Conduit", "Protection")]
                + [[_p(cell) for cell in row] for row in rows],
-               [1.4 * inch, 2.4 * inch, 1.3 * inch, CONTENT - 5.1 * inch]),
+               [1.4 * inch, 2.4 * inch, 1.3 * inch, content_w() - 5.1 * inch]),
         Spacer(1, 10),
         _p("Circuit schedule", H2),
         _table([_heads("Item", "Specification", "Basis")]
                + [[_p(a), _p(b), _p(c)] for a, b, c in _circuit_schedule(packet)],
-               [1.5 * inch, CONTENT - 4.2 * inch, 2.7 * inch]),
+               [1.5 * inch, content_w() - 4.2 * inch, 2.7 * inch]),
     ]
 
 
@@ -477,7 +469,7 @@ def _equipment(packet: AppliancePacket) -> list:
         _p("Attach the manufacturer's data sheets and listing information behind this page.", SMALL),
         Spacer(1, 10),
         _table([_heads("Item", "Specification", "Listing")] + [[_p(a), _p(b), _p(c)] for a, b, c in rows],
-               [1.5 * inch, CONTENT - 3.4 * inch, 1.9 * inch]),
+               [1.5 * inch, content_w() - 3.4 * inch, 1.9 * inch]),
     ]
 
 
