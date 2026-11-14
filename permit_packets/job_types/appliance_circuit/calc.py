@@ -206,8 +206,6 @@ def _flags(job: ApplianceJob, load: LoadCalculation, branch: Branch) -> list[str
         ]
     else:
         flags.append("Size the circuit from the appliance's nameplate and instructions.")
-    if job.jurisdiction.state == "CA":
-        flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
     flags += exposure_flags(job)
     if not job.existing_circuits:
         flags.append(MISSING_FLAG)

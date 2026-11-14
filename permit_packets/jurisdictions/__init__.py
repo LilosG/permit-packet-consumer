@@ -7,7 +7,7 @@ checklist and says so.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 DEFAULT_CODE_NOTE = "Confirm the adopted code edition."
 
@@ -66,8 +66,10 @@ class Jurisdiction:
         return f"{self.name}, {self.state}" if self.state else self.name
 
     def checklist_for(self, job_type: str) -> Checklist:
-        """This city's checklist for the job type, else the general one."""
-        return self.checklists.get(job_type) or GENERAL_CHECKLISTS[job_type]
+        """This city's checklist for the job type, else the general NEC one, plus the state's amendments."""
+        base = self.checklists.get(job_type) or GENERAL_CHECKLISTS[job_type]
+        added = tuple(note for note in STATE_AMENDMENTS.get(self.state, ()) if note not in base.notes)
+        return replace(base, notes=base.notes + added) if added else base
 
     def known_for(self, job_type: str) -> bool:
         """True only when this city's own checklist covers the job type."""
@@ -77,7 +79,7 @@ class Jurisdiction:
 # The city modules import the classes above, so they come after them.
 from permit_packets.jurisdictions.charlotte_nc import CHARLOTTE  # noqa: E402
 from permit_packets.jurisdictions.el_cajon_ca import EL_CAJON  # noqa: E402
-from permit_packets.jurisdictions.general import GENERAL_CHECKLISTS  # noqa: E402
+from permit_packets.jurisdictions.general import GENERAL_CHECKLISTS, STATE_AMENDMENTS  # noqa: E402
 from permit_packets.jurisdictions.mesa_az import MESA  # noqa: E402
 from permit_packets.jurisdictions.nashville_tn import NASHVILLE  # noqa: E402
 from permit_packets.jurisdictions.oro_valley_az import ORO_VALLEY  # noqa: E402

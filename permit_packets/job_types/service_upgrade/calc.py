@@ -147,8 +147,6 @@ def _flags(job: ServiceJob, gecs: dict[str, str]) -> list[str]:
         "Keep the working space in front of the panel clear: 30 in wide, 36 in deep (110.26).",
         "Extended or modified branch circuits may need AFCI protection (210.12(D)). Confirm the city's position.",
     ]
-    if job.jurisdiction.state == "CA":
-        flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
     flags += exposure_flags(job)
     if job.has_solar:
         flags.append("This home has solar. Confirm the PV breaker sits at the opposite end of the bus from the main.")

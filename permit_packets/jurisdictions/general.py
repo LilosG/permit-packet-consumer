@@ -1,7 +1,7 @@
 """The fallback checklist for each job type, for cities not set up yet."""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Requirement
+from permit_packets.jurisdictions import Checklist, Note, Requirement
 
 GENERAL_CHECKLISTS: dict[str, Checklist] = {
     "ev_charger": Checklist(items=(
@@ -33,4 +33,13 @@ GENERAL_CHECKLISTS: dict[str, Checklist] = {
         Requirement("Load calculation", "load"),
         Requirement("Manufacturer specifications and listing", "equipment"),
     )),
+}
+
+# What a state adds to every permit in it, on top of a city's own checklist or the general one. A city
+# that publishes no checklist gets the general NEC checklist plus the notes for its state.
+STATE_AMENDMENTS: dict[str, tuple[Note, ...]] = {
+    "CA": (
+        Note("always", "California: permit work over $1,000 can trigger smoke and CO alarm requirements. "
+                       "Confirm with the city."),
+    ),
 }

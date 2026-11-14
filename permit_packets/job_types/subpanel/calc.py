@@ -135,8 +135,6 @@ def _flags(job: SubpanelJob, load: LoadCalculation, feeder: Feeder, assumed: boo
     ]
     if assumed:
         flags.append("No loads listed, so the feeder load assumes 80% of the breaker. Add the planned loads.")
-    if job.jurisdiction.state == "CA":
-        flags.append("California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city.")
     flags += exposure_flags(job)
     if not job.existing_circuits:
         flags.append(MISSING_FLAG)
