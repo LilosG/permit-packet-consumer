@@ -16,6 +16,7 @@ from permit_packets.core.pdf_base import (
     CELL_BOLD, CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
 )
+from permit_packets.core.title_block import title_block_for
 from permit_packets.core.site_plan import AerialSitePlan, PlanMarker
 from permit_packets.job_types.service_upgrade.calc import (
     BRAND_LABELS,
@@ -304,6 +305,7 @@ def _cover(packet: ServicePacket) -> list:
                         for requirement in jurisdiction.checklist_for("service_upgrade").items],
         checks=[(check.name, check.result, check.passed) for check in packet.checks],
         flags=packet.flags,
+        stamp_box_in=job.jurisdiction.stamp_box_in,
     )
 
 
@@ -539,6 +541,8 @@ def render_service_packet_pdf(packet: ServicePacket) -> bytes:
         [_cover(packet), _application(packet), _site_plan(packet), _riser(packet),
          _load(packet), _panel_schedule(packet), _utility(packet), _equipment(packet), _review(packet)],
         title=f"{_title(packet)} (demo)",
+        block=title_block_for(packet.job),
+        sheet_titles=["Checklist and Checks","Permit Application Data","Site Plan","Riser Diagram","Load Calculation","Panel Schedule","Utility Service Request","Equipment Data","Pre-Submittal Review"],
     )
     sheet = find_equipment(packet.job.panel_model, "panel")
     return attach_data_sheets(pdf, [sheet] if sheet else [], after_title="Equipment Data")

@@ -58,6 +58,9 @@ MESA = Jurisdiction(
         "set for the job site from the same DIMES record."
     ),
     needs_parcel_number=True,
+    # Mesa, "Submission and Formatting Requirements for Electronic Plans":
+    # https://mesaaz.gov/home/showpublisheddocument/22231/637570186539370000
+    stamp_box_in=4.0,
     utility="SRP (Salt River Project)",
     utility_short="SRP",
     checklists={

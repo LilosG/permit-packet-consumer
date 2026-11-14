@@ -51,6 +51,8 @@ class Jurisdiction:
     utility: str = ""
     utility_short: str = ""
     sheet_size: str = "letter"  # "tabloid" where the city wants 11" x 17" sheets
+    # Side, in inches, of the empty square the city reserves for its stamp on the cover sheet.
+    stamp_box_in: float | None = None
     checklists: dict[str, Checklist] = field(default_factory=dict)
 
     @property

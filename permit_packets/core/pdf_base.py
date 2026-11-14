@@ -11,8 +11,12 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
+
+from permit_packets.core.layout import Sheet, current_sheet
+from permit_packets.core.title_block import TitleBlock, draw_title_block
 from reportlab.platypus import (
     KeepInFrame,
+    Flowable,
     BaseDocTemplate,
     Frame,
     Image,
@@ -41,6 +45,7 @@ COVER_LOGO_W = 1.9 * inch
 COVER_LOGO_H = 1.0 * inch
 
 MARGIN = 0.7 * inch
+# The letter content width. Diagrams are drawn at this width and scaled to the sheet.
 CONTENT = WIDTH - 2 * MARGIN
 
 
@@ -93,21 +98,23 @@ def _heads(*labels: str) -> list[Paragraph]:
 
 def _watermark(canvas, doc) -> None:
     """Drawn after the page content and see-through, so table fills can't hide part of it."""
+    sheet = current_sheet()
     canvas.saveState()
     canvas.setFillColor(WATERMARK_INK)
     canvas.setFillAlpha(0.09)
     canvas.setFont("Helvetica-Bold", 58)
-    canvas.translate(WIDTH / 2, HEIGHT / 2)
+    canvas.translate(sheet.width / 2, sheet.height / 2)
     canvas.rotate(38)
     canvas.drawCentredString(0, -20, "DEMO")
     canvas.restoreState()
 
 
 def _page(canvas, doc) -> None:
+    sheet = current_sheet()
     canvas.saveState()
     canvas.setFont("Helvetica-Bold", 8)
     canvas.setFillColor(COPPER)
-    canvas.drawString(MARGIN, HEIGHT - 0.42 * inch, "DEMO PACKET: NOT FOR SUBMISSION")
+    canvas.drawString(sheet.margin, sheet.height - 0.42 * inch, "DEMO PACKET: NOT FOR SUBMISSION")
     canvas.setFillColor(MUTED)
     canvas.setFont("Helvetica", 8)
     logo = CONTRACTOR_LOGO.get()
@@ -115,24 +122,35 @@ def _page(canvas, doc) -> None:
         reader = ImageReader(BytesIO(logo))
         width, height = reader.getSize()
         w = HEADER_LOGO_H * width / height
-        canvas.drawImage(reader, WIDTH - MARGIN - w, HEIGHT - 0.5 * inch, w, HEADER_LOGO_H, mask="auto")
+        canvas.drawImage(reader, sheet.width - sheet.margin - w, sheet.height - 0.5 * inch, w, HEADER_LOGO_H, mask="auto")
     elif not logo:
-        canvas.drawRightString(WIDTH - MARGIN, HEIGHT - 0.42 * inch, "Lilos Growth")
-    canvas.setStrokeColor(RULE)
-    canvas.line(MARGIN, 0.5 * inch, WIDTH - MARGIN, 0.5 * inch)
-    canvas.drawString(
-        MARGIN, 0.34 * inch,
-        "Draft for review by a licensed electrician. Confirm against the city's current requirements before use.",
-    )
+        canvas.drawRightString(sheet.width - sheet.margin, sheet.height - 0.42 * inch, "Lilos Growth")
     canvas.restoreState()
 
 
-class NumberedCanvas(Canvas):
-    """Holds each page until the end, so the footer can say the real page count."""
+class SheetMark(Flowable):
+    """Zero-size marker at the top of each section: names the sheet the page is."""
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, title: str) -> None:
+        super().__init__()
+        self.title = title
+
+    def wrap(self, available_width, available_height):
+        return 0, 0
+
+    def draw(self) -> None:
+        self.canv._sheet_title = self.title
+
+
+class NumberedCanvas(Canvas):
+    """Holds each page until the end, so the title block can say the real page count."""
+
+    def __init__(self, *args, block: TitleBlock, sheet: Sheet, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._pages: list[dict] = []
+        self._block = block
+        self._sheet = sheet
+        self._sheet_title = ""
 
     def showPage(self) -> None:
         self._pages.append(dict(self.__dict__))
@@ -142,30 +160,61 @@ class NumberedCanvas(Canvas):
         total = len(self._pages)
         for page in self._pages:
             self.__dict__.update(page)
-            self.setFont("Helvetica", 8)
-            self.setFillColor(MUTED)
-            self.drawRightString(WIDTH - MARGIN, 0.34 * inch, f"Page {self._pageNumber} of {total}")
+            draw_title_block(self, self._sheet, self._block, title=self._sheet_title,
+                             number=self._pageNumber, total=total)
             super().showPage()
         super().save()
 
 
-def build_document(sections: list[list], *, title: str) -> bytes:
+def build_document(sections: list[list], *, title: str, block: TitleBlock, sheet_titles: list[str]) -> bytes:
+    """Every section is one sheet. `sheet_titles` names each one in its title block."""
+    assert len(sections) == len(sheet_titles), "one sheet title per section"
+    sheet = current_sheet()
     story: list = []
-    for index, section in enumerate(sections):
+    for index, (section, sheet_title) in enumerate(zip(sections, sheet_titles)):
         if index:
             story.append(PageBreak())
-        story += section
+        story += [SheetMark(sheet_title)] + section
     buffer = BytesIO()
     doc = BaseDocTemplate(
-        buffer, pagesize=letter, leftMargin=MARGIN, rightMargin=MARGIN,
-        topMargin=0.65 * inch, bottomMargin=0.65 * inch,
+        buffer, pagesize=(sheet.width, sheet.height), leftMargin=sheet.margin, rightMargin=sheet.margin,
+        topMargin=sheet.top_margin, bottomMargin=sheet.frame_y,
         title=title, author="Lilos Growth",
     )
-    frame = Frame(MARGIN, 0.6 * inch, CONTENT, HEIGHT - 1.2 * inch,
+    frame = Frame(sheet.margin, sheet.frame_y, sheet.content_w, sheet.content_h,
                   leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
     doc.addPageTemplates([PageTemplate(id="page", frames=[frame], onPage=_page, onPageEnd=_watermark)])
-    doc.build(story, canvasmaker=NumberedCanvas)
+
+    def canvas_maker(*args, **kwargs):
+        return NumberedCanvas(*args, block=block, sheet=sheet, **kwargs)
+
+    doc.build(story, canvasmaker=canvas_maker)
     return buffer.getvalue()
+
+
+class StampBox(Flowable):
+    """An empty square the city stamps, at its true size."""
+
+    def __init__(self, side: float) -> None:
+        super().__init__()
+        self.side = side
+
+    def wrap(self, available_width, available_height):
+        return self.side, self.side
+
+    def draw(self) -> None:
+        c = self.canv
+        c.setStrokeColor(INK)
+        c.setLineWidth(0.8)
+        c.setDash(4, 3)
+        c.rect(0, 0, self.side, self.side, stroke=1, fill=0)
+        c.setDash()
+        c.setFillColor(MUTED)
+        c.setFont("Helvetica", 8)
+        c.drawCentredString(self.side / 2, self.side - 12, "Reserved for city stamp")
+        c.setFont("Helvetica", 6.6)
+        inches = self.side / inch
+        c.drawCentredString(self.side / 2, 6, f"{inches:g} in x {inches:g} in")
 
 
 def cover_page(
@@ -178,64 +227,93 @@ def cover_page(
     checklist_rows: list[tuple[str, str, str]],
     checks: list[tuple[str, str, bool]],
     flags: list[str],
+    stamp_box_in: float | None = None,
 ) -> list:
-    """The first page: the job, the city's checklist, the engineering checks and the flags."""
-    story = [_p(title, H1), _p(address, BODY), Spacer(1, 8)]
+    """The first page: the job, the city's checklist, the engineering checks and the flags.
+
+    When the city reserves a stamp area, an empty square of exactly that size sits at the foot of the
+    page, drawn outside the shrink-to-fit so it keeps its true size.
+    """
+    sheet = current_sheet()
+    width, height = sheet.content_w, sheet.content_h
+    head = [_p(title, H1), _p(address, BODY)]
     logo = CONTRACTOR_LOGO.get()
     if logo:
         reader = ImageReader(BytesIO(logo))
-        width, height = reader.getSize()
-        scale = min(COVER_LOGO_W / width, COVER_LOGO_H / height)
-        image = Image(BytesIO(logo), width * scale, height * scale)
-        story = [Table(
-            [[[_p(title, H1), _p(address, BODY)], image]],
-            colWidths=[CONTENT - COVER_LOGO_W, COVER_LOGO_W],
+        w, h = reader.getSize()
+        scale = min(COVER_LOGO_W / w, COVER_LOGO_H / h)
+        image = Image(BytesIO(logo), w * scale, h * scale)
+        head = [Table(
+            [[head, image]],
+            colWidths=[width - COVER_LOGO_W, COVER_LOGO_W],
             style=TableStyle([
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("ALIGN", (1, 0), (1, 0), "RIGHT"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0),
                 ("TOPPADDING", (0, 0), (-1, -1), 0), ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
             ]),
-        ), Spacer(1, 8)]
-    story += [
-        _table(
-            [[_p("JOB", LABEL), _p("CONTRACTOR", LABEL), _p("CHECKLIST", LABEL)],
-             [_p(job_cell), _p(contractor_cell), _p(checklist_cell)]],
-            [CONTENT / 3] * 3,
-        ),
-        Spacer(1, 8),
-    ]
+        )]
+    info = _table(
+        [[_p("JOB", LABEL), _p("CONTRACTOR", LABEL), _p("CHECKLIST", LABEL)],
+         [_p(job_cell), _p(contractor_cell), _p(checklist_cell)]],
+        [width / 3] * 3,
+    )
     rows = [[_p(item), _p(where), _p(status, CELL_BOLD)] for item, where, status in checklist_rows]
-    story += [
-        _p("Checklist", H2),
-        _table(
-            [_heads("Required", "In this packet", "Status")] + rows,
-            [3.9 * inch, CONTENT - 4.55 * inch, 0.65 * inch], extra=TIGHT,
-        ),
-        Spacer(1, 6),
-        _p("Engineering checks", H2),
-        _table(
-            [_heads("Check", "Result", "Status")]
-            + [[_p(name), _p(result), _p("Pass" if passed else "Fix", CELL_BOLD)]
-               for name, result, passed in checks],
-            [1.6 * inch, CONTENT - 2.25 * inch, 0.65 * inch], extra=TIGHT,
-        ),
-        Spacer(1, 6),
-        _p("Flagged for your review", H2),
-    ]
-    half = (len(flags) + 1) // 2
-    columns = [flags[:half], flags[half:]]
-    story.append(Table(
-        [[[_p(f"[  ]  {flag}", FLAG) for flag in column] for column in columns]],
-        colWidths=[CONTENT / 2, CONTENT / 2],
-        style=TableStyle([
-            ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 8), ("TOPPADDING", (0, 0), (-1, -1), 0),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
-        ]),
-    ))
+    check_rows = [[_p(name), _p(result), _p("Pass" if passed else "Fix", CELL_BOLD)]
+                  for name, result, passed in checks]
+
+    def checklist_table(w):
+        return _table([_heads("Required", "In this packet", "Status")] + rows,
+                      [w * 0.5, w - w * 0.5 - 0.65 * inch, 0.65 * inch], extra=TIGHT)
+
+    def checks_table(w):
+        return _table([_heads("Check", "Result", "Status")] + check_rows,
+                      [w * 0.3, w - w * 0.3 - 0.65 * inch, 0.65 * inch], extra=TIGHT)
+
+    if sheet.landscape:
+        left, right = width * 0.56, width * 0.44 - 14
+        body = [Table(
+            [[[_p("Checklist", H2), checklist_table(left)], [_p("Engineering checks", H2), checks_table(right)]]],
+            colWidths=[left + 14, right],
+            style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                              ("RIGHTPADDING", (0, 0), (-1, -1), 0), ("TOPPADDING", (0, 0), (-1, -1), 0),
+                              ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]),
+        )]
+    else:
+        body = [_p("Checklist", H2), checklist_table(width), Spacer(1, 6),
+                _p("Engineering checks", H2), checks_table(width)]
+
+    def flag_columns(columns: int, w: float):
+        per = -(-len(flags) // columns) or 1
+        chunks = [flags[i:i + per] for i in range(0, len(flags), per)] or [[]]
+        return Table(
+            [[[_p(f"[  ]  {flag}", FLAG) for flag in chunk] for chunk in chunks]],
+            colWidths=[w / len(chunks)] * len(chunks),
+            style=TableStyle([
+                ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 8), ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+            ]),
+        )
+
+    top = head + [Spacer(1, 8), info, Spacer(1, 8)] + body + [Spacer(1, 6), _p("Flagged for your review", H2)]
     # The cover is always one page: a long flag list shrinks to fit rather than pushing every
     # later page (and every "Page N" reference) back by one.
-    return [KeepInFrame(CONTENT, HEIGHT - 1.25 * inch, story, mode="shrink")]
+    if stamp_box_in is None:
+        columns = 3 if sheet.landscape else 2
+        return [KeepInFrame(width, height - 4, top + [flag_columns(columns, width)], mode="shrink")]
+    stamp = stamp_box_in * inch
+    band = stamp + 4
+    flags_w = width - stamp - 16
+    main_h = height - band - 12
+    lower = Table(
+        [[KeepInFrame(flags_w, band, [flag_columns(2 if sheet.landscape else 1, flags_w)], mode="shrink"),
+          StampBox(stamp)]],
+        colWidths=[flags_w + 16, stamp], rowHeights=[band],
+        style=TableStyle([("VALIGN", (0, 0), (-1, -1), "BOTTOM"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                          ("RIGHTPADDING", (0, 0), (-1, -1), 0), ("TOPPADDING", (0, 0), (-1, -1), 0),
+                          ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]),
+    )
+    return [KeepInFrame(width, main_h, top, mode="shrink"), Spacer(1, 4), lower]
 
 
 def review_page(items: list[str]) -> list:

@@ -15,6 +15,7 @@ from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, cover_page, load_page, review_page,
 )
+from permit_packets.core.title_block import title_block_for
 from permit_packets.core.site_plan import AerialSitePlan, PlanMarker
 from permit_packets.job_types.appliance_circuit.calc import (
     SPACES_NEEDED,
@@ -278,6 +279,7 @@ def _cover(packet: AppliancePacket) -> list:
                         for requirement in jurisdiction.checklist_for("appliance_circuit").items],
         checks=[(check.name, check.result, check.passed) for check in packet.checks],
         flags=packet.flags,
+        stamp_box_in=job.jurisdiction.stamp_box_in,
     )
 
 
@@ -516,4 +518,6 @@ def render_appliance_packet_pdf(packet: AppliancePacket) -> bytes:
         [_cover(packet), _application(packet), _site_plan(packet), _one_line(packet),
          _load(packet), _panel_schedule(packet), _equipment(packet), _review(packet)],
         title=f"{APPLIANCE_TITLES[packet.job.appliance]} Circuit Permit Packet (demo)",
+        block=title_block_for(packet.job),
+        sheet_titles=["Checklist and Checks","Permit Application Data","Site Plan","One-Line Diagram","Load Calculation","Panel Schedule","Equipment Data","Pre-Submittal Review"],
     )
