@@ -27,7 +27,7 @@ SURGE_PROTECTION = Requirement(
 
 @dataclass(frozen=True)
 class Note:
-    when: str  # always, disconnect or trench
+    when: str  # always, disconnect, trench, indoor or outdoor (EV charger location)
     text: str
     source: str = ""  # URL of the page or form this note comes from
 
@@ -64,7 +64,9 @@ class Jurisdiction:
     needs_parcel_number: bool = False
     utility: str = ""
     utility_short: str = ""
-    sheet_size: str = "letter"  # "tabloid" where the city wants 11" x 17" sheets
+    sheet_size: str = "letter"  # "tabloid" for 11" x 17" sheets; "ansi_d" for a 22" x 34" drawing set
+    # The largest site plan scale the city accepts, in feet per inch as drawn on letter. None: any.
+    max_plan_scale_ft_per_in: int | None = None
     # Side, in inches, of the empty square the city reserves for its stamp on the cover sheet.
     stamp_box_in: float | None = None
     # (width, height) in inches of the empty area the city reserves on the title sheet for agency stamps.
@@ -78,6 +80,16 @@ class Jurisdiction:
     design_ambient_source: str = ""  # where that figure comes from, a URL
     # What this city enforces, for job types it publishes no checklist for (they use the general one).
     code_note: str = ""
+    # Local amendments to the NEC wiring methods. Empty or False: the NEC as published.
+    service_raceways: tuple[str, ...] = ()  # raceways allowed above ground for service-entrance conductors
+    min_service_raceway: str = ""  # smallest raceway for service-entrance conductors, e.g. '1-1/4"'
+    pvc_underground_only: bool = False  # PVC only underground or in concrete; metal raceway above ground
+    cable_outdoors: bool = True  # False where no cable type is allowed for a 240 V circuit outdoors
+    wiring_source: str = ""  # URL of the amendments behind the four fields above
+    # Local service rules. None or empty: the NEC as published.
+    max_meter_to_main_ft: int | None = None  # main disconnect within this distance of where conductors enter
+    concrete_encased_note: str = ""  # shown when a service upgrade has no concrete-encased electrode
+    afci_note: str = ""  # replaces the general AFCI flag on a service upgrade
     fallback_notes: tuple[Note, ...] = ()
     checklists: dict[str, Checklist] = field(default_factory=dict)
 
@@ -98,7 +110,7 @@ class Jurisdiction:
                     notes=base.notes + (Note(
                         "always",
                         f"{self.name} publishes no {job_type.replace('_', ' ')} checklist. This is the general NEC "
-                        f"checklist. {self.code_note}".strip()
+                        "checklist."  # the code note is its own flag (checklist.code_note), so it is not repeated here
                     ),) + self.fallback_notes,
                 )
         added = tuple(note for note in STATE_AMENDMENTS.get(self.state, ()) if note not in base.notes)

@@ -152,6 +152,8 @@ def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int 
             flags.append(f"Attach the {job.charger_model} data sheet behind the equipment page. It isn't in the equipment library yet.")
     elif charger.max_amps < job.charger_amps:
         flags.append(f"The {charger.name} is rated {charger.max_amps} A, below the {job.charger_amps} A set here.")
+    flags.append("Wire sized at the 75\N{DEGREE SIGN}C column. Confirm the charger and breaker terminals are listed "
+                 "and marked for 75\N{DEGREE SIGN}C, as most Level 2 chargers are (110.14(C)(1)(a)).")
     if job.trench_ft:
         flags.append("Call 811 before trenching and field verify the route.")
     if disconnect:
@@ -166,7 +168,8 @@ def _flags(job: EvJob, load: LoadCalculation, circuit: Circuit, disconnect: int 
         flags.append("This site plan is a schematic. Replace it with the property's plan before submitting.")
     if job.jurisdiction.needs_parcel_number and not (job.plan and job.plan.parcel_number):
         flags.append("This city needs the parcel number on the application.")
-    active = {"always"} | ({"disconnect"} if disconnect else set()) | ({"trench"} if job.trench_ft else set())
+    active = ({"always", "outdoor" if job.location == "exterior_wall" else "indoor"}
+              | ({"disconnect"} if disconnect else set()) | ({"trench"} if job.trench_ft else set()))
     checklist = job.jurisdiction.checklist_for("ev_charger")
     flags += [note.text for note in checklist.notes if note.when in active]
     flags.append(checklist.code_note)
