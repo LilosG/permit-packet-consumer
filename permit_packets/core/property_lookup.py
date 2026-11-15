@@ -189,6 +189,15 @@ COUNTIES = {
         lambda attributes: str(attributes.get("SITE_ADDRESS") or "").split(" ", 1)[0],
         lambda street_type: f"SITE_ADDRESS LIKE '% {_quoted(street_type.upper())}'",
     ),
+    "53033": County(
+        # King County GIS Center, Property layer "Parcels" (PIN is the county's 10-digit parcel number). King
+        # County's open data terms ask for the legend "Data provided by permission of King County".
+        "https://gismaps.kingcounty.gov/arcgis/rest/services/Property/KingCo_PropertyInfo/MapServer/2/query",
+        "PIN", "Lot lines: data provided by permission of King County", "ADDR_HN,ADDR_FULL",
+        lambda number, street: f"ADDR_HN='{_quoted(number)}' AND ADDR_FULL LIKE '{_quoted(number)} %{_quoted(street.upper())}%'",
+        lambda attributes: str(attributes.get("ADDR_HN") or "").strip(),
+        lambda street_type: f"ADDR_FULL LIKE '% {_quoted(street_type.upper())}%'",
+    ),
     "06073": County(
         "https://gis-public.sandiegocounty.gov/arcgis/rest/services/DPW/LEAMS_Reference/MapServer/16/query",
         "APN", "Lot lines: San Diego County GIS", "SITUS_ADDRESS",

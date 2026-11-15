@@ -57,6 +57,7 @@ CLIENTS: dict[str, Client] = {
     # One city for the trial: Chandler, checked against Chandler's published requirements. More cities are
     # added if JBee signs on.
     "jbee": _client("jbee", "JBee Industries", "https://jbindustrieshvac.com", "jbee.png", "chandler-az"),
+    "volta": _client("volta", "Volta Electrical", "https://www.voltaelectricians.com", "volta.png", "bellevue-wa"),
 }
 
 

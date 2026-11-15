@@ -158,3 +158,29 @@ def test_library_data_sheets_are_unrotated_so_they_place_as_drawn():
     from permit_packets.core.equipment import LIBRARY
     for item in LIBRARY:
         assert all(page.rotation == 0 for page in PdfReader(str(item.data_sheet_path())).pages), item.name
+
+
+def test_pse_meter_main_check_passes_a_listed_combo_and_fails_the_ringless_milbank():
+    from tests.packet_helpers import build, complete_inputs
+    from permit_packets.jurisdictions import jurisdiction_by_key
+
+    bellevue = jurisdiction_by_key("bellevue-wa", "Bellevue", "WA")
+    payload = complete_inputs("service_upgrade", bellevue)
+    listed = {c["name"]: c for c in build("service_upgrade", payload).body["checks"]}["Utility meter socket"]
+    assert listed["passed"] and "SC816D200C" in listed["result"]
+    payload["panel_model"] = "Milbank U5168-XTL-200 meter-main, 200 A"
+    ringless = {c["name"]: c for c in build("service_upgrade", payload).body["checks"]}["Utility meter socket"]
+    assert not ringless["passed"]
+
+
+def test_a_library_hot_tub_attaches_its_data_sheet():
+    from tests.packet_helpers import build, complete_inputs
+    from permit_packets.jurisdictions import jurisdiction_by_key
+
+    payload = complete_inputs("appliance_circuit", jurisdiction_by_key("bellevue-wa", "Bellevue", "WA"))
+    payload.update(appliance_model="Jacuzzi J-335 hot tub, 240 V, 50 A configuration", data_sheet_attached=False,
+                   nameplate_amps=36)
+    result = build("appliance_circuit", payload)
+    row = {r["item"]: r for r in result.body["checklist_status"]}["Appliance manufacturer specifications and listing"]
+    assert row["status"] == "Ready"
+    assert attachment_span(result.pdf) is not None

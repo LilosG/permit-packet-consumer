@@ -74,6 +74,7 @@ def plan_for(key: str, scale: int = 30, parcel: str = "482-110-22-00") -> dict:
 # 200 A, 200 A bus) and a 225 A main-lug load center for the subpanel (set to 225 A below).
 LIBRARY_PANEL = "Milbank U5168-XTL-200 meter-main, 200 A"
 LIBRARY_SUBPANEL = "Square D Homeline HOM3060L225PGC, 225 A main lug"
+UTILITY_LISTED_METER_MAIN = "Square D Homeline SC816D200C meter-main, 200 A, ringed"
 
 
 def complete_inputs(key: str, jurisdiction) -> dict:
@@ -94,7 +95,9 @@ def complete_inputs(key: str, jurisdiction) -> dict:
         payload.update(charger_model="Tesla Wall Connector", charger_venting_required=False,
                        hoa_approval="not_required", panel_bus_amps=200)
     elif key == "service_upgrade":
-        payload.update(panel_model=LIBRARY_PANEL, panel_bus_amps=payload["bus_amps"], surge_protection="type_2")
+        # Where the utility lists the meter-mains it accepts, a complete job names one of them.
+        model = UTILITY_LISTED_METER_MAIN if jurisdiction.approved_meter_mains else LIBRARY_PANEL
+        payload.update(panel_model=model, panel_bus_amps=payload["bus_amps"], surge_protection="type_2")
     elif key == "subpanel":
         payload.update(subpanel_model=LIBRARY_SUBPANEL, subpanel_amps=225, panel_bus_amps=200)
     else:

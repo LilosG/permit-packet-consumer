@@ -32,6 +32,7 @@ CASES = {
     "oro_valley": ("04019", "Pima County parcels", "AZ Central State Plane ft (EPSG:2868)"),
     "las_vegas": ("32003", "Clark County / City of Las Vegas parcels", "NV East State Plane ft (EPSG:3421)"),
     "charlotte": ("37119", "Mecklenburg County parcels", "NC State Plane ft (EPSG:2264)"),
+    "bellevue": ("53033", "King County GIS parcels", "Web Mercator (EPSG:3857)"),
 }
 
 

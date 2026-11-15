@@ -381,7 +381,7 @@ def _site_plan(packet: SubpanelPacket) -> list:
         measures.append(f"Subpanel to nearest lot line: {setback} ft")
     return site_plan_page(
         address=job.address, plan=plan, markers=_plan_markers(packet), underground=bool(job.trench_ft),
-        legend=legend, measures=measures,
+        legend=legend, measures=measures, outline_over_aerial=job.jurisdiction.outline_over_aerial,
     )
 
 

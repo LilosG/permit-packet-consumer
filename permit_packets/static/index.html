@@ -169,7 +169,7 @@
     <div class="block">
       <h2>Equipment and utility</h2>
       <div class="grid">
-        <label class="field">New panel make and model<input name="panel_model" list="panel-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"><datalist id="panel-models"><option value="Square D Homeline HOM3060M200PC, 200 A main breaker"></option><option value="Square D Homeline HOM3060L225PGC, 225 A main lug"></option><option value="Milbank U5168-XTL-200 meter-main, 200 A"></option></datalist></label>
+        <label class="field">New panel make and model<input name="panel_model" list="panel-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"><datalist id="panel-models"><option value="Square D Homeline HOM3060M200PC, 200 A main breaker"></option><option value="Square D Homeline HOM3060L225PGC, 225 A main lug"></option><option value="Milbank U5168-XTL-200 meter-main, 200 A"></option><option value="Square D Homeline SC816D200C meter-main, 200 A, ringed"></option></datalist></label>
         <label class="field">Bus rating (A)<input name="bus_amps" type="number" min="100" max="400" value="200" required></label>
       </div>
       <fieldset style="margin-top:14px"><legend>Existing panel</legend><div class="choices">
@@ -285,7 +285,7 @@
         <label class="choice"><input type="radio" name="ac_appliance" value="other"><span>Other 240 V</span></label>
       </div></fieldset>
       <div class="grid" style="margin-top:14px">
-        <label class="field">Make and model<input name="ac_model" placeholder="Example: Acme Spa 500" maxlength="120"></label>
+        <label class="field">Make and model<input name="ac_model" list="appliance-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"><datalist id="appliance-models"><option value="Jacuzzi J-335 hot tub, 240 V, 50 A configuration"></option></datalist></label>
         <label class="field" data-ac="hot_tub other">Nameplate amps (A)<input name="ac_nameplate_amps" type="number" min="1" max="100" step="any" required></label>
         <label class="field" data-ac="sauna">Heater size (kW)<input name="ac_heater_kw" type="number" min="1" max="15" step="any" required><span class="hint" id="ac-kw-hint"></span></label>
         <label class="field" data-ac="heat_pump mini_split">MCA, from the nameplate (A)<input name="ac_mca" type="number" min="1" max="100" step="any" required></label>

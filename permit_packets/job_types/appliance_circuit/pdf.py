@@ -18,6 +18,7 @@ from permit_packets.core.pdf_base import (
     CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
+from permit_packets.core.equipment import attach_data_sheets, find_equipment
 from permit_packets.core.panel_data import checklist_row as panel_row, one_line_data, panel_header
 from permit_packets.core.title_block import title_block_for
 from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
@@ -264,6 +265,8 @@ def _checklist_row(packet: AppliancePacket, section: str) -> tuple[str, str]:
             return f"Page 3: to scale, 1 in = {printed_scale(plan)} ft", "Ready"
         return "Page 3: schematic only, replace it", "Open"
     if section == "equipment":
+        if find_equipment(job.appliance_model, "appliance"):
+            return f"Page {SECTION_PAGES[section]} + manufacturer data sheet", "Ready"
         if job.data_sheet_attached:
             return f"Page {SECTION_PAGES[section]} + data sheet attached by the electrician", "Ready"
         return f"Page {SECTION_PAGES[section]}: add manufacturer sheets", "Attach"
@@ -389,7 +392,7 @@ def _site_plan(packet: AppliancePacket) -> list:
         measures.append(f"{sentence_case(_appliance(packet))} to nearest lot line: {setback} ft")
     return site_plan_page(
         address=job.address, plan=plan, markers=_plan_markers(packet), underground=bool(job.trench_ft),
-        legend=legend, measures=measures,
+        legend=legend, measures=measures, outline_over_aerial=job.jurisdiction.outline_over_aerial,
     )
 
 
@@ -496,7 +499,8 @@ def _equipment(packet: AppliancePacket) -> list:
         rows.append(("Disconnect", "Within sight of the outdoor unit", f"{code} 440.14"))
     return [
         _p("Equipment Data", H1),
-        _p("Attach the manufacturer's data sheets and listing information behind this page.", SMALL),
+        _p(f"The {sheet.name} data sheet from the manufacturer follows this page." if (sheet := find_equipment(job.appliance_model, "appliance"))
+           else "Attach the manufacturer's data sheets and listing information behind this page.", SMALL),
         Spacer(1, 10),
         _table([_heads("Item", "Specification", "Listing")] + [[_p(a), _p(b), _p(c)] for a, b, c in rows],
                [1.5 * inch, content_w() - 3.4 * inch, 1.9 * inch]),
@@ -537,10 +541,12 @@ def _panel_schedule(packet: AppliancePacket) -> list:
 
 
 def render_appliance_packet_pdf(packet: AppliancePacket) -> bytes:
-    return build_document(
+    pdf = build_document(
         [_cover(packet), _application(packet), _site_plan(packet), _one_line(packet),
          _load(packet), _panel_schedule(packet), _equipment(packet), _review(packet)],
         title=demo_title(f"{APPLIANCE_TITLES[packet.job.appliance]} Circuit Permit Packet"),
         block=title_block_for(packet.job),
         sheet_titles=["Checklist and Checks","Permit Application Data","Site Plan","One-Line Diagram","Load Calculation","Panel Schedule","Equipment Data","Pre-Submittal Review"],
     )
+    sheet = find_equipment(packet.job.appliance_model, "appliance")
+    return attach_data_sheets(pdf, [sheet] if sheet else [], after_title="Equipment Data")

@@ -1,6 +1,8 @@
 """Residential panel / service upgrade permit: the job, the checks and the flags."""
 from __future__ import annotations
 
+import re
+
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -150,6 +152,21 @@ class ServicePacket:
 SPD_LABELS = {"type_1": "Type 1", "type_2": "Type 2"}
 
 
+def meter_main_check(job) -> Check | None:
+    """Where the utility publishes the meter-mains it accepts, the one named must be on the list."""
+    approved = job.jurisdiction.approved_meter_mains
+    if approved is None or job.equipment != "meter_main":
+        return None
+    utility = job.jurisdiction.utility_short or "the utility"
+    words = set(re.findall(r"[A-Z0-9-]+", job.panel_model.upper()))
+    match = next((number for number in approved if number in words), None)
+    if match:
+        return Check("Utility meter socket", f"{match} is on {utility}'s approved meter socket list", True)
+    named = job.panel_model or "No meter-main named"
+    return Check("Utility meter socket",
+                 f"{named}: not on {utility}'s approved meter socket list. Pick one it lists", False)
+
+
 def surge_check(job: ServiceJob) -> Check:
     """NEC 230.67: a dwelling service that is replaced or upgraded gets a Type 1 or Type 2 surge protective device."""
     if job.surge_protection not in SPD_LABELS:
@@ -295,6 +312,9 @@ def build_service_packet(job: ServiceJob) -> ServicePacket:
     model = service_panel_check(job)
     if model:
         checks.append(model)
+    meter_main = meter_main_check(job)
+    if meter_main:
+        checks.append(meter_main)
     checks.append(interrupting_rating_check(job))
     checks.append(panel_schedule_check(job))
     gec = gec_check(job, service_amps=job.new_service_amps, material=job.material, electrodes=tuple(gecs))
