@@ -23,6 +23,7 @@ from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from io import BytesIO
+from typing import NamedTuple
 
 import httpx
 from PIL import Image, ImageFilter, ImageOps, ImageStat
@@ -44,6 +45,7 @@ from permit_packets.core.property_plan import (
 
 PHOTON_URL = "https://photon.komoot.io/api/"
 MAPBOX_GEOCODE_URL = "https://api.mapbox.com/search/geocode/v6/forward"
+CENSUS_COORDINATES_URL = "https://geocoding.geo.census.gov/geocoder/geographies/coordinates"
 CENSUS_URL = "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress"
 STRUCTURES_URL = (
     "https://services2.arcgis.com/FiaPA4ga0iQKduv3/ArcGIS/rest/services/USA_Structures_View/FeatureServer/0/query"
@@ -382,8 +384,16 @@ def _photon_search(client: httpx.Client, text: str) -> list[dict]:
     return response.json().get("features", [])
 
 
-def _mapbox_suggestion(feature: dict) -> tuple[str, tuple[str, str], str, str] | None:
-    """(text, (street, city) key, city, state) from a Mapbox address feature, e.g. '710 Steiner Street, San Francisco, CA 94117'."""
+class Candidate(NamedTuple):
+    text: str
+    key: tuple[str, str]  # (street, city), for dropping repeats
+    city: str
+    state: str
+    point: LatLon | None
+
+
+def _mapbox_suggestion(feature: dict) -> Candidate | None:
+    """A suggestion like '710 Steiner Street, San Francisco, CA 94117' from a Mapbox address feature."""
     properties = feature.get("properties", {})
     context = properties.get("context", {})
     street = str(properties.get("name_preferred") or properties.get("name") or "").strip()
@@ -392,11 +402,34 @@ def _mapbox_suggestion(feature: dict) -> tuple[str, tuple[str, str], str, str] |
     postcode = str((context.get("postcode") or {}).get("name") or "").strip()
     if not (street and city and state) or not street[0].isdigit():
         return None
-    return f"{street}, {city}, {state}{' ' + postcode if postcode else ''}", (street.lower(), city.lower()), city, state
+    coordinates = (feature.get("geometry") or {}).get("coordinates") or []
+    point = (coordinates[1], coordinates[0]) if len(coordinates) >= 2 else None
+    text = f"{street}, {city}, {state}{' ' + postcode if postcode else ''}"
+    return Candidate(text, (street.lower(), city.lower()), city, state, point)
 
 
-def _in_city(city: str, state: str, area: Jurisdiction) -> bool:
-    return city.lower() == area.name.lower() and state.upper() == area.state.upper()
+def _jurisdiction_at(client: httpx.Client, point: LatLon, state: str) -> Jurisdiction | None:
+    """The jurisdiction the property step would pick for this spot: the Census place there, by name."""
+    try:
+        response = client.get(CENSUS_COORDINATES_URL, timeout=SUGGEST_TIMEOUT, params={
+            "x": point[1], "y": point[0], "benchmark": "Public_AR_Current", "vintage": "Current_Current",
+            "layers": "all", "format": "json",
+        })
+        response.raise_for_status()
+        places = response.json()["result"]["geographies"].get("Incorporated Places") or []
+    except (httpx.HTTPError, KeyError, ValueError):
+        return None
+    return jurisdiction_for(place_name(places[0].get("NAME", "")) if places else None, state)
+
+
+def _in_area(client: httpx.Client, area: Jurisdiction, city: str, state: str, point: LatLon | None) -> bool:
+    """Inside the city's permit area. Most cities: Mapbox's city name is the city. Where the permit area is
+    wider than the name (Nashville), the coordinates decide, the way the property step decides."""
+    by_name = city.lower() == area.name.lower() and state.upper() == area.state.upper()
+    if not area.permit_area_by_location or point is None:
+        return by_name
+    found = _jurisdiction_at(client, point, state)
+    return by_name if found is None else found.key == area.key
 
 
 def _mapbox_search(client: httpx.Client, text: str, token: str, area: Jurisdiction | None) -> list[tuple[str, tuple[str, str]]]:
@@ -410,12 +443,12 @@ def _mapbox_search(client: httpx.Client, text: str, token: str, area: Jurisdicti
         params["proximity"] = f"{area.center[0]},{area.center[1]}"
     response = client.get(MAPBOX_GEOCODE_URL, timeout=SUGGEST_TIMEOUT, params=params)
     response.raise_for_status()
-    found = []
-    for feature in response.json().get("features", []):
-        suggestion = _mapbox_suggestion(feature)
-        if suggestion and (area is None or _in_city(suggestion[2], suggestion[3], area)):
-            found.append((suggestion[0], suggestion[1]))
-    return found
+    candidates = [c for c in map(_mapbox_suggestion, response.json().get("features", [])) if c]
+    if area is not None:
+        with ThreadPoolExecutor(max_workers=max(1, min(len(candidates), 5))) as pool:
+            kept = list(pool.map(lambda c: _in_area(client, area, c.city, c.state, c.point), candidates))
+        candidates = [c for c, keep in zip(candidates, kept) if keep]
+    return [(c.text, c.key) for c in candidates]
 
 
 def _mapbox_suggest(client: httpx.Client, text: str, token: str, areas: Sequence[Jurisdiction] | None) -> list[str]:
@@ -461,7 +494,9 @@ def suggest_addresses(
                         continue
                     state = STATE_CODES.get(properties.get("state", ""), "")
                     city = str(properties.get("city") or properties.get("town") or properties.get("district") or "")
-                    if areas is None or any(_in_city(city, state, area) for area in areas):
+                    coordinates = (feature.get("geometry") or {}).get("coordinates") or []
+                    point = (coordinates[1], coordinates[0]) if len(coordinates) >= 2 else None
+                    if areas is None or any(_in_area(client, area, city, state, point) for area in areas):
                         suggestions.append(suggestion)
                 if suggestions:
                     break

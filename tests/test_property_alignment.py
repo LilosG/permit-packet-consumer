@@ -420,3 +420,73 @@ def test_photon_suggestions_are_kept_to_the_clients_city_too():
     client = httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"features": features})))
     assert pl.suggest_addresses("710 Steiner", client, areas=[SAN_FRANCISCO]) == [
         "710 Steiner Street, San Francisco, CA 00000"]
+
+
+# (street, Mapbox's community label, (lon, lat), what the Census names the place at that spot)
+_DAVIDSON = (
+    ("4000 Murfreesboro Pike", "Antioch", (-86.6560, 36.0595), "Nashville-Davidson metropolitan government (balance)"),
+    ("6000 Old Hickory Boulevard", "Hermitage", (-86.6120, 36.2000), "Nashville-Davidson metropolitan government (balance)"),
+    ("2500 White Avenue", "Nashville", (-86.7700, 36.1170), "Berry Hill city"),       # its own permit office
+    ("4500 Harding Pike", "Nashville", (-86.8560, 36.1020), "Belle Meade city"),      # mailed as Nashville, but Belle Meade
+    ("100 Broadway", "Nashville", (-86.7770, 36.1620), "Nashville-Davidson metropolitan government (balance)"),
+)
+
+
+def _davidson_client(census_up: bool = True):
+    from permit_packets.jurisdictions import NASHVILLE
+    by_x = {round(point[0], 4): place for _, _, point, place in _DAVIDSON}
+    searches, lookups = [], []
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        if request.url.host == "api.mapbox.com":
+            searches.append(dict(request.url.params))
+            return httpx.Response(200, json={"features": [{
+                "geometry": {"coordinates": list(point)},
+                "properties": {"name": street, "name_preferred": street, "context": {
+                    "place": {"name": community}, "region": {"region_code": "TN"}, "postcode": {"name": "37211"}}},
+            } for street, community, point, _ in _DAVIDSON]})
+        lookups.append(request.url.host)
+        if not census_up:
+            return httpx.Response(503)
+        place = by_x[round(float(request.url.params["x"]), 4)]
+        return httpx.Response(200, json={"result": {"geographies": {"Incorporated Places": [{"NAME": place}]}}})
+
+    return httpx.Client(transport=httpx.MockTransport(serve)), NASHVILLE, searches, lookups
+
+
+def test_nashville_suggestions_keep_davidson_county_communities_and_drop_satellite_cities(monkeypatch):
+    monkeypatch.setenv("MAPBOX_TOKEN", "pk.test")
+    client, nashville, searches, lookups = _davidson_client()
+    suggestions = pl.suggest_addresses("4000 Murf", client, areas=[nashville])
+    assert suggestions == [
+        "4000 Murfreesboro Pike, Antioch, TN 37211",
+        "6000 Old Hickory Boulevard, Hermitage, TN 37211",
+        "100 Broadway, Nashville, TN 37211",
+    ]
+    assert set(lookups) == {"geocoding.geo.census.gov"}  # decided by where the address is, not what Mapbox calls it
+    assert tuple(float(v) for v in searches[0]["bbox"].split(",")) == nashville.bbox
+    west, south, east, north = nashville.bbox
+    assert west < -86.656 and east > -86.612 and north > 36.4 - 0.01  # Antioch, Hermitage and Joelton are inside the box
+
+
+def test_nashville_falls_back_to_the_city_name_when_the_census_lookup_is_down(monkeypatch):
+    monkeypatch.setenv("MAPBOX_TOKEN", "pk.test")
+    client, nashville, _, _ = _davidson_client(census_up=False)
+    # Exact-name matching, as for every other city: only what Mapbox itself labels Nashville.
+    assert pl.suggest_addresses("100 Broad", client, areas=[nashville]) == [
+        "2500 White Avenue, Nashville, TN 37211", "4500 Harding Pike, Nashville, TN 37211",
+        "100 Broadway, Nashville, TN 37211"]
+
+
+def test_other_cities_still_match_by_exact_city_name_without_a_census_lookup(monkeypatch):
+    from permit_packets.jurisdictions import MESA
+    monkeypatch.setenv("MAPBOX_TOKEN", "pk.test")
+    hosts = []
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        hosts.append(request.url.host)
+        return httpx.Response(200, json=_mapbox_features(("1 Main Street", "Mesa", "AZ", "85201"),
+                                                         ("2 Main Street", "Gilbert", "AZ", "85233")))
+
+    out = pl.suggest_addresses("Main", httpx.Client(transport=httpx.MockTransport(serve)), areas=[MESA])
+    assert out == ["1 Main Street, Mesa, AZ 85201"] and set(hosts) == {"api.mapbox.com"}

@@ -50,6 +50,9 @@ class Jurisdiction:
     # City limits box (west, south, east, north) and center (lon, lat), used to keep address suggestions in the city.
     bbox: tuple[float, float, float, float] | None = None
     center: tuple[float, float] | None = None
+    # True where the permit area is not the city's name: addresses count when the Census places their coordinates
+    # in this jurisdiction (Nashville: all of Davidson County except the satellite cities with their own offices).
+    permit_area_by_location: bool = False
     code_name: str = "NEC"
     department: str = ""
     phone: str = ""

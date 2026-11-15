@@ -69,7 +69,8 @@ def _note(job: str) -> Note:
 
 NASHVILLE = Jurisdiction(
     key="nashville-tn", name="Nashville", state="TN", known=True,
-    bbox=(-87.0547, 35.9971, -86.5862, 36.2926), center=(-86.7811, 36.1645),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
+    bbox=(-87.0547, 35.9678, -86.5156, 36.4055), center=(-86.7811, 36.1645),  # Davidson County extent (Census) and downtown
+    permit_area_by_location=True,
     department="Metro Codes and Building Safety, Permit Issuance",
     phone="(615) 862-6517",
     email="permitissuance@nashville.gov",
