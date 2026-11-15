@@ -177,3 +177,30 @@ def test_address_suggestions_are_limited_to_the_signed_in_clients_cities_and_the
     assert asked[1] == ["mesa-az", "chandler-az"]
     assert asked[2] == [j.key for j in KNOWN.values()]
     assert all(j.bbox and j.center for j in KNOWN.values())
+
+
+def test_sign_out_is_in_the_header_of_every_page_and_lets_a_different_client_sign_in():
+    browser = sign_in(PASSWORDS["elc"])
+    for page in ("/", "/dashboard"):
+        html = browser.get(page).text
+        assert 'action="/api/signout"' in html and "Sign out" in html, page
+    assert browser.get("/api/client").json()["key"] == "elc"
+
+    out = browser.post("/api/signout", follow_redirects=False)
+    assert out.status_code == 303 and out.headers["location"] == "/"
+    cleared = out.headers["set-cookie"]
+    assert app_module.SESSION_COOKIE in cleared and ("Max-Age=0" in cleared or "expires=" in cleared.lower())
+    # The browser now has no session: the API refuses and the pages are the sign-in page again.
+    assert browser.get("/api/client").status_code == 401
+    assert 'id="signin"' in browser.get("/").text and "Sign out" not in browser.get("/").text
+    assert browser.get("/dashboard", follow_redirects=False).status_code == 303
+
+    # The same browser can sign in as someone else, and sees only their cities.
+    assert browser.post("/api/signin", json={"password": PASSWORDS["jbee"]}).status_code == 200
+    info = browser.get("/api/client").json()
+    assert info["key"] == "jbee" and [c["key"] for c in info["cities"]] == ["mesa-az", "chandler-az"]
+
+
+def test_signing_out_when_not_signed_in_still_goes_to_the_sign_in_page():
+    response = TestClient(app).post("/api/signout", follow_redirects=False)
+    assert response.status_code == 303 and response.headers["location"] == "/"

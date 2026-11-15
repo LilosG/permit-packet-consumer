@@ -153,6 +153,18 @@ def sign_in(payload: LoginRequest, request: Request, response: Response) -> dict
     return {"ok": True}
 
 
+@app.post("/api/signout")
+def sign_out(request: Request) -> Response:
+    """End this session and go back to the sign-in page. A plain form post, so it works without scripts."""
+    response = RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie(
+        SESSION_COOKIE, httponly=True, samesite="lax",
+        secure=request.headers.get("x-forwarded-proto", request.url.scheme) == "https",
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 def _sample_address(jurisdiction_key: str) -> str:
     city = KNOWN_BY_KEY[jurisdiction_key]
     return f"123 Sample St, {city.name}, {city.state}"
