@@ -99,6 +99,7 @@ FOOTPRINT_SHIFT_FT: tuple[tuple[tuple[float, float, float, float], float, float]
 # measurement was stable across windows and 5 ft or more. (west, south, east, north), source, east_ft, north_ft
 AERIAL_SHIFT_FT: tuple[tuple[tuple[float, float, float, float], str, float, float], ...] = (
     ((-122.52, 37.70, -122.35, 37.84), "usgs", -20.0, 6.0),   # San Francisco: NAIP sits ~20 ft west of the parcels
+    ((-122.52, 37.70, -122.35, 37.84), "mapbox", -22.0, 9.0),  # San Francisco: Mapbox sits ~22 ft west of the parcels
     ((-111.01, 32.356, -110.89, 32.476), "usgs", 6.0, 5.0),   # Oro Valley
 )
 SF_FOOTPRINTS_URL = "https://data.sf.gov/resource/ynuv-fyni.geojson"

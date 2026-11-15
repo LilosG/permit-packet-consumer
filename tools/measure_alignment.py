@@ -34,7 +34,7 @@ from shapely.affinity import translate
 from shapely.geometry import Polygon
 
 from permit_packets.core import property_lookup as pl
-from permit_packets.core.property_plan import mercator
+from permit_packets.core.property_plan import PlanView, mercator
 
 FT = 3.28084
 CLIENT = httpx.Client(follow_redirects=True, timeout=60)
@@ -158,6 +158,15 @@ def measure_aerials(name: str) -> None:
         x, y = mercator(la, lo)
         half = 230 / FT / math.cos(math.radians(la))
         box = (x - half, y - half, x + half, y + half)
+        if token:
+            try:
+                view = PlanView(la, lo, 40)  # a 280 ft square, so the window matches the box above closely
+                image_bytes = pl._mapbox_aerial(CLIENT, view, token)
+                found = _edge_shift(Image.open(BytesIO(image_bytes)), view.bbox(), rings)
+                if found and found[2] >= 1.15:
+                    results.setdefault("mapbox", []).append(found[:2])
+            except Exception:
+                pass
         for label, (url, extra) in _aerial_sources(token).items():
             try:
                 response = CLIENT.get(url, params={

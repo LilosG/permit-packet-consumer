@@ -251,3 +251,19 @@ def test_mapbox_goes_ahead_of_usgs_and_coarse_sources_but_not_sharp_local_orthop
     assert first_host(pl.PlanView(36.17, -115.14, 30)) == "api.mapbox.com"      # Las Vegas, no local orthophoto
     assert first_host(pl.PlanView(37.776, -122.4327, 20)) == "api.mapbox.com"   # San Francisco
     assert first_host(pl.PlanView(36.15, -86.80, 30)) == "maps.nashville.gov"   # 15 cm local orthophoto
+
+
+def test_san_francisco_mapbox_picture_is_centered_on_the_measured_shift(monkeypatch):
+    monkeypatch.setenv("MAPBOX_TOKEN", "pk.test")
+    seen = []
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        seen.append(str(request.url.path))
+        return httpx.Response(200, content=_jpeg((90, 90, 90)), headers={"content-type": "image/jpeg"})
+
+    view = pl.PlanView(37.776, -122.4327, 20)
+    pl.fetch_aerial(view, httpx.Client(transport=httpx.MockTransport(serve)))
+    lon, lat = (float(v) for v in seen[0].split("/static/")[1].split(",")[:2])
+    east = pl.ground_distance_ft((view.latitude, view.longitude), (view.latitude, lon))
+    assert lon < view.longitude and east == pytest.approx(22, abs=0.5)
+    assert pl.ground_distance_ft((view.latitude, lon), (lat, lon)) == pytest.approx(9, abs=0.5) or lat > view.latitude
