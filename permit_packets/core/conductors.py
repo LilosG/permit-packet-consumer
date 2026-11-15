@@ -57,7 +57,17 @@ SERVICE_CONDUIT_FILL_SQ_IN = {
             ('2"', 1.316), ('2-1/2"', 1.878), ('3"', 2.907)),
     "EMT": (('3/4"', 0.213), ('1"', 0.346), ('1-1/4"', 0.598), ('1-1/2"', 0.814),
             ('2"', 1.342), ('2-1/2"', 2.343), ('3"', 3.538)),
+    "RMC": (('3/4"', 0.220), ('1"', 0.355), ('1-1/4"', 0.610), ('1-1/2"', 0.829),
+            ('2"', 1.363), ('2-1/2"', 1.946), ('3"', 3.000)),
 }
+TRADE_SIZES = ('3/4"', '1"', '1-1/4"', '1-1/2"', '2"', '2-1/2"', '3"')
+
+
+def at_least(size: str, minimum: str | None) -> str:
+    """The larger of a trade size and a local minimum, such as San Francisco's 1-1/4 in service raceway."""
+    if not minimum:
+        return size
+    return size if TRADE_SIZES.index(size) >= TRADE_SIZES.index(minimum) else minimum
 
 # NEC 250.66 Table: the grounding electrode conductor (copper) by service conductor size.
 # Each row is (largest service conductor size it covers, GEC size).
@@ -107,6 +117,21 @@ def gec_size(conductor: Conductor, material: Material, electrode: Electrode) -> 
 def service_conduit(conductor: Conductor, conduit_type: str) -> str:
     """The smallest conduit that holds two hots and a full-size neutral at 40% fill."""
     fill = SERVICE_CONDUCTORS_IN_CONDUIT * conductor.area_sq_in
+    sizes = SERVICE_CONDUIT_FILL_SQ_IN[conduit_type]
+    for size, capacity in sizes:
+        if fill <= capacity:
+            return size
+    raise ValueError(f"{fill:.3f} sq in is too much wire for {conduit_type} up to {sizes[-1][0]}")
+
+
+def egc_for(breaker: int, material: Material) -> str:
+    """NEC Table 250.122: the equipment grounding conductor for the breaker, in the run's material."""
+    return next(row[1 if material == "copper" else 2] for row in EGC_TABLE if breaker <= row[0])
+
+
+def conduit_with_egc(conductor: Conductor, egc: str, conduit_type: str) -> str:
+    """The smallest conduit that holds two hots, a full-size neutral and the EGC at 40% fill."""
+    fill = FEEDER_CONDUCTORS_IN_CONDUIT * conductor.area_sq_in + _ground_properties(egc)[1]
     sizes = SERVICE_CONDUIT_FILL_SQ_IN[conduit_type]
     for size, capacity in sizes:
         if fill <= capacity:
@@ -213,7 +238,8 @@ def size_feeder(
     return Feeder(
         conductor=chosen, egc=_feeder_egc(breaker, material, start, chosen),
         upsized=chosen is not start, vd_volts=volts, vd_percent=percent,
-        heat=heat_calc(chosen.size, material, ambient_f, cap_a=chosen.ampacity_75c, carries_a=required)
+        heat=heat_calc(chosen.size, material, ambient_f, cap_a=chosen.ampacity_75c, carries_a=required,
+                       carries_label="83% of breaker (310.12)" if whole_dwelling else "breaker")
         if ambient_f is not None else None,
     )
 
