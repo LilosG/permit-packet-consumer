@@ -62,10 +62,11 @@ class AerialSitePlan(Flowable):
 
     def __init__(
         self, plan: PropertyPlan, *, markers: list[PlanMarker], underground: bool, width: float,
-        side: float | None = None, ft_per_in: int | None = None,
+        side: float | None = None, ft_per_in: int | None = None, outline_over_aerial: bool = False,
     ) -> None:
         super().__init__()
         self.plan = plan
+        self.outline_over_aerial = outline_over_aerial
         self.markers = markers
         self.underground = underground
         self.width = width
@@ -174,6 +175,15 @@ class AerialSitePlan(Flowable):
                 c.setStrokeColor(INK)
                 c.setLineWidth(1.6 if index == plan.primary_building else 0.7)
                 self._polyline(building, close=True)
+        elif self.outline_over_aerial and plan.primary_building is not None and plan.buildings:
+            # Where outlines were measured to sit on the parcels, the house is outlined over the photo.
+            house = plan.buildings[plan.primary_building]
+            c.setStrokeColor(INK)
+            c.setLineWidth(3.0)
+            self._polyline(house, close=True)
+            c.setStrokeColor(colors.white)
+            c.setLineWidth(1.4)
+            self._polyline(house, close=True)
 
         if plan.lot:
             c.setStrokeColor(INK)
@@ -228,7 +238,7 @@ class AerialSitePlan(Flowable):
 
 def site_plan_page(
     *, address: str, plan: PropertyPlan, markers: list[PlanMarker], underground: bool,
-    legend: list[str], measures: list[str],
+    legend: list[str], measures: list[str], outline_over_aerial: bool = False,
 ) -> list:
     """The whole site plan sheet. On letter the plan sits over its legend; on tabloid it sits
     beside it, printed as large as the sheet allows with its scale stated for that size."""
@@ -239,8 +249,12 @@ def site_plan_page(
     measures = [*measures, f"Scale 1 in = {ft_per_in} ft when printed at 100%",
                 "Not a survey. Field verify all dimensions."]
     credit = _p(". ".join(credit.rstrip(".") for credit in plan.credits) + ".", CREDIT)
+    outlined = outline_over_aerial and plan.aerial_jpeg and plan.primary_building is not None and plan.buildings
+    if outlined:
+        legend = [*legend, "White outline: house footprint"]
     drawing = AerialSitePlan(plan, markers=markers, underground=underground,
-                             width=side if sheet.landscape else sheet.content_w, side=side, ft_per_in=ft_per_in)
+                             width=side if sheet.landscape else sheet.content_w, side=side, ft_per_in=ft_per_in,
+                             outline_over_aerial=bool(outlined))
     head = [_p("Site Plan", H1), _p(address + (f". Parcel {plan.parcel_number}." if plan.parcel_number else "."), SMALL),
             Spacer(1, 6)]
     if not sheet.landscape:

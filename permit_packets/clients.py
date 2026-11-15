@@ -58,6 +58,7 @@ CLIENTS: dict[str, Client] = {
         _client("jbee", "JBee Industries", "https://jbindustrieshvac.com", "jbee.png", "mesa-az"),
         jurisdiction_keys=("mesa-az", "chandler-az"),
     ),
+    "volta": _client("volta", "Volta Electrical", "https://www.voltaelectricians.com", "volta.png", "bellevue-wa"),
 }
 
 

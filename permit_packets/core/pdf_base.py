@@ -601,7 +601,7 @@ def heat_block(heat, jurisdiction) -> list:
         _table(rows, [w * 0.18, w * 0.15, w * 0.13, w * 0.15, w * 0.16, w * 0.12, w * 0.11]),
         Spacer(1, 3),
         _p(f"{heat.line}.", SMALL),
-        _p(f"Design ambient {heat.ambient_f}{degree}F ({heat.ambient_c:.1f}{degree}C): ASHRAE 2% annual cooling "
-           f"dry-bulb for {jurisdiction.name}.{source} The corrected ampacity is limited to the "
+        _p(f"Design ambient {heat.ambient_f}{degree}F ({heat.ambient_c:.1f}{degree}C): "
+           f"{jurisdiction.design_ambient_label} for {jurisdiction.name}.{source} The corrected ampacity is limited to the "
            f"{heat.cap_column}{degree}C terminal rating (NEC 110.14(C)).", SMALL),
     ]

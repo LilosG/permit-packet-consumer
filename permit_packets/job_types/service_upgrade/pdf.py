@@ -210,6 +210,9 @@ class Riser(Flowable):
         box(xs[0], f"UTILITY ({_drop(packet)})", ["Utility service", "120/240 V", "1-phase"])
         if combo:
             box(xs[1], "METER-MAIN", ["Meter socket", "and main breaker", "in one enclosure"])
+            c.setFont("Helvetica", 6.6)
+            c.drawCentredString(xs[1] + box_w / 2, mid - box_h / 2 - 9, "Outdoors: also the emergency")
+            c.drawCentredString(xs[1] + box_w / 2, mid - box_h / 2 - 17, "disconnect (NEC 230.85)")
             box(xs[2], f"MAIN {job.new_service_amps} A",
                 [f"{job.new_service_amps} A, 2-pole", "Main breaker", "in the meter-main"], SOFT)
         else:
@@ -284,6 +287,13 @@ def _checklist_row(packet: ServicePacket, section: str) -> tuple[str, str]:
         if job.surge_protection in SPD_LABELS:
             return f"Page {SECTION_PAGES['one_line']}: {SPD_LABELS[job.surge_protection]} SPD on the riser", "Ready"
         return f"Page {SECTION_PAGES['one_line']}: choose the surge protective device", "Open"
+    if section == "emergency_disconnect":
+        if job.scope == "replacement" and not job.relocated:
+            return "Not required: same size service, nothing relocated", "Ready"
+        if job.equipment == "meter_main":
+            return (f"Page {SECTION_PAGES['one_line']}: the outdoor meter-main breaker is the emergency "
+                    "disconnect"), "Ready"
+        return f"Page {SECTION_PAGES['one_line']}: add an outdoor emergency disconnect (NEC 230.85)", "Open"
     if section == "gec":
         return f"Page {SECTION_PAGES['one_line']}: GEC sizes in the conductor schedule", "Ready"
     shown = panel_row(job, section, SECTION_PAGES["one_line"])
@@ -426,7 +436,7 @@ def _site_plan(packet: ServicePacket) -> list:
         measures.append(f"Panel to nearest lot line: {setback} ft")
     return site_plan_page(
         address=job.address, plan=plan, markers=_plan_markers(packet), underground=job.service_drop == "underground",
-        legend=legend, measures=measures,
+        legend=legend, measures=measures, outline_over_aerial=job.jurisdiction.outline_over_aerial,
     )
 
 

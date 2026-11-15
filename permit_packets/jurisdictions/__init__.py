@@ -76,6 +76,11 @@ class Jurisdiction:
     # and sun-exposed conductors are corrected for it (NEC 310.15(B)(1)). None: not set up for this city.
     design_ambient_f: int | None = None
     design_ambient_source: str = ""  # where that figure comes from, a URL
+    # What that figure is, as printed on the packet after "Design ambient NN F (NN C):".
+    design_ambient_label: str = "ASHRAE 2% annual cooling dry-bulb"
+    # True where the house outline is drawn over the aerial: only where outlines were measured to sit on the
+    # county parcels (tools/measure_alignment.py) and tree cover hides roofs in the photo.
+    outline_over_aerial: bool = False
     # What this city enforces, for job types it publishes no checklist for (they use the general one).
     code_note: str = ""
     fallback_notes: tuple[Note, ...] = ()
@@ -110,6 +115,7 @@ class Jurisdiction:
 
 
 # The city modules import the classes above, so they come after them.
+from permit_packets.jurisdictions.bellevue_wa import BELLEVUE  # noqa: E402
 from permit_packets.jurisdictions.chandler_az import CHANDLER  # noqa: E402
 from permit_packets.jurisdictions.charlotte_nc import CHARLOTTE  # noqa: E402
 from permit_packets.jurisdictions.el_cajon_ca import EL_CAJON  # noqa: E402
@@ -119,7 +125,7 @@ from permit_packets.jurisdictions.nashville_tn import NASHVILLE  # noqa: E402
 from permit_packets.jurisdictions.oro_valley_az import ORO_VALLEY  # noqa: E402
 from permit_packets.jurisdictions.san_francisco_ca import SAN_FRANCISCO  # noqa: E402
 
-KNOWN = {(j.name.lower(), j.state): j for j in (ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER)}
+KNOWN = {(j.name.lower(), j.state): j for j in (ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE)}
 
 
 def jurisdiction_for(city: str | None, state: str | None) -> Jurisdiction:
