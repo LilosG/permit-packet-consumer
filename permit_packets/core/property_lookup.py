@@ -4,7 +4,10 @@ Sources were chosen so the result can go in a printed permit packet:
 - US Census geocoder and FEMA/ORNL USA Structures are free public data.
 - USGS National Map imagery is public domain.
 - Lot lines come from county GIS, where the county is set up in COUNTIES.
-- Mapbox satellite is used instead of USGS when MAPBOX_TOKEN is set.
+- Mapbox satellite is used instead of USGS, and instead of any local orthophoto that is
+  not sharper than it, when MAPBOX_TOKEN is set.
+- San Francisco building outlines come from the city's own surveyed footprints (DataSF),
+  because USA Structures has no outline for many San Francisco lots.
 - Photon, built on OpenStreetMap, suggests addresses as the tech types. The chosen
   address still goes through the Census geocoder, so a suggestion is never trusted
   on its own.
@@ -19,10 +22,11 @@ from dataclasses import dataclass
 from io import BytesIO
 
 import httpx
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageOps, ImageStat
 
 from permit_packets.jurisdictions import Jurisdiction, jurisdiction_for
 from permit_packets.core.property_plan import (
+    EARTH_RADIUS_M,
     FEET_PER_METER,
     PLAN_UNITS,
     PLAN_WIDTH_IN,
@@ -59,7 +63,47 @@ LOCAL_AERIALS = (
         "https://gis.mcassessor.maricopa.gov/arcgis/rest/services/Imagery/Aerials2026/MapServer/export",
         "Aerial: Maricopa County Assessor, 2026 imagery",
     ),
+    (
+        (-117.60, 32.52, -116.08, 33.51),
+        "https://gis-public.sandiegocounty.gov/arcgis/rest/services/COSDBaseMap_Imagery/MapServer/export",
+        "Aerial: County of San Diego, 15 cm orthoimagery",
+    ),
 )
+# Ground sample distance in meters of each local orthophoto, from the publisher. Mapbox satellite is
+# taken as 0.3 m in built-up areas (Maxar). A local orthophoto at 0.3 m or finer is kept ahead of Mapbox.
+LOCAL_AERIAL_GSD_M = {
+    "https://maps.nashville.gov/arcgis/rest/services/Imagery/2026Imagery_WGS84/MapServer/export": 0.15,
+    "https://services.nconemap.gov/secure/rest/services/Imagery/Orthoimagery_Latest/ImageServer/exportImage": 0.15,
+    "https://gis.mcassessor.maricopa.gov/arcgis/rest/services/Imagery/Aerials2026/MapServer/export": 0.15,
+    "https://gis-public.sandiegocounty.gov/arcgis/rest/services/COSDBaseMap_Imagery/MapServer/export": 0.15,
+}
+MAPBOX_GSD_M = 0.3
+# Measured displacements, in feet (east, north), found with tools/measure_alignment.py. Every box is the
+# city-sized area the measurement was made in; outside it nothing is moved.
+#
+# FOOTPRINT_SHIFT_FT: the shift that puts building outlines onto their parcels. Outline datasets are drawn from
+# imagery or surveyed on their own base, so they sit a few feet from the county parcel base. Measured over
+# hundreds of houses and the parcel holding each (bootstrap spread under 1 ft). Listed when 3 ft or more.
+# ((west, south, east, north), east_ft, north_ft)
+FOOTPRINT_SHIFT_FT: tuple[tuple[tuple[float, float, float, float], float, float], ...] = (
+    ((-122.52, 37.70, -122.35, 37.84), 6.0, -4.0),    # San Francisco, city footprints
+    ((-86.86, 36.09, -86.74, 36.21), 4.0, -1.0),      # Nashville
+    ((-111.86, 33.36, -111.74, 33.48), 8.0, -5.0),    # Mesa
+    ((-111.90, 33.245, -111.78, 33.365), 6.0, 5.0),   # Chandler
+    ((-117.02, 32.735, -116.90, 32.855), 4.0, -3.0),  # El Cajon
+    ((-111.01, 32.356, -110.89, 32.476), 2.0, 3.0),   # Oro Valley
+)
+# AERIAL_SHIFT_FT: where a picture shows a building, relative to the parcel base. It is the aerial-to-outline
+# shift minus the outline-to-parcel shift above, so the outlines' own error drops out. The server is asked for
+# a box moved by this much, which moves the picture the opposite way on the plan. Listed only where the
+# measurement was stable across windows and 5 ft or more. (west, south, east, north), source, east_ft, north_ft
+AERIAL_SHIFT_FT: tuple[tuple[tuple[float, float, float, float], str, float, float], ...] = (
+    ((-122.52, 37.70, -122.35, 37.84), "usgs", -20.0, 6.0),   # San Francisco: NAIP sits ~20 ft west of the parcels
+    ((-111.01, 32.356, -110.89, 32.476), "usgs", 6.0, 5.0),   # Oro Valley
+)
+SF_FOOTPRINTS_URL = "https://data.sf.gov/resource/ynuv-fyni.geojson"
+SF_FOOTPRINTS_CREDIT = "Building outlines: City and County of San Francisco, Building Footprints (DataSF)"
+SAN_FRANCISCO_FIPS = "06075"
 MAPBOX_IMAGE_URL = "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/{lon},{lat},{zoom:.2f},0,0/{px}x{px}@2x"
 
 
@@ -147,6 +191,7 @@ MAPBOX_CREDIT = "Imagery © Mapbox © OpenStreetMap © Maxar"
 LOOKUP_TIMEOUT = httpx.Timeout(14, connect=6)
 AERIAL_TIMEOUT = httpx.Timeout(40, connect=6)
 AERIAL_PIXELS = 1400
+TARGET_BRIGHTNESS = 110  # mean 0-255; darker pictures are lifted to about this
 JPEG_QUALITY = 78
 USER_AGENT = "LilosGrowth-PermitPackets/1.0"
 SUGGEST_TIMEOUT = httpx.Timeout(5, connect=3)
@@ -368,11 +413,57 @@ def _arcgis_features(client: httpx.Client, url: str, params: dict) -> list[dict]
         return []
 
 
-def buildings_around(client: httpx.Client, point: LatLon, radius_m: float) -> list[dict]:
-    return _arcgis_features(client, STRUCTURES_URL, {
+def _san_francisco_footprints(client: httpx.Client, point: LatLon, radius_m: float) -> list[dict]:
+    """San Francisco's surveyed building outlines, shaped like ArcGIS features so the rest can read them."""
+    try:
+        response = client.get(SF_FOOTPRINTS_URL, timeout=LOOKUP_TIMEOUT, params={
+            "$where": f"within_circle(shape,{point[0]},{point[1]},{round(radius_m)})", "$limit": 300,
+        })
+        response.raise_for_status()
+        shapes = [feature.get("geometry") or {} for feature in response.json().get("features", [])]
+    except (httpx.HTTPError, ValueError):
+        return []
+    features = []
+    for shape in shapes:
+        polygons = shape.get("coordinates", []) if shape.get("type") == "MultiPolygon" else [shape.get("coordinates", [])]
+        for polygon in polygons:
+            if polygon and len(polygon[0]) >= 4:
+                features.append({"geometry": {"rings": [polygon[0]]}, "attributes": {}})
+    return features
+
+
+def _moved(features: list[dict], point: LatLon) -> list[dict]:
+    """Outlines moved onto the county parcel base, where a shift has been measured for this area."""
+    east_ft, north_ft = next((
+        (east, north) for (west, south, east_edge, north_edge), east, north in FOOTPRINT_SHIFT_FT
+        if west <= point[1] <= east_edge and south <= point[0] <= north_edge
+    ), (0.0, 0.0))
+    if not (east_ft or north_ft):
+        return features
+    d_lat = north_ft / FEET_PER_METER / 111320
+    d_lon = east_ft / FEET_PER_METER / (111320 * math.cos(math.radians(point[0])))
+    return [
+        {**feature, "geometry": {"rings": [[[lon + d_lon, lat + d_lat] for lon, lat in ring] for ring in feature["geometry"]["rings"]]}}
+        for feature in features
+    ]
+
+
+def buildings_around(client: httpx.Client, point: LatLon, radius_m: float, county_fips: str = "") -> list[dict]:
+    if county_fips == SAN_FRANCISCO_FIPS:
+        city = _san_francisco_footprints(client, point, radius_m)
+        if city:
+            return _moved(city, point)
+    return _moved(_arcgis_features(client, STRUCTURES_URL, {
         "geometry": f"{point[1]},{point[0]}", "distance": round(radius_m),
         "units": "esriSRUnit_Meter", "outFields": "SQFEET",
-    })
+    }), point)
+
+
+def footprint_credit(county_fips: str, features: list[dict]) -> str:
+    """SQFEET is only on USA Structures records, so its absence marks the city's own outlines."""
+    if county_fips == SAN_FRANCISCO_FIPS and features and "SQFEET" not in features[0].get("attributes", {}):
+        return SF_FOOTPRINTS_CREDIT
+    return STRUCTURES_CREDIT
 
 
 def pick_building(features: list[dict], point: LatLon) -> dict | None:
@@ -468,7 +559,7 @@ def assemble_property(
     center: LatLon | None = None,
 ) -> FoundProperty:
     radius = max(BUILDING_SEARCH_M, (scale or 0) * PLAN_WIDTH_IN / FEET_PER_METER * 0.75)
-    features = buildings_around(client, point, radius)
+    features = buildings_around(client, point, radius, county_fips)
     primary = pick_building(features, point)
     anchor = _center(primary) if primary and located_by == "street" else point
     parcel = parcel or parcel_at(client, county_fips, anchor)
@@ -499,7 +590,7 @@ def assemble_property(
                 outline = clip_to(outline, [view.to_plan(lat, lon) for lat, lon in lot])
         buildings.append(outline)
 
-    credits = [STRUCTURES_CREDIT] if features else []
+    credits = [footprint_credit(county_fips, features)] if features else []
     if lot:
         credits.append(COUNTIES[county_fips].credit)
     on_record = parcel.house_number if parcel else ""
@@ -562,22 +653,44 @@ def property_at(
             client.close()
 
 
+def _balance(image: Image.Image) -> Image.Image:
+    """Stretch the levels and lift shadows. Orthophotos of tree-lined or hilly lots come out dark."""
+    image = ImageOps.autocontrast(image, cutoff=0.5)
+    mean = ImageStat.Stat(image.convert("L")).mean[0]
+    if mean < TARGET_BRIGHTNESS:
+        gamma = max(0.55, math.log(TARGET_BRIGHTNESS / 255) / math.log(max(mean, 1) / 255))
+        table = [round(255 * (value / 255) ** gamma) for value in range(256)]
+        image = image.point(table * 3)
+    return image
+
+
 def _finish(image_bytes: bytes) -> bytes:
     image = Image.open(BytesIO(image_bytes)).convert("RGB")
     if image.width != AERIAL_PIXELS:
         image = image.resize((AERIAL_PIXELS, AERIAL_PIXELS), Image.Resampling.LANCZOS)
-    image = image.filter(ImageFilter.UnsharpMask(radius=2, percent=70, threshold=2))
+    image = _balance(image).filter(ImageFilter.UnsharpMask(radius=2, percent=70, threshold=2))
     buffer = BytesIO()
     image.save(buffer, format="JPEG", quality=JPEG_QUALITY, optimize=True)
     return buffer.getvalue()
 
 
+def shift_for(view: PlanView, source: str) -> tuple[float, float]:
+    """The measured (east, north) feet this source's picture sits from the parcel base around the view."""
+    for (west, south, east, north), name, east_ft, north_ft in AERIAL_SHIFT_FT:
+        if name == source and west <= view.longitude <= east and south <= view.latitude <= north:
+            return east_ft, north_ft
+    return 0.0, 0.0
+
+
 def _mapbox_aerial(client: httpx.Client, view: PlanView, token: str) -> bytes:
     pixels = 1000
-    meters_per_pixel = view.size_ft / 3.28084 / pixels
+    meters_per_pixel = view.size_ft / FEET_PER_METER / pixels
     zoom = math.log2(78271.517 * math.cos(math.radians(view.latitude)) / meters_per_pixel)
+    x, y = view.shifted_center(shift_for(view, "mapbox"))
+    latitude = math.degrees(2 * math.atan(math.exp(y / EARTH_RADIUS_M)) - math.pi / 2)
+    longitude = math.degrees(x / EARTH_RADIUS_M)
     response = client.get(
-        MAPBOX_IMAGE_URL.format(lon=view.longitude, lat=view.latitude, zoom=zoom, px=pixels),
+        MAPBOX_IMAGE_URL.format(lon=longitude, lat=latitude, zoom=zoom, px=pixels),
         params={"access_token": token, "attribution": "false", "logo": "false"},
         timeout=AERIAL_TIMEOUT,
     )
@@ -586,7 +699,7 @@ def _mapbox_aerial(client: httpx.Client, view: PlanView, token: str) -> bytes:
 
 
 def _usgs_aerial(client: httpx.Client, view: PlanView) -> bytes:
-    west, south, east, north = view.bbox()
+    west, south, east, north = view.bbox(shift_for(view, "usgs"))
     response = client.get(USGS_IMAGE_URL, timeout=AERIAL_TIMEOUT, params={
         "bbox": f"{west},{south},{east},{north}", "bboxSR": 102100, "imageSR": 102100,
         "size": "1000,1000", "format": "jpg", "f": "image",
@@ -598,15 +711,22 @@ def _usgs_aerial(client: httpx.Client, view: PlanView) -> bytes:
     return response.content
 
 
+def _local_sources(view: PlanView) -> list[tuple[str, str]]:
+    return [
+        (url, credit) for (west, south, east, north), url, credit in LOCAL_AERIALS
+        if west <= view.longitude <= east and south <= view.latitude <= north
+    ]
+
+
 def _local_aerial(client: httpx.Client, view: PlanView) -> tuple[bytes, str] | None:
     """A local government orthophoto covering the view, if one is set up."""
-    for (west, south, east, north), url, credit in LOCAL_AERIALS:
-        if not (west <= view.longitude <= east and south <= view.latitude <= north):
-            continue
-        x_min, y_min, x_max, y_max = view.bbox()
+    for url, credit in _local_sources(view):
+        x_min, y_min, x_max, y_max = view.bbox(shift_for(view, url))
+        # No finer than half the orthophoto's own pixel: some servers draw nothing past their display scale.
+        pixels = min(AERIAL_PIXELS, max(400, math.ceil(view.size_ft / FEET_PER_METER / (LOCAL_AERIAL_GSD_M.get(url, 0.15) / 2))))
         response = client.get(url, timeout=AERIAL_TIMEOUT, params={
             "bbox": f"{x_min},{y_min},{x_max},{y_max}", "bboxSR": 102100, "imageSR": 102100,
-            "size": f"{AERIAL_PIXELS},{AERIAL_PIXELS}", "format": "jpg", "f": "image",
+            "size": f"{pixels},{pixels}", "format": "jpg", "f": "image",
         })
         response.raise_for_status()
         if not response.headers.get("content-type", "").startswith("image/"):
@@ -624,21 +744,28 @@ def _blank(image: bytes) -> bool:
 
 
 def fetch_aerial(view: PlanView, client: httpx.Client | None = None) -> tuple[bytes, str]:
+    """The sharpest correctly placed picture available: a local orthophoto at least as sharp as Mapbox,
+    else Mapbox when a token is set, else a coarser local orthophoto, else USGS."""
     owns_client = client is None
     client = client or httpx.Client(follow_redirects=True)
     token = os.environ.get("MAPBOX_TOKEN")
+    local_is_sharp = any(LOCAL_AERIAL_GSD_M.get(url, 1.0) <= MAPBOX_GSD_M for url, _ in _local_sources(view))
+
+    def local() -> tuple[bytes, str] | None:
+        found = _local_aerial(client, view)
+        return (found[0], found[1]) if found else None
+
+    def mapbox() -> tuple[bytes, str] | None:
+        return (_mapbox_aerial(client, view, token), MAPBOX_CREDIT) if token else None
+
     try:
-        try:
-            local = _local_aerial(client, view)
-            if local:
-                return _finish(local[0]), local[1]
-        except (httpx.HTTPError, OSError):
-            pass
-        if token:
+        for source in ((local, mapbox) if local_is_sharp or not token else (mapbox, local)):
             try:
-                return _finish(_mapbox_aerial(client, view, token)), MAPBOX_CREDIT
+                found = source()
             except (httpx.HTTPError, OSError):
-                pass
+                continue
+            if found:
+                return _finish(found[0]), found[1]
         for _ in range(2):
             try:
                 return _finish(_usgs_aerial(client, view)), USGS_CREDIT

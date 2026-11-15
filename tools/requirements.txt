@@ -1,0 +1,4 @@
+# Only for tools/measure_alignment.py, which is run by hand. The app does not need these.
+-r ../requirements.txt
+numpy>=1.26
+shapely>=2.0

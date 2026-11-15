@@ -42,8 +42,16 @@ class PlanView:
     def mercator_center(self) -> Point:
         return mercator(self.latitude, self.longitude)
 
-    def bbox(self) -> tuple[float, float, float, float]:
+    def shifted_center(self, shift_ft: Point = (0, 0)) -> Point:
+        """Web mercator center moved shift_ft = (east, north) feet on the ground."""
         x, y = self.mercator_center()
+        per_foot = 1 / FEET_PER_METER / math.cos(math.radians(self.latitude))
+        return x + shift_ft[0] * per_foot, y + shift_ft[1] * per_foot
+
+    def bbox(self, shift_ft: Point = (0, 0)) -> tuple[float, float, float, float]:
+        """Web mercator box of the plan. shift_ft asks the aerial server for a box moved that many feet
+        east and north, which moves the picture the opposite way on the plan."""
+        x, y = self.shifted_center(shift_ft)
         half = self.half_size_mercator
         return x - half, y - half, x + half, y + half
 

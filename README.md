@@ -55,11 +55,15 @@ Every packet is marked as a demo. Results are drafts and need review before anyo
 |---|---|---|
 | Address suggestions while typing | Photon, built on OpenStreetMap | Free with fair use, credit shown, no uptime promise |
 | Address and city | US Census geocoder | Free public service |
-| Building outlines | FEMA/ORNL USA Structures | Public data |
-| Aerial | USGS National Map, NAIP Plus | Public domain, credit requested |
+| Building outlines | FEMA/ORNL USA Structures; in San Francisco the city's own surveyed Building Footprints (DataSF, `data.sf.gov`), because USA Structures has no outline for many San Francisco lots | Public data |
+| Aerial | A local orthophoto where one is set up in `LOCAL_AERIALS` (Nashville Metro, NC OneMap for Mecklenburg, Maricopa County Assessor, San Diego County), else USGS National Map NAIP Plus | Public domain, credit requested |
 | Lot lines | County GIS, set in `COUNTIES` (Pima, San Diego, Clark, Maricopa, Pinal and others) | Check each county's terms before a paid build |
 | Lot lines, Pinal County | Arizona Department of Water Resources statewide parcel service, Pinal layer (`azwatermaps.azwater.gov`, built from county parcel data). Pinal County's own GIS host (`gismaps.pinalcountyaz.gov`) did not resolve when checked | Public service; the layer's description states no license or terms. Only parcel and address fields are read, never owner fields. Confirm terms with ADWR before a paid build |
-| Sharper, faster aerial (optional) | Mapbox satellite, when `MAPBOX_TOKEN` is set | Attribution required |
+| Sharper aerial (optional) | Mapbox satellite, when `MAPBOX_TOKEN` is set. It replaces USGS, and any local orthophoto coarser than 0.3 m, wherever it is sharper. Local orthophotos at 0.3 m or finer stay first | Attribution required |
+
+### Keeping the picture, lot lines and buildings aligned
+
+Every layer is drawn through one function, `PlanView`, in web mercator. The counties publish parcels in their own coordinate systems (San Francisco WGS84; Nashville, Mecklenburg, Clark, Pima and San Diego state plane feet; Maricopa web mercator; Pinal UTM), and each is asked for in latitude and longitude, which the county server converts (within about 4 ft of an exact transform). What differs between sources is where each is registered. `tools/measure_alignment.py` measures that in feet; the results that are large enough to correct are in `AERIAL_SHIFT_FT` and `FOOTPRINT_SHIFT_FT`. `tests/test_property_alignment.py` replays one real residential parcel per county and fails if the house sticks out of the lot, or past the front lot line, by more than 3 ft.
 
 Don't use Google imagery here. Its terms bar exporting or tracing Maps content, and commercial use of satellite imagery is restricted.
 
