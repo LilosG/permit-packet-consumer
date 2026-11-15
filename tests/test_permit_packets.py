@@ -533,7 +533,7 @@ def test_mapbox_is_used_first_when_a_token_is_set(monkeypatch):
         return httpx.Response(200, content=_aerial(), headers={"content-type": "image/jpeg"})
 
     _, credit = fetch_aerial(PlanView(32.4, -110.9, 30), httpx.Client(transport=httpx.MockTransport(serve)))
-    assert hosts == ["api.mapbox.com"]
+    assert hosts and set(hosts) == {"api.mapbox.com"}  # one request per stitched tile
     assert "Mapbox" in credit
 
 

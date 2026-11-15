@@ -53,13 +53,13 @@ Every packet is marked as a demo. Results are drafts and need review before anyo
 
 | Data | Source | Terms |
 |---|---|---|
-| Address suggestions while typing | Photon, built on OpenStreetMap | Free with fair use, credit shown, no uptime promise |
+| Address suggestions while typing | Mapbox Geocoding when `MAPBOX_TOKEN` is set (one line per street address and city); Photon, built on OpenStreetMap, only when there is no token | Mapbox: attribution required. Photon: free with fair use, no uptime promise |
 | Address and city | US Census geocoder | Free public service |
 | Building outlines | FEMA/ORNL USA Structures; in San Francisco the city's own surveyed Building Footprints (DataSF, `data.sf.gov`), because USA Structures has no outline for many San Francisco lots | Public data |
 | Aerial | A local orthophoto where one is set up in `LOCAL_AERIALS` (Nashville Metro, NC OneMap for Mecklenburg, Maricopa County Assessor, San Diego County), else USGS National Map NAIP Plus | Public domain, credit requested |
 | Lot lines | County GIS, set in `COUNTIES` (Pima, San Diego, Clark, Maricopa, Pinal and others) | Check each county's terms before a paid build |
 | Lot lines, Pinal County | Arizona Department of Water Resources statewide parcel service, Pinal layer (`azwatermaps.azwater.gov`, built from county parcel data). Pinal County's own GIS host (`gismaps.pinalcountyaz.gov`) did not resolve when checked | Public service; the layer's description states no license or terms. Only parcel and address fields are read, never owner fields. Confirm terms with ADWR before a paid build |
-| Sharper aerial (optional) | Mapbox satellite, when `MAPBOX_TOKEN` is set. It replaces USGS, and any local orthophoto coarser than 0.3 m, wherever it is sharper. Local orthophotos at 0.3 m or finer stay first | Attribution required |
+| Sharper aerial (optional) | Mapbox satellite, when `MAPBOX_TOKEN` is set. Fetched as z19 raster tiles at @2x (0.12 m per pixel), stitched and cropped to the plan box. It replaces USGS, and any local orthophoto coarser than 0.3 m, wherever it is sharper. Local orthophotos at 0.3 m or finer stay first | Attribution required |
 
 ### Keeping the picture, lot lines and buildings aligned
 

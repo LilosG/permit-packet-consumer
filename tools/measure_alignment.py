@@ -161,7 +161,7 @@ def measure_aerials(name: str) -> None:
         if token:
             try:
                 view = PlanView(la, lo, 40)  # a 280 ft square, so the window matches the box above closely
-                image_bytes = pl._mapbox_aerial(CLIENT, view, token)
+                image_bytes = pl._mapbox_aerial(CLIENT, view, token, shifted=False)
                 found = _edge_shift(Image.open(BytesIO(image_bytes)), view.bbox(), rings)
                 if found and found[2] >= 1.15:
                     results.setdefault("mapbox", []).append(found[:2])

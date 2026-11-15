@@ -8,7 +8,9 @@ Sources were chosen so the result can go in a printed permit packet:
   not sharper than it, when MAPBOX_TOKEN is set.
 - San Francisco building outlines come from the city's own surveyed footprints (DataSF),
   because USA Structures has no outline for many San Francisco lots.
-- Photon, built on OpenStreetMap, suggests addresses as the tech types. The chosen
+- Mapbox Geocoding suggests addresses as the tech types when MAPBOX_TOKEN is set (its ZIP codes are
+  right where OpenStreetMap's often are not); Photon, built on OpenStreetMap, is the fallback with no
+  token. The chosen
   address still goes through the Census geocoder, so a suggestion is never trusted
   on its own.
 """
@@ -40,6 +42,7 @@ from permit_packets.core.property_plan import (
 )
 
 PHOTON_URL = "https://photon.komoot.io/api/"
+MAPBOX_GEOCODE_URL = "https://api.mapbox.com/search/geocode/v6/forward"
 CENSUS_URL = "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress"
 STRUCTURES_URL = (
     "https://services2.arcgis.com/FiaPA4ga0iQKduv3/ArcGIS/rest/services/USA_Structures_View/FeatureServer/0/query"
@@ -105,7 +108,14 @@ AERIAL_SHIFT_FT: tuple[tuple[tuple[float, float, float, float], str, float, floa
 SF_FOOTPRINTS_URL = "https://data.sf.gov/resource/ynuv-fyni.geojson"
 SF_FOOTPRINTS_CREDIT = "Building outlines: City and County of San Francisco, Building Footprints (DataSF)"
 SAN_FRANCISCO_FIPS = "06075"
-MAPBOX_IMAGE_URL = "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/{lon},{lat},{zoom:.2f},0,0/{px}x{px}@2x"
+# Mapbox satellite as raster tiles (the Static Images API caps at 1280 px and blends tiles, and it was asked for
+# z20.5, past the imagery's real detail, so it came back soft with a seam). Tiles come at @2x, 512 px each,
+# and are stitched and cropped to the plan's exact box.
+MAPBOX_TILE_URL = "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg90"
+MAPBOX_TARGET_M_PER_PIXEL = 0.15  # ground meters per tile pixel, or finer
+MAPBOX_MAX_ZOOM = 20  # z19 already gives 0.12 m per pixel at US latitudes; Mapbox's own detail ends about there
+MAPBOX_TILE_LIMIT = 36
+WEB_MERCATOR_SPAN_M = 2 * math.pi * EARTH_RADIUS_M
 
 
 
@@ -371,24 +381,57 @@ def _photon_search(client: httpx.Client, text: str) -> list[dict]:
     return response.json().get("features", [])
 
 
+def _mapbox_suggestion(feature: dict) -> tuple[str, tuple[str, str]] | None:
+    """('710 Steiner Street, San Francisco, CA 94117', (street, city)) from a Mapbox address feature."""
+    properties = feature.get("properties", {})
+    context = properties.get("context", {})
+    street = str(properties.get("name_preferred") or properties.get("name") or "").strip()
+    city = str((context.get("place") or context.get("locality") or {}).get("name") or "").strip()
+    state = str((context.get("region") or {}).get("region_code") or "").strip()
+    postcode = str((context.get("postcode") or {}).get("name") or "").strip()
+    if not (street and city and state) or not street[0].isdigit():
+        return None
+    return f"{street}, {city}, {state}{' ' + postcode if postcode else ''}", (street.lower(), city.lower())
+
+
+def _mapbox_suggest(client: httpx.Client, text: str, token: str) -> list[str]:
+    response = client.get(MAPBOX_GEOCODE_URL, timeout=SUGGEST_TIMEOUT, params={
+        "q": text, "country": "us", "types": "address", "autocomplete": "true",
+        "limit": SUGGESTION_LIMIT * 2, "language": "en", "access_token": token,
+    })
+    response.raise_for_status()
+    suggestions: list[str] = []
+    seen: set[tuple[str, str]] = set()
+    for feature in response.json().get("features", []):
+        found = _mapbox_suggestion(feature)
+        if found and found[1] not in seen:  # one line per street address and city
+            seen.add(found[1])
+            suggestions.append(found[0])
+    return suggestions
+
+
 def suggest_addresses(text: str, client: httpx.Client | None = None) -> list[str]:
     """Best effort: when this fails the tech can still type the whole address."""
     owns_client = client is None
     client = client or httpx.Client(follow_redirects=True)
+    token = os.environ.get("MAPBOX_TOKEN")
     leading = re.match(r"\s*(\d+[A-Za-z]?)\s", text)
     house_number = leading.group(1) if leading else ""
     wanted, direction = _street_words(text)
     suggestions: list[str] = []
     searches = [text, text[leading.end():]] if leading else [text]
     try:
-        for search in searches:
-            for feature in _photon_search(client, search):
-                properties = feature.get("properties", {})
-                suggestion = _suggestion(properties, house_number)
-                if suggestion and suggestion not in suggestions and _fits(properties, house_number, wanted, direction):
-                    suggestions.append(suggestion)
-            if suggestions:
-                break
+        if token:
+            suggestions = _mapbox_suggest(client, text, token)
+        else:
+            for search in searches:
+                for feature in _photon_search(client, search):
+                    properties = feature.get("properties", {})
+                    suggestion = _suggestion(properties, house_number)
+                    if suggestion and suggestion not in suggestions and _fits(properties, house_number, wanted, direction):
+                        suggestions.append(suggestion)
+                if suggestions:
+                    break
     except (httpx.HTTPError, ValueError):
         pass
     finally:
@@ -683,20 +726,46 @@ def shift_for(view: PlanView, source: str) -> tuple[float, float]:
     return 0.0, 0.0
 
 
-def _mapbox_aerial(client: httpx.Client, view: PlanView, token: str) -> bytes:
-    pixels = 1000
-    meters_per_pixel = view.size_ft / FEET_PER_METER / pixels
-    zoom = math.log2(78271.517 * math.cos(math.radians(view.latitude)) / meters_per_pixel)
-    x, y = view.shifted_center(shift_for(view, "mapbox"))
-    latitude = math.degrees(2 * math.atan(math.exp(y / EARTH_RADIUS_M)) - math.pi / 2)
-    longitude = math.degrees(x / EARTH_RADIUS_M)
-    response = client.get(
-        MAPBOX_IMAGE_URL.format(lon=longitude, lat=latitude, zoom=zoom, px=pixels),
-        params={"access_token": token, "attribution": "false", "logo": "false"},
-        timeout=AERIAL_TIMEOUT,
-    )
-    response.raise_for_status()
-    return response.content
+def mapbox_zoom(latitude: float, tile_px: int = 512) -> int:
+    """The coarsest web-mercator zoom whose tile pixels are MAPBOX_TARGET_M_PER_PIXEL or finer on the ground."""
+    ground_per_pixel_at_zoom_0 = WEB_MERCATOR_SPAN_M / tile_px * math.cos(math.radians(latitude))
+    return min(MAPBOX_MAX_ZOOM, math.ceil(math.log2(ground_per_pixel_at_zoom_0 / MAPBOX_TARGET_M_PER_PIXEL)))
+
+
+def _mapbox_aerial(client: httpx.Client, view: PlanView, token: str, shifted: bool = True) -> bytes:
+    """Mapbox satellite tiles stitched and cropped to the plan box (moved by the measured shift, if any)."""
+    zoom = mapbox_zoom(view.latitude)
+    west, south, east, north = view.bbox(shift_for(view, "mapbox") if shifted else (0.0, 0.0))
+    tiles_across = 2 ** zoom
+    tile_m = WEB_MERCATOR_SPAN_M / tiles_across
+    origin = WEB_MERCATOR_SPAN_M / 2
+    # Tile coordinates of the box, in tiles, with y counted down from the top.
+    left, right = (west + origin) / tile_m, (east + origin) / tile_m
+    top, bottom = (origin - north) / tile_m, (origin - south) / tile_m
+    columns = range(math.floor(left), math.ceil(right))
+    rows = range(math.floor(top), math.ceil(bottom))
+    if len(columns) * len(rows) > MAPBOX_TILE_LIMIT:
+        raise httpx.HTTPError("too many tiles for this view")
+    canvas, tile_px = None, 0
+    for column in columns:
+        for row in rows:
+            response = client.get(
+                MAPBOX_TILE_URL.format(z=zoom, x=column % tiles_across, y=row),
+                params={"access_token": token}, timeout=AERIAL_TIMEOUT,
+            )
+            response.raise_for_status()
+            tile = Image.open(BytesIO(response.content)).convert("RGB")
+            if canvas is None:
+                tile_px = tile.width
+                canvas = Image.new("RGB", (len(columns) * tile_px, len(rows) * tile_px))
+            canvas.paste(tile, ((column - columns.start) * tile_px, (row - rows.start) * tile_px))
+    if canvas is None:
+        raise httpx.HTTPError("no tiles for this view")
+    box = ((left - columns.start) * tile_px, (top - rows.start) * tile_px,
+           (right - columns.start) * tile_px, (bottom - rows.start) * tile_px)
+    out = BytesIO()
+    canvas.crop((round(box[0]), round(box[1]), round(box[2]), round(box[3]))).save(out, format="JPEG", quality=95)
+    return out.getvalue()
 
 
 def _usgs_aerial(client: httpx.Client, view: PlanView) -> bytes:

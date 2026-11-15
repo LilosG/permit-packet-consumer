@@ -253,17 +253,129 @@ def test_mapbox_goes_ahead_of_usgs_and_coarse_sources_but_not_sharp_local_orthop
     assert first_host(pl.PlanView(36.15, -86.80, 30)) == "maps.nashville.gov"   # 15 cm local orthophoto
 
 
-def test_san_francisco_mapbox_picture_is_centered_on_the_measured_shift(monkeypatch):
+def _gradient_tile(column: int, row: int, size: int = 512) -> bytes:
+    """A tile whose red channel counts global x pixels (three per step) and green counts global y, so where a
+    stitched picture came from can be read back from its pixels."""
+    import numpy as np
+    from io import BytesIO
+    from PIL import Image
+
+    xs = (column * size + np.arange(size)) // 3 % 256
+    ys = (row * size + np.arange(size)) // 3 % 256
+    pixels = np.zeros((size, size, 3), dtype=np.uint8)
+    pixels[:, :, 0] = xs[None, :]
+    pixels[:, :, 1] = ys[:, None]
+    pixels[:, :, 2] = 128
+    out = BytesIO()
+    Image.fromarray(pixels).save(out, "JPEG", quality=95, subsampling=0)
+    return out.getvalue()
+
+
+def _tile_server(requests: list[tuple[int, int, int]]):
+    def serve(request: httpx.Request) -> httpx.Response:
+        z, x, y = request.url.path.split("/v4/mapbox.satellite/")[1].split("@")[0].split("/")
+        requests.append((int(z), int(x), int(y)))
+        return httpx.Response(200, content=_gradient_tile(int(x), int(y)), headers={"content-type": "image/jpeg"})
+    return httpx.Client(transport=httpx.MockTransport(serve))
+
+
+def _picture(view: pl.PlanView, shifted: bool = True):
+    from io import BytesIO
+    from PIL import Image
+    requests: list[tuple[int, int, int]] = []
+    raw = pl._mapbox_aerial(_tile_server(requests), view, "pk.test", shifted=shifted)
+    return Image.open(BytesIO(raw)).convert("RGB"), requests
+
+
+def test_mapbox_is_asked_for_z19_tiles_at_double_size_that_resolve_015_m_or_finer():
+    for latitude, longitude, scale in ((37.776, -122.4327, 20), (36.17, -115.14, 40), (33.4, -111.8, 100), (35.2, -80.83, 30)):
+        view = pl.PlanView(latitude, longitude, scale)
+        picture, requests = _picture(view)
+        assert {z for z, _, _ in requests} == {19}
+        ground_m_per_pixel = view.size_ft / pl.FEET_PER_METER / picture.width
+        assert ground_m_per_pixel <= 0.15, f"{ground_m_per_pixel:.3f} m per pixel at {scale} ft/in"
+        assert picture.width == picture.height and len(requests) <= pl.MAPBOX_TILE_LIMIT
+    assert pl.mapbox_zoom(37.776) == 19
+
+
+def test_stitched_mapbox_tiles_have_no_seam_where_two_tiles_meet():
+    import numpy as np
+    zoom, column = 19, 83_850
+    longitude = column / 2 ** zoom * 360 - 180  # the left edge of a tile column, so the view straddles two tiles
+    picture, requests = _picture(pl.PlanView(37.776, longitude, 20))
+    assert len({x for _, x, _ in requests}) >= 2
+    red = np.asarray(picture)[picture.height // 2, :, 0].astype(float)
+    ahead = red[16:] - red[:-16]  # three pixels per red step, so 16 pixels is 16/3 steps wherever the row is
+    clear = (red[:-16] > 12) & (red[16:] < 243) & (red[:-16] < red[16:] + 1)  # skip the places where red wraps
+    assert clear.sum() > picture.width // 2
+    assert np.abs(ahead[clear] - 16 / 3).max() < 3.5
+
+
+def test_mapbox_shift_moves_the_picture_by_the_measured_feet():
+    import numpy as np
+    view = pl.PlanView(37.776, -122.4327, 20)  # inside the San Francisco shift box: 22 ft west, 9 ft north
+    moved, _ = _picture(view)
+    plain, _ = _picture(view, shifted=False)
+    assert moved.size == plain.size
+    centre = lambda im, band: np.asarray(im)[im.height // 2 - 8:im.height // 2 + 8, im.width // 2 - 8:im.width // 2 + 8, band].astype(float).mean()
+    metres_per_pixel = view.size_ft / pl.FEET_PER_METER / plain.width
+    west_px = (centre(plain, 0) - centre(moved, 0)) * 3   # red counts three pixels per step
+    north_px = (centre(plain, 1) - centre(moved, 1)) * 3
+    assert west_px * metres_per_pixel * pl.FEET_PER_METER == pytest.approx(22, abs=1.5)
+    assert north_px * metres_per_pixel * pl.FEET_PER_METER == pytest.approx(9, abs=1.5)
+
+
+def _mapbox_features(*addresses: tuple[str, str, str, str]) -> dict:
+    return {"features": [{"properties": {
+        "name": street, "name_preferred": street,
+        "context": {"place": {"name": city}, "region": {"region_code": state}, "postcode": {"name": postcode}},
+    }} for street, city, state, postcode in addresses]}
+
+
+def test_suggestions_come_from_mapbox_with_its_zip_codes_and_one_line_per_street_and_city(monkeypatch):
     monkeypatch.setenv("MAPBOX_TOKEN", "pk.test")
     seen = []
 
     def serve(request: httpx.Request) -> httpx.Response:
-        seen.append(str(request.url.path))
-        return httpx.Response(200, content=_jpeg((90, 90, 90)), headers={"content-type": "image/jpeg"})
+        seen.append(request.url)
+        return httpx.Response(200, json=_mapbox_features(
+            ("710 Steiner Street", "San Francisco", "CA", "94117"),
+            ("710 Steiner Street", "San Francisco", "CA", "94115"),   # same street and city: dropped
+            ("710 Steiner Street", "San Jose", "CA", "95115"),
+            ("Steiner Street", "San Francisco", "CA", "94117"),        # no house number: not an address
+        ))
 
-    view = pl.PlanView(37.776, -122.4327, 20)
-    pl.fetch_aerial(view, httpx.Client(transport=httpx.MockTransport(serve)))
-    lon, lat = (float(v) for v in seen[0].split("/static/")[1].split(",")[:2])
-    east = pl.ground_distance_ft((view.latitude, view.longitude), (view.latitude, lon))
-    assert lon < view.longitude and east == pytest.approx(22, abs=0.5)
-    assert pl.ground_distance_ft((view.latitude, lon), (lat, lon)) == pytest.approx(9, abs=0.5) or lat > view.latitude
+    suggestions = pl.suggest_addresses("710 Steiner", httpx.Client(transport=httpx.MockTransport(serve)))
+    assert suggestions == ["710 Steiner Street, San Francisco, CA 94117", "710 Steiner Street, San Jose, CA 95115"]
+    assert [u.host for u in seen] == ["api.mapbox.com"]
+    assert seen[0].params["access_token"] == "pk.test" and seen[0].params["country"] == "us"
+
+
+def test_photon_is_used_for_suggestions_only_without_a_token(monkeypatch):
+    hosts = []
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        hosts.append(request.url.host)
+        return httpx.Response(200, json={"features": [{"properties": {
+            "countrycode": "US", "housenumber": "710", "street": "Steiner Street", "city": "San Francisco",
+            "state": "California", "postcode": "94115"}}]})
+
+    client = httpx.Client(transport=httpx.MockTransport(serve))
+    assert pl.suggest_addresses("710 Steiner", client) == ["710 Steiner Street, San Francisco, CA 94115"]
+    assert hosts and set(hosts) == {"photon.komoot.io"}
+    monkeypatch.setenv("MAPBOX_TOKEN", "pk.test")
+    hosts.clear()
+    pl.suggest_addresses("710 Steiner", client)
+    assert set(hosts) == {"api.mapbox.com"}
+
+
+def test_a_failed_mapbox_lookup_gives_no_suggestions_and_does_not_fall_back_to_photon(monkeypatch):
+    monkeypatch.setenv("MAPBOX_TOKEN", "pk.test")
+    hosts = []
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        hosts.append(request.url.host)
+        return httpx.Response(401)
+
+    assert pl.suggest_addresses("710 Steiner", httpx.Client(transport=httpx.MockTransport(serve))) == []
+    assert set(hosts) == {"api.mapbox.com"}
