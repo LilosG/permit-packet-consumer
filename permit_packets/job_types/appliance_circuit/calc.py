@@ -41,7 +41,7 @@ APPLIANCE_TITLES = {
     "hot_tub": "Hot Tub", "sauna": "Sauna", "heat_pump": "Heat Pump",
     "mini_split": "Mini-Split", "other": "240 V Appliance",
 }
-LOCATION_LABELS = {"indoor": "indoor", "outdoor": "outdoor", "detached": "detached building"}
+LOCATION_LABELS = {"indoor": "indoor location", "outdoor": "outdoor location", "detached": "detached building"}
 HVAC = ("heat_pump", "mini_split")
 DEGREE = "\N{DEGREE SIGN}"
 SPACES_NEEDED = 2

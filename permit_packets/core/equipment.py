@@ -2,7 +2,8 @@
 behind the packet's equipment page when the job names one of them.
 
 Every data sheet in data_sheets/ is the manufacturer's own published PDF, unchanged except for
-page selection (the Tesla Gen 3 sheet is the specification and breaker pages of Tesla's manual).
+page selection (the Tesla Gen 3 sheet is the specification and breaker pages of Tesla's manual; the
+Jacuzzi J-335 sheet is the cover and the J-300 power configuration page of Jacuzzi's Pre-Delivery Guide).
 """
 from __future__ import annotations
 
@@ -28,7 +29,7 @@ def attachment_span(pdf: bytes) -> tuple[int, int] | None:
 
 @dataclass(frozen=True)
 class Equipment:
-    kind: str            # "charger" or "panel"
+    kind: str            # "charger", "panel" or "appliance"
     name: str            # what the electrician picks, e.g. "Tesla Wall Connector (Gen 3)"
     max_amps: int
     listing: str
@@ -59,9 +60,18 @@ PANELS = (
               "square-d-homeline-hom3060l225pgc.pdf", ("hom3060l225pgc", "square d homeline 225")),
     Equipment("panel", "Milbank U5168-XTL-200 meter-main, 200 A", 200, "UL listed, Type 3R",
               "milbank-u5168-xtl-200.pdf", ("u5168 xtl 200", "u5168xtl200", "milbank u5168")),
+    # Ringed socket, on PSE's preapproved meter socket list (Form 7517, May 16, 2024).
+    Equipment("panel", "Square D Homeline SC816D200C meter-main, 200 A, ringed", 200, "UL listed, file E-6294",
+              "square-d-homeline-sc816d200c.pdf", ("sc816d200c", "square d sc816d200c")),
 )
 
-LIBRARY = CHARGERS + PANELS
+APPLIANCES = (
+    # Jacuzzi J-300 Pre-Delivery Guide: standard 240 VAC/50 A 3-wire, 50 A 2-pole GFCI, 36 A maximum draw.
+    Equipment("appliance", "Jacuzzi J-335 hot tub, 240 V, 50 A configuration", 36, "See the spa's rating label",
+              "jacuzzi-j-335-power-configurations.pdf", ("jacuzzi j-335", "jacuzzi j335", "j-335")),
+)
+
+LIBRARY = CHARGERS + PANELS + APPLIANCES
 
 
 def _normal(text: str) -> str:

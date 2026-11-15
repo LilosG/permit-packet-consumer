@@ -81,6 +81,10 @@ class Jurisdiction:
     # True where the house outline is drawn over the aerial: only where outlines were measured to sit on the
     # county parcels (tools/measure_alignment.py) and tree cover hides roofs in the photo.
     outline_over_aerial: bool = False
+    # Where the utility publishes the meter sockets and meter-main combos it accepts: their catalog numbers and
+    # the list's URL. A service upgrade with a meter-main then has to name one of them. None: not checked.
+    approved_meter_mains: tuple[str, ...] | None = None
+    approved_meter_mains_source: str = ""
     # What this city enforces, for job types it publishes no checklist for (they use the general one).
     code_note: str = ""
     fallback_notes: tuple[Note, ...] = ()

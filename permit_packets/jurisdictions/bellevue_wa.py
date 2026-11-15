@@ -248,10 +248,9 @@ SERVICE_NOTES = (
     ),
     Note(
         "always",
-        "PSE: the meter socket is ring-type (screw-type stainless or aluminum ring); PSE's preapproved sockets and "
-        "meter-main combos are on Form 7517 (May 16, 2024), e.g. Square D SC816D200C or Eaton CMBEB200BTS for "
-        "200 A. A combo unit also needs the manufacturer's drawings sent to PSE for review. The Milbank "
-        "U5168-XTL-200 in this app's equipment list is ringless and is not on PSE's list.",
+        "PSE: the meter socket is ring-type (screw-type stainless or aluminum ring), and PSE lists the sockets and "
+        "meter-main combos it accepts on Form 7517 (May 16, 2024). The packet's checks fail a meter-main that is "
+        "not on that list. A combo unit also needs the manufacturer's drawings sent to PSE for review.",
         PSE_SOCKETS_URL,
     ),
     Note(
@@ -343,6 +342,15 @@ BELLEVUE = Jurisdiction(
     # Measured with tools/measure_alignment.py: FEMA/ORNL outlines sit (0, 0) ft from King County parcels over
     # 788 houses (spread 0.3 ft), and Bellevue's tree cover hides many roofs in summer aerials.
     outline_over_aerial=True,
+    # PSE Form 7517 (May 16, 2024), residential single-phase 120/240 V meter combo units, every size, plus the
+    # commercial-column 200 A combos PSE lists for the same service. Catalog numbers as PSE prints them.
+    approved_meter_mains=(
+        "U217MTBL", "U2M2R", "CMBEB200BTS", "CMBE88B200BTS", "CMBEB200BTF", "MBE4040B200BTS", "U4042MCC",
+        "U40411230MCC", "U224MTB", "U214MTBL", "U214MTBPL", "U-3251-0-200-CB", "SC816D150C", "SC816D200C",
+        "SC1624M100S", "SC2040M200C", "SC816F200PS", "SU816F200PS", "SU3040D400CB", "CU816D400CB",
+        "MM0406L1200ESC", "MC0816B1200EST", "MM0404L1400SCS", "MC0816B1400SCS",
+    ),
+    approved_meter_mains_source=PSE_SOCKETS_URL,
     design_ambient_label="Washington State Energy Code outdoor design cooling temperature (Table RC-1)",
     code_note=CODE_NOTE,
     fallback_notes=(PERMIT_AND_INSPECTION, PLAN_REVIEW),
