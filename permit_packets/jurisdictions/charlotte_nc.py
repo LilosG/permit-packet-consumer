@@ -36,6 +36,7 @@ NC_811 = Note("trench", "Call NC 811 at least 3 full working days before digging
 
 CHARLOTTE = Jurisdiction(
     key="charlotte-nc", name="Charlotte", state="NC", known=True,
+    bbox=(-81.0582, 35.0017, -80.5581, 35.4026), center=(-80.8431, 35.2272),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     department="Mecklenburg County Code Enforcement (LUESA)",
     phone="(980) 314-2633",
     website=TIP_URL,

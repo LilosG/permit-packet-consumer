@@ -47,6 +47,9 @@ class Jurisdiction:
     name: str
     state: str
     known: bool
+    # City limits box (west, south, east, north) and center (lon, lat), used to keep address suggestions in the city.
+    bbox: tuple[float, float, float, float] | None = None
+    center: tuple[float, float] | None = None
     code_name: str = "NEC"
     department: str = ""
     phone: str = ""

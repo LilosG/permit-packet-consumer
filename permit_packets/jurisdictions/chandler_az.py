@@ -87,6 +87,7 @@ def _fallback(job: str) -> Note:
 
 CHANDLER = Jurisdiction(
     key="chandler-az", name="Chandler", state="AZ", known=True,
+    bbox=(-111.9956, 33.204, -111.7554, 33.3613), center=(-111.8414, 33.3023),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     department="City of Chandler Development Services, Building Safety",
     phone="(480) 782-3000",
     email="prod@chandleraz.gov",

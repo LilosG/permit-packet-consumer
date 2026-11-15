@@ -19,7 +19,8 @@ from __future__ import annotations
 import math
 import os
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from io import BytesIO
 
@@ -381,8 +382,8 @@ def _photon_search(client: httpx.Client, text: str) -> list[dict]:
     return response.json().get("features", [])
 
 
-def _mapbox_suggestion(feature: dict) -> tuple[str, tuple[str, str]] | None:
-    """('710 Steiner Street, San Francisco, CA 94117', (street, city)) from a Mapbox address feature."""
+def _mapbox_suggestion(feature: dict) -> tuple[str, tuple[str, str], str, str] | None:
+    """(text, (street, city) key, city, state) from a Mapbox address feature, e.g. '710 Steiner Street, San Francisco, CA 94117'."""
     properties = feature.get("properties", {})
     context = properties.get("context", {})
     street = str(properties.get("name_preferred") or properties.get("name") or "").strip()
@@ -391,30 +392,58 @@ def _mapbox_suggestion(feature: dict) -> tuple[str, tuple[str, str]] | None:
     postcode = str((context.get("postcode") or {}).get("name") or "").strip()
     if not (street and city and state) or not street[0].isdigit():
         return None
-    return f"{street}, {city}, {state}{' ' + postcode if postcode else ''}", (street.lower(), city.lower())
+    return f"{street}, {city}, {state}{' ' + postcode if postcode else ''}", (street.lower(), city.lower()), city, state
 
 
-def _mapbox_suggest(client: httpx.Client, text: str, token: str) -> list[str]:
-    response = client.get(MAPBOX_GEOCODE_URL, timeout=SUGGEST_TIMEOUT, params={
+def _in_city(city: str, state: str, area: Jurisdiction) -> bool:
+    return city.lower() == area.name.lower() and state.upper() == area.state.upper()
+
+
+def _mapbox_search(client: httpx.Client, text: str, token: str, area: Jurisdiction | None) -> list[tuple[str, tuple[str, str]]]:
+    """One Mapbox search, boxed to and centered on the city when there is one, and kept to that city."""
+    params = {
         "q": text, "country": "us", "types": "address", "autocomplete": "true",
         "limit": SUGGESTION_LIMIT * 2, "language": "en", "access_token": token,
-    })
+    }
+    if area is not None and area.bbox and area.center:
+        params["bbox"] = ",".join(str(value) for value in area.bbox)
+        params["proximity"] = f"{area.center[0]},{area.center[1]}"
+    response = client.get(MAPBOX_GEOCODE_URL, timeout=SUGGEST_TIMEOUT, params=params)
     response.raise_for_status()
+    found = []
+    for feature in response.json().get("features", []):
+        suggestion = _mapbox_suggestion(feature)
+        if suggestion and (area is None or _in_city(suggestion[2], suggestion[3], area)):
+            found.append((suggestion[0], suggestion[1]))
+    return found
+
+
+def _mapbox_suggest(client: httpx.Client, text: str, token: str, areas: Sequence[Jurisdiction] | None) -> list[str]:
+    searches = list(areas) if areas else [None]
+    if len(searches) == 1:
+        batches = [_mapbox_search(client, text, token, searches[0])]
+    else:
+        with ThreadPoolExecutor(max_workers=min(len(searches), 8)) as pool:
+            batches = list(pool.map(lambda area: _mapbox_search(client, text, token, area), searches))
     suggestions: list[str] = []
     seen: set[tuple[str, str]] = set()
-    for feature in response.json().get("features", []):
-        found = _mapbox_suggestion(feature)
-        if found and found[1] not in seen:  # one line per street address and city
-            seen.add(found[1])
-            suggestions.append(found[0])
+    for batch in batches:  # in the order the client's cities are listed
+        for line, key in batch:
+            if key not in seen:  # one line per street address and city
+                seen.add(key)
+                suggestions.append(line)
     return suggestions
 
 
-def suggest_addresses(text: str, client: httpx.Client | None = None) -> list[str]:
-    """Best effort: when this fails the tech can still type the whole address."""
+def suggest_addresses(
+    text: str, client: httpx.Client | None = None, areas: Sequence[Jurisdiction] | None = None,
+) -> list[str]:
+    """Best effort: when this fails the tech can still type the whole address. With areas, only addresses
+    in those cities (a client's own, or the demo's whole list) come back."""
     owns_client = client is None
     client = client or httpx.Client(follow_redirects=True)
     token = os.environ.get("MAPBOX_TOKEN")
+    areas = [area for area in (areas or []) if area.bbox and area.center] or None
     leading = re.match(r"\s*(\d+[A-Za-z]?)\s", text)
     house_number = leading.group(1) if leading else ""
     wanted, direction = _street_words(text)
@@ -422,13 +451,17 @@ def suggest_addresses(text: str, client: httpx.Client | None = None) -> list[str
     searches = [text, text[leading.end():]] if leading else [text]
     try:
         if token:
-            suggestions = _mapbox_suggest(client, text, token)
+            suggestions = _mapbox_suggest(client, text, token, areas)
         else:
             for search in searches:
                 for feature in _photon_search(client, search):
                     properties = feature.get("properties", {})
                     suggestion = _suggestion(properties, house_number)
-                    if suggestion and suggestion not in suggestions and _fits(properties, house_number, wanted, direction):
+                    if not suggestion or suggestion in suggestions or not _fits(properties, house_number, wanted, direction):
+                        continue
+                    state = STATE_CODES.get(properties.get("state", ""), "")
+                    city = str(properties.get("city") or properties.get("town") or properties.get("district") or "")
+                    if areas is None or any(_in_city(city, state, area) for area in areas):
                         suggestions.append(suggestion)
                 if suggestions:
                     break

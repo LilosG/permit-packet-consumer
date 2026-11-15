@@ -69,6 +69,7 @@ def _note(job: str) -> Note:
 
 NASHVILLE = Jurisdiction(
     key="nashville-tn", name="Nashville", state="TN", known=True,
+    bbox=(-87.0547, 35.9971, -86.5862, 36.2926), center=(-86.7811, 36.1645),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     department="Metro Codes and Building Safety, Permit Issuance",
     phone="(615) 862-6517",
     email="permitissuance@nashville.gov",

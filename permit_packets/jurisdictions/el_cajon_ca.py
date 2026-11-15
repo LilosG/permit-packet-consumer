@@ -7,6 +7,7 @@ EV_CHARGER = "ev_charger"
 
 EL_CAJON = Jurisdiction(
     key="el-cajon-ca", name="El Cajon", state="CA", known=True,
+    bbox=(-117.0091, 32.7329, -116.7758, 32.8883), center=(-116.9624, 32.7949),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     code_name="CEC",
     department="Community Development, Building Safety",
     phone="(619) 441-1726",

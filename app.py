@@ -176,8 +176,10 @@ def client_info(client: Client = Depends(require_session)) -> dict:
 
 
 @app.post("/api/property/suggest", dependencies=[Depends(require_session)])
-def address_suggestions(payload: SuggestRequest) -> dict:
-    return {"suggestions": suggest_addresses(payload.text)}
+def address_suggestions(payload: SuggestRequest, client: Client = Depends(require_session)) -> dict:
+    # Only the signed-in client's cities; the demo login lists all of them.
+    cities = [KNOWN_BY_KEY[key] for key in client.jurisdiction_keys if key in KNOWN_BY_KEY]
+    return {"suggestions": suggest_addresses(payload.text, areas=cities)}
 
 
 def _known_job_type(key: str) -> str:

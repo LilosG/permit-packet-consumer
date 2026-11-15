@@ -379,3 +379,44 @@ def test_a_failed_mapbox_lookup_gives_no_suggestions_and_does_not_fall_back_to_p
 
     assert pl.suggest_addresses("710 Steiner", httpx.Client(transport=httpx.MockTransport(serve))) == []
     assert set(hosts) == {"api.mapbox.com"}
+
+
+def test_suggestions_are_boxed_to_each_clients_city_and_keep_only_that_city(monkeypatch):
+    from permit_packets.jurisdictions import CHANDLER, MESA
+
+    monkeypatch.setenv("MAPBOX_TOKEN", "pk.test")
+    asked = []
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        asked.append(dict(request.url.params))
+        return httpx.Response(200, json=_mapbox_features(
+            ("1432 East 1st Street", "Mesa", "AZ", "85203"),
+            ("1432 East 1st Street", "Mesa", "AZ", "85204"),       # same street and city: dropped
+            ("1432 East 1st Street", "Gilbert", "AZ", "85233"),     # inside Mesa's box, not Mesa: dropped
+            ("1432 East 1st Street", "Chandler", "AZ", "85225"),
+            ("1432 East 1st Street", "Pueblo", "CO", "81001"),
+        ))
+
+    client = httpx.Client(transport=httpx.MockTransport(serve))
+    suggestions = pl.suggest_addresses("1432 E 1st", client, areas=[MESA, CHANDLER])
+    assert suggestions == ["1432 East 1st Street, Mesa, AZ 85203", "1432 East 1st Street, Chandler, AZ 85225"]
+    assert len(asked) == 2  # one search per city
+    by_box = {tuple(float(v) for v in call["bbox"].split(",")): call for call in asked}
+    assert set(by_box) == {MESA.bbox, CHANDLER.bbox}
+    assert by_box[MESA.bbox]["proximity"] == f"{MESA.center[0]},{MESA.center[1]}"
+    assert by_box[CHANDLER.bbox]["proximity"] == f"{CHANDLER.center[0]},{CHANDLER.center[1]}"
+    # With no areas (a client with no mapped city) the search is not boxed.
+    asked.clear()
+    pl.suggest_addresses("1432 E 1st", client)
+    assert "bbox" not in asked[0] and "proximity" not in asked[0]
+
+
+def test_photon_suggestions_are_kept_to_the_clients_city_too():
+    from permit_packets.jurisdictions import SAN_FRANCISCO
+
+    features = [{"properties": {"countrycode": "US", "housenumber": "710", "street": "Steiner Street", "city": city,
+                                "state": state, "postcode": "00000"}}
+                for city, state in (("San Jose", "California"), ("San Francisco", "California"))]
+    client = httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"features": features})))
+    assert pl.suggest_addresses("710 Steiner", client, areas=[SAN_FRANCISCO]) == [
+        "710 Steiner Street, San Francisco, CA 00000"]

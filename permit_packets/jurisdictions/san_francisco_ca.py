@@ -26,6 +26,7 @@ CODE_NOTE = (
 
 SAN_FRANCISCO = Jurisdiction(
     key="san-francisco-ca", name="San Francisco", state="CA", known=True,
+    bbox=(-122.5446, 37.6011, -122.3011, 37.8665), center=(-122.4194, 37.7792),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     code_name="CEC",
     department="Department of Building Inspection (DBI), Permit Services",
     phone="(628) 652-3720",

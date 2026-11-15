@@ -163,3 +163,17 @@ def test_request_sheet_size_overrides_client_and_city_for_client_logins(monkeypa
     monkeypatch.setitem(CLIENTS, "elc", Client(**{**CLIENTS["elc"].__dict__, "sheet_size": other}))
     assert _sheet_size(session.post("/api/jobs/ev-charger/packet", json=base)) == other
     assert _sheet_size(session.post("/api/jobs/ev-charger/packet", json={**base, "sheet_size": city_default})) == city_default
+
+
+def test_address_suggestions_are_limited_to_the_signed_in_clients_cities_and_the_demo_gets_all(monkeypatch):
+    asked = []
+    monkeypatch.setattr(app_module, "suggest_addresses", lambda text, client=None, areas=None: asked.append(
+        [area.key for area in areas]) or ["suggested"])
+    body = {"text": "710 Steiner"}
+    assert sign_in(PASSWORDS["elc"]).post("/api/property/suggest", json=body).json() == {"suggestions": ["suggested"]}
+    sign_in(PASSWORDS["jbee"]).post("/api/property/suggest", json=body)
+    sign_in("demo-password").post("/api/property/suggest", json=body)
+    assert asked[0] == ["san-francisco-ca"]
+    assert asked[1] == ["mesa-az", "chandler-az"]
+    assert asked[2] == [j.key for j in KNOWN.values()]
+    assert all(j.bbox and j.center for j in KNOWN.values())

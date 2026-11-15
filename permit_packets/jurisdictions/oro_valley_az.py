@@ -7,6 +7,7 @@ EV_CHARGER = "ev_charger"
 
 ORO_VALLEY = Jurisdiction(
     key="oro-valley-az", name="Oro Valley", state="AZ", known=True,
+    bbox=(-111.0302, 32.3372, -110.9275, 32.4849), center=(-110.9554, 32.4001),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     department="Community and Economic Development, Permitting",
     phone="(520) 229-4800",
     email="permits@orovalleyaz.gov",

@@ -77,6 +77,7 @@ AZ_811 = Note(
 
 MESA = Jurisdiction(
     key="mesa-az", name="Mesa", state="AZ", known=True,
+    bbox=(-111.8945, 33.2774, -111.5633, 33.5698), center=(-111.8315, 33.4152),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     department="City of Mesa Development Services, Building Safety",
     phone="(480) 644-4273",
     email="PermitServices@mesaaz.gov",
