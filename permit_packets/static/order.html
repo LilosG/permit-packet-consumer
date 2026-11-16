@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Your permit packet order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/assets/css/app.css?v={{ASSET_VERSION}}">
+</head>
+<body>
+<header class="site-header"><div class="bar"><a class="brand" href="/">Permit Packets</a><nav class="nav" aria-label="Order"><a href="/">New packet</a></nav></div></header>
+<main class="page-main">
+  <h1>Your permit packet order</h1>
+  <p class="lead" id="address"></p>
+  <p class="error" id="error" role="alert" hidden></p>
+
+  <section id="pending" class="panel" hidden>
+    <p class="tb-label" style="margin:0">Your order code <span class="status-pill pending_payment">Waiting for payment</span></p>
+    <div class="code-row">
+      <div class="order-code" id="code"></div>
+      <button type="button" class="quiet" id="copy-code">Copy Order Code</button>
+    </div>
+    <h2 style="margin-top:18px">Pay with Wave</h2>
+    <ol class="steps-list">
+      <li>Open Wave Checkout and pay for your package.</li>
+      <li><strong>Paste your order code in the Wave note</strong> so we can match your payment.</li>
+      <li>Come back here and press Refresh Status. Your downloads appear once we see the payment.</li>
+    </ol>
+    <div class="actions">
+      <a class="button cta" id="wave" target="_blank" rel="noopener" hidden>Open Wave Checkout</a>
+      <button class="quiet" id="refresh" type="button">Refresh Status</button>
+    </div>
+    <p class="note" id="no-wave" hidden>Payment isn't set up for this package yet. Keep this page and contact us with your order code.</p>
+    <p class="note" id="refreshed" aria-live="polite"></p>
+    <p class="note">Bookmark this page. It's the only way back to your order.</p>
+  </section>
+
+  <section id="paid" hidden>
+    <div class="check-card"><span class="check-icon" aria-hidden="true">✓</span><div><strong>Your packet is unlocked</strong><span>Order <span id="paid-code"></span>. Clean, no watermark.</span></div></div>
+    <div class="panel">
+      <h2>Download</h2>
+      <div class="actions">
+        <a class="button cta" id="pdf">Download PDF</a>
+        <a class="button quiet" id="zip" hidden>Download ZIP (individual files)</a>
+      </div>
+      <p class="note" id="one-pdf" hidden>This city takes one combined PDF, so upload the PDF as a single file.</p>
+    </div>
+    <div class="panel">
+      <h2>Submit to <span id="city-name"></span></h2>
+      <p id="submit-how"></p>
+      <p class="note" id="city-contact"></p>
+      <div class="actions"><a class="button quiet" id="portal" target="_blank" rel="noopener" hidden>Open the city portal</a></div>
+    </div>
+    <div class="panel">
+      <h2>Portal fields</h2>
+      <p class="lead" style="margin:-4px 0 6px">Ready to paste into the city's form.</p>
+      <div class="actions" style="margin:8px 0 10px"><button type="button" class="quiet" id="copy-fields">Copy Portal Fields</button></div>
+      <div id="fields"></div>
+    </div>
+    <div class="panel" id="email-card" hidden>
+      <h2>Submission email</h2>
+      <p class="tb-label">Subject: <span id="email-subject"></span></p>
+      <pre class="email" id="email-body"></pre>
+      <div class="actions"><button type="button" class="quiet" id="copy-email">Copy email</button></div>
+    </div>
+    <p class="note">This is an automated drafting &amp; NEC calculation document, not PE-stamped. Confirm your city's current requirements before submitting.</p>
+  </section>
+</main>
+<script>
+(() => {
+  const token = location.pathname.split('/').filter(Boolean).pop();
+  const $ = (id) => document.getElementById(id);
+  let fieldsText = '';
+
+  async function copyText(text, button) {
+    await navigator.clipboard.writeText(text).catch(() => {});
+    const label = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => { button.textContent = label; }, 1400);
+  }
+
+  async function load(manual) {
+    let response;
+    try { response = await fetch(`/api/orders/${encodeURIComponent(token)}`); }
+    catch { $('error').textContent = 'Could not reach the server. Try again in a moment.'; $('error').hidden = false; return; }
+    if (!response.ok) {
+      $('error').textContent = response.status === 404 ? "We can't find that order. Check the link you saved." : 'Something went wrong loading your order. Try again.';
+      $('error').hidden = false;
+      return;
+    }
+    $('error').hidden = true;
+    const order = await response.json();
+    $('address').textContent = order.address;
+    if (!order.paid) {
+      $('pending').hidden = false; $('paid').hidden = true;
+      $('code').textContent = order.order_code;
+      if (order.wave_checkout_url) { $('wave').href = order.wave_checkout_url; $('wave').hidden = false; $('no-wave').hidden = true; }
+      else { $('wave').hidden = true; $('no-wave').hidden = false; }
+      if (manual) $('refreshed').textContent = `Still waiting for payment (checked ${new Date().toLocaleTimeString()}).`;
+      return;
+    }
+    $('pending').hidden = true; $('paid').hidden = false;
+    $('paid-code').textContent = order.order_code;
+    $('pdf').href = order.pdf_url;
+    $('zip').hidden = !order.documents_url;
+    if (order.documents_url) $('zip').href = order.documents_url;
+    $('one-pdf').hidden = Boolean(order.documents_url);
+    const city = order.jurisdiction || {};
+    $('city-name').textContent = city.name ? `${city.name}, ${city.state}` : 'your city';
+    const sets = city.sets_required > 1 ? ` The city asks for ${city.sets_required} sets.` : '';
+    $('submit-how').textContent = (city.submit_how || 'Submit the PDF to your local building department.') + sets;
+    $('city-contact').textContent = [city.department, city.phone, city.email].filter(Boolean).join(' · ');
+    $('portal').hidden = !city.website;
+    if (city.website) { $('portal').href = city.website; $('portal').textContent = `Open ${city.website_label || 'the city portal'}`; }
+    const fields = order.portal_fields || [];
+    fieldsText = fields.map((f) => `${f.label}: ${f.value}`).join('\n');
+    $('fields').replaceChildren(...fields.map((f) => {
+      const row = document.createElement('div'); row.className = 'pfield';
+      const text = document.createElement('div');
+      const label = document.createElement('b'); label.textContent = f.label;
+      const value = document.createElement('span'); value.textContent = f.value;
+      text.append(label, value);
+      const copy = document.createElement('button'); copy.type = 'button'; copy.className = 'copy'; copy.textContent = 'Copy';
+      copy.addEventListener('click', () => copyText(f.value, copy));
+      row.append(text, copy);
+      return row;
+    }));
+    $('email-card').hidden = !order.submission_email;
+    if (order.submission_email) {
+      $('email-subject').textContent = order.submission_email.subject;
+      $('email-body').textContent = order.submission_email.body;
+    }
+  }
+
+  $('copy-code').addEventListener('click', (e) => copyText($('code').textContent, e.currentTarget));
+  $('copy-fields').addEventListener('click', (e) => copyText(fieldsText, e.currentTarget));
+  $('copy-email').addEventListener('click', (e) => copyText($('email-body').textContent, e.currentTarget));
+  $('refresh').addEventListener('click', () => load(true));
+  load(false);
+})();
+</script>
+</body>
+</html>

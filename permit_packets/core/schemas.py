@@ -61,7 +61,7 @@ class JobRequestBase(BaseModel):
     customer: str = Field(min_length=1, max_length=120)
     address: str = Field(min_length=1, max_length=200)
     contractor: str = Field(min_length=1, max_length=120)
-    license_number: str = Field(min_length=1, max_length=60)
+    license_number: str = Field(default="", max_length=60)  # blank or "Owner-Builder": no license printed
     sample_mode: bool = False
     city: str | None = Field(default=None, max_length=80)
     state: str | None = Field(default=None, max_length=2)

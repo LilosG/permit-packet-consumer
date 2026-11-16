@@ -3,32 +3,75 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>Permit Packets</title>
+<title>Electrical Permit Packets in Minutes | Permit Packets</title>
+<meta name="description" content="Generate an NEC-calculated site plan, single-line diagram, panel schedule, load calculation and spec sheets for a residential electrical permit. Free watermarked preview, no account needed.">
+<meta property="og:title" content="Electrical Permit Packets in Minutes, Not Weeks">
+<meta property="og:description" content="Enter your address and get a city-ready residential electrical permit packet. Free preview first.">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="/assets/css/app.css?v={{ASSET_VERSION}}">
 </head>
 <body>
-<header><div class="bar"><strong id="brand">Permit packets</strong><span class="bar-right"><a href="/dashboard" class="bar-link">Dashboard</a><span id="bar-city">Demo</span><form method="post" action="/api/signout" class="bar-form"><button type="submit" class="bar-link">Sign out</button></form></span></div></header>
-<main>
+<header class="site-header"><div class="bar">
+  <a class="brand" href="/" id="brand">Permit Packets</a>
+  <nav class="nav" aria-label="Sections"><a href="#how">How It Works</a><a href="#included">What's Included</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></nav>
+</div></header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow">Residential electrical permits</p>
+      <h1>Electrical Permit Packets in Minutes, Not Weeks</h1>
+      <p class="hero-sub">Don't pay a drafter $350 and wait a week—and don't risk rejection with a lot-map-only site plan. Enter your address to generate an NEC-calculated site plan, single-line diagram, panel schedule, load calc, and UL spec sheets.</p>
+      <p class="hero-cta"><a class="button cta" href="#start" id="hero-cta">Start Free Preview</a><span class="hero-note">No account. See the watermarked packet before you pay.</span></p>
+    </div>
+    <aside class="card included" id="included" aria-labelledby="included-title">
+      <h2 id="included-title">Every packet includes 5 sheets</h2>
+      <ol class="sheets-list">
+        <li><b>Cover &amp; Code Notes</b><span>City checklist and the NEC articles that apply</span></li>
+        <li><b>GIS Parcel Site Plan</b><span>Your lot, your house and the measured wire run</span></li>
+        <li><b>Single-Line Diagram &amp; Panel Schedule</b><span>Service, breaker, wire and every circuit</span></li>
+        <li><b>NEC 220 Load Calculation</b><span>Pass/fail against your service size</span></li>
+        <li><b>Manufacturer UL Cut Sheets</b><span>Spec sheets for the equipment you picked</span></li>
+      </ol>
+      <div class="compare-wrap"><table class="compare">
+        <thead><tr><th scope="col"></th><th scope="col" class="us">Permit Packets<small>$39–$169</small></th><th scope="col">Site-plan-only sites<small>$39</small></th><th scope="col">CAD drafter<small>~$350</small></th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Parcel site plan</th><td class="us yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th scope="row">Single-line &amp; panel schedule</th><td class="us yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><th scope="row">NEC 220 load calc</th><td class="us yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><th scope="row">UL spec sheets</th><td class="us yes">✓</td><td class="no">—</td><td class="no">Extra</td></tr>
+          <tr><th scope="row">Turnaround</th><td class="us"><b>Minutes</b></td><td>Minutes</td><td>~1 week</td></tr>
+        </tbody>
+      </table></div>
+    </aside>
+  </div>
+</section>
+
+<section class="band" id="how"><div class="wrap">
+  <h2 class="band-title">How it works</h2>
+  <ol class="how-steps">
+    <li><span class="num">1</span><b>Enter your address</b><span>Pick the job, drop the panel and equipment pins on the aerial map, and answer a few questions.</span></li>
+    <li><span class="num">2</span><b>Preview it free</b><span>See the live NEC 220 check and every sheet of your packet, watermarked.</span></li>
+    <li><span class="num">3</span><b>Pay and download</b><span>Unlock the clean PDF and individual files, plus the copy-paste fields for your city's portal.</span></li>
+  </ol>
+</div></section>
+
+<main class="wrap wizard-wrap" id="start">
   <ol class="steps" id="steps" aria-label="Progress">
-    <li data-step="1">Property</li>
-    <li data-step="2">Job</li>
-    <li data-step="3">Review</li>
-    <li data-step="4">Submit</li>
+    <li data-step="1">Project &amp; property</li>
+    <li data-step="2">Details</li>
+    <li data-step="3">Free preview</li>
+    <li data-step="4">Package &amp; pay</li>
   </ol>
 
-  <section class="sheet" data-panel="0" hidden>
-    <h1>Choose the job type</h1>
-    <p class="lead">Each type has its own details and packet. Pick the one you're permitting.</p>
-    <div class="types" id="type-list" role="radiogroup" aria-label="Job type"></div>
-    <div class="actions"><button type="button" id="type-continue" disabled>Continue</button></div>
-  </section>
-
   <section class="sheet" data-panel="1">
-    <h1>Start with the address</h1>
-    <p class="lead">The system finds the property and the city, then loads that city's checklist.</p>
+    <h2 class="step-title">What are you permitting?</h2>
+    <div class="types" id="type-list" role="radiogroup" aria-label="Job type"></div>
+
+    <h2 class="step-title spaced">Where is the job?</h2>
+    <p class="lead">We find the property and the city, then load that city's checklist.</p>
     <form class="search" id="find">
       <div class="combo">
         <input id="address" role="combobox" aria-expanded="false" aria-controls="suggestions" aria-autocomplete="list" autocomplete="off" aria-label="Job address" placeholder="Start typing the job address" maxlength="200" required>
@@ -37,13 +80,13 @@
       <button type="submit" id="find-button">Find property</button>
     </form>
     <div class="error" id="find-error" role="alert" hidden></div>
-    <p class="small-actions"><button type="button" class="link" id="use-sample">No address handy? Use a sample layout</button><button type="button" class="link" id="change-type" hidden>Change job type</button></p>
+    <p class="small-actions"><button type="button" class="link" id="use-sample">Try with a sample address</button></p>
 
     <div id="site" hidden>
       <div class="drawing">
         <div class="stage" id="stage">
           <img id="aerial" alt="Aerial photo of the property" hidden>
-          <svg id="overlay" viewBox="0 0 1000 1000" role="application" aria-label="Plan of the property. Tap to place the panel, the charger and any bends."></svg>
+          <svg id="overlay" viewBox="0 0 1000 1000" role="application" aria-label="Plan of the property. Tap to place the panel, the equipment and any bends."></svg>
           <span class="loading" id="aerial-status" role="status"></span>
           <div class="zoom"><button type="button" id="zoom-in" aria-label="Zoom in">+</button><button type="button" id="zoom-out" aria-label="Zoom out">&minus;</button></div>
           <div class="pick-note" id="pick-note" hidden>Zoom out if you need to, then tap the right house.</div>
@@ -52,24 +95,38 @@
           <div><span class="tb-label">Property</span><div class="tb-value" id="tb-address"></div><div class="tb-label" id="tb-parcel"></div><div class="located" id="tb-located"></div><button type="button" class="link" id="wrong-house">Wrong house? Tap the right one</button></div>
           <div><span class="tb-label">Jurisdiction</span><div class="tb-value" id="tb-city"></div><a class="checklist-link" id="tb-checklist" target="_blank" rel="noopener"></a></div>
           <div>
+            <p class="tb-label tool-help">Tap a button, then tap the map to drop the pin.</p>
             <div class="tools" id="tools"></div>
             <div class="small-actions"><button type="button" class="link" id="undo">Undo</button><button type="button" class="link" id="clear">Start over</button></div>
           </div>
-          <div id="tb-route-block"><span class="tb-label">Measured route</span><div class="tb-big" id="tb-route">Not marked yet</div><div class="tb-label" id="tb-scale"></div></div>
+          <div id="tb-route-block"><span class="tb-label">Measured wire run</span><div class="tb-big" id="tb-route">Not marked yet</div><div class="tb-label" id="tb-scale"></div></div>
         </div>
       </div>
-      <div class="actions"><button type="button" id="to-job" disabled>Continue to job details</button></div>
+      <div class="actions"><button type="button" id="to-job" disabled>Continue to details</button></div>
     </div>
   </section>
 
   <form id="job" class="sheet" data-panel="2" hidden>
-    <h1>Job details</h1>
+    <h1>Project &amp; home details</h1>
     <p class="lead" id="job-lead"></p>
-    <div class="block grid">
-      <label class="field">Customer<input name="customer" value="Sample Homeowner" required maxlength="120"></label>
-      <div class="contents" data-job-type="ev_charger"><label class="field">Charger make and model<input name="charger_model" list="charger-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"><datalist id="charger-models"><option value="Tesla Wall Connector (Gen 3)"></option><option value="Tesla Universal Wall Connector"></option><option value="ChargePoint Home Flex (CPH50)"></option><option value="Emporia Level 2 EV Charger"></option><option value="Wallbox Pulsar Plus (North America)"></option></datalist></label></div>
+
+    <div class="block who">
+      <div class="seg" role="radiogroup" aria-label="Who is doing the work">
+        <label class="seg-opt"><input type="radio" name="role" value="owner" checked><span>I'm a Homeowner (Owner-Builder)</span></label>
+        <label class="seg-opt"><input type="radio" name="role" value="contractor"><span>I'm an Electrician / Contractor</span></label>
+      </div>
+      <div class="grid who-fields" id="contractor-grid" hidden>
+        <label class="field">Company name<input name="contractor" value="Homeowner (Owner-Builder)" required maxlength="120" autocomplete="organization"></label>
+        <label class="field">License number<input name="license_number" value="Owner-Builder" required maxlength="60" autocomplete="off"></label>
+        <label class="field logo-field">Company logo (optional, PNG or JPEG under 500 KB)<input type="file" id="logo-file" accept="image/png,image/jpeg"><span class="hint" id="logo-note"></span></label>
+      </div>
     </div>
-    <label class="flag" style="margin-top:10px"><input type="checkbox" name="sample_mode"><span>Sample mode: hide the real address and parcel number, for sharing outside your team</span></label>
+
+    <div class="block grid">
+      <label class="field">Property owner name<input name="customer" placeholder="Full name" required maxlength="120" autocomplete="name"></label>
+      <div class="contents" data-job-type="ev_charger"><label class="field">Charger make and model<input name="charger_model" list="charger-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"><span class="pills" aria-label="Popular chargers"><button type="button" class="pill" data-fill="charger_model" data-value="Tesla Wall Connector (Gen 3)">Tesla Gen 3</button><button type="button" class="pill" data-fill="charger_model" data-value="ChargePoint Home Flex (CPH50)">ChargePoint Home Flex</button><button type="button" class="pill" data-fill="charger_model" data-value="Emporia Level 2 EV Charger">Emporia</button><button type="button" class="pill" data-fill="charger_model" data-value="Wallbox Pulsar Plus (North America)">Wallbox Pulsar Plus</button></span><datalist id="charger-models"><option value="Tesla Wall Connector (Gen 3)"></option><option value="Tesla Universal Wall Connector"></option><option value="ChargePoint Home Flex (CPH50)"></option><option value="Emporia Level 2 EV Charger"></option><option value="Wallbox Pulsar Plus (North America)"></option></datalist></label></div>
+    </div>
+    <label class="flag" style="margin-top:10px"><input type="checkbox" name="sample_mode"><span>Hide the real address and parcel number on the packet (sample mode)</span></label>
     <div data-job-type="ev_charger">
     <div class="block">
       <h2>Charger</h2>
@@ -346,10 +403,12 @@
         <div class="contents" data-job-type="ev_charger"><label class="choice"><input type="checkbox" name="has_solar"><span>Solar</span></label></div>
       </div></fieldset>
     </div>
-    <div class="block">
-      <h2>Service and panel</h2>
+    <details class="advanced" id="advanced">
+      <summary>Advanced Panel &amp; Utility Specs (Optional — Pre-filled with Residential Defaults)</summary>
+      <div class="adv-body">
+        <h3>Service and panel</h3>
       <div class="grid">
-        <label class="field">Available fault current at the service (A)<input name="available_fault_current_a" type="number" min="1" max="200000" step="1" placeholder="e.g. 10000"><span class="hint">From the utility's fault current letter or published table</span></label>
+        <label class="field">Available fault current at the service (A)<input name="available_fault_current_a" type="number" min="1" max="200000" step="1" value="10000" placeholder="e.g. 10000"><span class="hint">From the utility's fault current letter or published table</span></label>
         <label class="field">Panel and breaker interrupting rating (kA)<input name="equipment_aic_ka" type="number" min="1" max="200" step="1" value="10" required><span class="hint">From the utility's fault current letter or published table</span></label>
       </div>
       <label class="flag" style="margin-top:10px"><input type="checkbox" name="data_sheet_attached"><span>I'm attaching the manufacturer's data sheet myself (equipment not in the library)</span></label>
@@ -359,13 +418,10 @@
         <label class="field">Main<select name="panel_main"><option value="">Not entered</option><option value="main breaker">Main breaker</option><option value="main lug">Main lug</option></select></label>
         <label class="field">Existing grounding electrode conductor<input name="gec_size" maxlength="20" placeholder="#4 Cu" autocomplete="off"><span class="hint">Checked against NEC Table 250.66 for the service conductors</span></label>
       </div>
-    </div>
-    <div>
-      <div class="grid" style="margin-bottom:14px">
-        <label class="field">Sheet size<select name="sheet_size" id="sheet-size"><option value="">City default</option><option value="letter">Letter, 8.5 x 11</option><option value="tabloid">11 x 17, plans at full scale</option></select></label>
-      </div>
-      <details>
-        <summary id="details-summary">Exact nameplate values and contractor</summary>
+        <div class="grid" style="margin-top:14px">
+          <label class="field">Sheet size<select name="sheet_size" id="sheet-size"><option value="">City default</option><option value="letter">Letter, 8.5 x 11</option><option value="tabloid">11 x 17, plans at full scale</option></select></label>
+        </div>
+        <h3 data-uses="home_loads">Exact nameplate values (VA)</h3>
         <div class="grid three" data-uses="home_loads">
           <label class="field">Range (VA)<input data-home name="range_va" type="number" min="0" value="12000"></label>
           <label class="field">Cooktop (VA)<input data-home name="cooktop_va" type="number" min="0" value="0"></label>
@@ -385,78 +441,95 @@
         <label class="field" style="margin-top:14px">Existing panel circuits, for the panel schedule (optional)
           <textarea name="existing_circuits" rows="5" maxlength="4000" placeholder="One per line: name, breaker amps, poles&#10;Kitchen counter, 20, 1&#10;Range, 50, 2"></textarea>
         </label>
-        <div class="grid" id="contractor-grid" style="margin-top:14px">
-          <label class="field">Contractor<input name="contractor" value="Sample Electric, LLC" required maxlength="120"></label>
-          <label class="field">License number<input name="license_number" value="000000" required maxlength="60"></label>
-        </div>
-      </details>
-    </div>
+      </div>
+    </details>
     <div class="error" id="job-error" role="alert" hidden></div>
     <div class="actions">
-      <button type="submit">Build the packet</button>
+      <button type="submit">See my free preview</button>
       <button type="button" class="quiet" id="back-property">Back to the property</button>
     </div>
   </form>
 
   <section class="sheet" id="building" data-panel="building" hidden>
-    <h1 id="building-title">Building the packet</h1>
-    <p class="lead">Everything comes from the address and this one job.</p>
+    <h2 class="step-title" id="building-title">Building your preview</h2>
+    <p class="lead">Running the NEC 220 numbers and drawing every sheet.</p>
     <ul class="plain" id="build-list"></ul>
   </section>
 
   <div data-panel="3" hidden>
     <section class="sheet">
-      <h1>Review the packet</h1>
-      <p class="lead">The system did the paperwork. Your team checks it and signs off.</p>
-      <div class="block status" id="status"><strong id="status-title"></strong><span id="status-note"></span></div>
+      <h2 class="step-title">Your free preview</h2>
+      <p class="lead">This is your real packet with a PREVIEW watermark. Check the numbers, then unlock the clean version.</p>
+      <div class="check-card" id="status"><span class="check-icon" id="status-icon" aria-hidden="true"></span><div><strong id="status-title"></strong><span id="status-note"></span></div></div>
       <dl class="stats" id="stats"></dl>
-    </section>
-    <section class="sheet">
-      <h2>The draft packet</h2>
-      <div id="pages"></div>
-      <div class="actions"><a class="button quiet" id="open-packet" target="_blank" rel="noopener">Open the full packet</a></div>
-    </section>
-    <section class="sheet">
-      <h2>Engineering checks</h2>
+      <h3 class="sub">Engineering &amp; NEC 220 check</h3>
       <ul class="plain checks" id="checks"></ul>
+      <div id="flags-wrap" hidden><h3 class="sub">Worth a second look</h3><ul class="plain notes" id="flags"></ul></div>
     </section>
     <section class="sheet">
-      <h2>Flagged for your review</h2>
-      <div id="flags"></div>
-      <p id="review-count"></p>
+      <h2 class="step-title">Every sheet, watermarked</h2>
+      <p class="lead">Tap a sheet to zoom in.</p>
+      <div id="pages"></div>
       <div class="actions">
-        <button id="approve" type="button" disabled>Approve packet</button>
-        <button id="edit" class="quiet" type="button">Change the job</button>
+        <button id="to-pay" type="button">Unlock the clean packet</button>
+        <button id="edit" class="quiet" type="button">Change the details</button>
       </div>
+      <p class="note" id="not-ready" hidden>Some checks need attention. You can still order, but open "Advanced Panel &amp; Utility Specs" in the details step and fill in what's missing to clear them before you submit to the city.</p>
     </section>
   </div>
 
   <div data-panel="4" hidden>
     <section class="sheet">
-      <h1>Approved. Ready to submit.</h1>
-      <p class="lead">Nothing went out without your review.</p>
-      <div class="block how"><strong id="how-city"></strong><div id="how-text"></div><div id="how-contact"></div></div>
-      <div class="actions">
-        <a class="button" id="download" download="ev-permit-packet-demo.pdf">Download packet (PDF)</a>
-        <button type="button" class="quiet" id="documents">Download each document (ZIP)</button>
-        <a class="button quiet" id="portal" target="_blank" rel="noopener" hidden></a>
-      </div>
-      <div class="error" id="documents-error" role="alert" hidden></div>
-    </section>
-    <section class="sheet" id="email-section" hidden>
-      <h2>Submission email</h2>
-      <pre class="email" id="email"></pre>
-      <div class="actions"><a class="button quiet" id="email-open">Open in email</a><button type="button" class="quiet copy-email" id="email-copy">Copy email</button></div>
-    </section>
-    <section class="sheet">
-      <h2>Application fields</h2>
-      <p class="lead" style="margin:-6px 0 12px">Ready to paste into the city's form.</p>
-      <dl class="fields" id="fields"></dl>
-      <div class="actions"><button id="restart" class="quiet" type="button">Start another job</button></div>
-      <p class="note">This demo packet is marked not for submission. A real setup uses your city's forms, and a licensed electrician reviews every packet.</p>
+      <h2 class="step-title">Choose your package</h2>
+      <p class="lead">You'll pay through Wave, then your clean PDF and files unlock on your order page.</p>
+      <form id="checkout" novalidate>
+        <label class="field">Email address<input type="email" name="email" id="email" required maxlength="200" autocomplete="email" placeholder="you@example.com"></label>
+        <div class="plans" role="radiogroup" aria-label="Package">
+          <label class="plan"><input type="radio" name="tier" value="load_calc"><span class="plan-body"><b class="plan-price">$39</b><span class="plan-name">Load Calc &amp; Audit</span><span class="plan-desc">NEC 220 load calculation and panel capacity audit</span></span></label>
+          <label class="plan popular"><input type="radio" name="tier" value="instant_packet" checked><span class="plan-body"><i class="badge">Most popular</i><b class="plan-price">$89</b><span class="plan-name">1-Hour Permit Packet</span><span class="plan-desc">The full clean packet: site plan, diagram, schedule, load calc and cut sheets</span></span></label>
+          <label class="plan"><input type="radio" name="tier" value="city_checked_24h"><span class="plan-body"><b class="plan-price">$169</b><span class="plan-name">24-Hour City-Checked Packet</span><span class="plan-desc">Full packet, checked against your city's requirements within 24 hours</span></span></label>
+        </div>
+        <label class="flag"><input type="checkbox" id="ack" required><span>I understand this is a drafting &amp; calculation document, not a PE stamp.</span></label>
+        <div class="error" id="pay-error" role="alert" hidden></div>
+        <div class="actions">
+          <button type="submit" id="pay-button">Continue to Payment</button>
+          <button type="button" class="quiet" id="back-preview">Back to preview</button>
+        </div>
+      </form>
+      <p class="note">After you pay on Wave, paste your order code (shown on the next page) in the payment note so we can match it and unlock your files.</p>
     </section>
   </div>
 </main>
+
+<section class="band" id="pricing"><div class="wrap">
+  <h2 class="band-title">Simple pricing</h2>
+  <p class="band-sub">Preview everything free. Pay only when you're ready to download.</p>
+  <div class="price-grid">
+    <article class="card price"><h3>Load Calc &amp; Panel Audit</h3><p class="amount">$39</p><p>NEC 220 load calculation and a panel capacity audit.</p><a class="button quiet" href="#start" data-plan="load_calc">Start free preview</a></article>
+    <article class="card price popular"><i class="badge">Most popular</i><h3>Instant Permit Packet</h3><p class="amount">$89</p><p>The complete clean packet and individual files, ready within the hour.</p><a class="button" href="#start" data-plan="instant_packet">Start free preview</a></article>
+    <article class="card price"><h3>24-Hour City-Checked Packet</h3><p class="amount">$169</p><p>The complete packet, checked against your city's published requirements within 24 hours.</p><a class="button quiet" href="#start" data-plan="city_checked_24h">Start free preview</a></article>
+  </div>
+</div></section>
+
+<section class="band alt" id="faq"><div class="wrap narrow">
+  <h2 class="band-title">Questions</h2>
+  <details class="faq"><summary>Is this stamped by an engineer?</summary><p>No. It's an automated drafting and NEC calculation tool, not a PE-stamped document. Some cities or jobs need a stamp or a licensed electrician's review; check with your building department.</p></details>
+  <details class="faq"><summary>Who submits it to the city?</summary><p>You do. After you pay, your order page gives you the clean PDF, the individual files, the city's submission steps and copy-paste fields for the portal.</p></details>
+  <details class="faq"><summary>Which cities does it cover?</summary><p>Any U.S. address works. Cities we've set up use their published checklist; everywhere else uses a general checklist, so confirm local requirements with your building department.</p></details>
+  <details class="faq"><summary>Can a homeowner pull their own permit?</summary><p>Many cities allow owner-builder permits for a home you live in, and rules vary. Choose "Homeowner (Owner-Builder)" in the details step and the packet prints your name with no license number.</p></details>
+  <details class="faq"><summary>How does payment work?</summary><p>You pay on Wave. Put your order code in the Wave note; once we see the payment your order unlocks. Bookmark your order page to come back to it.</p></details>
+  <details class="faq"><summary>What if my city asks for changes?</summary><p>We can't guarantee approval. The packet follows the city's published checklist where we have it, and the $169 package adds a check against your city's requirements.</p></details>
+</div></section>
+
+<footer class="site-footer"><div class="wrap">
+  <p><b>Permit Packets</b> is an automated drafting &amp; NEC calculation tool. Documents are not PE-stamped and are not legal or engineering advice. Applicants are responsible for confirming their city's requirements and for submitting their own application through the city's portal.</p>
+</div></footer>
+
+<div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Packet sheet, zoomed">
+  <button type="button" id="lightbox-close" aria-label="Close">&times;</button>
+  <div class="lightbox-scroll"><img id="lightbox-img" alt=""></div>
+  <p class="lightbox-hint">Tap the sheet to zoom in or out</p>
+</div>
 
 <script>window.PermitJobTypes = { modules: {}, register(key, module) { this.modules[key] = module; } };</script>
 <script src="/assets/js/job-types/electrical.js?v={{ASSET_VERSION}}"></script>

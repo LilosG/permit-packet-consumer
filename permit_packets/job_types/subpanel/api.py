@@ -4,6 +4,7 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from permit_packets.core.panel_schedule import existing_circuits
+from permit_packets.core.title_block import contractor_with_license
 from permit_packets.core.conductors import wire_label
 from permit_packets.core.job_inputs import build_on_sheet, display_number, property_plan, sample_address
 from permit_packets.core.load_calculation import HomeLoads
@@ -102,7 +103,7 @@ def _submission_email(packet: SubpanelPacket) -> dict:
         "body": (
             f"Hello,\n\nAttached is an electrical permit submittal for a residential subpanel, "
             f"{job.subpanel_amps} A, fed by a {job.feeder_breaker_amps} A breaker.\n\n"
-            f"Address: {job.address}\nContractor: {job.contractor}, license {job.license_number}\n\n"
+            f"Address: {job.address}\nContractor: {contractor_with_license(job.contractor, job.license_number, ', license ')}\n\n"
             f"Please let me know if anything else is needed.\n\nThank you,\n{job.contractor}"
         ),
     }

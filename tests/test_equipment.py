@@ -11,7 +11,6 @@ from pypdf import PdfReader
 from permit_packets.core.equipment import LIBRARY, attachment_span, find_equipment
 from permit_packets.core.preview import packet_documents_zip
 
-os.environ["DEMO_PASSWORD"] = "test-password"
 from app import app  # noqa: E402
 from tests.api_helpers import with_pdf
 
@@ -43,7 +42,6 @@ def test_index_lists_every_library_model():
 @pytest.fixture
 def client():
     signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
     return signed_in
 
 

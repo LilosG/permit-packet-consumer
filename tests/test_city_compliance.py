@@ -21,7 +21,6 @@ from permit_packets.job_types import REGISTRY
 from permit_packets.jurisdictions import KNOWN, Jurisdiction
 from tests.packet_helpers import build, complete_inputs, packet_pages
 
-os.environ["DEMO_PASSWORD"] = "test-password"
 
 # A checklist item the electrician submits to the utility rather than to the city shows "Send".
 UTILITY_SECTIONS = {"utility"}
@@ -33,7 +32,6 @@ SHEET_POINTS = {"letter": (612, 792), "tabloid": (1224, 792)}
 @pytest.fixture(scope="module")
 def client() -> TestClient:
     signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
     return signed_in
 
 

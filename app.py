@@ -1,27 +1,30 @@
-"""The private demo: address to property, job to packet, packet to submission."""
+"""Public permit packet generator: address to property, job to watermarked preview, payment to clean packet."""
 from __future__ import annotations
 
 import base64
 import hashlib
-import hmac
-import json
+import logging
 import os
+import re
 import secrets
+import threading
 import time
+from collections import deque
+from contextlib import asynccontextmanager
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
 from fastapi import Body, Depends, FastAPI, HTTPException, Request, Response, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
-from permit_packets.clients import CLIENTS, DEFAULT_CLIENT, Client, validate
+from permit_packets import orders
 from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
 from permit_packets.core.preview import packet_documents_zip, packet_page_images
-from permit_packets.jurisdictions import KNOWN, jurisdiction_by_key
 from permit_packets.core.property_lookup import (
     AddressNotFound,
     AerialUnavailable,
@@ -32,23 +35,32 @@ from permit_packets.core.property_lookup import (
     suggest_addresses,
 )
 from permit_packets.core.property_plan import PlanView, zoomed_scale
-from permit_packets.core.schemas import (
-    AerialRequest,
-    LoginRequest,
-    LookupRequest,
-    PropertyViewRequest,
-    SuggestRequest,
-)
+from permit_packets.core.schemas import AerialRequest, LookupRequest, PropertyViewRequest, SuggestRequest
 from permit_packets.job_types import REGISTRY, JobType, PacketResult, get_job_type
-from permit_packets.jurisdictions import jurisdiction_json
+from permit_packets.jurisdictions import jurisdiction_by_key, jurisdiction_json
+
+log = logging.getLogger("permit_packets")
 
 STATIC = Path(__file__).parent / "permit_packets" / "static"
 ASSETS = STATIC / "assets"
-KNOWN_BY_KEY = {j.key: j for j in KNOWN.values()}
-SESSION_COOKIE = "permit_demo_session"
-SESSION_SECONDS = 12 * 60 * 60
+# Each tier's Wave payment link, set in the environment; the link's price matches the tier.
+WAVE_LINK_ENV = {"load_calc": "WAVE_LINK_39", "instant_packet": "WAVE_LINK_89", "city_checked_24h": "WAVE_LINK_169"}
+EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+# Order and admin pages hold one customer's job: keep them out of search results and caches.
+PRIVATE_PAGE = {"Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow, noarchive"}
+PRIVATE_DATA = {"Cache-Control": "private, no-store"}
 
-app = FastAPI(title="Permit Packets", docs_url=None, redoc_url=None, openapi_url=None)
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    try:
+        orders.init_db()
+    except Exception:  # the free preview keeps working while the database is down
+        log.exception("Could not prepare the orders table")
+    yield
+
+
+app = FastAPI(title="Permit Packets", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 
 
 def _asset_version() -> str:
@@ -63,135 +75,74 @@ def _asset_version() -> str:
 
 ASSET_VERSION = _asset_version()
 INDEX_HTML = (STATIC / "index.html").read_text(encoding="utf-8").replace("{{ASSET_VERSION}}", ASSET_VERSION)
-# Only the assets folder is public. The pages themselves stay behind the sign-in.
+# Only the assets folder is served as files. The other pages are routes below.
 app.mount("/assets", StaticFiles(directory=ASSETS), name="assets")
 
 
-def _client_passwords() -> dict[str, str]:
-    """Each client's password: CLIENT_PASSWORDS ({"client_key": "password"}) plus DEMO_PASSWORD for the demo."""
-    passwords: dict[str, str] = {}
-    raw = os.environ.get("CLIENT_PASSWORDS")
-    if raw:
-        try:
-            loaded = json.loads(raw)
-            if not isinstance(loaded, dict) or not all(isinstance(v, str) and v for v in loaded.values()):
-                raise ValueError
-        except ValueError as error:
-            raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "CLIENT_PASSWORDS is not valid JSON") from error
-        passwords.update({key: value for key, value in loaded.items() if key in CLIENTS})
-    if os.environ.get("DEMO_PASSWORD"):
-        passwords.setdefault(DEFAULT_CLIENT, os.environ["DEMO_PASSWORD"])
-    if not passwords:
-        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "No passwords are set")
-    return passwords
-
-
-def _signature(expires: str, client_key: str, password: str) -> str:
-    return hmac.new(password.encode(), f"session:{expires}:{client_key}".encode(), hashlib.sha256).hexdigest()
-
-
-def session_client(request: Request) -> Client | None:
-    """The client this session signed in as, or None when not signed in."""
-    expires, _, rest = request.cookies.get(SESSION_COOKIE, "").partition(".")
-    client_key, _, signature = rest.partition(".")
-    if not expires.isdigit() or int(expires) < time.time():
-        return None
-    password = _client_passwords().get(client_key)
-    if password is None or client_key not in CLIENTS:
-        return None
-    if not secrets.compare_digest(signature, _signature(expires, client_key, password)):
-        return None
-    return validate(CLIENTS[client_key])
-
-
-def require_session(request: Request) -> Client:
-    client = session_client(request)
-    if client is None:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Sign in to continue")
-    return client
-
-
-def _allowed_city(client: Client, jurisdiction) -> None:
-    if not client.allows(jurisdiction.key):
-        raise HTTPException(
-            status.HTTP_403_FORBIDDEN, f"{jurisdiction.label} isn't one of the cities set up for {client.company_name}")
-
-
-def _page(name: str) -> FileResponse:
-    return FileResponse(STATIC / name, headers={"Cache-Control": "no-store"})
+def _page(name: str) -> HTMLResponse:
+    html = (STATIC / name).read_text(encoding="utf-8").replace("{{ASSET_VERSION}}", ASSET_VERSION)
+    return HTMLResponse(html, headers=PRIVATE_PAGE)
 
 
 @app.get("/")
-def demo_page(request: Request) -> Response:
-    if session_client(request) is None:
-        return _page("signin.html")
-    return HTMLResponse(INDEX_HTML, headers={"Cache-Control": "no-store"})
+def home() -> Response:
+    return HTMLResponse(INDEX_HTML, headers={"Cache-Control": "no-cache"})
 
 
-@app.get("/dashboard")
-def dashboard_page(request: Request) -> Response:
-    if session_client(request) is None:
-        return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
-    return _page("dashboard.html")
+# ---- Abuse protection: a small per-IP limit in memory ----
+# Each server instance counts for itself, which is enough to stop one visitor hammering the lookups and the
+# packet builds. Limits per IP per hour can be changed with RATE_LIMIT_<BUCKET> (suggest, property, preview).
+RATE_WINDOW_SECONDS = 3600
+RATE_LIMITS = {"suggest": 150, "property": 30, "preview": 12}  # suggest fires while typing, so it gets its own room
+RATE_MESSAGES = {
+    "suggest": "You've searched a lot of addresses this hour. Please wait a bit, or type the full address.",
+    "property": "You've looked up a lot of properties this hour. Please try again in a little while.",
+    "preview": "You've built a lot of previews this hour. Please try again in a little while, or finish an order you have open.",
+}
+_hits: dict[tuple[str, str], deque[float]] = {}
+_hits_lock = threading.Lock()
 
 
-@app.post("/api/signin")
-def sign_in(payload: LoginRequest, request: Request, response: Response) -> dict:
-    entered = payload.password.encode()
-    matched = None
-    for client_key, password in _client_passwords().items():  # no early exit: every password is compared
-        if secrets.compare_digest(entered, password.encode()) and matched is None:
-            matched = client_key
-    if matched is None:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "That password isn't right")
-    expires = str(int(time.time()) + SESSION_SECONDS)
-    response.set_cookie(
-        SESSION_COOKIE, f"{expires}.{matched}.{_signature(expires, matched, _client_passwords()[matched])}",
-        max_age=SESSION_SECONDS, httponly=True, samesite="lax",
-        secure=request.headers.get("x-forwarded-proto", request.url.scheme) == "https",
-    )
-    return {"ok": True}
+def client_ip(request: Request) -> str:
+    forwarded = request.headers.get("x-real-ip") or request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+    return forwarded or (request.client.host if request.client else "unknown")
 
 
-@app.post("/api/signout")
-def sign_out(request: Request) -> Response:
-    """End this session and go back to the sign-in page. A plain form post, so it works without scripts."""
-    response = RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
-    response.delete_cookie(
-        SESSION_COOKIE, httponly=True, samesite="lax",
-        secure=request.headers.get("x-forwarded-proto", request.url.scheme) == "https",
-    )
-    response.headers["Cache-Control"] = "no-store"
-    return response
+def _limit_for(bucket: str) -> int:
+    try:
+        return int(os.environ.get(f"RATE_LIMIT_{bucket.upper()}", RATE_LIMITS[bucket]))
+    except ValueError:
+        return RATE_LIMITS[bucket]
 
 
-def _sample_address(jurisdiction_key: str) -> str:
-    city = KNOWN_BY_KEY[jurisdiction_key]
-    return f"123 Sample St, {city.name}, {city.state}"
+def rate_limit(bucket: str):
+    """A dependency that answers 429 once an IP has used up its hourly allowance for the bucket."""
+    def check(request: Request) -> None:
+        limit = _limit_for(bucket)
+        if limit <= 0:  # 0 switches the limit off
+            return
+        now = time.monotonic()
+        key = (bucket, client_ip(request))
+        with _hits_lock:
+            hits = _hits.setdefault(key, deque())
+            while hits and now - hits[0] > RATE_WINDOW_SECONDS:
+                hits.popleft()
+            if len(hits) >= limit:
+                retry = max(1, int(RATE_WINDOW_SECONDS - (now - hits[0])))
+                raise HTTPException(
+                    status.HTTP_429_TOO_MANY_REQUESTS, RATE_MESSAGES[bucket], headers={"Retry-After": str(retry)})
+            hits.append(now)
+            if len(_hits) > 5000:  # forget visitors whose hour has passed
+                for stale in [k for k, v in _hits.items() if not v or now - v[-1] > RATE_WINDOW_SECONDS]:
+                    del _hits[stale]
+    return check
 
 
-@app.get("/api/client")
-def client_info(client: Client = Depends(require_session)) -> dict:
-    cities = [KNOWN_BY_KEY[key] for key in client.jurisdiction_keys if key in KNOWN_BY_KEY]
-    return {
-        "key": client.key,
-        "company_name": client.company_name,
-        "website": client.website,
-        "logo": f"/assets/logos/{client.logo}" if client.logo else "",
-        "demo": client.is_demo,
-        "sheet_size": client.sheet_size or "",
-        "cities": [
-            {"key": c.key, "name": c.name, "state": c.state, "label": c.label, "sample_address": _sample_address(c.key)}
-            for c in cities
-        ],
-    }
+# ---- Public property lookup ----
 
-
-@app.post("/api/property/suggest", dependencies=[Depends(require_session)])
-def address_suggestions(payload: SuggestRequest, client: Client = Depends(require_session)) -> dict:
-    # Only the signed-in client's cities; the demo login lists all of them.
-    cities = [KNOWN_BY_KEY[key] for key in client.jurisdiction_keys if key in KNOWN_BY_KEY]
-    return {"suggestions": suggest_addresses(payload.text, areas=cities)}
+@app.post("/api/property/suggest", dependencies=[Depends(rate_limit("suggest"))])
+def address_suggestions(payload: SuggestRequest) -> dict:
+    return {"suggestions": suggest_addresses(payload.text)}
 
 
 def _known_job_type(key: str) -> str:
@@ -226,19 +177,18 @@ def _property_json(found: FoundProperty, job_type: str) -> dict:
     }
 
 
-@app.post("/api/property", dependencies=[Depends(require_session)])
-def look_up_property(payload: LookupRequest, client: Client = Depends(require_session)) -> dict:
+@app.post("/api/property", dependencies=[Depends(rate_limit("property"))])
+def look_up_property(payload: LookupRequest) -> dict:
     job_type = _known_job_type(payload.job_type)
     try:
         found = find_property(payload.address)
     except AddressNotFound as error:
         raise HTTPException(status.HTTP_404_NOT_FOUND, str(error)) from error
-    _allowed_city(client, found.jurisdiction)
     return _property_json(found, job_type)
 
 
-@app.post("/api/property/view", dependencies=[Depends(require_session)])
-def change_property_view(payload: PropertyViewRequest, client: Client = Depends(require_session)) -> dict:
+@app.post("/api/property/view", dependencies=[Depends(rate_limit("property"))])
+def change_property_view(payload: PropertyViewRequest) -> dict:
     fields = dict(
         address=payload.address, city=payload.city, state=payload.state,
         county_fips=payload.county_fips, house_number=payload.house_number,
@@ -253,11 +203,10 @@ def change_property_view(payload: PropertyViewRequest, client: Client = Depends(
             **fields, point=(payload.anchor_latitude, payload.anchor_longitude), located_by=payload.located_by,
             scale=scale, center=(payload.latitude, payload.longitude),
         )
-    _allowed_city(client, found.jurisdiction)
     return _property_json(found, job_type)
 
 
-@app.post("/api/property/aerial", dependencies=[Depends(require_session)])
+@app.post("/api/property/aerial", dependencies=[Depends(rate_limit("property"))])
 def property_aerial(payload: AerialRequest) -> dict:
     view = PlanView(payload.latitude, payload.longitude, payload.scale_ft_per_in)
     try:
@@ -265,13 +214,6 @@ def property_aerial(payload: AerialRequest) -> dict:
     except AerialUnavailable as error:
         raise HTTPException(status.HTTP_502_BAD_GATEWAY, str(error)) from error
     return {"image": base64.b64encode(image).decode(), "credit": credit}
-
-
-def _enabled_job_type(slug: str, client: Client) -> JobType:
-    job_type = get_job_type(slug)
-    if job_type is None or job_type.key not in client.job_types:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "That job type isn't available")
-    return job_type
 
 
 def _job_type_json(job_type: JobType) -> dict:
@@ -290,10 +232,12 @@ def _job_type_json(job_type: JobType) -> dict:
     }
 
 
-@app.get("/api/job-types", dependencies=[Depends(require_session)])
-def job_types(client: Client = Depends(require_session)) -> dict:
-    return {"job_types": [_job_type_json(REGISTRY[key]) for key in client.job_types]}
+@app.get("/api/job-types")
+def job_types() -> dict:
+    return {"job_types": [_job_type_json(job_type) for job_type in REGISTRY.values()]}
 
+
+# ---- Building a packet ----
 
 MAX_LOGO_BASE64 = 700_000
 
@@ -314,23 +258,30 @@ def _contractor_logo(payload: dict[str, Any]) -> bytes | None:
     return logo
 
 
-def _build(slug: str, payload: dict[str, Any], client: Client) -> tuple[JobType, PacketResult]:
-    job_type = _enabled_job_type(slug, client)
-    city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
-    _allowed_city(client, city)
-    logo = _contractor_logo(payload)
-    if not client.is_demo:  # a client's packets carry their own logo and the city's rules, not a link's
-        logo = client.logo_bytes()
-        if client.sheet_size and not payload.get("sheet_size"):
-            payload["sheet_size"] = client.sheet_size  # the request's own choice still wins
+def _job_type(slug: str) -> JobType:
+    job_type = get_job_type(slug)
+    if job_type is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "That job type isn't available")
+    return job_type
+
+
+def _validated(job_type: JobType, payload: dict[str, Any]):
     try:
-        request = job_type.request_model.model_validate(payload)
+        return job_type.request_model.model_validate(payload)
     except ValidationError as error:
         raise RequestValidationError(error.errors(include_url=False)) from error
+
+
+def _build(slug: str, payload: dict[str, Any], *, preview: bool) -> tuple[JobType, PacketResult]:
+    """Build the packet. A preview carries the PREVIEW marks; a paid packet carries none."""
+    job_type = _job_type(slug)
+    payload = dict(payload)  # the logo is popped below, and an order's saved payload must stay whole
+    logo = _contractor_logo(payload)
+    request = _validated(job_type, payload)
     tokens = (
         (CONTRACTOR_LOGO, CONTRACTOR_LOGO.set(logo)),
-        (DEMO_MARKS, DEMO_MARKS.set(client.is_demo)),
-        (COMPANY_NAME, COMPANY_NAME.set(client.company_name)),
+        (DEMO_MARKS, DEMO_MARKS.set(preview)),
+        (COMPANY_NAME, COMPANY_NAME.set("")),
     )
     try:
         return job_type, job_type.build_response(request)
@@ -339,47 +290,201 @@ def _build(slug: str, payload: dict[str, Any], client: Client) -> tuple[JobType,
             var.reset(token)
 
 
-# The review screen and the PDF come from two requests. Vercel caps a function response at 4.5 MB, and the page
-# images plus the base64 PDF (data sheets included) reached about 4.1 MB in one response. The browser asks for
-# both at once; each rebuilds the packet from the same job, so they show the same packet.
-@app.post("/api/jobs/{slug}/packet", dependencies=[Depends(require_session)])
-def build_packet(slug: str, payload: dict[str, Any] = Body(...), client: Client = Depends(require_session)) -> dict:
-    _, result = _build(slug, payload, client)
-    return {
-        **result.body,
-        "pages": [base64.b64encode(page).decode() for page in packet_page_images(result.pdf)],
-    }
-
-
-@app.post("/api/jobs/{slug}/pdf", dependencies=[Depends(require_session)])
-def packet_pdf(slug: str, payload: dict[str, Any] = Body(...), client: Client = Depends(require_session)) -> Response:
-    """The packet as one PDF file, sent as bytes rather than base64 (a third smaller)."""
-    _, result = _build(slug, payload, client)
-    return Response(
-        content=result.pdf,
-        media_type="application/pdf",
-        headers={"Content-Disposition": "inline", "Cache-Control": "private, no-store"},
-    )
-
-
-@app.post("/api/jobs/{slug}/documents", dependencies=[Depends(require_session)])
-def packet_documents(slug: str, payload: dict[str, Any] = Body(...), client: Client = Depends(require_session)) -> Response:
-    _enabled_job_type(slug, client)
+def _single_pdf_only(payload: dict[str, Any]) -> bool:
     city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
-    _allowed_city(client, city)
-    if client.single_pdf_only_for(city):
-        raise HTTPException(
-            status.HTTP_409_CONFLICT,
-            f"{city.name} takes one combined PDF and does not accept plan sheets as separate files",
-        )
-    job_type, result = _build(slug, payload, client)
-    zip_name = job_type.zip_name if client.is_demo else job_type.zip_name.replace("-demo.zip", ".zip")
+    return city.single_pdf_only
+
+
+def _page_images(result: PacketResult) -> list[str]:
+    return [base64.b64encode(page).decode() for page in packet_page_images(result.pdf)]
+
+
+def _documents_response(job_type: JobType, result: PacketResult, zip_name: str) -> Response:
     stems = tuple(document.file_stem for document in job_type.documents)
     return Response(
         content=packet_documents_zip(result.pdf, stems),
         media_type="application/zip",
-        headers={
-            "Content-Disposition": f'attachment; filename="{zip_name}"',
-            "Cache-Control": "private, no-store",
-        },
+        headers={"Content-Disposition": f'attachment; filename="{zip_name}"', **PRIVATE_DATA},
     )
+
+
+# What payment unlocks: the filled-in portal fields and the ready-to-send submission email.
+PAID_ONLY = ("fields", "submission_email")
+
+
+@app.post("/api/public/preview/{slug}", dependencies=[Depends(rate_limit("preview"))])
+def public_preview(slug: str, payload: dict[str, Any] = Body(...)) -> dict:
+    """The free, watermarked look at a packet: the engineering check summary and its pages as JPEGs."""
+    _, result = _build(slug, payload, preview=True)
+    body = {key: value for key, value in result.body.items() if key not in PAID_ONLY}
+    return {**body, "packet_page_images": _page_images(result)}
+
+
+# The original review-screen routes stay for the page's own script. They are public and always watermarked:
+# a clean packet only ever comes from a paid order.
+@app.post("/api/jobs/{slug}/packet", dependencies=[Depends(rate_limit("preview"))])
+def build_packet(slug: str, payload: dict[str, Any] = Body(...)) -> dict:
+    _, result = _build(slug, payload, preview=True)
+    return {**result.body, "pages": _page_images(result)}
+
+
+@app.post("/api/jobs/{slug}/pdf", dependencies=[Depends(rate_limit("preview"))])
+def packet_pdf(slug: str, payload: dict[str, Any] = Body(...)) -> Response:
+    """The watermarked packet as one PDF file."""
+    _, result = _build(slug, payload, preview=True)
+    return Response(content=result.pdf, media_type="application/pdf", headers={"Content-Disposition": "inline", **PRIVATE_DATA})
+
+
+@app.post("/api/jobs/{slug}/documents", dependencies=[Depends(rate_limit("preview"))])
+def packet_documents(slug: str, payload: dict[str, Any] = Body(...)) -> Response:
+    if _single_pdf_only(payload):
+        raise HTTPException(status.HTTP_409_CONFLICT, "This city takes one combined PDF, not separate plan sheets")
+    job_type, result = _build(slug, payload, preview=True)
+    return _documents_response(job_type, result, job_type.zip_name)
+
+
+# ---- Orders ----
+
+def _wave_link(tier: str) -> str:
+    return os.environ.get(WAVE_LINK_ENV[tier], "").strip()
+
+
+@app.post("/api/public/orders")
+def create_order(body: dict[str, Any] = Body(...)) -> dict:
+    """Save a pending_payment order for a job. Body: {job_slug, customer_email, tier, payload}."""
+    email = str(body.get("customer_email") or "").strip()
+    tier = body.get("tier")
+    payload = body.get("payload")
+    if not EMAIL.match(email) or len(email) > 200:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Enter a valid email address")
+    if tier not in orders.TIERS:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"tier must be one of {', '.join(orders.TIERS)}")
+    if not isinstance(payload, dict):
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "payload must be the job's inputs")
+    job_type = _job_type(str(body.get("job_slug") or ""))
+    working = dict(payload)
+    _contractor_logo(working)  # refuse a bad logo now, not after the customer has paid
+    request = _validated(job_type, working)
+    city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
+    order = orders.create_order(
+        customer_email=email, tier=tier, job_slug=job_type.slug, address=request.address,
+        jurisdiction_key=city.key, payload=payload,
+    )
+    if os.environ.get("DEV_AUTO_APPROVE", "").strip().lower() == "true":
+        order = orders.set_status(order["id"], "paid") or order
+    return {
+        "order_code": order["order_code"],
+        "access_token": order["access_token"],
+        "order_url": f"/order/{order['access_token']}",
+        "wave_checkout_url": _wave_link(tier),
+    }
+
+
+def _order_or_404(access_token: str) -> dict[str, Any]:
+    order = orders.get_by_token(access_token)
+    if order is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "We can't find that order")
+    return order
+
+
+def _paid_order(access_token: str) -> dict[str, Any]:
+    order = _order_or_404(access_token)
+    if order["status"] not in ("paid", "delivered"):
+        raise HTTPException(status.HTTP_402_PAYMENT_REQUIRED, "This order isn't paid yet")
+    return order
+
+
+@app.get("/order/{access_token}")
+def order_page(access_token: str) -> Response:
+    return _page("order.html")
+
+
+@app.get("/api/orders/{access_token}")
+def order_status(access_token: str) -> JSONResponse:
+    order = _order_or_404(access_token)
+    paid = order["status"] in ("paid", "delivered")
+    view: dict[str, Any] = {
+        "order_code": order["order_code"],
+        "status": order["status"],
+        "paid": paid,
+        "tier": order["tier"],
+        "address": order["address"],
+        "wave_checkout_url": _wave_link(order["tier"]),
+        "wave_instructions": f"Paste {order['order_code']} in the Wave note when you pay, so we can match your payment.",
+    }
+    if paid:
+        _, result = _build(order["job_slug"], order["payload"], preview=False)
+        view.update({
+            "pdf_url": f"/api/orders/{access_token}/pdf",
+            "documents_url": None if _single_pdf_only(order["payload"]) else f"/api/orders/{access_token}/documents",
+            "jurisdiction": result.body.get("jurisdiction"),
+            "portal_fields": result.body.get("fields", []),
+            "submission_email": result.body.get("submission_email"),
+        })
+    return JSONResponse(view, headers=PRIVATE_DATA)
+
+
+def _delivered(order: dict[str, Any]) -> None:
+    if order["status"] == "paid":
+        orders.set_status(order["id"], "delivered")
+
+
+@app.get("/api/orders/{access_token}/pdf")
+def order_pdf(access_token: str) -> Response:
+    """The clean PDF, built on the fly so no file is stored."""
+    order = _paid_order(access_token)
+    _, result = _build(order["job_slug"], order["payload"], preview=False)
+    _delivered(order)
+    return Response(
+        content=result.pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{order["order_code"]}-permit-packet.pdf"', **PRIVATE_DATA},
+    )
+
+
+@app.get("/api/orders/{access_token}/documents")
+def order_documents(access_token: str) -> Response:
+    order = _paid_order(access_token)
+    if _single_pdf_only(order["payload"]):
+        raise HTTPException(status.HTTP_409_CONFLICT, "This city takes one combined PDF, not separate plan sheets")
+    job_type, result = _build(order["job_slug"], order["payload"], preview=False)
+    _delivered(order)
+    return _documents_response(job_type, result, job_type.zip_name.replace("-demo.zip", ".zip"))
+
+
+# ---- Admin ----
+
+basic = HTTPBasic(auto_error=False)
+
+
+def require_admin(credentials: HTTPBasicCredentials | None = Depends(basic)) -> None:
+    """HTTP Basic with ADMIN_PASSWORD (any user name). Without ADMIN_PASSWORD the admin is switched off."""
+    password = os.environ.get("ADMIN_PASSWORD", "")
+    if not password:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "ADMIN_PASSWORD is not set")
+    if credentials is None or not secrets.compare_digest(credentials.password.encode(), password.encode()):
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED, "Admin sign-in required", headers={"WWW-Authenticate": 'Basic realm="Admin"'})
+
+
+@app.get("/admin", dependencies=[Depends(require_admin)])
+def admin_page() -> Response:
+    return _page("admin.html")
+
+
+@app.get("/api/admin/orders", dependencies=[Depends(require_admin)])
+def admin_orders() -> JSONResponse:
+    keys = ("id", "order_code", "customer_email", "address", "tier", "status", "created_at")
+    return JSONResponse(
+        {"orders": [{key: order[key] for key in keys} for order in orders.list_recent(100)]}, headers=PRIVATE_DATA)
+
+
+@app.post("/api/admin/orders/{order_id}/approve", dependencies=[Depends(require_admin)])
+def approve_order(order_id: str) -> dict:
+    """Mark a Wave payment as received. An order that is already paid or delivered stays as it is."""
+    order = orders.get_by_id(order_id)
+    if order is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such order")
+    if order["status"] == "pending_payment":
+        order = orders.set_status(order_id, "paid") or order
+    return {"id": order["id"], "order_code": order["order_code"], "status": order["status"]}

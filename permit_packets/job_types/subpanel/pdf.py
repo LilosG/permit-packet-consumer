@@ -20,7 +20,7 @@ from permit_packets.core.pdf_base import (
     diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.panel_data import checklist_row as panel_row, one_line_data, panel_header
-from permit_packets.core.title_block import title_block_for
+from permit_packets.core.title_block import contractor_with_license, title_block_for
 from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.subpanel.calc import (
     SPACES_NEEDED,
@@ -297,7 +297,7 @@ def _cover(packet: SubpanelPacket) -> list:
         job_cell=(f"{job.home.square_feet:,} sq ft home{parcel}\n"
                   f"{job.subpanel_amps} A subpanel, {LOCATION_LABELS[job.location]}\n"
                   f"Customer: {job.customer}"),
-        contractor_cell=f"{job.contractor}\nLicense {job.license_number}",
+        contractor_cell=contractor_with_license(job.contractor, job.license_number),
         checklist_cell=checklist_cell,
         checklist_rows=checklist_rows(packet),
         checks=[(check.name, check.result, check.passed) for check in packet.checks],
@@ -338,7 +338,7 @@ def application_fields(packet: SubpanelPacket) -> list[tuple[str, str]]:
         ("Permit type", "Electrical, residential subpanel and feeder"),
         ("Subpanel", f"{job.subpanel_model or 'Add make and model'}, {job.subpanel_amps} A"),
         ("Contractor", job.contractor),
-        ("License number", job.license_number),
+        ("License number", job.license_number or "Owner-Builder"),
     ]
 
 

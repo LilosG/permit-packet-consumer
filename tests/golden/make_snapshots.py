@@ -2,7 +2,7 @@
 
 Run after a deliberate change to a packet, once the change is complete:
 
-    DEMO_PASSWORD=snap PYTHONPATH=. python tests/golden/make_snapshots.py
+    PYTHONPATH=. python tests/golden/make_snapshots.py
 
 The case files are request payloads in the original /api/ev/* shape (the plan
 uses "panel" and "charger"); they are mapped to the current generic route with
@@ -22,9 +22,7 @@ import pypdfium2
 from fastapi.testclient import TestClient
 from PIL import Image
 
-os.environ.setdefault("DEMO_PASSWORD", "snap")
-
-from app import app  # noqa: E402  (needs DEMO_PASSWORD first)
+from app import app  # noqa: E402
 from tests.test_ev_golden import DOCUMENTS_URL, PACKET_URL, to_current_request  # noqa: E402
 
 HERE = Path(__file__).parent
@@ -121,8 +119,6 @@ def main() -> None:
     CASES.mkdir(parents=True, exist_ok=True)
     SNAPSHOTS.mkdir(parents=True, exist_ok=True)
     client = TestClient(app)
-    password = os.environ["DEMO_PASSWORD"]
-    assert client.post("/api/signin", json={"password": password}).status_code == 200
     for name, payload in cases().items():
         (CASES / f"{name}.json").write_text(json.dumps(payload, indent=2) + "\n")
         (SNAPSHOTS / f"{name}.json").write_text(

@@ -1,4 +1,4 @@
-"""The job-type registry, the client profile and the generic routes."""
+"""The job-type registry and the generic routes."""
 import base64
 import json
 import re
@@ -10,13 +10,11 @@ from fastapi.testclient import TestClient
 
 import app as app_module
 from app import app
-from permit_packets.clients import CLIENTS, Client, current_client
 from permit_packets.job_types import REGISTRY, get_job_type
 
 from tests.test_ev_golden import GOLDEN, to_current_request
 from tests.api_helpers import with_pdf
 
-os.environ["DEMO_PASSWORD"] = "test-password"
 
 # One deterministic request per registered type. EV loads from the golden cases; the others
 # load from tests/samples, already in the current request shape.
@@ -30,7 +28,6 @@ SAMPLES = Path(__file__).parent / "samples"
 @pytest.fixture
 def client() -> TestClient:
     signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
     return signed_in
 
 
@@ -40,7 +37,7 @@ def _sample(key: str) -> dict:
     return to_current_request(json.loads((GOLDEN / "cases" / f"{SAMPLE_CASES[key]}.json").read_text()))
 
 
-def test_job_types_lists_only_what_the_client_bought(client):
+def test_job_types_lists_every_type_publicly(client):
     body = client.get("/api/job-types").json()["job_types"]
     assert [job_type["key"] for job_type in body] == ["ev_charger", "service_upgrade", "subpanel", "appliance_circuit"]
     ev = body[0]
@@ -50,24 +47,17 @@ def test_job_types_lists_only_what_the_client_bought(client):
     assert len(ev["documents"]) == 8
 
 
-def test_job_types_need_a_session():
-    assert TestClient(app).get("/api/job-types").status_code == 401
-    assert TestClient(app).post("/api/jobs/ev-charger/packet", json={}).status_code == 401
-    assert TestClient(app).post("/api/jobs/ev-charger/pdf", json={}).status_code == 401
+def test_job_types_and_previews_are_public():
+    anonymous = TestClient(app)
+    assert anonymous.get("/api/job-types").status_code == 200
+    assert anonymous.post("/api/jobs/ev-charger/packet", json={}).status_code == 422
+    assert anonymous.post("/api/jobs/ev-charger/pdf", json={}).status_code == 422
 
 
 def test_an_unknown_slug_is_a_404(client):
     assert client.post("/api/jobs/nope/packet", json={}).status_code == 404
     assert client.post("/api/jobs/nope/documents", json={}).status_code == 404
     assert client.post("/api/jobs/nope/pdf", json={}).status_code == 404
-
-
-def test_a_registered_type_the_client_did_not_buy_is_a_404(client, monkeypatch):
-    monkeypatch.setitem(CLIENTS, "demo", Client("demo", "Other Co", (), jurisdiction_keys=("general",)))
-    assert client.get("/api/job-types").json() == {"job_types": []}
-    assert client.post("/api/jobs/ev-charger/packet", json=_sample("ev_charger")).status_code == 404
-    assert client.post("/api/jobs/ev-charger/documents", json=_sample("ev_charger")).status_code == 404
-    assert client.post("/api/jobs/ev-charger/pdf", json=_sample("ev_charger")).status_code == 404
 
 
 def test_bad_input_is_a_422_not_a_500(client):
@@ -83,25 +73,6 @@ def test_the_zip_keeps_its_name(client):
 
 def test_an_unknown_job_type_on_a_property_call_is_refused(client):
     assert client.post("/api/property", json={"address": "10 Main St", "job_type": "nope"}).status_code == 422
-
-
-def test_the_default_client_is_the_demo(monkeypatch):
-    monkeypatch.delenv("PERMIT_CLIENT", raising=False)
-    assert current_client().key == "demo"
-    assert current_client().job_types == ("ev_charger", "service_upgrade", "subpanel", "appliance_circuit")
-
-
-def test_an_unknown_client_raises(monkeypatch):
-    monkeypatch.setenv("PERMIT_CLIENT", "typo")
-    with pytest.raises(ValueError, match="Unknown PERMIT_CLIENT"):
-        current_client()
-
-
-def test_a_client_with_an_unregistered_job_type_raises(monkeypatch):
-    monkeypatch.setitem(CLIENTS, "broken", Client("broken", "Broken Co", ("roof_solar",)))
-    monkeypatch.setenv("PERMIT_CLIENT", "broken")
-    with pytest.raises(ValueError, match="unregistered job types: roof_solar"):
-        current_client()
 
 
 def test_slugs_and_keys_are_unique():
@@ -144,7 +115,7 @@ def test_over_capacity_summary_names_the_overage(client):
 def test_the_page_loads_its_assets_with_a_version(client):
     response = client.get("/")
     assert response.status_code == 200
-    assert response.headers["cache-control"] == "no-store"
+    assert response.headers["cache-control"] == "no-cache"
     assert "{{ASSET_VERSION}}" not in response.text
     versions = re.findall(r'(?:src|href)="/assets/[^"?]+\?v=([0-9a-f]{10})"', response.text)
     assert len(versions) == 7
@@ -158,7 +129,7 @@ def test_assets_are_served_but_the_pages_are_not(client):
     assert client.get("/assets/js/job-types/ev-charger.js").status_code == 200
     assert client.get("/assets/index.html").status_code == 404
     assert client.get("/assets/../index.html").status_code == 404
-    assert client.get("/assets/signin.html").status_code == 404
+    assert client.get("/assets/logos/volta.png").status_code == 404
 
 
 def test_the_asset_version_follows_the_files(tmp_path, monkeypatch):

@@ -7,14 +7,12 @@ from fastapi.testclient import TestClient
 from app import app
 from permit_packets.core.property_plan import PropertyPlan
 
-os.environ["DEMO_PASSWORD"] = "test-password"
 
 
 
 @pytest.fixture
 def client() -> TestClient:
     signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
     return signed_in
 
 

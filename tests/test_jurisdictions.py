@@ -1,7 +1,6 @@
 """Per-job-type checklists: a city's own, else the general one."""
 import os
 
-os.environ.setdefault("DEMO_PASSWORD", "test-password")
 from permit_packets.jurisdictions import (
     ORO_VALLEY,
     Checklist,
@@ -111,7 +110,6 @@ def test_a_contractor_logo_goes_on_the_packet_and_bad_logos_are_refused():
     from app import app
 
     client = TestClient(app)
-    assert client.post("/api/signin", json={"password": "test-password"}).status_code == 200
     case = json.loads((Path(__file__).parent / "golden/cases/las_vegas_general_sample_mode.json").read_text())
     case.pop("plan")
     buffer = BytesIO()
@@ -186,9 +184,7 @@ def test_a_single_pdf_city_refuses_the_split_file_zip():
     from permit_packets.jurisdictions import MESA
     from tests.packet_helpers import sample
 
-    os.environ["DEMO_PASSWORD"] = "test-password"
     client = TestClient(app)
-    assert client.post("/api/signin", json={"password": "test-password"}).status_code == 200
     assert MESA.single_pdf_only is True and ORO_VALLEY.single_pdf_only is False
     assert jurisdiction_json(MESA, "ev_charger")["single_pdf_only"] is True
     mesa = {**sample("ev_charger"), "jurisdiction_key": "mesa-az", "city": "Mesa", "state": "AZ"}

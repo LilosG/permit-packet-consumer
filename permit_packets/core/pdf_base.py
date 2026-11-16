@@ -117,7 +117,7 @@ def _watermark(canvas, doc) -> None:
     canvas.setFont("Helvetica-Bold", 58)
     canvas.translate(sheet.width / 2, sheet.height / 2)
     canvas.rotate(38)
-    canvas.drawCentredString(0, -20, "DEMO")
+    canvas.drawCentredString(0, -20, "PREVIEW")
     canvas.restoreState()
 
 
@@ -127,7 +127,7 @@ def _page(canvas, doc) -> None:
     canvas.setFont("Helvetica-Bold", 8)
     if DEMO_MARKS.get():
         canvas.setFillColor(COPPER)
-        canvas.drawString(sheet.margin, sheet.height - 0.42 * inch, "DEMO PACKET: NOT FOR SUBMISSION")
+        canvas.drawString(sheet.margin, sheet.height - 0.42 * inch, "PREVIEW PACKET — UNLOCK CLEAN PDF BEFORE SUBMISSION")
     canvas.setFillColor(MUTED)
     canvas.setFont("Helvetica", 8)
     logo = CONTRACTOR_LOGO.get()
@@ -137,7 +137,7 @@ def _page(canvas, doc) -> None:
         w = HEADER_LOGO_H * width / height
         canvas.drawImage(reader, sheet.width - sheet.margin - w, sheet.height - 0.5 * inch, w, HEADER_LOGO_H, mask="auto")
     elif not logo:
-        canvas.drawRightString(sheet.width - sheet.margin, sheet.height - 0.42 * inch, COMPANY_NAME.get() or "Lilos Growth")
+        canvas.drawRightString(sheet.width - sheet.margin, sheet.height - 0.42 * inch, COMPANY_NAME.get() or "")
     canvas.restoreState()
 
 

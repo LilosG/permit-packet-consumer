@@ -20,7 +20,7 @@ from permit_packets.core.pdf_base import (
 )
 from permit_packets.core.equipment import attach_data_sheets, find_equipment
 from permit_packets.core.panel_data import checklist_row as panel_row, one_line_data, panel_header
-from permit_packets.core.title_block import title_block_for
+from permit_packets.core.title_block import contractor_with_license, title_block_for
 from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.appliance_circuit.calc import (
     SPACES_NEEDED,
@@ -302,7 +302,7 @@ def _cover(packet: AppliancePacket) -> list:
         job_cell=(f"{job.home.square_feet:,} sq ft home{parcel}\n"
                   f"{sentence_case(_appliance(packet))}, {LOCATION_LABELS[job.location]}\n"
                   f"Customer: {job.customer}"),
-        contractor_cell=f"{job.contractor}\nLicense {job.license_number}",
+        contractor_cell=contractor_with_license(job.contractor, job.license_number),
         checklist_cell=checklist_cell,
         checklist_rows=checklist_rows(packet),
         checks=[(check.name, check.result, check.passed) for check in packet.checks],
@@ -345,7 +345,7 @@ def application_fields(packet: AppliancePacket) -> list[tuple[str, str]]:
         ("Permit type", f"Electrical, residential {_appliance(packet)} circuit"),
         (sentence_case(_appliance(packet)), job.appliance_model or "Add make and model"),
         ("Contractor", job.contractor),
-        ("License number", job.license_number),
+        ("License number", job.license_number or "Owner-Builder"),
     ]
 
 

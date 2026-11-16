@@ -9,10 +9,14 @@
     .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 
   const TICK_MS = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 320;
-  /* Replaced by the signed-in client's first city once /api/client answers. */
-  let SAMPLE = { address: '123 Sample St, Oro Valley, AZ 85737', jurisdiction_key: 'oro-valley-az', label: 'Oro Valley, AZ' };
-  let client = { demo: true, key: 'demo', company_name: '', logo: '', cities: [] };
-  const storeKey = () => (client.demo ? 'pp-demo-jobs' : `pp-jobs-${client.key}`);
+  /* The address used by "Try with a sample address". */
+  const SAMPLE = { address: '123 Sample St, Oro Valley, AZ 85737', jurisdiction_key: 'oro-valley-az', label: 'Oro Valley, AZ' };
+  const TYPE_COPY = {
+    ev_charger: ['EV Charger', 'A Level 2 home charger circuit'],
+    service_upgrade: ['200A Service Upgrade', 'A new or larger main panel and service'],
+    subpanel: ['Subpanel', 'A feeder and a new subpanel'],
+    appliance_circuit: ['Hot Tub / 240V Circuit', 'Spa, sauna, heat pump or mini-split'],
+  };
   const ICON_ATTRS = 'viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
   const ICONS = {
     ev: `<svg ${ICON_ATTRS}><rect x="4" y="3" width="12" height="22" rx="2"/><path d="M11 8l-3 5h4l-3 5"/><path d="M16 13h4a3 3 0 0 1 3 3v5"/><rect x="20" y="21" width="6" height="4" rx="1"/></svg>`,
@@ -35,26 +39,15 @@
   let lastJob = null;
   let lastResult = null;
   let lastType = null;
+  let lastWasSample = false;
 
   const emptyMarks = () => ({ points: {}, bends: [] });
   const modules = () => window.PermitJobTypes.modules;
   const typeModule = () => (current && modules()[current.key]) || {};
   const hasMarks = () => marks.bends.length > 0 || Object.keys(marks.points).length > 0;
-  const multiple = () => jobTypes.length > 1;
-  const firstStep = () => (multiple() ? 0 : 1);
 
   /* ---- Steps ---- */
-  function stepList() {
-    return multiple()
-      ? [[0, 'Job type'], [1, 'Property'], [2, 'Details'], [3, 'Review'], [4, 'Submit']]
-      : [[1, 'Property'], [2, 'Job'], [3, 'Review'], [4, 'Submit']];
-  }
-  function renderSteps() {
-    const steps = stepList();
-    $('#steps').style.setProperty('--steps', String(steps.length));
-    $('#steps').innerHTML = steps.map(([number, label]) => `<li data-step="${number}">${esc(label)}</li>`).join('');
-  }
-  function show(step) {
+  function show(step, scroll = true) {
     $$('[data-panel]').forEach((panel) => { panel.hidden = panel.dataset.panel !== String(step); });
     const now = step === 'building' ? 3 : step;
     $$('ol.steps li').forEach((item) => {
@@ -62,14 +55,13 @@
       item.classList.toggle('done', number < now);
       item.classList.toggle('now', number === now);
     });
-    window.scrollTo(0, 0);
+    if (scroll) $('#steps').scrollIntoView({ behavior: TICK_MS ? 'smooth' : 'auto', block: 'start' });
   }
 
   async function api(path, body) {
     const response = await fetch(path, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     });
-    if (response.status === 401) { location.reload(); throw new Error('Sign in again to continue.'); }
     if (response.ok) return response;
     const data = await response.json().catch(() => ({}));
     const detail = Array.isArray(data.detail) ? data.detail[0]?.msg?.replace(/^Value error, /, '') : data.detail;
@@ -89,28 +81,12 @@
     $('#tb-route-block').hidden = !current.route_between;
   }
 
-  /* One type reads "EV permit packets"; several read "Permit packets". */
-  function renderHeader() {
-    if (!client.demo && client.company_name) {
-      const name = esc(client.company_name);
-      $('#brand').innerHTML = client.logo ? `<img src="${esc(client.logo)}" alt="${name}" class="brand-logo">` : name;
-      document.title = `${client.company_name} Permit Packets`;
-      return;
-    }
-    const brand = multiple() ? 'Permit packets' : `${jobTypes[0].short_label} permit packets`;
-    $('#brand').textContent = brand;
-    document.title = brand.replace('packets', 'Packets').replace('permit', 'Permit');
-  }
-
   /* Shows the form sections that belong to this type, and keeps hidden fields out of the payload. */
   function applyType() {
-    const slugName = current.short_label.toLowerCase();
-    $('#download').setAttribute('download', `${slugName}-permit-packet${client.demo ? '-demo' : ''}.pdf`);
     $$('[data-job-type]').forEach((element) => { element.hidden = element.dataset.jobType !== current.key; });
     $$('[data-uses]').forEach((element) => { element.hidden = !current[`uses_${element.dataset.uses}`]; });
     $$('[data-hide-for]').forEach((element) => { element.hidden = element.dataset.hideFor === current.key; });
     [...form.elements].forEach((field) => { field.disabled = Boolean(field.closest('[data-job-type][hidden], [data-uses][hidden], [data-hide-for][hidden]')); });
-    $('#details-summary').textContent = current.uses_home_loads ? 'Exact nameplate values and contractor' : 'Contractor';
     renderTools();
     tool = firstTool();
     if (property) drawPlan();
@@ -132,12 +108,14 @@
       card.setAttribute('aria-checked', String(selected));
       card.tabIndex = selected ? 0 : -1;
     });
-    $('#type-continue').disabled = false;
   }
 
   function renderTypeCards() {
     $('#type-list').innerHTML = jobTypes.map((type, index) =>
-      `<button type="button" class="type-card" role="radio" aria-checked="false" tabindex="${index === 0 ? 0 : -1}" data-type="${esc(type.key)}">${ICONS[type.icon] || FALLBACK_ICON}<span class="type-title">${esc(type.label)}</span><span class="type-blurb">${esc(type.blurb)}</span></button>`).join('');
+      {
+      const [title, blurb] = TYPE_COPY[type.key] || [type.label, type.blurb];
+      return `<button type="button" class="type-card" role="radio" aria-checked="false" tabindex="${index === 0 ? 0 : -1}" data-type="${esc(type.key)}">${ICONS[type.icon] || FALLBACK_ICON}<span class="type-title">${esc(title)}</span><span class="type-blurb">${esc(blurb)}</span></button>`;
+    }).join('');
   }
   $('#type-list').addEventListener('click', (event) => {
     const card = event.target.closest('.type-card');
@@ -154,8 +132,6 @@
     chooseType(next.dataset.type);
     next.focus();
   });
-  $('#type-continue').addEventListener('click', () => show(1));
-  $('#change-type').addEventListener('click', () => show(0));
 
   /* ---- The plan: outlines, lot line and the marked route, in 0-1000 plan units ---- */
   function poly(points, attrs) {
@@ -359,7 +335,6 @@
     link.textContent = found.jurisdiction.known ? `${found.jurisdiction.checklist.length}-item checklist loaded` : 'General checklist. City rules are added in setup.';
     if (found.jurisdiction.source_url) link.href = found.jurisdiction.source_url; else link.removeAttribute('href');
     $('#tb-scale').textContent = `Plan scale: 1 in = ${found.view.scale_ft_per_in} ft`;
-    $('#bar-city').textContent = found.jurisdiction.label;
     $('#site').hidden = false;
     drawPlan();
     loadAerial(found);
@@ -412,7 +387,6 @@
     } catch (error) {
       property = null;
       $('#site').hidden = true;
-      $('#bar-city').textContent = client.demo ? 'Demo' : client.cities.map((city) => city.label).join(' · ');
       $('#find-error').textContent = error.message;
       $('#find-error').hidden = false;
     } finally {
@@ -436,8 +410,7 @@
     if (!current) return;
     property = null;
     typeModule().onSample?.();
-    $('#job-lead').textContent = `Sample job with a schematic layout, using the ${SAMPLE.label} checklist.`;
-    $('#bar-city').textContent = SAMPLE.label;
+    $('#job-lead').textContent = `A sample job with a schematic layout, using the ${SAMPLE.label} checklist. Use your own address to order a packet.`;
     show(2);
   });
   $('#back-property').addEventListener('click', () => show(1));
@@ -445,36 +418,49 @@
     form.elements[box.dataset.load].value = box.checked ? box.dataset.va : 0;
   }));
 
-  /* ---- Prospect branding from the link: ?logo=elc&contractor=ELC%20Contractor%20LLC ---- */
-  const linkParams = new URLSearchParams(location.search);
+  /* ---- Who is doing the work ---- */
+  const OWNER = { contractor: 'Homeowner (Owner-Builder)', license: 'Owner-Builder' };
+  const MAX_LOGO_BYTES = 500 * 1024;
   let contractorLogo = null;
-  const logoSlug = (linkParams.get('logo') || '').replace(/[^a-z0-9-]/gi, '');
-  if (logoSlug) {
-    fetch(`/assets/logos/${logoSlug}.png`).then((r) => (r.ok ? r.blob() : null)).then((blob) => {
-      if (!blob) return;
-      const reader = new FileReader();
-      reader.onload = () => { contractorLogo = String(reader.result).split(',')[1]; };
-      reader.readAsDataURL(blob);
-    }).catch(() => {});
-  }
-  const linkContractor = linkParams.get('contractor') || linkParams.get('company');
-  if (linkContractor) form.elements.contractor.value = linkContractor;
-  const dashLink = document.querySelector('.bar-link');
-  if (dashLink) dashLink.href = `/dashboard${location.search}`;
 
-  /* Packets built here show up on the demo dashboard (this browser only). */
-  function rememberJob(job, result, stage) {
-    try {
-      const saved = JSON.parse(localStorage.getItem(storeKey()) || '[]');
-      const key = `${result.address}|${job.customer}`;
-      const entry = {
-        key, addr: String(result.address || '').split(',')[0], cust: job.customer,
-        city: result.jurisdiction?.name || '', typeLabel: lastType?.label || '', stage, updated: Date.now(),
-      };
-      const rest = saved.filter((item) => item.key !== key);
-      localStorage.setItem(storeKey(), JSON.stringify([entry, ...rest].slice(0, 20)));
-    } catch { /* storage unavailable: the dashboard just shows its sample jobs */ }
+  function applyRole() {
+    const owner = form.elements.role.value === 'owner';
+    $('#contractor-grid').hidden = owner;
+    const { contractor, license_number: license } = form.elements;
+    if (owner) {
+      contractor.value = OWNER.contractor;
+      license.value = OWNER.license;
+      contractorLogo = null;
+      $('#logo-file').value = '';
+      $('#logo-note').textContent = '';
+    } else {
+      if (contractor.value === OWNER.contractor) contractor.value = '';
+      if (license.value === OWNER.license) license.value = '';
+    }
   }
+  $$('input[name="role"]').forEach((radio) => radio.addEventListener('change', applyRole));
+
+  $('#logo-file').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    contractorLogo = null;
+    $('#logo-note').textContent = '';
+    if (!file) return;
+    if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > MAX_LOGO_BYTES) {
+      event.target.value = '';
+      $('#logo-note').textContent = 'Please choose a PNG or JPEG under 500 KB.';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => { contractorLogo = String(reader.result).split(',')[1]; $('#logo-note').textContent = `${file.name} added.`; };
+    reader.readAsDataURL(file);
+  });
+
+  document.addEventListener('click', (event) => {
+    const pill = event.target.closest('[data-fill]');
+    if (pill) { form.elements[pill.dataset.fill].value = pill.dataset.value; return; }
+    const plan = event.target.closest('[data-plan]');
+    if (plan) { const radio = document.querySelector(`input[name="tier"][value="${plan.dataset.plan}"]`); if (radio) radio.checked = true; }
+  });
 
   /* ---- The job ---- */
   // "Kitchen counter, 20, 1" per line. Lines that don't parse are skipped.
@@ -527,110 +513,64 @@
     await wait(TICK_MS);
   }
 
-  function renderReview(result) {
-    $('#status').classList.toggle('bad', !result.ready);
-    $('#status-title').textContent = result.ready ? 'Draft packet ready for review' : 'This job needs a fix first';
-    $('#status-note').textContent = result.ready ? 'All engineering checks pass.' : 'See the checks below, then change the job.';
+  /* ---- Step 3: the free preview ---- */
+  function renderPreview(result) {
+    const flags = result.flags || [];
+    const card = $('#status');
+    card.classList.toggle('warn', !result.ready);
+    $('#status-icon').textContent = result.ready ? '✓' : '!';
+    $('#status-title').textContent = result.ready ? 'Engineering & NEC 220 check: passed' : 'Almost there: a few items need attention';
+    $('#status-note').textContent = result.ready
+      ? (flags.length ? 'Every calculation passes. A few items are worth a second look below.' : 'Every calculation passes.')
+      : 'See the items marked Fix below. You can add the missing details and preview again, or order as is.';
     $('#stats').innerHTML = result.summary.map((stat) => `<div><dt>${esc(stat.label)}</dt><dd>${esc(stat.value)}</dd></div>`).join('');
     $('#checks').innerHTML = result.checks
       .map((check) => `<li><span class="${check.passed ? 'pass' : 'fix'}">${check.passed ? 'Pass' : 'Fix'}</span> ${esc(check.name)}: ${esc(check.result)}</li>`).join('');
-    $('#flags').innerHTML = result.flags
-      .map((flag) => `<label class="flag"><input type="checkbox"><span>${esc(flag)}</span></label>`).join('');
-    $('#approve').dataset.ready = String(result.ready);
-    updateApproval();
+    $('#flags-wrap').hidden = !flags.length;
+    $('#flags').innerHTML = flags.map((flag) => `<li>${esc(flag)}</li>`).join('');
+    $('#not-ready').hidden = result.ready;
+    const images = result.packet_page_images;
     const feature = result.feature_page;
-    const order = [feature, ...result.pages.map((_, index) => index).filter((index) => index !== feature)]
-      .filter((index) => index < result.pages.length);
+    const order = [feature, ...images.map((_, index) => index).filter((index) => index !== feature)].filter((index) => index < images.length);
     $('#pages').innerHTML = order.map((index) => {
-      const src = `data:image/jpeg;base64,${result.pages[index]}`;
       const title = result.documents[index]?.title || '';
-      return `<a href="${src}" target="_blank" rel="noopener" class="${index === feature ? 'feature' : ''}"><img src="${src}" alt="Packet page ${index + 1}: ${esc(title)}"></a>`;
+      return `<button type="button" class="page quiet${index === feature ? ' feature' : ''}" data-page="${index}" aria-label="Zoom packet page ${index + 1}: ${esc(title)}"><img src="data:image/jpeg;base64,${images[index]}" alt="Packet page ${index + 1}: ${esc(title)}"></button>`;
     }).join('');
   }
 
-  /* The PDF comes from its own request (the preview and the PDF together are too big for one response).
-     The links stay off until it arrives; a newer build replaces an older one that is still loading. */
-  const PDF_LINKS = { '#open-packet': 'Open the full packet', '#download': 'Download packet (PDF)' };
-  let pdfBuild = 0;
-
-  function setPdfLinks(url, note) {
-    for (const [selector, label] of Object.entries(PDF_LINKS)) {
-      const link = $(selector);
-      if (url) {
-        link.href = url;
-        link.removeAttribute('aria-disabled');
-      } else {
-        link.removeAttribute('href');
-        link.setAttribute('aria-disabled', 'true');
-      }
-      link.textContent = note || label;
-    }
-  }
-
-  async function showPdf(pending) {
-    const build = ++pdfBuild;
-    if (packetUrl) URL.revokeObjectURL(packetUrl);
-    packetUrl = null;
-    setPdfLinks(null, 'Preparing the PDF…');
-    try {
-      const blob = await pending;
-      if (build !== pdfBuild) return;
-      packetUrl = URL.createObjectURL(blob);
-      setPdfLinks(packetUrl);
-    } catch (error) {
-      if (build === pdfBuild) setPdfLinks(null, `The PDF didn't load: ${error.message}`);
-    }
-  }
-
-  function updateApproval() {
-    const boxes = $$('#flags input');
-    const reviewed = boxes.filter((box) => box.checked).length;
-    const ready = $('#approve').dataset.ready === 'true';
-    $('#review-count').textContent = ready ? `${reviewed} of ${boxes.length} items reviewed` : 'Fix the job before it can be approved.';
-    $('#approve').disabled = !ready || reviewed < boxes.length;
-  }
-
-  function renderSubmit(result) {
-    const place = result.jurisdiction;
-    $('#how-city').textContent = `Submitting in ${place.label}`;
-    const sets = place.sets_required > 1 ? ` The city asks for ${place.sets_required} sets.` : '';
-    $('#how-text').textContent = `${place.submit_how}${sets}`;
-    const contact = [place.department, place.phone].filter(Boolean).join(', ');
-    $('#how-contact').textContent = contact;
-    $('#documents').hidden = Boolean(place.single_pdf_only);
-    const portal = $('#portal');
-    portal.hidden = !place.website;
-    if (place.website) { portal.href = place.website; portal.textContent = `Open ${place.website_label}`; }
-    $('#fields').innerHTML = result.fields.map((field, index) =>
-      `<div><dt>${esc(field.label)}</dt><dd id="field-${index}">${esc(field.value)}</dd><button type="button" class="copy" data-copy="field-${index}">Copy</button></div>`).join('');
-    $('#email-section').hidden = !place.email;
-    if (place.email) {
-      const { subject, body } = result.submission_email;
-      $('#email').textContent = `To: ${place.email}\nSubject: ${subject}\n\n${body}`;
-      $('#email-open').href = `mailto:${place.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    }
-  }
+  /* Zoomable sheets */
+  const lightbox = $('#lightbox');
+  function closeLightbox() { lightbox.hidden = true; $('#lightbox-img').classList.remove('zoomed'); }
+  $('#pages').addEventListener('click', (event) => {
+    const page = event.target.closest('button.page');
+    if (!page) return;
+    const image = $('#lightbox-img');
+    image.src = page.querySelector('img').src;
+    image.alt = page.querySelector('img').alt;
+    lightbox.hidden = false;
+    $('#lightbox-close').focus();
+  });
+  $('#lightbox-img').addEventListener('click', (event) => event.currentTarget.classList.toggle('zoomed'));
+  $('#lightbox-close').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !lightbox.hidden) closeLightbox(); });
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     $('#job-error').hidden = true;
     const job = jobData();
     const type = current;
+    const sample = !property;
     $('#build-list').innerHTML = '';
     show('building');
-    // Both requests start together, so the PDF is usually ready by the time the review shows.
-    const pdf = api(`/api/jobs/${type.slug}/pdf`, job).then((response) => response.blob());
-    pdf.catch(() => {});  // a failed build is reported once, from the packet request below
     try {
-      const response = await api(`/api/jobs/${type.slug}/packet`, job);
+      const response = await api(`/api/public/preview/${type.slug}`, job);
       const result = await response.json();
       lastJob = job;
       lastResult = result;
       lastType = type;
+      lastWasSample = sample;
       await tickResults(result);
-      renderReview(result);
-      showPdf(pdf);
-      rememberJob(job, result, 'review');
+      renderPreview(result);
       show(3);
     } catch (error) {
       show(2);
@@ -638,66 +578,52 @@
       $('#job-error').hidden = false;
     }
   });
-
-  $('#flags').addEventListener('change', updateApproval);
-  $('#approve').addEventListener('click', () => {
-    renderSubmit(lastResult);
-    rememberJob(lastJob, lastResult, 'submitted');
+  $('#edit').addEventListener('click', () => show(2));
+  $('#back-preview').addEventListener('click', () => show(3));
+  $('#to-pay').addEventListener('click', () => {
+    $('#pay-error').hidden = true;
+    if (lastWasSample) {
+      $('#pay-error').textContent = 'This preview uses the sample address. Go back and enter the real job address before ordering.';
+      $('#pay-error').hidden = false;
+    }
     show(4);
   });
-  $('#edit').addEventListener('click', () => show(2));
-  $('#restart').addEventListener('click', () => show(firstStep()));
-  $('#documents').addEventListener('click', async () => {
-    const button = $('#documents');
-    $('#documents-error').hidden = true;
+
+  /* ---- Step 4: package and payment ---- */
+  const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  function payError(message) { $('#pay-error').textContent = message; $('#pay-error').hidden = false; }
+
+  $('#checkout').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    $('#pay-error').hidden = true;
+    const email = $('#email').value.trim();
+    if (lastWasSample) return payError('This preview uses the sample address. Go back and enter the real job address before ordering.');
+    if (!EMAIL.test(email)) return payError('Enter a valid email address so we can find your order.');
+    if (!$('#ack').checked) return payError('Please confirm you understand this is a drafting & calculation document, not a PE stamp.');
+    const button = $('#pay-button');
     button.disabled = true;
+    button.textContent = 'Saving your order…';
+    const tab = window.open('', '_blank');  // opened now, while the click still counts, and pointed at Wave below
     try {
-      const response = await api(`/api/jobs/${lastType.slug}/documents`, lastJob);
-      const named = /filename="([^"]+)"/.exec(response.headers.get('Content-Disposition') || '');
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(await response.blob());
-      link.download = named ? named[1] : `${lastType.short_label.toLowerCase()}-permit-documents${client.demo ? '-demo' : ''}.zip`;
-      link.click();
-      URL.revokeObjectURL(link.href);
+      const response = await api('/api/public/orders', {
+        job_slug: lastType.slug, customer_email: email, tier: new FormData($('#checkout')).get('tier'), payload: lastJob,
+      });
+      const order = await response.json();
+      if (tab && order.wave_checkout_url) tab.location.href = order.wave_checkout_url;
+      else if (tab) tab.close();
+      location.assign(order.order_url);
     } catch (error) {
-      $('#documents-error').textContent = error.message;
-      $('#documents-error').hidden = false;
-    } finally {
+      if (tab) tab.close();
+      payError(error.message);
       button.disabled = false;
+      button.textContent = 'Continue to Payment';
     }
   });
-  document.addEventListener('click', async (event) => {
-    const button = event.target.closest('[data-copy], #email-copy');
-    if (!button) return;
-    const source = button.id === 'email-copy' ? $('#email') : document.getElementById(button.dataset.copy);
-    await navigator.clipboard.writeText(source.textContent).catch(() => {});
-    const label = button.textContent;
-    button.textContent = 'Copied';
-    setTimeout(() => { button.textContent = label; }, 1200);
-  });
 
-  /* ---- Start: learn which job types this client has ---- */
+  /* ---- Start ---- */
   async function start() {
     try {
-      const me = await fetch('/api/client');
-      if (me.ok) {
-        client = await me.json();
-        const first = client.cities[0];
-        if (!client.demo && first) {
-          SAMPLE = { address: first.sample_address, jurisdiction_key: first.key, label: first.label };
-          if (client.sheet_size) $('#sheet-size').options[0].textContent = `Default (${client.sheet_size === 'tabloid' ? '11 x 17' : 'Letter'})`;
-          if (client.company_name) form.elements.contractor.value = client.company_name;
-          // A client's packet carries their own license number, never the demo's placeholder (the field is required).
-          form.elements.license_number.value = '';
-          form.elements.license_number.placeholder = 'Your contractor license number';
-          $('#bar-city').textContent = client.cities.map((city) => city.label).join(' · ');
-          $('#address').placeholder = `Job address in ${client.cities.map((city) => city.label).join(' or ')}`;
-        }
-      }
-    } catch { /* the demo look */ }
-    try {
       const response = await fetch('/api/job-types');
-      if (response.status === 401) { location.reload(); return; }
       if (!response.ok) throw new Error(`The request failed (${response.status}).`);
       jobTypes = (await response.json()).job_types;
     } catch (error) {
@@ -705,18 +631,11 @@
       $('#find-error').hidden = false;
       return;
     }
-    if (!jobTypes.length) {
-      $('#find-error').textContent = 'No job types are set up for this account.';
-      $('#find-error').hidden = false;
-      return;
-    }
     jobTypes.forEach((type) => modules()[type.key]?.init?.(context));
-    renderSteps();
-    $('#change-type').hidden = !multiple();
-    renderHeader();
-    if (multiple()) renderTypeCards();
-    else chooseType(jobTypes[0].key);
-    show(firstStep());
+    renderTypeCards();
+    chooseType(jobTypes.some((type) => type.key === 'ev_charger') ? 'ev_charger' : jobTypes[0].key);
+    applyRole();
+    show(1, false);
   }
   const ready = start();
 })();

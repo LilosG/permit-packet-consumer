@@ -30,7 +30,6 @@ from permit_packets.job_types import REGISTRY
 from permit_packets.jurisdictions import ORO_VALLEY, jurisdiction_json
 from tests.api_helpers import with_pdf
 
-os.environ["DEMO_PASSWORD"] = "test-password"
 
 SAMPLE = json.loads((Path(__file__).parent / "samples" / "subpanel.json").read_text())
 PACKET_URL = "/api/jobs/subpanel/packet"
@@ -45,7 +44,6 @@ SQUARE_LOT = [[250, 250], [750, 250], [750, 750], [250, 750]]
 @pytest.fixture
 def client() -> TestClient:
     signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
     return signed_in
 
 
@@ -246,7 +244,7 @@ def test_the_pdf_carries_the_subpanel_pages(client):
     for heading in ("Subpanel Permit Packet", "Permit Application Data", "Site Plan", "One-Line Diagram",
                     "Feeder Schedule", "Load Calculation", "Equipment Data", "Pre-Submittal Review"):
         assert heading in text
-    assert "DEMO PACKET: NOT FOR SUBMISSION" in text
+    assert "PREVIEW PACKET — UNLOCK CLEAN PDF BEFORE SUBMISSION" in text
     assert "100 A subpanel, detached building" in text
     assert "Underground" in text
     assert "Grounding electrode and disconnect at the building" in text
@@ -261,9 +259,9 @@ def test_zip_has_one_file_per_page_and_keeps_its_name(client):
     assert ZipFile(BytesIO(response.content)).namelist() == [f"{stem}.pdf" for stem in STEMS]
 
 
-def test_routes_need_a_session():
-    assert TestClient(app).post(PACKET_URL, json=_payload()).status_code == 401
-    assert TestClient(app).post(DOCUMENTS_URL, json=_payload()).status_code == 401
+def test_routes_are_public():
+    assert TestClient(app).post(PACKET_URL, json=_payload()).status_code == 200
+    assert TestClient(app).post(DOCUMENTS_URL, json=_payload()).status_code == 200
 
 
 @pytest.mark.parametrize("changes", [

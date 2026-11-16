@@ -24,6 +24,16 @@ class TitleBlock:
     license_number: str
 
 
+def has_license(license_number: str | None) -> bool:
+    """An owner-builder holds no contractor license: blank or "Owner-Builder" prints no license."""
+    value = (license_number or "").strip()
+    return bool(value) and value.lower() != "owner-builder"
+
+
+def contractor_with_license(contractor: str, license_number: str | None, joiner: str = "\nLicense ") -> str:
+    return f"{contractor}{joiner}{license_number.strip()}" if has_license(license_number) else contractor
+
+
 def title_block_for(job) -> TitleBlock:
     """The title block for any job: every job type has an address, a plan, a contractor and a license."""
     parcel = job.plan.parcel_number if job.plan and job.plan.parcel_number else ""
@@ -87,7 +97,7 @@ def draw_title_block(c, sheet: Sheet, block: TitleBlock, *, title: str, number: 
     address = block.address
     parcel = f"Parcel {block.parcel}" if block.parcel else "Parcel: not on file"
     project = f"{address}\n{parcel}"
-    contractor = f"{block.contractor}\nLicense {block.license_number}"
+    contractor = contractor_with_license(block.contractor, block.license_number)
 
     def project_cell(x, y, cw, ch):
         _cell(c, x, y, cw, ch, "PROJECT ADDRESS", address, lines=2)

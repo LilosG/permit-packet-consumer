@@ -36,13 +36,11 @@ from permit_packets.core.panel_schedule import ExistingCircuit
 from permit_packets.core.property_plan import PlanView, PropertyPlan, clip_to, plan_scale, zoomed_scale
 from tests.api_helpers import with_pdf
 
-os.environ["DEMO_PASSWORD"] = "test-password"
 
 
 @pytest.fixture
 def client():
     signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
     return signed_in
 
 
@@ -242,25 +240,16 @@ def test_sample_mode_hides_the_address_and_parcel(client):
     assert "123 Sample St" in text
 
 
-def test_routes_need_a_session(public_client):
-    assert public_client.post("/api/jobs/ev-charger/packet", json=_payload()).status_code == 401
-    assert public_client.post("/api/property", json={"address": "123 Sample St"}).status_code == 401
 
 
-def test_a_wrong_password_is_refused(public_client):
-    assert public_client.post("/api/signin", json={"password": "wrong"}).status_code == 401
 
-
-def test_a_forged_cookie_is_refused(public_client):
-    public_client.cookies.set("permit_demo_session", "9999999999.abc")
-    assert public_client.post("/api/jobs/ev-charger/packet", json=_payload()).status_code == 401
-
-
-def test_home_shows_sign_in_until_signed_in(public_client, client):
-    assert "Sign in" in public_client.get("/").text
-    page = client.get("/").text
-    assert "Start with the address" in page
-    assert "Approve packet" in page
+def test_home_is_public(public_client):
+    page = public_client.get("/").text
+    assert "Electrical Permit Packets in Minutes, Not Weeks" in page
+    assert "Start Free Preview" in page
+    assert "Sign in" not in page and 'content="noindex' not in page
+    for anchor in ("How It Works", "What's Included", "Pricing", "FAQ"):
+        assert anchor in page
 
 
 def test_trench_longer_than_the_run_is_refused(client):
@@ -591,20 +580,3 @@ def test_suggestions_skip_anything_outside_the_us_or_without_a_city():
 def test_suggestions_fail_quietly():
     down = httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(503)))
     assert suggest_addresses("12 Main", down) == []
-
-
-def test_suggest_route_needs_a_session(public_client):
-    assert public_client.post("/api/property/suggest", json={"text": "12 Main"}).status_code == 401
-
-
-def test_dashboard_needs_sign_in_and_serves_the_demo():
-    from fastapi.testclient import TestClient
-
-    from app import app
-
-    anonymous = TestClient(app)
-    assert anonymous.get("/dashboard", follow_redirects=False).status_code == 303
-    signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
-    page = signed_in.get("/dashboard")
-    assert page.status_code == 200 and "Permits" in page.text

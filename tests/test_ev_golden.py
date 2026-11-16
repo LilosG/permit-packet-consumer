@@ -20,7 +20,6 @@ from fastapi.testclient import TestClient
 from app import app
 from tests.api_helpers import with_pdf
 
-os.environ["DEMO_PASSWORD"] = "test-password"
 
 GOLDEN = Path(__file__).parent / "golden"
 CASE_NAMES = sorted(path.stem for path in (GOLDEN / "cases").glob("*.json"))
@@ -41,7 +40,6 @@ def to_current_request(payload: dict) -> dict:
 @pytest.fixture(scope="module")
 def client() -> TestClient:
     signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
     return signed_in
 
 

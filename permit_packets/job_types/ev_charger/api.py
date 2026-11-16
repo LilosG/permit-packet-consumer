@@ -4,6 +4,7 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from permit_packets.core.panel_schedule import existing_circuits
+from permit_packets.core.title_block import contractor_with_license
 from permit_packets.core.job_inputs import build_on_sheet, display_number, property_plan, sample_address
 from permit_packets.core.load_calculation import HomeLoads
 from permit_packets.core.site_plan import printed_scale
@@ -77,7 +78,7 @@ def _submission_email(packet: EvPacket) -> dict:
         "subject": f"EV charger permit submittal: {job.address}",
         "body": (
             "Hello,\n\nAttached is an electrical permit submittal for a residential EV charger.\n\n"
-            f"Address: {job.address}\nContractor: {job.contractor}, license {job.license_number}\n\n"
+            f"Address: {job.address}\nContractor: {contractor_with_license(job.contractor, job.license_number, ', license ')}\n\n"
             f"Please let me know if anything else is needed.\n\nThank you,\n{job.contractor}"
         ),
     }

@@ -20,7 +20,7 @@ from permit_packets.core.pdf_base import (
     diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.panel_data import checklist_row as panel_row, one_line_data, panel_header
-from permit_packets.core.title_block import title_block_for
+from permit_packets.core.title_block import contractor_with_license, title_block_for
 from permit_packets.core.site_plan import PlanMarker, plan_print, printed_scale, site_plan_page
 from permit_packets.job_types.service_upgrade.calc import (
     BRAND_LABELS,
@@ -376,7 +376,7 @@ def _cover(packet: ServicePacket) -> list:
         job_cell=(f"{job.home.square_feet:,} sq ft home{parcel}\n"
                   f"{job.existing_service_amps} A to {job.new_service_amps} A, {_drop(packet)}\n"
                   f"Customer: {job.customer}"),
-        contractor_cell=f"{job.contractor}\nLicense {job.license_number}",
+        contractor_cell=contractor_with_license(job.contractor, job.license_number),
         checklist_cell=checklist_cell,
         checklist_rows=checklist_rows(packet),
         checks=[(check.name, check.result, check.passed) for check in packet.checks],
@@ -439,7 +439,7 @@ def application_fields(packet: ServicePacket) -> list[tuple[str, str]]:
         ("Service", f"{job.existing_service_amps} A to {job.new_service_amps} A, 120/240 V single-phase"),
         ("Equipment", job.panel_model or "Add make and model"),
         ("Contractor", job.contractor),
-        ("License number", job.license_number),
+        ("License number", job.license_number or "Owner-Builder"),
     ]
 
 
@@ -571,7 +571,7 @@ def _utility(packet: ServicePacket) -> list:
         ("New service", f"{job.new_service_amps} A, 120/240 V single-phase"),
         ("Service type", "Overhead" if job.service_drop == "overhead" else "Underground"),
         ("Meter location", "Relocated, needs the utility's approval" if job.relocated else "Same location"),
-        ("Contractor and license", f"{job.contractor}, license {job.license_number}"),
+        ("Contractor and license", contractor_with_license(job.contractor, job.license_number, ", license ")),
         ("Requested disconnect", "Date and time: ______________________"),
         ("Requested reconnect", "Date and time: ______________________"),
     ]

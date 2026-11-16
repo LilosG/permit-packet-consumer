@@ -26,7 +26,6 @@ from permit_packets.job_types import REGISTRY
 from permit_packets.jurisdictions import ORO_VALLEY, jurisdiction_json
 from tests.api_helpers import with_pdf
 
-os.environ["DEMO_PASSWORD"] = "test-password"
 
 SAMPLE = json.loads((Path(__file__).parent / "samples" / "appliance_circuit.json").read_text())
 PACKET_URL = "/api/jobs/appliance-circuit/packet"
@@ -44,7 +43,6 @@ SAUNA = {"appliance": "sauna", "heater_kw": 6, "location": "indoor", "run_ft": 3
 @pytest.fixture
 def client() -> TestClient:
     signed_in = TestClient(app)
-    assert signed_in.post("/api/signin", json={"password": "test-password"}).status_code == 200
     return signed_in
 
 
