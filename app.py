@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import hmac
+import json
 import logging
 import os
 import re
@@ -14,6 +16,7 @@ from contextlib import asynccontextmanager
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 from fastapi import Body, Depends, FastAPI, HTTPException, Request, Response, status
 from fastapi.exceptions import RequestValidationError
@@ -43,8 +46,8 @@ log = logging.getLogger("permit_packets")
 
 STATIC = Path(__file__).parent / "permit_packets" / "static"
 ASSETS = STATIC / "assets"
-# Each tier's Wave payment link, set in the environment; the link's price matches the tier.
-WAVE_LINK_ENV = {"load_calc": "WAVE_LINK_39", "instant_packet": "WAVE_LINK_89", "city_checked_24h": "WAVE_LINK_169"}
+# Each tier's Whop checkout link, set in the environment; the link's price matches the tier.
+WHOP_LINK_ENV = {"load_calc": "WHOP_LINK_39", "instant_packet": "WHOP_LINK_89", "city_checked_24h": "WHOP_LINK_169"}
 EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 # Order and admin pages hold one customer's job: keep them out of search results and caches.
 PRIVATE_PAGE = {"Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow, noarchive"}
@@ -345,8 +348,13 @@ def packet_documents(slug: str, payload: dict[str, Any] = Body(...)) -> Response
 
 # ---- Orders ----
 
-def _wave_link(tier: str) -> str:
-    return os.environ.get(WAVE_LINK_ENV[tier], "").strip()
+def _whop_link(tier: str, access_token: str) -> str:
+    """The tier's Whop checkout link with the order's token in metadata, which Whop hands back in its webhook."""
+    base = os.environ.get(WHOP_LINK_ENV[tier], "").strip()
+    if not base:
+        return ""
+    joiner = "&" if "?" in base else "?"
+    return f"{base}{joiner}metadata[order_token]={quote(access_token, safe='')}"
 
 
 @app.post("/api/public/orders")
@@ -376,7 +384,7 @@ def create_order(body: dict[str, Any] = Body(...)) -> dict:
         "order_code": order["order_code"],
         "access_token": order["access_token"],
         "order_url": f"/order/{order['access_token']}",
-        "wave_checkout_url": _wave_link(tier),
+        "whop_checkout_url": _whop_link(tier, order["access_token"]),
     }
 
 
@@ -409,8 +417,7 @@ def order_status(access_token: str) -> JSONResponse:
         "paid": paid,
         "tier": order["tier"],
         "address": order["address"],
-        "wave_checkout_url": _wave_link(order["tier"]),
-        "wave_instructions": f"Paste {order['order_code']} in the Wave note when you pay, so we can match your payment.",
+        "whop_checkout_url": _whop_link(order["tier"], access_token),
     }
     if paid:
         _, result = _build(order["job_slug"], order["payload"], preview=False)
@@ -467,6 +474,61 @@ def require_admin(credentials: HTTPBasicCredentials | None = Depends(basic)) -> 
             status.HTTP_401_UNAUTHORIZED, "Admin sign-in required", headers={"WWW-Authenticate": 'Basic realm="Admin"'})
 
 
+# ---- Whop payment webhook ----
+
+WEBHOOK_TOLERANCE_S = 300
+PAID_EVENTS = {"payment.succeeded", "payment_succeeded"}
+
+
+def _whop_signature_ok(request_id: str, timestamp: str, body: bytes, header: str) -> bool:
+    """Standard Webhooks signature: HMAC-SHA256 of "id.timestamp.body", base64, sent as "v1,<sig>"."""
+    secret = os.environ.get("WHOP_WEBHOOK_SECRET", "").strip()
+    try:
+        if abs(time.time() - int(timestamp)) > WEBHOOK_TOLERANCE_S:
+            return False
+    except ValueError:
+        return False
+    keys = [secret.encode()]
+    try:
+        keys.append(base64.b64decode(secret.removeprefix("whsec_"), validate=True))
+    except ValueError:
+        pass
+    signed = f"{request_id}.{timestamp}.".encode() + body
+    sent = [part.split(",", 1)[1] for part in header.split() if part.startswith("v1,")]
+    for key in keys:
+        expected = base64.b64encode(hmac.new(key, signed, hashlib.sha256).digest()).decode()
+        if any(hmac.compare_digest(expected, candidate) for candidate in sent):
+            return True
+    return False
+
+
+@app.post("/api/webhooks/whop")
+async def whop_webhook(request: Request) -> dict:
+    """Unlock an order when Whop reports its payment. Only a correctly signed request is believed."""
+    if not os.environ.get("WHOP_WEBHOOK_SECRET", "").strip():
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Webhook is not configured")
+    body = await request.body()
+    if not _whop_signature_ok(
+            request.headers.get("webhook-id", ""), request.headers.get("webhook-timestamp", ""), body,
+            request.headers.get("webhook-signature", "")):
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Bad signature")
+    try:
+        payload = json.loads(body)
+    except ValueError:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Body must be JSON") from None
+    if not isinstance(payload, dict):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Body must be a JSON object")
+    data = payload.get("data")
+    metadata = data.get("metadata") if isinstance(data, dict) else None
+    token = metadata.get("order_token") if isinstance(metadata, dict) else None
+    if payload.get("type") in PAID_EVENTS and isinstance(token, str) and token:
+        order = orders.get_by_token(token)
+        if order is not None and order["status"] == "pending_payment":
+            orders.set_status(order["id"], "paid")
+            log.info("Order %s paid through Whop", order["order_code"])
+    return {"ok": True}  # always 200 once signed, so Whop doesn't retry events we don't act on
+
+
 @app.get("/admin", dependencies=[Depends(require_admin)])
 def admin_page() -> Response:
     return _page("admin.html")
@@ -481,7 +543,7 @@ def admin_orders() -> JSONResponse:
 
 @app.post("/api/admin/orders/{order_id}/approve", dependencies=[Depends(require_admin)])
 def approve_order(order_id: str) -> dict:
-    """Mark a Wave payment as received. An order that is already paid or delivered stays as it is."""
+    """Mark a payment as received by hand, for a payment the webhook missed. An order that is already paid or delivered stays as it is."""
     order = orders.get_by_id(order_id)
     if order is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such order")

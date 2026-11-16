@@ -223,14 +223,21 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .how-steps b { color: var(--ink); font: 700 18px var(--display); letter-spacing: -.02em; }
 .how-steps .num { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--blue-soft); color: var(--blue); font: 800 17px var(--display); }
 .how-steps span:not(.num) { font-size: 15px; }
-details.faq { padding: 18px 0; border-bottom: 1px solid var(--line); }
-details.faq:first-of-type { margin-top: 28px; border-top: 1px solid var(--line); }
-details.faq summary { color: var(--ink); font: 600 17px var(--display); letter-spacing: -.015em; cursor: pointer; }
-details.faq p { margin: 10px 0 0; }
 .site-footer { padding: 44px 0 52px; background: var(--bg); border-top: 1px solid var(--line); font-size: 13.5px; }
 .site-footer .brand { margin-bottom: 14px; }
 .site-footer p { max-width: 82ch; margin: 0; color: var(--muted); }
 .site-footer b { color: var(--ink); }
+
+/* ---- FAQ ---- */
+.faq-list { max-width: 800px; margin: 32px auto 0; }
+details.faq { margin-bottom: 12px; background: #ffffff; border: 1px solid rgba(15, 23, 42, .07); border-radius: 8px; box-shadow: 0 1px 3px rgba(15, 23, 42, .03); overflow: hidden; transition: box-shadow .15s, border-color .15s; }
+details.faq:hover { border-color: var(--blue-tint); box-shadow: 0 6px 16px -8px rgba(15, 23, 42, .12); }
+details.faq summary { position: relative; display: block; padding: 16px 52px 16px 20px; color: #0f172a; font: 700 16px var(--display); letter-spacing: -.01em; cursor: pointer; list-style: none; }
+details.faq summary::-webkit-details-marker { display: none; }
+details.faq summary:focus-visible { outline: 3px solid rgba(29, 78, 216, .3); outline-offset: -3px; }
+details.faq summary::after { content: ""; position: absolute; right: 20px; top: 50%; width: 8px; height: 8px; margin-top: -6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s, border-color .2s; }
+details.faq[open] summary::after { margin-top: -2px; border-color: var(--blue); transform: rotate(-135deg); }
+details.faq p { margin: 0; padding: 0 20px 16px; color: #475569; font-size: 15px; line-height: 1.65; }
 
 /* ---- Workspace ---- */
 .workspace-band { background: linear-gradient(180deg, #f0f7ff 0%, #f8fafc 100%); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); scroll-margin-top: 60px; }

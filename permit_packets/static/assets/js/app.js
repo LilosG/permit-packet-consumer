@@ -604,13 +604,13 @@
     const button = $('#pay-button');
     button.disabled = true;
     button.textContent = 'Saving your order…';
-    const tab = window.open('', '_blank');  // opened now, while the click still counts, and pointed at Wave below
+    const tab = window.open('', '_blank');  // opened now, while the click still counts, and pointed at Whop below
     try {
       const response = await api('/api/public/orders', {
         job_slug: lastType.slug, customer_email: email, tier: new FormData($('#checkout')).get('tier'), payload: lastJob,
       });
       const order = await response.json();
-      if (tab && order.wave_checkout_url) tab.location.href = order.wave_checkout_url;
+      if (tab && order.whop_checkout_url) tab.location.href = order.whop_checkout_url;
       else if (tab) tab.close();
       location.assign(order.order_url);
     } catch (error) {

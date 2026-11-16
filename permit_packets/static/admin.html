@@ -13,7 +13,7 @@
 <header class="site-header"><div class="bar"><a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a><span></span><a class="pill-cta" href="/admin">Orders</a></div></header>
 <main class="page-main wide">
   <h1>Orders</h1>
-  <p class="lead">Newest first. After you see a Wave payment with the order code in its note, unlock the order.</p>
+  <p class="lead">Newest first. Orders unlock automatically when Whop confirms payment. Use the button only if a confirmed payment didn't unlock its order.</p>
   <p id="msg" class="note" aria-live="polite"></p>
   <div class="table-wrap"><table class="orders">
     <thead><tr><th>Code</th><th>Email</th><th>Address</th><th>Package</th><th>Status</th><th>Created</th><th></th></tr></thead>
@@ -41,7 +41,7 @@
       const action = document.createElement('td');
       if (order.status === 'pending_payment') {
         const button = document.createElement('button');
-        button.textContent = 'Mark Wave Paid & Unlock';
+        button.textContent = 'Mark Paid & Unlock';
         button.addEventListener('click', async () => {
           button.disabled = true;
           const result = await fetch(`/api/admin/orders/${order.id}/approve`, { method: 'POST' });

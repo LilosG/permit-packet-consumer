@@ -22,14 +22,10 @@
       <div class="order-code" id="code"></div>
       <button type="button" class="quiet" id="copy-code">Copy Order Code</button>
     </div>
-    <h2 style="margin-top:18px">Pay with Wave</h2>
-    <ol class="steps-list">
-      <li>Open Wave Checkout and pay for your package.</li>
-      <li><strong>Paste your order code in the Wave note</strong> so we can match your payment.</li>
-      <li>Come back here and press Refresh Status. Your downloads appear once we see the payment.</li>
-    </ol>
+    <h2 style="margin-top:18px">Pay securely with Whop</h2>
+    <p class="lead">Your packet will unlock automatically once payment is complete. Keep this page open, or come back to it later.</p>
     <div class="actions">
-      <a class="button cta" id="wave" target="_blank" rel="noopener" hidden>Open Wave Checkout</a>
+      <a class="button cta" id="wave" target="_blank" rel="noopener" hidden>Pay securely with Whop</a>
       <button class="quiet" id="refresh" type="button">Refresh Status</button>
     </div>
     <p class="note" id="no-wave" hidden>Payment isn't set up for this package yet. Keep this page and contact us with your order code.</p>
@@ -96,7 +92,7 @@
     if (!order.paid) {
       $('pending').hidden = false; $('paid').hidden = true;
       $('code').textContent = order.order_code;
-      if (order.wave_checkout_url) { $('wave').href = order.wave_checkout_url; $('wave').hidden = false; $('no-wave').hidden = true; }
+      if (order.whop_checkout_url) { $('wave').href = order.whop_checkout_url; $('wave').hidden = false; $('no-wave').hidden = true; }
       else { $('wave').hidden = true; $('no-wave').hidden = false; }
       if (manual) $('refreshed').textContent = `Still waiting for payment (checked ${new Date().toLocaleTimeString()}).`;
       return;
@@ -138,6 +134,8 @@
   $('copy-fields').addEventListener('click', (e) => copyText(fieldsText, e.currentTarget));
   $('copy-email').addEventListener('click', (e) => copyText($('email-body').textContent, e.currentTarget));
   $('refresh').addEventListener('click', () => load(true));
+  /* The webhook unlocks the order; check every few seconds while it is waiting. */
+  setInterval(() => { if (!$('pending').hidden) load(false); }, 5000);
   load(false);
 })();
 </script>

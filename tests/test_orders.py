@@ -1,4 +1,4 @@
-"""Public preview, order creation, Wave unlock and the admin approve flow."""
+"""Public preview, order creation, Whop unlock and the admin approve flow."""
 import base64
 import json
 from pathlib import Path
@@ -20,9 +20,10 @@ def fresh_database(tmp_path, monkeypatch):
     monkeypatch.delenv("DEV_AUTO_APPROVE", raising=False)
     monkeypatch.setattr(orders, "SQLITE_PATH", str(tmp_path / "orders.db"))
     monkeypatch.setenv("ADMIN_PASSWORD", "admin-pw")
-    monkeypatch.setenv("WAVE_LINK_39", "https://pay.waveapps.com/39")
-    monkeypatch.setenv("WAVE_LINK_89", "https://pay.waveapps.com/89")
-    monkeypatch.setenv("WAVE_LINK_169", "https://pay.waveapps.com/169")
+    monkeypatch.setenv("WHOP_WEBHOOK_SECRET", "ws_test_secret")
+    monkeypatch.setenv("WHOP_LINK_39", "https://whop.com/checkout/plan_39")
+    monkeypatch.setenv("WHOP_LINK_89", "https://whop.com/checkout/plan_89")
+    monkeypatch.setenv("WHOP_LINK_169", "https://whop.com/checkout/plan_169")
 
 
 @pytest.fixture
@@ -62,15 +63,15 @@ def test_preview_pdf_says_preview_and_has_no_lilos_text(client):
     assert "Lilos" not in text and "DEMO" not in text
 
 
-def test_an_order_is_saved_pending_with_its_wave_link(client):
+def test_an_order_is_saved_pending_with_its_whop_link(client):
     for tier, link in (("load_calc", "39"), ("instant_packet", "89"), ("city_checked_24h", "169")):
         order = place_order(client, tier)
         assert order["order_code"].startswith("PP-")
         assert order["order_url"] == f"/order/{order['access_token']}"
-        assert order["wave_checkout_url"] == f"https://pay.waveapps.com/{link}"
+        assert order["whop_checkout_url"] == f"https://whop.com/checkout/plan_{link}?metadata[order_token]={order['access_token']}"
     view = client.get(f"/api/orders/{order['access_token']}").json()
     assert (view["status"], view["paid"], view["order_code"]) == ("pending_payment", False, order["order_code"])
-    assert "pdf_url" not in view and order["order_code"] in view["wave_instructions"]
+    assert "pdf_url" not in view and view["whop_checkout_url"] == order["whop_checkout_url"]
     assert client.get(order["order_url"]).status_code == 200
 
 
@@ -154,3 +155,67 @@ def test_public_lookup_routes_need_no_login(client):
     assert client.get("/api/job-types").status_code == 200
     assert client.get("/dashboard").status_code == 404
     assert client.post("/api/signin", json={"password": "x"}).status_code in (404, 405)
+
+
+# ---- Whop webhook ----
+
+def _signed(body: dict, secret="ws_test_secret", timestamp=None):
+    import hashlib, hmac, time
+    raw = json.dumps(body).encode()
+    stamp = str(int(timestamp if timestamp is not None else time.time()))
+    signature = base64.b64encode(hmac.new(secret.encode(), f"msg_1.{stamp}.".encode() + raw, hashlib.sha256).digest()).decode()
+    return raw, {"webhook-id": "msg_1", "webhook-timestamp": stamp, "webhook-signature": f"v1,{signature}",
+                 "content-type": "application/json"}
+
+
+def _event(token, kind="payment.succeeded"):
+    return {"type": kind, "data": {"metadata": {"order_token": token}}}
+
+
+def _status(client, order):
+    return client.get(f"/api/orders/{order['access_token']}").json()["status"]
+
+
+def test_a_signed_whop_payment_unlocks_the_order(client):
+    order = place_order(client)
+    raw, headers = _signed(_event(order["access_token"]))
+    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+    assert _status(client, order) == "paid"
+    assert client.get(f"/api/orders/{order['access_token']}/pdf").status_code == 200
+
+
+def test_the_webhook_refuses_unsigned_and_wrongly_signed_requests(client):
+    order = place_order(client)
+    raw = json.dumps(_event(order["access_token"])).encode()
+    assert client.post("/api/webhooks/whop", content=raw).status_code == 401
+    raw, headers = _signed(_event(order["access_token"]), secret="someone-else")
+    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 401
+    raw, headers = _signed(_event(order["access_token"]), timestamp=1_000_000)
+    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 401
+    assert _status(client, order) == "pending_payment"
+
+
+def test_the_webhook_is_off_without_a_secret(client, monkeypatch):
+    monkeypatch.delenv("WHOP_WEBHOOK_SECRET")
+    assert client.post("/api/webhooks/whop", json={}).status_code == 503
+
+
+def test_the_webhook_ignores_other_events_and_unknown_tokens(client):
+    order = place_order(client)
+    raw, headers = _signed(_event(order["access_token"], kind="payment.failed"))
+    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+    assert _status(client, order) == "pending_payment"
+    raw, headers = _signed(_event("no-such-token"))
+    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+    raw, headers = _signed({"type": "payment.succeeded", "data": None})
+    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+
+
+def test_a_delivered_order_is_not_set_back_to_paid(client):
+    order = place_order(client)
+    raw, headers = _signed(_event(order["access_token"]))
+    client.post("/api/webhooks/whop", content=raw, headers=headers)
+    client.get(f"/api/orders/{order['access_token']}/pdf")
+    assert _status(client, order) == "delivered"
+    client.post("/api/webhooks/whop", content=raw, headers=headers)
+    assert _status(client, order) == "delivered"
