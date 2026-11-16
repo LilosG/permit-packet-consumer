@@ -239,75 +239,77 @@
   }
 
   /* ---- Address suggestions as the tech types. Typing the whole address still works. ---- */
+  const SUGGEST_DELAY_MS = 220;
+  function attachSuggest(input, list, onChoose, prefix) {
+    let timer = null;
+    let requestId = 0;
+    let active = -1;
+    const items = () => Array.from(list.querySelectorAll('li[role=option]'));
+    function close() {
+      list.hidden = true;
+      list.innerHTML = '';
+      active = -1;
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
+    }
+    function mark() {
+      items().forEach((item, index) => item.setAttribute('aria-selected', String(index === active)));
+      if (active >= 0) input.setAttribute('aria-activedescendant', `${prefix}-${active}`);
+      else input.removeAttribute('aria-activedescendant');
+    }
+    function choose(text) {
+      requestId += 1;
+      clearTimeout(timer);
+      input.value = text;
+      close();
+      onChoose();
+    }
+    async function load(text, request) {
+      const response = await api('/api/property/suggest', { text }).catch(() => null);
+      const data = response ? await response.json().catch(() => null) : null;
+      if (request !== requestId || document.activeElement !== input) return;
+      const suggestions = data?.suggestions || [];
+      if (!suggestions.length) { close(); return; }
+      list.innerHTML = suggestions
+        .map((item, index) => `<li role="option" id="${prefix}-${index}" aria-selected="false">${esc(item)}</li>`).join('')
+        + '<li class="credit" role="presentation">Suggestions from OpenStreetMap contributors</li>';
+      active = -1;
+      list.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    }
+    input.addEventListener('input', () => {
+      clearTimeout(timer);
+      requestId += 1;
+      const text = input.value.trim();
+      if (text.length < 4) { close(); return; }
+      const request = requestId;
+      timer = setTimeout(() => load(text, request), SUGGEST_DELAY_MS);
+    });
+    input.addEventListener('keydown', (event) => {
+      const options = items();
+      if (event.key === 'Escape') { close(); return; }
+      if (!options.length) return;
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        active = (active + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
+        mark();
+      } else if (event.key === 'Enter' && active >= 0) {
+        event.preventDefault();
+        choose(options[active].textContent);
+      }
+    });
+    /* mousedown fires before the input loses focus, so the list is still there. */
+    list.addEventListener('mousedown', (event) => {
+      const item = event.target.closest('li[role=option]');
+      event.preventDefault();
+      if (item) choose(item.textContent);
+    });
+    input.addEventListener('blur', close);
+    return { cancel() { requestId += 1; clearTimeout(timer); close(); } };
+  }
   const addressInput = $('#address');
   const suggestionList = $('#suggestions');
-  const SUGGEST_DELAY_MS = 220;
-  let suggestTimer = null;
-  let suggestRequest = 0;
-  let activeSuggestion = -1;
-
-  function closeSuggestions() {
-    suggestionList.hidden = true;
-    suggestionList.innerHTML = '';
-    activeSuggestion = -1;
-    addressInput.setAttribute('aria-expanded', 'false');
-    addressInput.removeAttribute('aria-activedescendant');
-  }
-  function suggestionItems() { return $$('#suggestions li[role=option]'); }
-  function markActive() {
-    suggestionItems().forEach((item, index) => item.setAttribute('aria-selected', String(index === activeSuggestion)));
-    if (activeSuggestion >= 0) addressInput.setAttribute('aria-activedescendant', `suggestion-${activeSuggestion}`);
-    else addressInput.removeAttribute('aria-activedescendant');
-  }
-  function chooseSuggestion(text) {
-    suggestRequest += 1;
-    clearTimeout(suggestTimer);
-    addressInput.value = text;
-    closeSuggestions();
-    $('#find').requestSubmit();
-  }
-  async function loadSuggestions(text, request) {
-    const response = await api('/api/property/suggest', { text }).catch(() => null);
-    const data = response ? await response.json().catch(() => null) : null;
-    if (request !== suggestRequest || document.activeElement !== addressInput) return;
-    const suggestions = data?.suggestions || [];
-    if (!suggestions.length) { closeSuggestions(); return; }
-    suggestionList.innerHTML = suggestions
-      .map((item, index) => `<li role="option" id="suggestion-${index}" aria-selected="false">${esc(item)}</li>`).join('')
-      + '<li class="credit" role="presentation">Suggestions from OpenStreetMap contributors</li>';
-    activeSuggestion = -1;
-    suggestionList.hidden = false;
-    addressInput.setAttribute('aria-expanded', 'true');
-  }
-  addressInput.addEventListener('input', () => {
-    clearTimeout(suggestTimer);
-    suggestRequest += 1;
-    const text = addressInput.value.trim();
-    if (text.length < 4) { closeSuggestions(); return; }
-    const request = suggestRequest;
-    suggestTimer = setTimeout(() => loadSuggestions(text, request), SUGGEST_DELAY_MS);
-  });
-  addressInput.addEventListener('keydown', (event) => {
-    const items = suggestionItems();
-    if (event.key === 'Escape') { closeSuggestions(); return; }
-    if (!items.length) return;
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      const step = event.key === 'ArrowDown' ? 1 : -1;
-      activeSuggestion = (activeSuggestion + step + items.length) % items.length;
-      markActive();
-    } else if (event.key === 'Enter' && activeSuggestion >= 0) {
-      event.preventDefault();
-      chooseSuggestion(items[activeSuggestion].textContent);
-    }
-  });
-  /* mousedown fires before the input loses focus, so the list is still there. */
-  suggestionList.addEventListener('mousedown', (event) => {
-    const item = event.target.closest('li[role=option]');
-    event.preventDefault();
-    if (item) chooseSuggestion(item.textContent);
-  });
-  addressInput.addEventListener('blur', closeSuggestions);
+  const workspaceSuggest = attachSuggest(addressInput, suggestionList, () => $('#find').requestSubmit(), 'suggestion');
 
   /* ---- The property ---- */
   function locatedNote(found) {
@@ -371,9 +373,7 @@
   $('#find').addEventListener('submit', async (event) => {
     event.preventDefault();
     setPicking(false);
-    suggestRequest += 1;
-    clearTimeout(suggestTimer);
-    closeSuggestions();
+    workspaceSuggest.cancel();
     const button = $('#find-button');
     $('#find-error').hidden = true;
     button.disabled = true;
@@ -628,8 +628,11 @@
     await ready;
     chooseType(pill.dataset.type);
   }));
+  const heroInput = $('#hero-address');
+  const heroSuggest = attachSuggest(heroInput, $('#hero-suggestions'), () => $('#hero-form').requestSubmit(), 'hero-suggestion');
   $('#hero-form').addEventListener('submit', async (event) => {
     event.preventDefault();
+    heroSuggest.cancel();
     await ready;
     if (!current) return;
     $('#address').value = $('#hero-address').value.trim();
@@ -657,6 +660,7 @@
     const image = $('#sample-img');
     image.src = `/assets/samples/${tab.dataset.sample}.png`;
     image.alt = `Sample packet sheet: ${tab.dataset.label}`;
+    $('#zoom-text').textContent = ['02-site-plan', '03-single-line'].includes(tab.dataset.sample) ? 'Click diagram to zoom' : 'Click sheet to zoom';
   }
   sampleTabs.forEach((tab) => tab.addEventListener('click', () => showSample(tab)));
   $('.doc-tabs').addEventListener('keydown', (event) => {
