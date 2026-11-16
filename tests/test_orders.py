@@ -270,7 +270,7 @@ def test_an_order_gets_a_whop_checkout_configuration_when_the_api_is_set(client,
     assert url == "https://api.whop.com/api/v1/checkout_configurations"
     assert call["headers"] == {"Authorization": "Bearer key_123"}
     assert call["json"] == {
-        "plan_id": "plan_abc", "metadata": {"order_token": order["access_token"]},
+        "variant_id": "plan_abc", "metadata": {"order_token": order["access_token"]},
         "redirect_url": f"https://permits.example.com/order/{order['access_token']}"}
 
 

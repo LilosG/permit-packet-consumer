@@ -381,7 +381,7 @@ def _checkout_url(tier: str, access_token: str, request: Request) -> str:
             response = httpx.post(
                 WHOP_CHECKOUT_API, timeout=10,
                 headers={"Authorization": f"Bearer {os.environ['WHOP_API_KEY'].strip()}"},
-                json={"plan_id": plan_id, "metadata": {"order_token": access_token},
+                json={"variant_id": plan_id, "metadata": {"order_token": access_token},
                       "redirect_url": f"{_base_url(request)}/order/{access_token}"})
             response.raise_for_status()
             url = response.json().get("purchase_url")
