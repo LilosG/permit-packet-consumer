@@ -339,6 +339,7 @@
     if (found.jurisdiction.source_url) link.href = found.jurisdiction.source_url; else link.removeAttribute('href');
     $('#tb-scale').textContent = `Plan scale: 1 in = ${found.view.scale_ft_per_in} ft`;
     $('#site').hidden = false;
+  $$('.metrics, #sample, #included, #compare, #pricing, #how, #faq').forEach(el => el.hidden = true);
     drawPlan();
     loadAerial(found);
   }
@@ -411,7 +412,8 @@
     if (!current) return;
     property = null;
     typeModule().onSample?.();
-    $('#job-lead').textContent = `A sample job with a schematic layout, using the ${SAMPLE.label} checklist. Use your own address to order a packet.`;
+    $$('.metrics, #sample, #included, #compare, #pricing, #how, #faq').forEach(el => el.hidden = true);
+  $('#job-lead').textContent = `A sample job with a schematic layout, using the ${SAMPLE.label} checklist. Use your own address to order a packet.`;
     show(2);
   });
   $('#back-property').addEventListener('click', () => show(1));
