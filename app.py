@@ -18,9 +18,10 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
+import httpx
 from fastapi import Body, Depends, FastAPI, HTTPException, Request, Response, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
@@ -47,6 +48,8 @@ log = logging.getLogger("permit_packets")
 STATIC = Path(__file__).parent / "permit_packets" / "static"
 ASSETS = STATIC / "assets"
 # Each tier's Whop checkout link, set in the environment; the link's price matches the tier.
+WHOP_PLAN_ENV = {"load_calc": "WHOP_PLAN_39", "instant_packet": "WHOP_PLAN_89", "city_checked_24h": "WHOP_PLAN_169"}
+WHOP_CHECKOUT_API = "https://api.whop.com/api/v1/checkout_configurations"
 WHOP_LINK_ENV = {"load_calc": "WHOP_LINK_39", "instant_packet": "WHOP_LINK_89", "city_checked_24h": "WHOP_LINK_169"}
 EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 # Order and admin pages hold one customer's job: keep them out of search results and caches.
@@ -348,8 +351,12 @@ def packet_documents(slug: str, payload: dict[str, Any] = Body(...)) -> Response
 
 # ---- Orders ----
 
+def _whop_plan(tier: str) -> str:
+    return os.environ.get(WHOP_PLAN_ENV[tier], "").strip() if os.environ.get("WHOP_API_KEY", "").strip() else ""
+
+
 def _whop_link(tier: str, access_token: str) -> str:
-    """The tier's Whop checkout link with the order's token in metadata, which Whop hands back in its webhook."""
+    """The tier's fixed Whop link with the order's token in metadata, which Whop hands back in its webhook."""
     base = os.environ.get(WHOP_LINK_ENV[tier], "").strip()
     if not base:
         return ""
@@ -357,8 +364,37 @@ def _whop_link(tier: str, access_token: str) -> str:
     return f"{base}{joiner}metadata[order_token]={quote(access_token, safe='')}"
 
 
+def _base_url(request: Request) -> str:
+    configured = os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
+    if configured:
+        return configured
+    proto = request.headers.get("x-forwarded-proto", request.url.scheme).split(",")[0].strip()
+    host = request.headers.get("x-forwarded-host", request.headers.get("host", request.url.netloc)).split(",")[0].strip()
+    return f"{proto}://{host}"
+
+
+def _checkout_url(tier: str, access_token: str, request: Request) -> str:
+    """A checkout for this order: a Whop checkout configuration when the API key and plan are set, else the fixed link."""
+    plan_id = _whop_plan(tier)
+    if plan_id:
+        try:
+            response = httpx.post(
+                WHOP_CHECKOUT_API, timeout=10,
+                headers={"Authorization": f"Bearer {os.environ['WHOP_API_KEY'].strip()}"},
+                json={"plan_id": plan_id, "metadata": {"order_token": access_token},
+                      "redirect_url": f"{_base_url(request)}/order/{access_token}"})
+            response.raise_for_status()
+            url = response.json().get("purchase_url")
+            if isinstance(url, str) and url:
+                return url
+            log.error("Whop checkout configuration came back without a purchase_url")
+        except (httpx.HTTPError, ValueError) as error:
+            log.error("Whop checkout configuration failed: %s", error)
+    return _whop_link(tier, access_token)
+
+
 @app.post("/api/public/orders")
-def create_order(body: dict[str, Any] = Body(...)) -> dict:
+def create_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
     """Save a pending_payment order for a job. Body: {job_slug, customer_email, tier, payload}."""
     email = str(body.get("customer_email") or "").strip()
     tier = body.get("tier")
@@ -384,7 +420,7 @@ def create_order(body: dict[str, Any] = Body(...)) -> dict:
         "order_code": order["order_code"],
         "access_token": order["access_token"],
         "order_url": f"/order/{order['access_token']}",
-        "whop_checkout_url": _whop_link(tier, order["access_token"]),
+        "whop_checkout_url": _checkout_url(tier, order["access_token"], request),
     }
 
 
@@ -402,6 +438,22 @@ def _paid_order(access_token: str) -> dict[str, Any]:
     return order
 
 
+def _payment_ready(tier: str) -> bool:
+    return bool(_whop_plan(tier) or os.environ.get(WHOP_LINK_ENV[tier], "").strip())
+
+
+@app.get("/api/orders/{access_token}/pay")
+def pay_order(access_token: str, request: Request) -> Response:
+    """Send the buyer to a fresh Whop checkout for this order. The order page links here so polling never makes one."""
+    order = _order_or_404(access_token)
+    if order["status"] != "pending_payment":
+        return RedirectResponse(f"/order/{access_token}", status_code=status.HTTP_303_SEE_OTHER)
+    url = _checkout_url(order["tier"], access_token, request)
+    if not url:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Payment isn't set up for this package yet")
+    return RedirectResponse(url, status_code=status.HTTP_303_SEE_OTHER)
+
+
 @app.get("/order/{access_token}")
 def order_page(access_token: str) -> Response:
     return _page("order.html")
@@ -417,7 +469,7 @@ def order_status(access_token: str) -> JSONResponse:
         "paid": paid,
         "tier": order["tier"],
         "address": order["address"],
-        "whop_checkout_url": _whop_link(order["tier"], access_token),
+        "whop_checkout_url": f"/api/orders/{access_token}/pay" if _payment_ready(order["tier"]) else "",
     }
     if paid:
         _, result = _build(order["job_slug"], order["payload"], preview=False)
@@ -488,18 +540,11 @@ def _whop_signature_ok(request_id: str, timestamp: str, body: bytes, header: str
             return False
     except ValueError:
         return False
-    keys = [secret.encode()]
-    try:
-        keys.append(base64.b64decode(secret.removeprefix("whsec_"), validate=True))
-    except ValueError:
-        pass
+    key = secret.encode()  # Whop's ws_ secret is the HMAC key as is, not base64-decoded
     signed = f"{request_id}.{timestamp}.".encode() + body
     sent = [part.split(",", 1)[1] for part in header.split() if part.startswith("v1,")]
-    for key in keys:
-        expected = base64.b64encode(hmac.new(key, signed, hashlib.sha256).digest()).decode()
-        if any(hmac.compare_digest(expected, candidate) for candidate in sent):
-            return True
-    return False
+    expected = base64.b64encode(hmac.new(key, signed, hashlib.sha256).digest()).decode()
+    return any(hmac.compare_digest(expected, candidate) for candidate in sent)
 
 
 @app.post("/api/webhooks/whop")

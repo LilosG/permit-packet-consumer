@@ -21,6 +21,8 @@ def fresh_database(tmp_path, monkeypatch):
     monkeypatch.setattr(orders, "SQLITE_PATH", str(tmp_path / "orders.db"))
     monkeypatch.setenv("ADMIN_PASSWORD", "admin-pw")
     monkeypatch.setenv("WHOP_WEBHOOK_SECRET", "ws_test_secret")
+    for name in ("WHOP_API_KEY", "WHOP_PLAN_39", "WHOP_PLAN_89", "WHOP_PLAN_169"):
+        monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("WHOP_LINK_39", "https://whop.com/checkout/plan_39")
     monkeypatch.setenv("WHOP_LINK_89", "https://whop.com/checkout/plan_89")
     monkeypatch.setenv("WHOP_LINK_169", "https://whop.com/checkout/plan_169")
@@ -71,7 +73,7 @@ def test_an_order_is_saved_pending_with_its_whop_link(client):
         assert order["whop_checkout_url"] == f"https://whop.com/checkout/plan_{link}?metadata[order_token]={order['access_token']}"
     view = client.get(f"/api/orders/{order['access_token']}").json()
     assert (view["status"], view["paid"], view["order_code"]) == ("pending_payment", False, order["order_code"])
-    assert "pdf_url" not in view and view["whop_checkout_url"] == order["whop_checkout_url"]
+    assert "pdf_url" not in view and view["whop_checkout_url"] == f"/api/orders/{order['access_token']}/pay"
     assert client.get(order["order_url"]).status_code == 200
 
 
@@ -219,3 +221,83 @@ def test_a_delivered_order_is_not_set_back_to_paid(client):
     assert _status(client, order) == "delivered"
     client.post("/api/webhooks/whop", content=raw, headers=headers)
     assert _status(client, order) == "delivered"
+
+
+def test_the_signing_key_is_the_raw_ws_secret_not_a_decoded_one(client):
+    import hashlib, hmac, time
+    order = place_order(client)
+    raw = json.dumps(_event(order["access_token"])).encode()
+    stamp = str(int(time.time()))
+    wrong_key = b"test_secret"  # the secret without its ws_ prefix, as a prefix-stripping reading would use
+    sig = base64.b64encode(hmac.new(wrong_key, f"msg_1.{stamp}.".encode() + raw, hashlib.sha256).digest()).decode()
+    headers = {"webhook-id": "msg_1", "webhook-timestamp": stamp, "webhook-signature": f"v1,{sig}"}
+    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 401
+    raw, headers = _signed(_event(order["access_token"]))
+    headers["webhook-signature"] = "v1,bogus " + headers["webhook-signature"]  # several signatures may be sent
+    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+    assert _status(client, order) == "paid"
+
+
+# ---- Whop checkout configurations ----
+
+class _Reply:
+    def __init__(self, body, status_code=200): self._body, self.status_code = body, status_code
+    def json(self): return self._body
+    def raise_for_status(self):
+        import httpx
+        if self.status_code >= 400:
+            raise httpx.HTTPStatusError("bad", request=httpx.Request("POST", "http://x"), response=httpx.Response(self.status_code))
+
+
+@pytest.fixture
+def whop_api(monkeypatch):
+    import app as app_module
+    calls = []
+    def fake_post(url, **kwargs):
+        calls.append((url, kwargs))
+        return _Reply({"purchase_url": f"https://whop.com/purchase/{len(calls)}"})
+    monkeypatch.setattr(app_module.httpx, "post", fake_post)
+    monkeypatch.setenv("WHOP_API_KEY", "key_123")
+    monkeypatch.setenv("WHOP_PLAN_89", "plan_abc")
+    monkeypatch.setenv("PUBLIC_BASE_URL", "https://permits.example.com/")
+    return calls
+
+
+def test_an_order_gets_a_whop_checkout_configuration_when_the_api_is_set(client, whop_api):
+    order = place_order(client, "instant_packet")
+    assert order["whop_checkout_url"] == "https://whop.com/purchase/1"
+    url, call = whop_api[0]
+    assert url == "https://api.whop.com/api/v1/checkout_configurations"
+    assert call["headers"] == {"Authorization": "Bearer key_123"}
+    assert call["json"] == {
+        "plan_id": "plan_abc", "metadata": {"order_token": order["access_token"]},
+        "redirect_url": f"https://permits.example.com/order/{order['access_token']}"}
+
+
+def test_a_tier_without_a_plan_uses_its_fixed_link(client, whop_api):
+    order = place_order(client, "load_calc")
+    assert whop_api == [] and order["whop_checkout_url"].startswith("https://whop.com/checkout/plan_39?metadata[order_token]=")
+
+
+def test_a_failed_whop_api_falls_back_to_the_fixed_link(client, whop_api, monkeypatch):
+    import app as app_module
+    monkeypatch.setattr(app_module.httpx, "post", lambda *a, **k: _Reply({}, 500))
+    monkeypatch.setenv("WHOP_LINK_89", "https://whop.com/checkout/plan_89")
+    order = place_order(client, "instant_packet")
+    assert order["whop_checkout_url"].startswith("https://whop.com/checkout/plan_89?metadata[order_token]=")
+    monkeypatch.delenv("WHOP_LINK_89")
+    assert place_order(client, "instant_packet")["whop_checkout_url"] == ""
+
+
+def test_the_order_page_checkout_makes_one_configuration_per_click_not_per_poll(client, whop_api):
+    order = place_order(client, "instant_packet")
+    for _ in range(3):
+        client.get(f"/api/orders/{order['access_token']}")
+    assert len(whop_api) == 1
+    response = client.get(f"/api/orders/{order['access_token']}/pay", follow_redirects=False)
+    assert response.status_code == 303 and response.headers["location"] == "https://whop.com/purchase/2"
+    raw, headers = _signed(_event(order["access_token"]))
+    client.post("/api/webhooks/whop", content=raw, headers=headers)
+    paid = client.get(f"/api/orders/{order['access_token']}/pay", follow_redirects=False)
+    assert paid.headers["location"] == f"/order/{order['access_token']}" and len(whop_api) == 2
+    assert client.get("/api/orders/nope/pay", follow_redirects=False).status_code == 404
