@@ -245,10 +245,11 @@ def test_sample_mode_hides_the_address_and_parcel(client):
 
 def test_home_is_public(public_client):
     page = public_client.get("/").text
-    assert "Electrical Permit Packets in Minutes, Not Weeks" in page
-    assert "Start Free Preview" in page
+    assert "Electrical Permit Packets." in page
+    assert "Start Free Preview" in page and "Done in Minutes." in page
+    assert page.count("/assets/samples/") >= 5
     assert "Sign in" not in page and 'content="noindex' not in page
-    for anchor in ("How It Works", "What's Included", "Pricing", "FAQ"):
+    for anchor in ("How It Works", "Sample Packet", "What's Included", "Pricing", "FAQ"):
         assert anchor in page
 
 

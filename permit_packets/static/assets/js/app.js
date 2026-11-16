@@ -103,6 +103,7 @@
       tool = firstTool();
       if (property) drawPlan();
     }
+    $$('.jt-pill').forEach((pill) => pill.setAttribute('aria-checked', String(pill.dataset.type === key)));
     $$('.type-card').forEach((card) => {
       const selected = card.dataset.type === key;
       card.setAttribute('aria-checked', String(selected));
@@ -618,6 +619,61 @@
       button.disabled = false;
       button.textContent = 'Continue to Payment';
     }
+  });
+
+  /* ---- Landing page: quick start card, sample viewer, start links ---- */
+  const goToWorkspace = () => $('#workspace').scrollIntoView({ behavior: TICK_MS ? 'smooth' : 'auto', block: 'start' });
+
+  $$('.jt-pill').forEach((pill) => pill.addEventListener('click', async () => {
+    await ready;
+    chooseType(pill.dataset.type);
+  }));
+  $('#hero-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    await ready;
+    if (!current) return;
+    $('#address').value = $('#hero-address').value.trim();
+    show(1, false);
+    goToWorkspace();
+    $('#find').requestSubmit();
+  });
+  $('#hero-sample').addEventListener('click', async () => {
+    await ready;
+    if (!current) return;
+    goToWorkspace();
+    $('#use-sample').click();
+  });
+  document.addEventListener('click', (event) => {
+    const start = event.target.closest('[data-start]');
+    if (!start) return;
+    event.preventDefault();
+    $('#hero-card').scrollIntoView({ behavior: TICK_MS ? 'smooth' : 'auto', block: 'center' });
+    setTimeout(() => $('#hero-address').focus({ preventScroll: true }), TICK_MS ? 450 : 0);
+  });
+
+  const sampleTabs = $$('.doc-tab');
+  function showSample(tab) {
+    sampleTabs.forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
+    const image = $('#sample-img');
+    image.src = `/assets/samples/${tab.dataset.sample}.png`;
+    image.alt = `Sample packet sheet: ${tab.dataset.label}`;
+  }
+  sampleTabs.forEach((tab) => tab.addEventListener('click', () => showSample(tab)));
+  $('.doc-tabs').addEventListener('keydown', (event) => {
+    const index = sampleTabs.indexOf(document.activeElement);
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+    if (index < 0 || !step) return;
+    event.preventDefault();
+    const next = sampleTabs[(index + step + sampleTabs.length) % sampleTabs.length];
+    showSample(next);
+    next.focus();
+  });
+  $('#sample-open').addEventListener('click', () => {
+    const image = $('#lightbox-img');
+    image.src = $('#sample-img').src;
+    image.alt = $('#sample-img').alt;
+    lightbox.hidden = false;
+    $('#lightbox-close').focus();
   });
 
   /* ---- Start ---- */

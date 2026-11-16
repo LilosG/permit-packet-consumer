@@ -3,67 +3,157 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Electrical Permit Packets in Minutes | Permit Packets</title>
-<meta name="description" content="Generate an NEC-calculated site plan, single-line diagram, panel schedule, load calculation and spec sheets for a residential electrical permit. Free watermarked preview, no account needed.">
-<meta property="og:title" content="Electrical Permit Packets in Minutes, Not Weeks">
-<meta property="og:description" content="Enter your address and get a city-ready residential electrical permit packet. Free preview first.">
+<title>Electrical Permit Packets. Done in Minutes. | Permit Packets</title>
+<meta name="description" content="Generate a parcel site plan, single-line diagram, panel schedule, NEC load calculation and UL cut sheets for a residential electrical permit from one address. Free watermarked preview.">
+<meta property="og:title" content="Electrical Permit Packets. Done in Minutes.">
+<meta property="og:description" content="Enter your address and preview a complete residential electrical permit packet free.">
 <meta property="og:type" content="website">
+<meta property="og:image" content="/assets/samples/02-site-plan.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="/assets/css/app.css?v={{ASSET_VERSION}}">
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.5 3 8.2 7 10 4-1.8 7-5.5 7-10V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"/></symbol>
+<symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6-5.2 6-10a6 6 0 0 0-12 0c0 4.8 6 10 6 10z"/><circle cx="12" cy="11" r="2.2"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="i-route" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></symbol>
+<symbol id="i-diagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="6" height="5" rx="1"/><rect x="15" y="4" width="6" height="5" rx="1"/><rect x="9" y="15" width="6" height="5" rx="1"/><path d="M6 9v3h12V9M12 12v3"/></symbol>
+<symbol id="i-panel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/></symbol>
+<symbol id="i-calc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></symbol>
+<symbol id="i-thermo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M12 9v7"/></symbol>
+<symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/><circle cx="12" cy="16" r="1"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h5M9.5 16h5"/></symbol>
+<symbol id="i-zip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 4v10M10 8h2M12 10h2M10 12h2"/><rect x="10" y="14" width="4" height="4" rx="1"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 9 5-9 5-9-5z"/><path d="m3 14 9 5 9-5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</defs></svg>
 <header class="site-header"><div class="bar">
-  <a class="brand" href="/" id="brand">Permit Packets</a>
-  <nav class="nav" aria-label="Sections"><a href="#how">How It Works</a><a href="#included">What's Included</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></nav>
+  <a class="brand" href="/" id="brand"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a>
+  <nav class="nav" aria-label="Sections"><a href="#how">How It Works</a><a href="#sample">Sample Packet</a><a href="#included">What's Included</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></nav>
+  <a class="pill-cta" href="#hero-card" data-start>Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
 </div></header>
 
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-copy">
-      <p class="eyebrow">Residential electrical permits</p>
-      <h1>Electrical Permit Packets in Minutes, Not Weeks</h1>
-      <p class="hero-sub">Don't pay a drafter $350 and wait a week—and don't risk rejection with a lot-map-only site plan. Enter your address to generate an NEC-calculated site plan, single-line diagram, panel schedule, load calc, and UL spec sheets.</p>
-      <p class="hero-cta"><a class="button cta" href="#start" id="hero-cta">Start Free Preview</a><span class="hero-note">No account. See the watermarked packet before you pay.</span></p>
-    </div>
-    <aside class="card included" id="included" aria-labelledby="included-title">
-      <h2 id="included-title">Every packet includes 5 sheets</h2>
-      <ol class="sheets-list">
-        <li><b>Cover &amp; Code Notes</b><span>City checklist and the NEC articles that apply</span></li>
-        <li><b>GIS Parcel Site Plan</b><span>Your lot, your house and the measured wire run</span></li>
-        <li><b>Single-Line Diagram &amp; Panel Schedule</b><span>Service, breaker, wire and every circuit</span></li>
-        <li><b>NEC 220 Load Calculation</b><span>Pass/fail against your service size</span></li>
-        <li><b>Manufacturer UL Cut Sheets</b><span>Spec sheets for the equipment you picked</span></li>
-      </ol>
-      <div class="compare-wrap"><table class="compare">
-        <thead><tr><th scope="col"></th><th scope="col" class="us">Permit Packets<small>$39–$169</small></th><th scope="col">Site-plan-only sites<small>$39</small></th><th scope="col">CAD drafter<small>~$350</small></th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Parcel site plan</th><td class="us yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-          <tr><th scope="row">Single-line &amp; panel schedule</th><td class="us yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
-          <tr><th scope="row">NEC 220 load calc</th><td class="us yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
-          <tr><th scope="row">UL spec sheets</th><td class="us yes">✓</td><td class="no">—</td><td class="no">Extra</td></tr>
-          <tr><th scope="row">Turnaround</th><td class="us"><b>Minutes</b></td><td>Minutes</td><td>~1 week</td></tr>
-        </tbody>
-      </table></div>
-    </aside>
+<section class="hero"><div class="hero-inner">
+  <div class="hero-copy">
+    <p class="eyebrow-pill">Residential electrical permits <i>•</i> NEC 2020 / 2023</p>
+    <h1>Electrical Permit Packets. <span class="accent">Done in Minutes.</span></h1>
+    <p class="trust-row"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Built on NEC Article 220</span><i>•</i><span>All 50 States Covered</span></p>
+    <p class="hero-sub">Stop paying CAD drafters $350 and waiting a week—and don't risk plan-check rejection with a site-plan-only lot map. Generate your parcel site plan, single-line diagram, panel schedule, load calc, and UL cut sheets from one address.</p>
+    <div class="guarantee"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Free Watermarked Preview Guarantee</b><span>Inspect every sheet of your exact packet before you pay a cent.</span></div></div>
+    <ul class="trust-items"><li><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg>Guided 2-minute form</li><li><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg>Real GIS parcel data</li><li><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>24-hr city-check option</li></ul>
   </div>
-</section>
-
-<section class="band" id="how"><div class="wrap">
-  <h2 class="band-title">How it works</h2>
-  <ol class="how-steps">
-    <li><span class="num">1</span><b>Enter your address</b><span>Pick the job, drop the panel and equipment pins on the aerial map, and answer a few questions.</span></li>
-    <li><span class="num">2</span><b>Preview it free</b><span>See the live NEC 220 check and every sheet of your packet, watermarked.</span></li>
-    <li><span class="num">3</span><b>Pay and download</b><span>Unlock the clean PDF and individual files, plus the copy-paste fields for your city's portal.</span></li>
-  </ol>
+  <div class="action-card" id="hero-card">
+    <h2>Start Your Permit Packet</h2>
+    <p class="action-sub">Enter any US property address to preview free • Starting at $39</p>
+    <div class="jt-pills" role="radiogroup" aria-label="Job type">
+      <button type="button" class="jt-pill" role="radio" aria-checked="true" data-type="ev_charger">EV Charger</button>
+      <button type="button" class="jt-pill" role="radio" aria-checked="false" data-type="service_upgrade">200A Upgrade</button>
+      <button type="button" class="jt-pill" role="radio" aria-checked="false" data-type="subpanel">Subpanel</button>
+      <button type="button" class="jt-pill" role="radio" aria-checked="false" data-type="appliance_circuit">Hot Tub / 240V</button>
+    </div>
+    <form id="hero-form" class="hero-form">
+      <label class="sr" for="hero-address">Property address</label>
+      <input id="hero-address" type="text" maxlength="200" placeholder="123 Main St, City, ST" autocomplete="street-address" required>
+      <button type="submit" class="btn-primary full">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    </form>
+    <p class="action-alt"><button type="button" class="link" id="hero-sample">Try with a sample address</button></p>
+    <ul class="check-grid"><li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>GIS parcel + aerial site plan</li><li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Single-line riser diagram</li><li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>NEC 220 load calculation</li><li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Manufacturer UL spec sheets</li></ul>
+  </div>
 </div></section>
 
-<main class="wrap wizard-wrap" id="start">
+<section class="metrics"><div class="wrap">
+  <h2 class="band-title small">The numbers speak for themselves</h2>
+  <div class="metric-grid">
+    <div class="metric"><b>&lt; 5 Min</b><span>Average time to generate a full packet</span><i></i></div>
+    <div class="metric"><b>75%+</b><span>Average savings vs. hiring a CAD drafter</span><i></i></div>
+    <div class="metric"><b>50 States</b><span>Parcel lookup &amp; NEC 220 calculation coverage</span><i></i></div>
+  </div>
+</div></section>
+
+<section class="band" id="sample"><div class="wrap">
+  <p class="kicker">Sample packet</p>
+  <h2 class="band-title">Here's what a finished packet looks like</h2>
+  <p class="band-sub">A real packet generated by the tool: a 48 A charger on a 200 A panel. Click a sheet to look closer.</p>
+  <div class="viewer">
+    <div class="viewer-chrome"><i></i><i></i><i></i><span>EV-Charger-Permit-Packet.pdf</span></div>
+    <button type="button" class="viewer-stage" id="sample-open" aria-label="Zoom the sample sheet"><img id="sample-img" src="/assets/samples/01-cover.png" alt="Sample packet sheet: Cover &amp; Code Notes" width="1500" height="1942"></button>
+    <div class="doc-tabs" role="tablist" aria-label="Sample packet sheets"><button type="button" role="tab" class="doc-tab" aria-selected="true" data-sample="01-cover" data-label="Cover & Code Notes"><img src="/assets/samples/01-cover.png" alt="" width="1500" height="1942" loading="lazy"><span><b>01</b> Cover & Code Notes</span></button><button type="button" role="tab" class="doc-tab" aria-selected="false" data-sample="02-site-plan" data-label="Parcel Site Plan"><img src="/assets/samples/02-site-plan.png" alt="" width="1500" height="1942" loading="lazy"><span><b>02</b> Parcel Site Plan</span></button><button type="button" role="tab" class="doc-tab" aria-selected="false" data-sample="03-single-line" data-label="Single-Line Diagram"><img src="/assets/samples/03-single-line.png" alt="" width="1500" height="1942" loading="lazy"><span><b>03</b> Single-Line Diagram</span></button><button type="button" role="tab" class="doc-tab" aria-selected="false" data-sample="04-load-calc" data-label="Load Calc & Panel"><img src="/assets/samples/04-load-calc.png" alt="" width="1500" height="1942" loading="lazy"><span><b>04</b> Load Calc & Panel</span></button><button type="button" role="tab" class="doc-tab" aria-selected="false" data-sample="05-spec-sheet" data-label="UL Spec Sheet"><img src="/assets/samples/05-spec-sheet.png" alt="" width="1500" height="1942" loading="lazy"><span><b>05</b> UL Spec Sheet</span></button></div>
+  </div>
+  <p class="center"><a class="btn-primary" href="#hero-card" data-start>Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+</div></section>
+
+<section class="band alt" id="included"><div class="wrap">
+  <div class="split">
+    <div class="split-copy"><p class="kicker">Site plans</p><h2>Nationwide Parcel Data, Backed by Automation</h2><p>Type an address and the site plan builds itself from public parcel and imagery data. You just tap where the panel and equipment go.</p></div>
+    <div class="feature-card"><ul>
+      <li><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg></span>High-resolution aerial imagery</li>
+      <li><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span>GIS parcel boundaries &amp; APN</li>
+      <li><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-panel"/></svg></span>Building footprints</li>
+      <li><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-route"/></svg></span>Auto-measured wire &amp; trench run</li>
+    </ul></div>
+  </div>
+  <div class="split reverse">
+    <div class="split-copy"><p class="kicker">Calculations</p><h2>No CAD Canvas or Drawing Experience Required</h2><p>Answer a few plain questions. The sizing, the diagram and the load math are done for you, and the paperwork is bundled together.</p></div>
+    <div class="feature-card"><ul>
+      <li><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></span>Unlike site-plan tools where you manually draw for an hour</li>
+      <li><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-bolt"/></svg></span>Auto-calculates breaker, wire gauge &amp; conduit size</li>
+      <li><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-calc"/></svg></span>NEC Article 220 load math built in</li>
+      <li><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span>Pre-bundles official UL data sheets</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2 class="band-title">Everything you need. Nothing you don't.</h2>
+  <p class="band-sub">Every packet includes the sheets city plan reviewers ask for.</p>
+  <div class="bento">
+<article class="bento-card"><span class="tag">⚡ Instant</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><h3>GIS Aerial + Parcel Boundaries</h3><p>Real aerial imagery with your lot lines and parcel number, pulled from the address.</p></article>
+<article class="bento-card"><span class="tag">⚡ Instant</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-route"/></svg></span><h3>Measured Wire & Trench Route</h3><p>Tap the panel and equipment. The run, the trench and the rises are measured for you.</p></article>
+<article class="bento-card"><span class="tag">✓ Included</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-diagram"/></svg></span><h3>Single-Line Riser Diagram</h3><p>Service, disconnect, breaker, wire and conduit drawn out and labeled.</p></article>
+<article class="bento-card"><span class="tag">✓ Included</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-panel"/></svg></span><h3>Automated Panel Schedule</h3><p>A circuit directory with the new work marked, ready to fill in on site.</p></article>
+<article class="bento-card"><span class="tag">✓ NEC 220</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-calc"/></svg></span><h3>NEC Article 220 Load Calc</h3><p>The optional dwelling method run against your service, with a pass or fail.</p></article>
+<article class="bento-card"><span class="tag">✓ NEC 220</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-thermo"/></svg></span><h3>Ambient Heat Derating</h3><p>Conductor ampacity corrected for hot attics, rooftops and sunny walls.</p></article>
+<article class="bento-card"><span class="tag">✓ NEC 220</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg></span><h3>Fault Current & AIC Check</h3><p>Available fault current compared to your equipment rating before you submit.</p></article>
+<article class="bento-card"><span class="tag">✓ Included</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><h3>Bundled UL Cut Sheets</h3><p>Manufacturer data sheets for the equipment you pick, attached in the packet.</p></article>
+<article class="bento-card"><span class="tag">✓ Included</span><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-zip"/></svg></span><h3>Combined PDF or Split-File ZIP</h3><p>One PDF, or each sheet as its own file for portals that want separate uploads.</p></article>
+  </div>
+</div></section>
+
+<section class="band alt" id="compare"><div class="wrap">
+  <h2 class="band-title">You need a permit packet. Here's how most people get one.</h2>
+  <div class="cmp-grid">
+    <article class="cmp"><h3>CAD Drafters &amp; Engineers</h3>
+      <dl><div><dt>Price</dt><dd>$300 – $500+</dd></div><div><dt>Turnaround</dt><dd>3–7 business days</dd></div><div><dt>Best for</dt><dd>Complex or commercial jobs that need a stamped drawing</dd></div></dl>
+      <h4>Pros</h4><ul class="pros"><li>Custom drawings</li><li>Can provide engineer stamps</li></ul>
+      <h4>Limitations</h4><ul class="cons"><li>Slow and expensive for a routine residential job</li><li>Back-and-forth by email</li></ul></article>
+    <article class="cmp"><h3>Site-Plan-Only Websites</h3>
+      <dl><div><dt>Price</dt><dd>$39+</dd></div><div><dt>Turnaround</dt><dd>Minutes</dd></div><div><dt>Best for</dt><dd>Jobs where the city only asks for a lot map</dd></div></dl>
+      <h4>Pros</h4><ul class="pros"><li>Cheap and quick</li><li>Simple to use</li></ul>
+      <h4>Limitations</h4><ul class="cons"><li>Lot map only — missing electrical diagrams &amp; load calc</li><li>You still need to produce the rest</li></ul></article>
+    <article class="cmp featured"><span class="cmp-flag">Our pick</span><div class="cmp-head"><h3>Permit Packets</h3></div>
+      <dl><div><dt>Price</dt><dd>$39 – $169</dd></div><div><dt>Turnaround</dt><dd>Minutes</dd></div><div><dt>Best for</dt><dd>Residential EV chargers, service upgrades, subpanels and 240 V circuits</dd></div></dl>
+      <h4>Pros</h4><ul class="pros"><li>Complete packet from one address</li><li>NEC 220 math and UL sheets included</li><li>Free watermarked preview</li></ul>
+      <h4>Limitations</h4><ul class="cons"><li>Not PE-stamped</li><li>You submit to the city yourself</li></ul>
+      <a class="btn-primary full" href="#hero-card" data-start>Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
+  </div>
+</div></section>
+
+<section class="band workspace-band" id="workspace"><div class="wrap">
+  <p class="kicker">Your packet studio</p>
+  <h2 class="band-title">Build your packet</h2>
+  <p class="band-sub">Four quick steps. You only pay once you've seen the finished preview.</p>
+  <div class="studio" id="start">
   <ol class="steps" id="steps" aria-label="Progress">
-    <li data-step="1">Project &amp; property</li>
-    <li data-step="2">Details</li>
-    <li data-step="3">Free preview</li>
-    <li data-step="4">Package &amp; pay</li>
+    <li data-step="1">Property &amp; Map</li>
+    <li data-step="2">Project Details</li>
+    <li data-step="3">Free Preview</li>
+    <li data-step="4">Unlock &amp; Download</li>
   </ol>
 
   <section class="sheet" data-panel="1">
@@ -107,7 +197,7 @@
   </section>
 
   <form id="job" class="sheet" data-panel="2" hidden>
-    <h1>Project &amp; home details</h1>
+    <h2 class="step-title">Project &amp; home details</h2>
     <p class="lead" id="job-lead"></p>
 
     <div class="block who">
@@ -499,19 +589,29 @@
       <p class="note">After you pay on Wave, paste your order code (shown on the next page) in the payment note so we can match it and unlock your files.</p>
     </section>
   </div>
-</main>
+  </div>
+</div></section>
 
 <section class="band" id="pricing"><div class="wrap">
   <h2 class="band-title">Simple pricing</h2>
   <p class="band-sub">Preview everything free. Pay only when you're ready to download.</p>
   <div class="price-grid">
-    <article class="card price"><h3>Load Calc &amp; Panel Audit</h3><p class="amount">$39</p><p>NEC 220 load calculation and a panel capacity audit.</p><a class="button quiet" href="#start" data-plan="load_calc">Start free preview</a></article>
-    <article class="card price popular"><i class="badge">Most popular</i><h3>Instant Permit Packet</h3><p class="amount">$89</p><p>The complete clean packet and individual files, ready within the hour.</p><a class="button" href="#start" data-plan="instant_packet">Start free preview</a></article>
-    <article class="card price"><h3>24-Hour City-Checked Packet</h3><p class="amount">$169</p><p>The complete packet, checked against your city's published requirements within 24 hours.</p><a class="button quiet" href="#start" data-plan="city_checked_24h">Start free preview</a></article>
+    <article class="card price"><h3>Load Calc &amp; Panel Audit</h3><p class="amount">$39</p><p>NEC 220 load calculation and a panel capacity audit.</p><a class="btn-secondary full" href="#hero-card" data-start data-plan="load_calc">Start free preview</a></article>
+    <article class="card price popular"><i class="badge">Most popular</i><h3>Instant Permit Packet</h3><p class="amount">$89</p><p>The complete clean packet and individual files, ready within the hour.</p><a class="btn-primary full" href="#hero-card" data-start data-plan="instant_packet">Start free preview</a></article>
+    <article class="card price"><h3>24-Hour City-Checked Packet</h3><p class="amount">$169</p><p>The complete packet, checked against your city's published requirements within 24 hours.</p><a class="btn-secondary full" href="#hero-card" data-start data-plan="city_checked_24h">Start free preview</a></article>
   </div>
 </div></section>
 
-<section class="band alt" id="faq"><div class="wrap narrow">
+<section class="band alt" id="how"><div class="wrap">
+  <h2 class="band-title">How it works</h2>
+  <ol class="how-steps">
+    <li><span class="num">1</span><b>Enter your address</b><span>Pick the job, drop the panel and equipment pins on the aerial map, and answer a few questions.</span></li>
+    <li><span class="num">2</span><b>Preview it free</b><span>See the live NEC 220 check and every sheet of your packet, watermarked.</span></li>
+    <li><span class="num">3</span><b>Pay and download</b><span>Unlock the clean PDF and individual files, plus the copy-paste fields for your city's portal.</span></li>
+  </ol>
+</div></section>
+
+<section class="band" id="faq"><div class="wrap narrow">
   <h2 class="band-title">Questions</h2>
   <details class="faq"><summary>Is this stamped by an engineer?</summary><p>No. It's an automated drafting and NEC calculation tool, not a PE-stamped document. Some cities or jobs need a stamp or a licensed electrician's review; check with your building department.</p></details>
   <details class="faq"><summary>Who submits it to the city?</summary><p>You do. After you pay, your order page gives you the clean PDF, the individual files, the city's submission steps and copy-paste fields for the portal.</p></details>
@@ -522,6 +622,7 @@
 </div></section>
 
 <footer class="site-footer"><div class="wrap">
+  <a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a>
   <p><b>Permit Packets</b> is an automated drafting &amp; NEC calculation tool. Documents are not PE-stamped and are not legal or engineering advice. Applicants are responsible for confirming their city's requirements and for submitting their own application through the city's portal.</p>
 </div></footer>
 
