@@ -117,13 +117,43 @@
       dropdown.querySelector('.dd-toggle').setAttribute('aria-expanded', 'false');
     });
   }
+  const hoverable = window.matchMedia('(hover: hover)');
   dropdowns.forEach((dropdown) => {
     const toggle = dropdown.querySelector('.dd-toggle');
-    toggle.addEventListener('click', () => {
-      const open = !dropdown.classList.contains('open');
-      closeDropdowns();
+    let timer = 0;
+    const setOpen = (open) => {
       dropdown.classList.toggle('open', open);
       toggle.setAttribute('aria-expanded', String(open));
+    };
+    const cancel = () => { clearTimeout(timer); timer = 0; };
+    toggle.addEventListener('click', () => {
+      const open = !dropdown.classList.contains('open');
+      cancel();
+      closeDropdowns();
+      setOpen(open);
+    });
+    dropdown.addEventListener('mouseenter', () => {
+      if (!hoverable.matches) return;
+      cancel();
+      closeDropdowns();
+      setOpen(true);
+    });
+    dropdown.addEventListener('mouseleave', () => {
+      if (!hoverable.matches) return;
+      cancel();
+      timer = setTimeout(() => setOpen(false), 150);
+    });
+    dropdown.addEventListener('focusin', () => {
+      if (hoverable.matches && toggle.matches(':focus-visible')) { cancel(); setOpen(true); }
+    });
+    dropdown.addEventListener('focusout', (event) => {
+      if (hoverable.matches && !dropdown.contains(event.relatedTarget)) setOpen(false);
+    });
+    dropdown.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      cancel();
+      setOpen(false);
+      toggle.focus();
     });
   });
   document.addEventListener('click', (event) => { if (!event.target.closest('.dd')) closeDropdowns(); });

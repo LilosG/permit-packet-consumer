@@ -120,7 +120,7 @@ def test_no_links_to_noindex_pages(client):
                    "/for/electricians/", "/for/diy-homeowners/", "/permits/", "/"]
     for path in pages:
         for href in internal_hrefs(client.get(path).text):
-            assert href in allowed or href.startswith("/assets/"), (path, href)
+            assert href in allowed or href.startswith(("/assets/", "/permits/")), (path, href)  # navigation links every hub
 
 
 def test_header_footer_and_contextual_links(client):

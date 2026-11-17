@@ -8,9 +8,8 @@ from fastapi.testclient import TestClient
 import app as app_module
 from permit_packets import seo
 
-PLACEHOLDERS = [  # gated: a city or job that has not passed locations.py
-    "/permits/az/", "/permits/az/chandler/", "/permits/az/chandler/ev-charger/", "/permits/ca/el-cajon/",
-    "/permits/ca/el-cajon/ev-charger/", "/permits/wa/bellevue/hot-tub-240v/",
+PLACEHOLDERS = [  # gated city x job pages (hubs render in full, noindex)
+    "/permits/az/chandler/ev-charger/", "/permits/ca/el-cajon/ev-charger/", "/permits/wa/bellevue/hot-tub-240v/",
 ]
 
 

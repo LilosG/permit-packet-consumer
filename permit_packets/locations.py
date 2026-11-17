@@ -68,12 +68,18 @@ def job_path(city: Jurisdiction, job_slug: str) -> str:
 
 
 def popular_cities(limit: int = 8) -> list[tuple[str, str]]:
-    return [(city.label, sitedata.city_path(city)) for city in indexable_cities()[:limit]]
+    """Every known city hub, for navigation. Indexing is gated separately (sitemap, robots)."""
+    return [(city.label, sitedata.city_path(city)) for city in sitedata.known_cities()[:limit]]
+
+
+def state_links() -> list[tuple[str, str]]:
+    return [(sitedata.STATE_NAMES.get(st, st.upper()), f"/permits/{st}/") for st in sitedata.cities_by_state()]
 
 
 def city_job_links(job_slug: str) -> list[tuple[str, str]]:
-    """(label, url) for every city whose page for this job is indexable."""
-    return [(city.label, job_path(city, job_slug)) for city in sitedata.known_cities() if job_indexable(city, job_slug)]
+    """(label, url) for every city: its job page when that is indexable, else its city hub."""
+    return [(city.label, job_path(city, job_slug) if job_indexable(city, job_slug) else sitedata.city_path(city))
+            for city in sitedata.known_cities()]
 
 
 def location_paths() -> list[tuple[str, str]]:

@@ -179,17 +179,15 @@ def test_no_indexable_page_links_to_a_noindex_page(client):
                 continue
             entry = seo.PAGES.get(target)
             if target.startswith("/permits/"):
-                assert locations.path_indexable(target), f"{path} links to the gated page {link}"
-                continue
+                continue  # navigation links every city and state hub; indexing is gated separately
             assert entry is None or entry.indexable, f"{path} links to the noindex page {link}"
             if entry is None:
                 assert client.get(target).status_code == 200, f"{path} links to {link}"
 
 
-def test_permits_link_follows_the_gate(client, monkeypatch):
-    assert "/permits/" in hrefs(client.get("/for/diy-homeowners/").text)
+def test_permits_link_is_always_present(client, monkeypatch):
     monkeypatch.setattr(locations, "permits_indexable", lambda: False)
-    assert "/permits/" not in hrefs(client.get("/for/diy-homeowners/").text)
+    assert "/permits/" in hrefs(client.get("/for/diy-homeowners/").text)
 
 
 def test_location_pages_stay_out_of_the_pages_sitemap(client):

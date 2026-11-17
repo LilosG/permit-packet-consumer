@@ -96,30 +96,40 @@ def test_sitemap_locations_lastmod_is_rules_date(client):
 
 # ---- no unverified city in any link ----
 
-def test_no_link_anywhere_points_to_a_gated_location_page(client):
-    pages = ["/", "/pricing/", "/faq/", "/about/", "/sample-packet/", "/for/diy-homeowners/"]
-    pages += [job.url for job in sitedata.JOBS.values()] + [path for path, _ in locations.location_paths()]
-    for path in pages:
-        for link in hrefs(client.get(path).text):
-            target = link.split("#")[0].split("?")[0]
-            if target.startswith("/permits/"):
-                assert locations.path_indexable(target), f"{path} links to the gated {link}"
+ALL_CITY_HUBS = {"/permits/wa/bellevue/", "/permits/az/chandler/", "/permits/nc/charlotte/", "/permits/ca/el-cajon/",
+                 "/permits/az/mesa/", "/permits/tn/nashville/", "/permits/az/oro-valley/", "/permits/ca/san-francisco/"}
 
 
-def test_job_hubs_link_cities_only_when_indexable(client):
+def test_job_hubs_link_every_city_hub(client):
     html = client.get("/ev-charger-permit/").text
     assert 'href="/permits/wa/bellevue/ev-charger/"' in html and 'href="/permits/ca/san-francisco/ev-charger/"' in html
-    assert "/permits/az/mesa/" not in html
+    assert 'href="/permits/az/mesa/"' in html
     hot_tub = client.get("/hot-tub-240v-permit/").text
     main = hot_tub[hot_tub.index("<main"):hot_tub.index("</main>")]
-    assert not [h for h in hrefs(main) if h.startswith("/permits/")]
+    assert ALL_CITY_HUBS <= {h for h in hrefs(main) if h.startswith("/permits/")}
 
 
-def test_nav_and_footer_cities_are_the_indexable_ones(client):
+def test_nav_and_footer_link_all_cities_and_states(client):
     html = client.get("/pricing/").text
     assert ">All cities<" in html
     footer = html[html.index("<footer"):]
-    assert {h for h in hrefs(footer) if h.startswith("/permits/")} == {"/permits/wa/bellevue/", "/permits/ca/san-francisco/"}
+    links = {h for h in hrefs(footer) if h.startswith("/permits/")}
+    assert ALL_CITY_HUBS <= links and {"/permits/az/", "/permits/ca/", "/permits/nc/", "/permits/tn/", "/permits/wa/"} <= links
+
+
+@pytest.mark.parametrize("path", ["/permits/", "/permits/az/", "/permits/az/mesa/", "/permits/nc/charlotte/"])
+def test_noindex_hubs_render_clean(client, path):
+    html = client.get(path).text
+    assert "Coming soon" not in html
+    main = html[html.index("<main"):html.index("</main>")]
+    assert "<td></td>" not in main and "Who may pull it" not in main
+
+
+def test_city_hub_has_one_who_section_and_start_links(client):
+    html = client.get("/permits/ca/san-francisco/").text
+    assert html.count("Who may pull the permit") == 1 and "Code edition" in html
+    mesa = client.get("/permits/az/mesa/").text
+    assert "Who may pull the permit" not in mesa and "/start/?job=" in mesa and "city=mesa" in mesa
 
 
 # ---- the pages themselves ----
