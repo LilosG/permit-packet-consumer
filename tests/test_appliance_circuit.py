@@ -470,7 +470,7 @@ def test_the_job_types_list_has_the_four_types_in_order(client):
 
 
 def test_the_signed_in_page_loads_the_script_with_a_version(client):
-    page = client.get("/").text
+    page = client.get("/start/").text
     assert re.search(r'src="/assets/js/job-types/appliance-circuit\.js\?v=[0-9a-f]{10}"', page)
     assert page.index("appliance-circuit.js") < page.index("/assets/js/app.js")
     assert 'data-job-type="appliance_circuit"' in page
@@ -478,7 +478,7 @@ def test_the_signed_in_page_loads_the_script_with_a_version(client):
 
 
 def test_the_form_uses_ac_names_that_cannot_clash_with_other_types(client):
-    page = client.get("/").text
+    page = client.get("/start/").text
     block = page[page.index('data-job-type="appliance_circuit"'):page.index('data-uses="home_loads"')]
     names = set(re.findall(r'name="([^"]+)"', block))
     assert names and all(name.startswith("ac_") for name in names)

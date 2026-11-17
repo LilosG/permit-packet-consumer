@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="/assets/css/app.css?v={{ASSET_VERSION}}">
+{{GA}}
 </head>
 <body>
 <header class="site-header"><div class="bar"><a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a><span></span><a class="pill-cta" href="/">New packet</a></div></header>
@@ -47,6 +48,7 @@
       <div class="actions">
         <a class="button cta" id="pdf">Download PDF</a>
         <a class="button quiet" id="zip" hidden>Download ZIP (individual files)</a>
+        <a class="button quiet" id="send-electrician" hidden>Send to your electrician</a>
       </div>
       <ul class="file-list" id="files" hidden></ul>
       <p class="note" id="one-pdf" hidden>This city takes one combined PDF, so upload the PDF as a single file.</p>
@@ -73,11 +75,24 @@
   </section>
 </main>
 {{FOOTER}}
+<script src="/assets/js/site.js?v={{ASSET_VERSION}}"></script>
 <script>
 (() => {
   const token = location.pathname.split('/').filter(Boolean).pop();
   const $ = (id) => document.getElementById(id);
   let fieldsText = '';
+
+  /* GA4 purchase: sent the first time this browser sees the order paid or in review. GA4 also dedupes by transaction_id. */
+  function trackPurchase(order) {
+    const key = `pp_purchase_${token}`;
+    try { if (localStorage.getItem(key)) return; } catch { /* storage blocked: send anyway */ }
+    if (window.PP && window.PP.track('purchase', {
+      transaction_id: token, value: order.price, currency: 'USD',
+      job: order.job, city: order.city, role: order.role, tier: order.price,
+    })) {
+      try { localStorage.setItem(key, '1'); } catch { /* ignore */ }
+    }
+  }
 
   async function copyText(text, button) {
     await navigator.clipboard.writeText(text).catch(() => {});
@@ -98,6 +113,7 @@
     $('error').hidden = true;
     const order = await response.json();
     $('address').textContent = order.address;
+    if (order.paid || order.in_review) trackPurchase(order);
     $('review').hidden = !order.in_review;
     if (order.in_review) {
       $('pending').hidden = true; $('paid').hidden = true;
@@ -115,6 +131,11 @@
     }
     $('pending').hidden = true; $('paid').hidden = false;
     $('paid-code').textContent = order.order_code;
+    // Opens the buyer's mail client: the order link, ready to send to the electrician.
+    const subject = `Permit packet for ${order.address}`;
+    const body = `Here is the permit packet for ${order.address}:\n${location.href}`;
+    $('send-electrician').href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    $('send-electrician').hidden = false;
     const sheetsOnly = Array.isArray(order.files);  // the $39 package: its two sheets, no city submission pages
     document.querySelectorAll('[data-packet-only]').forEach((panel) => { panel.hidden = sheetsOnly; });
     $('files').hidden = !sheetsOnly;

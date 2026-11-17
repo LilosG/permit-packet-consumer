@@ -69,7 +69,7 @@ def test_every_job_type_form_sends_both_fields(name):
     assert "electricalFields(data)" in script
     shared = (STATIC / "assets" / "js" / "job-types" / "electrical.js").read_text()
     assert "available_fault_current_a" in shared and "equipment_aic_ka" in shared
-    html = (STATIC / "index.html").read_text()
+    html = (STATIC.parent / "templates" / "start.html").read_text()
     assert 'name="available_fault_current_a"' in html and 'name="equipment_aic_ka"' in html
     assert html.count("From the utility's fault current letter or published table") == 2
     assert "job-types/electrical.js" in html

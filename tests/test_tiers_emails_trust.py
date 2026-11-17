@@ -246,16 +246,16 @@ def test_find_order_is_limited_to_three_per_email_per_hour(client, outbox):
 def test_every_public_page_has_the_footer(client, path):
     response = client.get(path)
     assert response.status_code == 200 and "text/html" in response.headers["content-type"]
-    for needle in ('href="https://lilosgrowth.com">Lilos Growth</a>', 'href="mailto:hello@lilosgrowth.com"', 'href="/terms"',
-                   'href="/privacy"', 'href="/refund"', 'href="/find-order"', "© 2026", "not PE-stamped"):
+    for needle in ('href="https://lilosgrowth.com">Lilos Growth</a>', 'href="mailto:hello@lilosgrowth.com"', 'href="/terms/"',
+                   'href="/privacy/"', 'href="/refund/"', 'href="/find-order/"', "© 2026", "not PE-stamped"):
         assert needle in response.text, needle
 
 
 def test_order_admin_and_404_pages_have_the_footer(client):
     order = place_order(client)
     for response in (client.get(order["order_url"]), client.get("/admin", auth=ADMIN), client.get("/nope")):
-        assert 'href="/find-order"' in response.text and "© 2026" in response.text
-    assert client.get("/nope").status_code == 404 and 'href="/find-order"' in client.get("/nope").text
+        assert 'href="/find-order/"' in response.text and "© 2026" in response.text
+    assert client.get("/nope").status_code == 404 and 'href="/find-order/"' in client.get("/nope").text
 
 
 def test_refund_policy_text_and_sitemap(client):
@@ -264,8 +264,8 @@ def test_refund_policy_text_and_sitemap(client):
         assert "Full refund if you request it before downloading your clean packet." in text
         assert "24-Hour City-Checked orders can be refunded in full any time before they are released." in text
         assert "email hello@lilosgrowth.com with your order link." in text
-    sitemap = client.get("/sitemap.xml").text
-    assert all(f"/{page}</loc>" in sitemap for page in ("terms", "privacy", "refund"))
+    sitemap = client.get("/sitemap-pages.xml").text
+    assert all(f"/{page}/</loc>" in sitemap for page in ("terms", "privacy", "refund"))
 
 
 def test_the_homepage_has_organization_and_faq_json_ld(client):
@@ -281,9 +281,9 @@ def test_the_homepage_has_organization_and_faq_json_ld(client):
 
 
 def test_checkout_wording_on_the_wizard(client):
-    html = client.get("/").text
-    assert 'I understand this is a drafting &amp; calculation document, not a PE stamp, and I agree to the <a href="/terms" target="_blank"' in html
-    assert 'Payments processed securely by Whop · <a href="/refund">Full refund before you download</a>' in html
+    html = client.get("/start/").text
+    assert 'I understand this is a drafting &amp; calculation document, not a PE stamp, and I agree to the <a href="/terms/" target="_blank"' in html
+    assert 'Payments processed securely by Whop · <a href="/refund/">Full refund before you download</a>' in html
     order = place_order(client)
     assert "We've emailed you this link. Lost it?" in client.get(order["order_url"]).text
 

@@ -35,7 +35,7 @@ permit_packets/
     subpanel/                  Subpanel / feeder: calc, pdf, schema, api
     appliance_circuit/         240 V circuit (hot tub, sauna, heat pump, mini-split, other): calc, pdf, schema, api
   static/
-    index.html                 The page shell
+    (pages are Jinja templates in permit_packets/templates; seo.py holds the indexable-page registry)
     assets/css/app.css
     assets/js/app.js           The core flow; knows nothing about any one permit
     assets/js/job-types/       One script per job type
@@ -43,7 +43,7 @@ tests/
   golden/                      Request payloads and the packets they must produce
 ```
 
-Set `last_verified` (an ISO date) on a city only after its checklist and adopted code edition were checked against its official site; the cover sheet prints it, and leaves it off when empty. The homepage sample sheets come from `tools/make_sample.py` (network needed); rerun it, then copy its printed numbers into the two homepage mock cards in `static/index.html`.
+Set `last_verified` (an ISO date) on a city only after its checklist and adopted code edition were checked against its official site; the cover sheet prints it, and leaves it off when empty. The homepage sample sheets come from `tools/make_sample.py` (network needed); rerun it, then copy its printed numbers into the two homepage mock cards in `templates/home.html`.
 
 A city not in `jurisdictions/` gets the general checklist and says so. So does a known city that has no checklist for the job type.
 
@@ -115,7 +115,7 @@ A job type is one `JobType` value plus the code behind it. Use `job_types/ev_cha
 
 3. **Register it** in `job_types/__init__.py`: import its `JOB_TYPE` and add it to `REGISTRY`.
 4. **Add its checklist.** Put one in `GENERAL_CHECKLISTS` in `jurisdictions/general.py`, and add `checklists["<key>"]` to each city that has been set up for it. A city without one falls back to the general checklist and shows as "not known" for that type.
-5. **Build its Details form.** Wrap its fields in `<div data-job-type="<key>">` in `index.html`. Use `class="contents"` on the wrapper when the field sits in a grid. Home loads go inside `data-uses="home_loads"`.
+5. **Build its Details form.** Wrap its fields in `<div data-job-type="<key>">` in `templates/start.html`. Use `class="contents"` on the wrapper when the field sits in a grid. Home loads go inside `data-uses="home_loads"`.
 6. **Write `static/assets/js/job-types/<slug>.js`** and add its `<script>` tag before `app.js`. It calls `window.PermitJobTypes.register(key, module)` with: `init(ctx)`, `jobFields(formData)` for the payload, `planFields(marks)` to turn the marks into `{markers, route}`, and optionally `onProperty()`, `onDetails()` and `onSample()`.
 7. **Enable it** for the clients that bought it in `clients.py`. Nobody sees a type until their client lists it.
 8. **Tests it needs.**

@@ -112,13 +112,14 @@ def test_over_capacity_summary_names_the_overage(client):
     assert body["summary"][1]["value"].endswith(" A")
 
 
-def test_the_page_loads_its_assets_with_a_version(client):
-    response = client.get("/")
+@pytest.mark.parametrize("path, count", [("/", 3), ("/start/", 8)])
+def test_the_page_loads_its_assets_with_a_version(client, path, count):
+    response = client.get(path)
     assert response.status_code == 200
     assert response.headers["cache-control"] == "no-cache"
     assert "{{ASSET_VERSION}}" not in response.text
     versions = re.findall(r'(?:src|href)="/assets/[^"?]+\?v=([0-9a-f]{10})"', response.text)
-    assert len(versions) == 7
+    assert len(versions) == count
     assert len(set(versions)) == 1
     assert versions[0] == app_module.ASSET_VERSION
 

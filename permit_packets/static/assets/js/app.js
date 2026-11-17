@@ -4,9 +4,8 @@
 (() => {
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
-  const esc = (value) => String(value ?? '')
-    .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+  /* esc, api, attachSuggest and track come from site.js (loaded first on every page). */
+  const { esc, api, attachSuggest, track } = window.PP;
 
   const TICK_MS = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 320;
   /* The address used by "Try with a sample address". */
@@ -47,41 +46,6 @@
   const typeModule = () => (current && modules()[current.key]) || {};
   const hasMarks = () => marks.bends.length > 0 || Object.keys(marks.points).length > 0;
 
-  /* ---- Focus mode: the studio hides the page sections; "Exit studio" brings them back ---- */
-  const PAGE_SECTIONS = '.metrics, #sample, #included, #compare, #pricing, #how, #faq, #final-cta';
-  function enterStudio() {
-    $$(PAGE_SECTIONS).forEach((el) => { el.hidden = true; });
-    document.body.classList.add('studio-mode');
-    $('#exit-studio').hidden = false;
-    closeMenu();
-  }
-  function exitStudio() {
-    $$(PAGE_SECTIONS).forEach((el) => { el.hidden = false; });
-    document.body.classList.remove('studio-mode');
-    $('#exit-studio').hidden = true;
-  }
-  $('#exit-studio').addEventListener('click', (event) => {
-    event.preventDefault();
-    exitStudio();
-    window.scrollTo({ top: 0, behavior: TICK_MS ? 'smooth' : 'auto' });
-  });
-
-  /* ---- Compact header menu (under 960px) ---- */
-  const menuToggle = $('#menu-toggle');
-  const mobileMenu = $('#mobile-menu');
-  function closeMenu() {
-    mobileMenu.hidden = true;
-    menuToggle.setAttribute('aria-expanded', 'false');
-  }
-  menuToggle.addEventListener('click', () => {
-    const open = mobileMenu.hidden;
-    mobileMenu.hidden = !open;
-    menuToggle.setAttribute('aria-expanded', String(open));
-  });
-  mobileMenu.addEventListener('click', (event) => { if (event.target.closest('a')) closeMenu(); });
-  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !mobileMenu.hidden) { closeMenu(); menuToggle.focus(); } });
-  matchMedia('(min-width: 961px)').addEventListener('change', (query) => { if (query.matches) closeMenu(); });
-
   /* ---- Steps ---- */
   function show(step, scroll = true) {
     $$('[data-panel]').forEach((panel) => { panel.hidden = panel.dataset.panel !== String(step); });
@@ -92,16 +56,6 @@
       item.classList.toggle('now', number === now);
     });
     if (scroll) $('#steps').scrollIntoView({ behavior: TICK_MS ? 'smooth' : 'auto', block: 'start' });
-  }
-
-  async function api(path, body) {
-    const response = await fetch(path, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-    });
-    if (response.ok) return response;
-    const data = await response.json().catch(() => ({}));
-    const detail = Array.isArray(data.detail) ? data.detail[0]?.msg?.replace(/^Value error, /, '') : data.detail;
-    throw new Error(detail || `The request failed (${response.status}). Try again.`);
   }
 
   /* ---- The selected job type ---- */
@@ -139,7 +93,6 @@
       tool = firstTool();
       if (property) drawPlan();
     }
-    $$('.jt-pill').forEach((pill) => pill.setAttribute('aria-checked', String(pill.dataset.type === key)));
     $$('.type-card').forEach((card) => {
       const selected = card.dataset.type === key;
       card.setAttribute('aria-checked', String(selected));
@@ -274,78 +227,6 @@
     }
   }
 
-  /* ---- Address suggestions as the tech types. Typing the whole address still works. ---- */
-  const SUGGEST_DELAY_MS = 220;
-  function attachSuggest(input, list, onChoose, prefix) {
-    let timer = null;
-    let requestId = 0;
-    let active = -1;
-    const items = () => Array.from(list.querySelectorAll('li[role=option]'));
-    function close() {
-      list.hidden = true;
-      list.innerHTML = '';
-      active = -1;
-      input.setAttribute('aria-expanded', 'false');
-      input.removeAttribute('aria-activedescendant');
-    }
-    function mark() {
-      items().forEach((item, index) => item.setAttribute('aria-selected', String(index === active)));
-      if (active >= 0) input.setAttribute('aria-activedescendant', `${prefix}-${active}`);
-      else input.removeAttribute('aria-activedescendant');
-    }
-    function choose(text) {
-      requestId += 1;
-      clearTimeout(timer);
-      input.value = text;
-      close();
-      onChoose();
-    }
-    async function load(text, request) {
-      const response = await api('/api/property/suggest', { text }).catch(() => null);
-      const data = response ? await response.json().catch(() => null) : null;
-      if (request !== requestId || document.activeElement !== input) return;
-      const suggestions = data?.suggestions || [];
-      if (!suggestions.length) { close(); return; }
-      list.innerHTML = suggestions
-        .map((item, index) => `<li role="option" id="${prefix}-${index}" aria-selected="false">${esc(item)}</li>`).join('')
-        + '<li class="credit" role="presentation">Suggestions from OpenStreetMap contributors</li>';
-      active = -1;
-      list.hidden = false;
-      input.setAttribute('aria-expanded', 'true');
-    }
-    input.addEventListener('input', () => {
-      clearTimeout(timer);
-      requestId += 1;
-      const text = input.value.trim();
-      if (text.length < 4) { close(); return; }
-      const request = requestId;
-      timer = setTimeout(() => load(text, request), SUGGEST_DELAY_MS);
-    });
-    input.addEventListener('keydown', (event) => {
-      const options = items();
-      if (event.key === 'Escape') { close(); return; }
-      if (!options.length) return;
-      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-        event.preventDefault();
-        active = (active + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
-        mark();
-      } else if (event.key === 'Enter' && active >= 0) {
-        event.preventDefault();
-        choose(options[active].textContent);
-      }
-    });
-    /* mousedown fires before the input loses focus, so the list is still there. */
-    list.addEventListener('mousedown', (event) => {
-      const item = event.target.closest('li[role=option]');
-      event.preventDefault();
-      if (item) choose(item.textContent);
-    });
-    /* Pressing the form's own button must not close the list first: the button would move out from under the
-       pointer before the click lands. The submit closes it, and so does focus leaving the form. */
-    input.addEventListener('blur', (event) => { if (!(input.form && input.form.contains(event.relatedTarget))) close(); });
-    if (input.form) input.form.addEventListener('focusout', (event) => { if (!input.form.contains(event.relatedTarget)) close(); });
-    return { cancel() { requestId += 1; clearTimeout(timer); close(); } };
-  }
   const addressInput = $('#address');
   const suggestionList = $('#suggestions');
   const workspaceSuggest = attachSuggest(addressInput, suggestionList, () => $('#find').requestSubmit(), 'suggestion');
@@ -397,7 +278,6 @@
     }
     $('#tb-scale').textContent = `Plan scale: 1 in = ${found.view.scale_ft_per_in} ft`;
     $('#site').hidden = false;
-    enterStudio();
     drawPlan();
     loadAerial(found);
   }
@@ -459,6 +339,7 @@
   const context = { form, $, $$, measuredFt };
 
   $('#to-job').addEventListener('click', () => {
+    track('preview_started', eventParams());
     typeModule().onDetails?.();
     $('#job-lead').textContent = property.jurisdiction.known
       ? `${property.address}, using the ${property.jurisdiction.label} checklist.`
@@ -481,13 +362,16 @@
     form.elements[box.dataset.load].value = box.checked ? box.dataset.va : 0;
   }));
 
-  /* ---- Who is doing the work ---- */
+  /* ---- Who is this packet for ---- */
+  // diy and hiring print the Owner-Builder title block; electrician and contractor print the contractor and license block.
   const OWNER = { contractor: 'Homeowner (Owner-Builder)', license: 'Owner-Builder' };
+  const OWNER_ROLES = ['diy', 'hiring'];
   const MAX_LOGO_BYTES = 500 * 1024;
   let contractorLogo = null;
+  const role = () => ($('input[name="who"]:checked') || {}).value || 'diy';
 
   function applyRole() {
-    const owner = form.elements.role.value === 'owner';
+    const owner = OWNER_ROLES.includes(role());
     $('#contractor-grid').hidden = owner;
     const { contractor, license_number: license } = form.elements;
     if (owner) {
@@ -501,7 +385,36 @@
       if (license.value === OWNER.license) license.value = '';
     }
   }
-  $$('input[name="role"]').forEach((radio) => radio.addEventListener('change', applyRole));
+
+  /* The recommended package: $39 for a homeowner hiring an electrician, $89 for everyone else, unless ?tier= chose one.
+     The visitor can still pick any package; once they have, a change of role no longer moves it. */
+  const TIER_PRICE = { load_calc: 39, instant_packet: 89, city_checked_24h: 169 };
+  const studio = $('#start');
+  const explicitTier = studio.dataset.tierExplicit ? studio.dataset.tier : '';
+  let tierTouched = Boolean(explicitTier);
+  const chosenTier = () => ($('input[name="tier"]:checked') || {}).value || 'instant_packet';
+  function recommendedTier() { return explicitTier || (role() === 'hiring' ? 'load_calc' : 'instant_packet'); }
+  function applyTier() {
+    const key = recommendedTier();
+    $$('.plan').forEach((plan) => {
+      const badge = plan.querySelector('.badge.reco');
+      if (badge) badge.hidden = plan.querySelector('input').value !== key || key === 'instant_packet';  // $89 already says Most popular
+    });
+    if (!tierTouched) $(`input[name="tier"][value="${key}"]`).checked = true;
+  }
+  $$('input[name="who"]').forEach((radio) => radio.addEventListener('change', () => { applyRole(); applyTier(); }));
+  $$('input[name="tier"]').forEach((radio) => radio.addEventListener('change', () => { tierTouched = true; }));
+
+  /* ---- Conversion events: every one carries job, city, role and tier (landing_page is added by track) ---- */
+  const JOB_SLUGS = Object.fromEntries(Object.entries(JSON.parse(studio.dataset.jobTypes || '{}')).map(([slug, key]) => [key, slug]));
+  function eventParams() {
+    return {
+      job: current ? JOB_SLUGS[current.key] || current.key : '',
+      city: property?.jurisdiction?.key || '',
+      role: role(),
+      tier: TIER_PRICE[chosenTier()],
+    };
+  }
 
   $('#logo-file').addEventListener('change', (event) => {
     const file = event.target.files[0];
@@ -521,12 +434,6 @@
   document.addEventListener('click', (event) => {
     const pill = event.target.closest('[data-fill]');
     if (pill) { form.elements[pill.dataset.fill].value = pill.dataset.value; return; }
-    /* A pricing card preselects its own tier. Every other start button goes back to the $89 default. */
-    const start = event.target.closest('[data-start]');
-    if (start) {
-      const radio = document.querySelector(`input[name="tier"][value="${start.dataset.plan || 'instant_packet'}"]`);
-      if (radio) radio.checked = true;
-    }
   });
 
   /* ---- The job ---- */
@@ -643,6 +550,7 @@
       await tickResults(result);
       renderPreview(result);
       show(3);
+      track('preview_completed', eventParams());
     } catch (error) {
       show(2);
       $('#job-error').textContent = error.message;
@@ -672,13 +580,14 @@
     if (lastWasSample) return payError('This preview uses the sample address. Go back and enter the real job address before ordering.');
     if (!EMAIL.test(email)) return payError('Enter a valid email address so we can find your order.');
     if (!$('#ack').checked) return payError('Please confirm you understand this is a drafting & calculation document, not a PE stamp, and that you agree to the Terms and Refund Policy.');
+    track('checkout_started', eventParams());
     const button = $('#pay-button');
     button.disabled = true;
     button.textContent = 'Saving your order…';
     const tab = window.open('', '_blank');  // opened now, while the click still counts, and pointed at Whop below
     try {
       const response = await api('/api/public/orders', {
-        job_slug: lastType.slug, customer_email: email, tier: new FormData($('#checkout')).get('tier'), payload: lastJob,
+        job_slug: lastType.slug, customer_email: email, tier: new FormData($('#checkout')).get('tier'), payload: lastJob, role: role(),
       });
       const order = await response.json();
       if (tab && order.whop_checkout_url) tab.location.href = order.whop_checkout_url;
@@ -690,79 +599,6 @@
       button.disabled = false;
       button.textContent = 'Continue to Payment';
     }
-  });
-
-  /* ---- Landing page: quick start card, sample viewer, start links ---- */
-  const goToWorkspace = () => $('#workspace').scrollIntoView({ behavior: TICK_MS ? 'smooth' : 'auto', block: 'start' });
-
-  $$('.jt-pill').forEach((pill) => pill.addEventListener('click', async () => {
-    await ready;
-    chooseType(pill.dataset.type);
-  }));
-  const heroInput = $('#hero-address');
-  const heroSuggest = attachSuggest(heroInput, $('#hero-suggestions'), () => $('#hero-form').requestSubmit(), 'hero-suggestion');
-  $('#hero-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    heroSuggest.cancel();
-    await ready;
-    if (!current) return;
-    $('#address').value = $('#hero-address').value.trim();
-    show(1, false);
-    goToWorkspace();
-    $('#find').requestSubmit();
-  });
-  [$('#hero-sample'), $('#cta-sample')].forEach((link) => link.addEventListener('click', async () => {
-    await ready;
-    if (!current) return;
-    goToWorkspace();
-    $('#use-sample').click();
-  }));
-
-  /* FAQ accordion: one open at a time, real buttons with aria-expanded; the height animates in CSS. */
-  const faqItems = $$('.faq-item');
-  faqItems.forEach((item) => item.querySelector('.faq-q').addEventListener('click', () => {
-    const open = !item.classList.contains('is-open');
-    faqItems.forEach((other) => {
-      const isThis = other === item && open;
-      other.classList.toggle('is-open', isThis);
-      other.querySelector('.faq-q').setAttribute('aria-expanded', String(isThis));
-    });
-  }));
-  document.addEventListener('click', (event) => {
-    const start = event.target.closest('[data-start]');
-    if (!start) return;
-    event.preventDefault();
-    heroSuggest.cancel();
-    workspaceSuggest.cancel();
-    $('#hero-card').scrollIntoView({ behavior: TICK_MS ? 'smooth' : 'auto', block: 'center' });
-    setTimeout(() => $('#hero-address').focus({ preventScroll: true }), TICK_MS ? 450 : 0);
-  });
-
-  const sampleTabs = $$('.doc-tab');
-  function showSample(tab) {
-    sampleTabs.forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
-    const image = $('#sample-img');
-    image.src = `/assets/samples/${tab.dataset.sample}-1000.webp`;
-    image.dataset.full = `/assets/samples/${tab.dataset.sample}-2000.webp`;
-    image.alt = `Sample packet sheet: ${tab.dataset.label}`;
-    $('#zoom-text').textContent = ['02-site-plan', '03-single-line'].includes(tab.dataset.sample) ? 'Click diagram to zoom' : 'Click sheet to zoom';
-  }
-  sampleTabs.forEach((tab) => tab.addEventListener('click', () => showSample(tab)));
-  $('.doc-tabs').addEventListener('keydown', (event) => {
-    const index = sampleTabs.indexOf(document.activeElement);
-    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
-    if (index < 0 || !step) return;
-    event.preventDefault();
-    const next = sampleTabs[(index + step + sampleTabs.length) % sampleTabs.length];
-    showSample(next);
-    next.focus();
-  });
-  $('#sample-open').addEventListener('click', () => {
-    const image = $('#lightbox-img');
-    image.src = $('#sample-img').dataset.full || $('#sample-img').src.replace(/-1000\.webp$/, '-2000.webp');
-    image.alt = $('#sample-img').alt;
-    lightbox.hidden = false;
-    $('#lightbox-close').focus();
   });
 
   /* ---- Start ---- */
@@ -778,8 +614,11 @@
     }
     jobTypes.forEach((type) => modules()[type.key]?.init?.(context));
     renderTypeCards();
-    chooseType(jobTypes.some((type) => type.key === 'ev_charger') ? 'ev_charger' : jobTypes[0].key);
+    const wanted = studio.dataset.job;  // ?job= on /start/
+    chooseType(jobTypes.some((type) => type.key === wanted) ? wanted
+      : jobTypes.some((type) => type.key === 'ev_charger') ? 'ev_charger' : jobTypes[0].key);
     applyRole();
+    applyTier();
     show(1, false);
   }
   const ready = start();

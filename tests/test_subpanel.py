@@ -432,7 +432,7 @@ def test_the_job_types_list_has_ev_service_and_subpanel(client):
 
 
 def test_the_signed_in_page_loads_the_subpanel_script_with_a_version(client):
-    page = client.get("/").text
+    page = client.get("/start/").text
     assert re.search(r'src="/assets/js/job-types/subpanel\.js\?v=[0-9a-f]{10}"', page)
     assert page.index("subpanel.js") < page.index("/assets/js/app.js")
     assert 'data-job-type="subpanel"' in page

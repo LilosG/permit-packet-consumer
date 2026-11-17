@@ -4,7 +4,6 @@ from __future__ import annotations
 import base64
 import hashlib
 import hmac
-import html as htmllib
 import json
 import logging
 import os
@@ -31,7 +30,7 @@ from fastapi.exception_handlers import http_exception_handler as default_http_ex
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import ValidationError
 
-from permit_packets import emails, orders
+from permit_packets import emails, orders, pages, seo, sitedata
 from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
 from permit_packets.core.preview import packet_documents_zip, packet_page_images, packet_subset_pdf
 from permit_packets.core.property_lookup import (
@@ -85,53 +84,22 @@ def _asset_version() -> str:
 
 
 ASSET_VERSION = _asset_version()
-DEFAULT_BASE_URL = "https://permit-packet-consumer.vercel.app"
 ICONS = STATIC / "icons"
-
-
-def public_base_url() -> str:
-    """The site's public address, for canonical, social and sitemap URLs."""
-    return os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/") or DEFAULT_BASE_URL
-
-
-FOOTER_HTML = (STATIC / "partials" / "footer.html").read_text(encoding="utf-8")
-FAQ_ITEM = re.compile(
-    r'<button [^>]*class="faq-q"[^>]*>(.*?)<span class="faq-ic"[^>]*></span></button></h3>'
-    r'<div [^>]*class="faq-a"[^>]*><div class="faq-a-in"><p>(.*?)</p></div></div>', re.S)
-
-
-def _plain(fragment: str) -> str:
-    return htmllib.unescape(re.sub(r"<[^>]+>", "", fragment)).strip()
-
-
-def _json_ld(html: str) -> str:
-    """Organization and FAQPage structured data. The FAQ comes from the page's own questions, so the two never differ."""
-    data = [
-        {"@context": "https://schema.org", "@type": "Organization", "name": "Lilos Growth",
-         "url": "https://lilosgrowth.com", "email": "hello@lilosgrowth.com"},
-        {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
-            {"@type": "Question", "name": _plain(question),
-             "acceptedAnswer": {"@type": "Answer", "text": _plain(answer)}}
-            for question, answer in FAQ_ITEM.findall(html)]},
-    ]
-    # "<" is escaped so no answer text can close the script tag.
-    return "".join(
-        f'<script type="application/ld+json">{json.dumps(item, ensure_ascii=False).replace("<", chr(92) + "u003c")}</script>'
-        for item in data)
+public_base_url = seo.public_base_url  # the site's public address, for canonical, social and sitemap URLs
+pages.set_asset_version(ASSET_VERSION)
 
 
 def _fill(html: str) -> str:
-    if "{{JSON_LD}}" in html:
-        html = html.replace("{{JSON_LD}}", _json_ld(html))
+    """Fill the placeholders in the static pages (order, admin, 404): footer, analytics, asset version, base URL."""
+    if "{{FOOTER}}" in html:
+        html = html.replace("{{FOOTER}}", pages.footer_html())
     return (
-        html.replace("{{FOOTER}}", FOOTER_HTML)
+        html.replace("{{GA}}", str(seo.ga_snippet()))
         .replace("{{ASSET_VERSION}}", ASSET_VERSION)
         .replace("{{BASE_URL}}", public_base_url())
-        .replace("{{CITY_COUNT}}", str(len(KNOWN)))  # cities with their own checklist module
     )
 
 
-INDEX_HTML = _fill((STATIC / "index.html").read_text(encoding="utf-8"))
 # Only the assets folder is served as files. The other pages are routes below.
 app.mount("/assets", StaticFiles(directory=ASSETS), name="assets")
 
@@ -152,11 +120,6 @@ async def http_error(request: Request, error: StarletteHTTPException) -> Respons
     return await default_http_exception_handler(request, error)
 
 
-@app.api_route("/", methods=["GET", "HEAD"])
-def home() -> Response:
-    return HTMLResponse(INDEX_HTML, headers={"Cache-Control": "no-cache"})
-
-
 ICON_FILES = {
     "/favicon.ico": ("favicon.ico", "image/x-icon"),
     "/favicon.svg": ("favicon.svg", "image/svg+xml"),
@@ -172,36 +135,9 @@ for _path, (_name, _type) in ICON_FILES.items():
     app.add_api_route(_path, lambda _n=_name, _t=_type: _icon(_n, _t), methods=["GET", "HEAD"], include_in_schema=False)
 
 
-PUBLIC_PAGE = {"Cache-Control": "public, max-age=300"}
-
-
-def _public_page(name: str) -> HTMLResponse:
-    return HTMLResponse(_fill((STATIC / name).read_text(encoding="utf-8")), headers=PUBLIC_PAGE)
-
-
-for _route, _file in (("/terms", "terms.html"), ("/privacy", "privacy.html"), ("/refund", "refund.html"),
-                      ("/find-order", "find-order.html")):
-    app.add_api_route(_route, lambda _f=_file: _public_page(_f), methods=["GET", "HEAD"], include_in_schema=False)
-
-
-@app.api_route("/robots.txt", methods=["GET", "HEAD"])
-def robots() -> Response:
-    body = f"User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nDisallow: /order/\n\nSitemap: {public_base_url()}/sitemap.xml\n"
-    return PlainTextResponse(body, headers={"Cache-Control": "public, max-age=3600"})
-
-
-@app.api_route("/sitemap.xml", methods=["GET", "HEAD"])
-def sitemap() -> Response:
-    body = (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        f"  <url><loc>{public_base_url()}/</loc></url>\n"
-        f"  <url><loc>{public_base_url()}/terms</loc></url>\n"
-        f"  <url><loc>{public_base_url()}/privacy</loc></url>\n"
-        f"  <url><loc>{public_base_url()}/refund</loc></url>\n"
-        "</urlset>\n"
-    )
-    return Response(body, media_type="application/xml", headers={"Cache-Control": "public, max-age=3600"})
+# The site pages (home, wizard, placeholders, legal, sitemaps, robots, llms.txt) live in permit_packets/pages.py.
+app.include_router(pages.router)
+app.middleware("http")(pages.trailing_slash)
 
 
 # ---- Abuse protection: a small per-IP limit in memory ----
@@ -551,6 +487,9 @@ def create_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
     if not isinstance(payload, dict):
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "payload must be the job's inputs")
     job_type = _job_type(str(body.get("job_slug") or ""))
+    role = body.get("role")
+    if role in sitedata.ROLES:  # who the packet is for, kept with the order's inputs
+        payload = {**payload, "role": role}
     working = dict(payload)
     _contractor_logo(working)  # refuse a bad logo now, not after the customer has paid
     job = _validated(job_type, working)
@@ -667,7 +606,12 @@ def order_status(access_token: str) -> JSONResponse:
         "paid": paid,
         "in_review": order["status"] == "in_review",
         "tier": order["tier"],
+        "price": seo.TIER_PRICES[order["tier"]],
         "address": order["address"],
+        # What the order page reports to analytics when the order shows paid.
+        "job": sitedata.job_for_api_slug(order["job_slug"]),
+        "city": order["jurisdiction_key"],
+        "role": order["payload"].get("role", "") if isinstance(order.get("payload"), dict) else "",
         "whop_checkout_url": f"/api/orders/{access_token}/pay" if _payment_ready(order["tier"]) else "",
     }
     if view["in_review"]:

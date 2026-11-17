@@ -301,3 +301,21 @@ def test_the_order_page_checkout_makes_one_configuration_per_click_not_per_poll(
     paid = client.get(f"/api/orders/{order['access_token']}/pay", follow_redirects=False)
     assert paid.headers["location"] == f"/order/{order['access_token']}" and len(whop_api) == 2
     assert client.get("/api/orders/nope/pay", follow_redirects=False).status_code == 404
+
+
+def test_the_role_is_stored_on_the_order_and_reported_for_analytics(client):
+    response = client.post("/api/public/orders", json={
+        "job_slug": "ev-charger", "customer_email": "buyer@example.com", "tier": "load_calc",
+        "payload": ev_payload(), "role": "hiring"})
+    assert response.status_code == 200
+    view = client.get(f"/api/orders/{response.json()['access_token']}").json()
+    assert (view["role"], view["job"], view["price"]) == ("hiring", "ev-charger", 39)
+    bogus = client.post("/api/public/orders", json={
+        "job_slug": "ev-charger", "customer_email": "buyer@example.com", "tier": "instant_packet",
+        "payload": ev_payload(), "role": "wizard"}).json()
+    assert client.get(f"/api/orders/{bogus['access_token']}").json()["role"] == ""
+
+
+def test_the_order_page_has_the_send_to_electrician_button(client):
+    page = client.get(place_order(client)["order_url"]).text
+    assert 'id="send-electrician" hidden' in page and "mailto:?subject=" in page

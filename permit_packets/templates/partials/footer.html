@@ -13,23 +13,35 @@
         <li><a href="/#included">What's Included</a></li>
         <li><a href="/#pricing">Pricing</a></li>
         <li><a href="/#faq">FAQ</a></li>
-        <li><a href="/#hero-card">Start Free Preview</a></li>
+        <li><a href="/start/">Start Free Preview</a></li>
+      </ul>
+    </nav>
+    <nav class="foot-col" aria-label="Permits by job">
+      <h2 class="foot-head">Permits by job</h2>
+      <ul>{% for job in jobs %}
+        <li><a href="{{ job.url }}">{{ job.label }}</a></li>{% endfor %}
+      </ul>
+    </nav>
+    <nav class="foot-col" aria-label="Popular cities">
+      <h2 class="foot-head">Popular cities</h2>
+      <ul>{% for label, url in popular_cities %}
+        <li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}
       </ul>
     </nav>
     <nav class="foot-col" aria-label="Support">
       <h2 class="foot-head">Support</h2>
       <ul>
         <li><a href="mailto:hello@lilosgrowth.com">hello@lilosgrowth.com</a></li>
-        <li><a href="/find-order">Find my order</a></li>
-        <li><a href="/refund">Refund Policy</a></li>
+        <li><a href="/find-order/">Find my order</a></li>
+        <li><a href="/refund/">Refund Policy</a></li>
       </ul>
     </nav>
     <nav class="foot-col" aria-label="Legal">
       <h2 class="foot-head">Legal</h2>
       <ul>
-        <li><a href="/terms">Terms</a></li>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/refund">Refund Policy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/refund/">Refund Policy</a></li>
       </ul>
     </nav>
   </div>

@@ -1,0 +1,21 @@
+<header class="site-header"><div class="bar">
+  <a class="brand" href="/" id="brand"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a>
+  <nav class="nav" id="site-nav" aria-label="Main">
+    <div class="dd"><button type="button" class="dd-toggle" aria-expanded="false" aria-controls="dd-who">Who it's for<svg class="ic dd-caret" aria-hidden="true"><use href="#i-caret"/></svg></button>
+      <ul class="dd-menu" id="dd-who">{% for label, url in nav_who %}<li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}</ul></div>
+    <div class="dd"><button type="button" class="dd-toggle" aria-expanded="false" aria-controls="dd-permits">Permits<svg class="ic dd-caret" aria-hidden="true"><use href="#i-caret"/></svg></button>
+      <ul class="dd-menu" id="dd-permits">{% for label, url in nav_permits %}<li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}</ul></div>
+    {%- for label, url in nav_links %}<a href="{{ url }}">{{ label }}</a>{% endfor %}
+  </nav>
+  <div class="bar-end">
+    <a class="pill-cta" id="header-cta" href="/start/">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</div>
+<nav class="mobile-menu" id="mobile-menu" aria-label="Main" hidden>
+  <p class="mm-head">Who it's for</p>{% for label, url in nav_who %}<a href="{{ url }}">{{ label }}</a>{% endfor %}
+  <p class="mm-head">Permits</p>{% for label, url in nav_permits %}<a href="{{ url }}">{{ label }}</a>{% endfor %}
+  <p class="mm-head">More</p>{% for label, url in nav_links %}<a href="{{ url }}">{{ label }}</a>{% endfor %}
+  <a class="btn-primary full" href="/start/">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+</nav>
+</header>

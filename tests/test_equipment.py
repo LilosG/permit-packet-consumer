@@ -32,7 +32,7 @@ def test_models_are_found_by_name_or_alias():
 
 
 def test_index_lists_every_library_model():
-    page = open("permit_packets/static/index.html").read()
+    page = open("permit_packets/templates/start.html").read()
     for item in LIBRARY:
         assert f'value="{item.name}"' in page
 
