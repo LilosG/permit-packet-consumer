@@ -103,7 +103,7 @@ class SubpanelPacket:
 
     @property
     def ready(self) -> bool:
-        return all(check.passed for check in self.checks)
+        return all(check.passed or check.neutral for check in self.checks)
 
 
 def _flags(job: SubpanelJob, load: LoadCalculation, feeder: Feeder, assumed: bool,

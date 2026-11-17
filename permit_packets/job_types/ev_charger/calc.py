@@ -95,7 +95,7 @@ class EvPacket:
 
     @property
     def ready(self) -> bool:
-        return all(check.passed for check in self.checks)
+        return all(check.passed or check.neutral for check in self.checks)
 
 
 def largest_charger_that_fits(load: LoadCalculation, charger_va: int) -> int | None:

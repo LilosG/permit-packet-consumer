@@ -9,3 +9,4 @@ class Check:
     name: str
     result: str
     passed: bool
+    neutral: bool = False  # an optional item left empty: shown as a note, not a failure

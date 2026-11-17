@@ -124,7 +124,7 @@ def _build_response(request: BaseModel) -> PacketResult:
         "conduit": f"{packet.conduit_size} {packet.job.conduit}",
         "voltage_drop_percent": round(packet.feeder.vd_percent, 1),
         "checks": [
-            {"name": check.name, "result": check.result, "passed": check.passed}
+            {"name": check.name, "result": check.result, "passed": check.passed, **({"neutral": True} if check.neutral else {})}
             for check in packet.checks
         ],
         "flags": packet.flags,

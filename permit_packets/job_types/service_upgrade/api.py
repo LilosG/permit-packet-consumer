@@ -122,7 +122,7 @@ def _build_response(request: BaseModel) -> PacketResult:
         "conduit": conduit,
         "gec": {electrode: f"#{size} Cu" for electrode, size in packet.gecs.items()},
         "checks": [
-            {"name": check.name, "result": check.result, "passed": check.passed}
+            {"name": check.name, "result": check.result, "passed": check.passed, **({"neutral": True} if check.neutral else {})}
             for check in packet.checks
         ],
         "flags": packet.flags,

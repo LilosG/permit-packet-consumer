@@ -9,7 +9,7 @@ from permit_packets.jurisdictions.general import GENERAL_CHECKLISTS, STATE_AMEND
 from permit_packets.job_types import REGISTRY
 from tests.packet_helpers import build, packet_pages, sample
 
-GENERAL_NOTE = "General checklist, city rules added in setup"
+GENERAL_NOTE = "Using the national NEC checklist. Confirm local amendments with"
 SMOKE_CO = "California: permit work over $1,000 can trigger smoke and CO alarm requirements. Confirm with the city."
 
 

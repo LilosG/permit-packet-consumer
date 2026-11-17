@@ -142,7 +142,7 @@ class ServicePacket:
 
     @property
     def ready(self) -> bool:
-        return all(check.passed for check in self.checks)
+        return all(check.passed or check.neutral for check in self.checks)
 
     @property
     def largest_gec(self) -> str:

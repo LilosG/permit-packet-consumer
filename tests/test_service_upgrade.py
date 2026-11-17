@@ -404,7 +404,7 @@ def test_oro_valley_falls_back_to_the_general_service_checklist(client):
         "Utility service request",
         "Surge protective device, Type 1 or Type 2, shown on the riser (NEC 230.67)",
     ]
-    assert "General checklist, city rules added in setup" in _text(body)
+    assert "Using the national NEC checklist. Confirm local amendments with" in _text(body)
     assert "Page 7: send to the utility" in _text(body)
     assert jurisdiction_json(ORO_VALLEY, "service_upgrade")["known"] is False
     assert jurisdiction_json(ORO_VALLEY, "ev_charger")["known"] is True

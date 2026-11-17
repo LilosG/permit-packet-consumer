@@ -21,9 +21,11 @@ from urllib.parse import quote
 import httpx
 from fastapi import Body, Depends, FastAPI, HTTPException, Request, Response, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
+from fastapi.exception_handlers import http_exception_handler as default_http_exception_handler
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import ValidationError
 
 from permit_packets import orders
@@ -41,7 +43,7 @@ from permit_packets.core.property_lookup import (
 from permit_packets.core.property_plan import PlanView, zoomed_scale
 from permit_packets.core.schemas import AerialRequest, LookupRequest, PropertyViewRequest, SuggestRequest
 from permit_packets.job_types import REGISTRY, JobType, PacketResult, get_job_type
-from permit_packets.jurisdictions import jurisdiction_by_key, jurisdiction_json
+from permit_packets.jurisdictions import KNOWN, jurisdiction_by_key, jurisdiction_json
 
 log = logging.getLogger("permit_packets")
 
@@ -80,19 +82,79 @@ def _asset_version() -> str:
 
 
 ASSET_VERSION = _asset_version()
-INDEX_HTML = (STATIC / "index.html").read_text(encoding="utf-8").replace("{{ASSET_VERSION}}", ASSET_VERSION)
+DEFAULT_BASE_URL = "https://permit-packet-consumer.vercel.app"
+ICONS = STATIC / "icons"
+
+
+def public_base_url() -> str:
+    """The site's public address, for canonical, social and sitemap URLs."""
+    return os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/") or DEFAULT_BASE_URL
+
+
+def _fill(html: str) -> str:
+    return (
+        html.replace("{{ASSET_VERSION}}", ASSET_VERSION)
+        .replace("{{BASE_URL}}", public_base_url())
+        .replace("{{CITY_COUNT}}", str(len(KNOWN)))  # cities with their own checklist module
+    )
+
+
+INDEX_HTML = _fill((STATIC / "index.html").read_text(encoding="utf-8"))
 # Only the assets folder is served as files. The other pages are routes below.
 app.mount("/assets", StaticFiles(directory=ASSETS), name="assets")
 
 
 def _page(name: str) -> HTMLResponse:
-    html = (STATIC / name).read_text(encoding="utf-8").replace("{{ASSET_VERSION}}", ASSET_VERSION)
-    return HTMLResponse(html, headers=PRIVATE_PAGE)
+    return HTMLResponse(_fill((STATIC / name).read_text(encoding="utf-8")), headers=PRIVATE_PAGE)
 
 
-@app.get("/")
+def _not_found_page() -> HTMLResponse:
+    return HTMLResponse(_fill((STATIC / "404.html").read_text(encoding="utf-8")), status_code=404, headers=PRIVATE_PAGE)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_error(request: Request, error: StarletteHTTPException) -> Response:
+    """A missing page gets the branded HTML 404. API routes keep their JSON errors."""
+    if error.status_code == 404 and not request.url.path.startswith("/api/"):
+        return _not_found_page()
+    return await default_http_exception_handler(request, error)
+
+
+@app.api_route("/", methods=["GET", "HEAD"])
 def home() -> Response:
     return HTMLResponse(INDEX_HTML, headers={"Cache-Control": "no-cache"})
+
+
+ICON_FILES = {
+    "/favicon.ico": ("favicon.ico", "image/x-icon"),
+    "/favicon.svg": ("favicon.svg", "image/svg+xml"),
+    "/apple-touch-icon.png": ("apple-touch-icon.png", "image/png"),
+}
+
+
+def _icon(name: str, media_type: str) -> FileResponse:
+    return FileResponse(ICONS / name, media_type=media_type, headers={"Cache-Control": "public, max-age=86400"})
+
+
+for _path, (_name, _type) in ICON_FILES.items():
+    app.add_api_route(_path, lambda _n=_name, _t=_type: _icon(_n, _t), methods=["GET", "HEAD"], include_in_schema=False)
+
+
+@app.api_route("/robots.txt", methods=["GET", "HEAD"])
+def robots() -> Response:
+    body = f"User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nDisallow: /order/\n\nSitemap: {public_base_url()}/sitemap.xml\n"
+    return PlainTextResponse(body, headers={"Cache-Control": "public, max-age=3600"})
+
+
+@app.api_route("/sitemap.xml", methods=["GET", "HEAD"])
+def sitemap() -> Response:
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"  <url><loc>{public_base_url()}/</loc></url>\n"
+        "</urlset>\n"
+    )
+    return Response(body, media_type="application/xml", headers={"Cache-Control": "public, max-age=3600"})
 
 
 # ---- Abuse protection: a small per-IP limit in memory ----
@@ -454,9 +516,14 @@ def pay_order(access_token: str, request: Request) -> Response:
     return RedirectResponse(url, status_code=status.HTTP_303_SEE_OTHER)
 
 
-@app.get("/order/{access_token}")
+@app.api_route("/order/{access_token}", methods=["GET", "HEAD"])
 def order_page(access_token: str) -> Response:
-    return _page("order.html")
+    try:
+        known = orders.get_by_token(access_token) is not None
+    except Exception:  # the page itself explains a database problem; only a clean miss is a 404
+        log.exception("Could not look up the order for its page")
+        known = True
+    return _page("order.html") if known else _not_found_page()
 
 
 @app.get("/api/orders/{access_token}")
@@ -574,7 +641,7 @@ async def whop_webhook(request: Request) -> dict:
     return {"ok": True}  # always 200 once signed, so Whop doesn't retry events we don't act on
 
 
-@app.get("/admin", dependencies=[Depends(require_admin)])
+@app.api_route("/admin", methods=["GET", "HEAD"], dependencies=[Depends(require_admin)])
 def admin_page() -> Response:
     return _page("admin.html")
 

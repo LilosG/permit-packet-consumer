@@ -397,7 +397,7 @@ def test_oro_valley_falls_back_to_the_general_subpanel_checklist(client):
         "Load calculation",
         "Panel specifications and listing",
     ]
-    assert "General checklist, city rules added in setup" in _text(body)
+    assert "Using the national NEC checklist. Confirm local amendments with" in _text(body)
     assert jurisdiction_json(ORO_VALLEY, "subpanel")["known"] is False
     assert jurisdiction_json(ORO_VALLEY, "ev_charger")["known"] is True
     assert "subpanel" not in ORO_VALLEY.checklists

@@ -46,6 +46,41 @@
   const typeModule = () => (current && modules()[current.key]) || {};
   const hasMarks = () => marks.bends.length > 0 || Object.keys(marks.points).length > 0;
 
+  /* ---- Focus mode: the studio hides the page sections; "Exit studio" brings them back ---- */
+  const PAGE_SECTIONS = '.metrics, #sample, #included, #compare, #pricing, #how, #faq';
+  function enterStudio() {
+    $$(PAGE_SECTIONS).forEach((el) => { el.hidden = true; });
+    document.body.classList.add('studio-mode');
+    $('#exit-studio').hidden = false;
+    closeMenu();
+  }
+  function exitStudio() {
+    $$(PAGE_SECTIONS).forEach((el) => { el.hidden = false; });
+    document.body.classList.remove('studio-mode');
+    $('#exit-studio').hidden = true;
+  }
+  $('#exit-studio').addEventListener('click', (event) => {
+    event.preventDefault();
+    exitStudio();
+    window.scrollTo({ top: 0, behavior: TICK_MS ? 'smooth' : 'auto' });
+  });
+
+  /* ---- Compact header menu (under 960px) ---- */
+  const menuToggle = $('#menu-toggle');
+  const mobileMenu = $('#mobile-menu');
+  function closeMenu() {
+    mobileMenu.hidden = true;
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }
+  menuToggle.addEventListener('click', () => {
+    const open = mobileMenu.hidden;
+    mobileMenu.hidden = !open;
+    menuToggle.setAttribute('aria-expanded', String(open));
+  });
+  mobileMenu.addEventListener('click', (event) => { if (event.target.closest('a')) closeMenu(); });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !mobileMenu.hidden) { closeMenu(); menuToggle.focus(); } });
+  matchMedia('(min-width: 961px)').addEventListener('change', (query) => { if (query.matches) closeMenu(); });
+
   /* ---- Steps ---- */
   function show(step, scroll = true) {
     $$('[data-panel]').forEach((panel) => { panel.hidden = panel.dataset.panel !== String(step); });
@@ -304,7 +339,10 @@
       event.preventDefault();
       if (item) choose(item.textContent);
     });
-    input.addEventListener('blur', close);
+    /* Pressing the form's own button must not close the list first: the button would move out from under the
+       pointer before the click lands. The submit closes it, and so does focus leaving the form. */
+    input.addEventListener('blur', (event) => { if (!(input.form && input.form.contains(event.relatedTarget))) close(); });
+    if (input.form) input.form.addEventListener('focusout', (event) => { if (!input.form.contains(event.relatedTarget)) close(); });
     return { cancel() { requestId += 1; clearTimeout(timer); close(); } };
   }
   const addressInput = $('#address');
@@ -318,6 +356,15 @@
     if (found.located_by === 'map') return ['good', 'Matched to the house on the map'];
     if (found.located_by === 'tap') return ['good', 'House chosen by you'];
     return ['check', 'Estimated from the street. Check this is the right house.'];
+  }
+
+  /* Plain text for a city with no checklist of its own. */
+  function localName(found) {
+    const name = found.city || found.jurisdiction.name;
+    return name && name !== 'This area' ? name : 'your city';
+  }
+  function nationalChecklistNote(found) {
+    return `Using the national NEC checklist. Confirm local amendments with ${localName(found)}.`;
   }
 
   function showProperty(found) {
@@ -335,11 +382,21 @@
     $('#tb-located').textContent = note;
     $('#tb-city').textContent = found.jurisdiction.label;
     const link = $('#tb-checklist');
-    link.textContent = found.jurisdiction.known ? `${found.jurisdiction.checklist.length}-item checklist loaded` : 'General checklist. City rules are added in setup.';
-    if (found.jurisdiction.source_url) link.href = found.jurisdiction.source_url; else link.removeAttribute('href');
+    const checklistNote = $('#tb-checklist-note');
+    const loaded = `${found.jurisdiction.checklist.length}-item checklist loaded`;
+    if (found.jurisdiction.known && found.jurisdiction.source_url) {
+      link.textContent = loaded;
+      link.href = found.jurisdiction.source_url;
+      link.hidden = false;
+      checklistNote.textContent = '';
+    } else {
+      link.hidden = true;
+      link.removeAttribute('href');
+      checklistNote.textContent = found.jurisdiction.known ? loaded : nationalChecklistNote(found);
+    }
     $('#tb-scale').textContent = `Plan scale: 1 in = ${found.view.scale_ft_per_in} ft`;
     $('#site').hidden = false;
-  $$('.metrics, #sample, #included, #compare, #pricing, #how, #faq').forEach(el => el.hidden = true);
+    enterStudio();
     drawPlan();
     loadAerial(found);
   }
@@ -381,7 +438,7 @@
     button.textContent = 'Finding';
     try {
       await ready;
-      if (!current) throw new Error('No job types are set up for this account.');
+      if (!current) throw new Error('Something went wrong loading job types. Please refresh.');
       const response = await api('/api/property', { address: $('#address').value, job_type: current.key });
       const found = await response.json();
       showProperty(found);
@@ -404,7 +461,7 @@
     typeModule().onDetails?.();
     $('#job-lead').textContent = property.jurisdiction.known
       ? `${property.address}, using the ${property.jurisdiction.label} checklist.`
-      : `${property.address}, using the general checklist. ${property.jurisdiction.name}'s rules are added in setup.`;
+      : `${property.address}. ${nationalChecklistNote(property)}`;
     show(2);
   });
   $('#use-sample').addEventListener('click', async () => {
@@ -412,8 +469,8 @@
     if (!current) return;
     property = null;
     typeModule().onSample?.();
-    $$('.metrics, #sample, #included, #compare, #pricing, #how, #faq').forEach(el => el.hidden = true);
-  $('#job-lead').textContent = `A sample job with a schematic layout, using the ${SAMPLE.label} checklist. Use your own address to order a packet.`;
+    enterStudio();
+    $('#job-lead').textContent = `A sample job with a schematic layout, using the ${SAMPLE.label} checklist. Use your own address to order a packet.`;
     show(2);
   });
   $('#back-property').addEventListener('click', () => show(1));
@@ -528,7 +585,10 @@
       : 'See the items marked Fix below. You can add the missing details and preview again, or order as is.';
     $('#stats').innerHTML = result.summary.map((stat) => `<div><dt>${esc(stat.label)}</dt><dd>${esc(stat.value)}</dd></div>`).join('');
     $('#checks').innerHTML = result.checks
-      .map((check) => `<li><span class="${check.passed ? 'pass' : 'fix'}">${check.passed ? 'Pass' : 'Fix'}</span> ${esc(check.name)}: ${esc(check.result)}</li>`).join('');
+      .map((check) => {
+        const [tone, label] = check.passed ? ['pass', 'Pass'] : check.neutral ? ['info', 'Note'] : ['fix', 'Fix'];
+        return `<li><span class="${tone}">${label}</span> ${esc(check.name)}: ${esc(check.result)}</li>`;
+      }).join('');
     $('#flags-wrap').hidden = !flags.length;
     $('#flags').innerHTML = flags.map((flag) => `<li>${esc(flag)}</li>`).join('');
     $('#not-ready').hidden = result.ready;
@@ -563,6 +623,7 @@
     const job = jobData();
     const type = current;
     const sample = !property;
+    $('#to-pay').textContent = sample ? 'Enter your address to order' : 'Unlock the clean packet';
     $('#build-list').innerHTML = '';
     show('building');
     try {
@@ -585,9 +646,10 @@
   $('#back-preview').addEventListener('click', () => show(3));
   $('#to-pay').addEventListener('click', () => {
     $('#pay-error').hidden = true;
-    if (lastWasSample) {
-      $('#pay-error').textContent = 'This preview uses the sample address. Go back and enter the real job address before ordering.';
-      $('#pay-error').hidden = false;
+    if (lastWasSample) {  // a sample preview can't be ordered: back to step 1, job type kept
+      show(1);
+      $('#address').focus({ preventScroll: true });
+      return;
     }
     show(4);
   });
@@ -652,6 +714,8 @@
     const start = event.target.closest('[data-start]');
     if (!start) return;
     event.preventDefault();
+    heroSuggest.cancel();
+    workspaceSuggest.cancel();
     $('#hero-card').scrollIntoView({ behavior: TICK_MS ? 'smooth' : 'auto', block: 'center' });
     setTimeout(() => $('#hero-address').focus({ preventScroll: true }), TICK_MS ? 450 : 0);
   });
@@ -660,7 +724,8 @@
   function showSample(tab) {
     sampleTabs.forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
     const image = $('#sample-img');
-    image.src = `/assets/samples/${tab.dataset.sample}.png`;
+    image.src = `/assets/samples/${tab.dataset.sample}-1000.webp`;
+    image.dataset.full = `/assets/samples/${tab.dataset.sample}.png`;
     image.alt = `Sample packet sheet: ${tab.dataset.label}`;
     $('#zoom-text').textContent = ['02-site-plan', '03-single-line'].includes(tab.dataset.sample) ? 'Click diagram to zoom' : 'Click sheet to zoom';
   }
@@ -676,7 +741,7 @@
   });
   $('#sample-open').addEventListener('click', () => {
     const image = $('#lightbox-img');
-    image.src = $('#sample-img').src;
+    image.src = $('#sample-img').dataset.full || $('#sample-img').src.replace(/-1000\.webp$/, '.png');
     image.alt = $('#sample-img').alt;
     lightbox.hidden = false;
     $('#lightbox-close').focus();

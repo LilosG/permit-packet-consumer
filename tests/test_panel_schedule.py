@@ -6,6 +6,7 @@ from tests.packet_helpers import build, packet_pages, sample
 
 ALL = sorted(REGISTRY)
 CIRCUITS = [{"label": "Pool pump", "amps": 30, "poles": 2}, {"label": "Garage lights", "amps": 15, "poles": 1}]
+NONE_ENTERED = "Optional: none entered. The schedule is left blank to fill in on site."
 FLAG = "Enter the panel's existing circuits for the panel schedule."
 
 
@@ -28,12 +29,11 @@ def test_no_entered_circuits_prints_an_empty_grid_not_load_calculation_circuits(
 
 
 @pytest.mark.parametrize("key", ALL)
-def test_no_entered_circuits_sets_the_checklist_item_the_check_and_the_packet_to_not_ready(key):
+def test_no_entered_circuits_sets_the_checklist_item_and_a_neutral_check(key):
     body = build(key, {**sample(key), "existing_circuits": []}).body
     assert FLAG in body["flags"]
-    assert body["ready"] is False
     check = next(c for c in body["checks"] if c["name"] == "Panel schedule")
-    assert check == {"name": "Panel schedule", "result": FLAG, "passed": False}
+    assert check == {"name": "Panel schedule", "result": NONE_ENTERED, "passed": False, "neutral": True}
     item = next(row for row in body["checklist_status"] if row["item"].startswith("Panel schedule"))
     assert item["status"] == "Open"
 

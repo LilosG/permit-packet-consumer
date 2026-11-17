@@ -293,7 +293,7 @@ def _cover(packet: AppliancePacket) -> list:
     checklist_cell = (
         f"{jurisdiction.label}\n{jurisdiction.checklist_for('appliance_circuit').source_label}"
         if jurisdiction.known_for("appliance_circuit")
-        else f"{jurisdiction.label}\nGeneral checklist, city rules added in setup"
+        else f"{jurisdiction.label}\nUsing the national NEC checklist. Confirm local amendments with {jurisdiction.name if jurisdiction.name != 'This area' else 'your city'}."
     )
     parcel = f"\nParcel {job.plan.parcel_number}" if job.plan and job.plan.parcel_number else ""
     return cover_page(

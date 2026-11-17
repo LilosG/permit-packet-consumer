@@ -109,7 +109,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .m-ic .ic { width: 19px; height: 19px; }
 .metric:nth-child(2) .m-ic { background: var(--green-soft); color: var(--green); }
 .metric:nth-child(3) .m-ic { background: #e0f2fe; color: #0284c7; }
-.metric b { display: block; color: var(--ink); font: 800 42px/1.1 var(--display); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.metric b { display: block; color: var(--ink); font: 800 clamp(26px, 3.4vw, 30px)/1.15 var(--display); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 .metric span { display: block; margin-top: 6px; color: var(--body); font-size: 14.5px; }
 
 /* ---- Sample packet viewer ---- */
@@ -178,7 +178,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 
 /* ---- Feature product UI cards ---- */
 .ui-card { padding: 0; overflow: hidden; background: #fff; border-color: var(--line); box-shadow: 0 30px 60px -28px rgba(15, 23, 42, .28), 0 4px 12px -2px rgba(15, 23, 42, .04); }
-.ui-head { display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: var(--bg); color: var(--muted); font: 700 11px var(--display); letter-spacing: .08em; white-space: nowrap; overflow: hidden; }
+.ui-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: var(--bg); color: var(--muted); font: 700 11px var(--display); letter-spacing: .08em; overflow: hidden; }
 .ui-head b { color: var(--ink); font-weight: 700; }
 .ui-head i { font-style: normal; opacity: .5; }
 .ui-dot, .live-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, .2); }
@@ -288,8 +288,8 @@ summary { cursor: pointer; font-size: 15px; font-weight: 500; }
 details.advanced { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg); }
 details.advanced > summary { padding: 16px 20px; color: var(--ink); font: 600 15px var(--display); }
 .adv-body { padding: 0 20px 22px; }
-.adv-body h3 { margin: 22px 0 10px; font-size: 16px; }
-.adv-body h3:first-child { margin-top: 4px; }
+.adv-title { margin: 22px 0 10px; font-size: 16px; }
+.adv-title:first-child { margin-top: 4px; }
 .adv-body .grid { margin-top: 12px; }
 .contents { display: contents; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -356,6 +356,7 @@ ul.plain { margin: 0; padding: 0; list-style: none; }
 .stats dd { margin: 0; color: var(--ink); font: 800 24px/1.2 var(--display); letter-spacing: -.02em; }
 .checks li { padding: 10px 0; border-top: 1px solid var(--line); font-size: 15px; }
 .checks li:first-child { border-top: 0; }
+.info { display: inline-block; margin-right: 6px; padding: 1px 9px; border-radius: 999px; background: #f1f5f9; color: var(--muted); font: 700 12px var(--display); }
 .pass { display: inline-block; margin-right: 6px; padding: 1px 9px; border-radius: 999px; background: var(--green-soft); color: var(--green); font: 700 12px var(--display); }
 .fix { display: inline-block; margin-right: 6px; padding: 1px 9px; border-radius: 999px; background: var(--red-soft); color: var(--red); font: 700 12px var(--display); }
 .notes li { position: relative; padding: 7px 0 7px 26px; font-size: 15px; }
@@ -473,4 +474,50 @@ table.orders tr:last-child td { border-bottom: 0; }
   .check-grid { grid-template-columns: minmax(0, 1fr); }
   .pill-cta { padding: 8px 14px; font-size: 13.5px; }
   .order-code { font-size: 32px; }
+}
+
+/* ---- Wizard labels (were headings; now plain elements with the same look) ---- */
+.step-title, .block-title, .sub, .adv-title { margin: 0; color: var(--ink); font-family: var(--display); letter-spacing: -.025em; }
+.block-title { font-size: 26px; line-height: 1.15; font-weight: 700; }
+.step-title { line-height: 1.15; }
+.sub { font-size: 18px; line-height: 1.25; font-weight: 700; }
+.adv-title { font-size: 16px; line-height: 1.25; font-weight: 700; }
+.step-title.spaced { margin-top: 36px; }
+.sub { margin: 26px 0 8px; }
+.adv-title { margin: 22px 0 10px; }
+.adv-title:first-child { margin-top: 4px; }
+
+/* ---- Header: end cluster, compact menu, focus mode ---- */
+.bar-end { justify-self: end; display: flex; align-items: center; gap: 10px; }
+.menu-toggle { display: none; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line-strong); background: #fff; color: var(--ink); box-shadow: none; }
+.menu-toggle:hover:not(:disabled) { background: var(--blue-soft); }
+.menu-toggle .ic { width: 22px; height: 22px; }
+.mobile-menu { display: none; }
+.exit-studio { padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--ink); font: 600 14.5px var(--display); text-decoration: none; background: #fff; }
+.exit-studio:hover { background: var(--blue-soft); color: var(--blue); }
+body.studio-mode .nav, body.studio-mode .menu-toggle, body.studio-mode .mobile-menu, body.studio-mode #header-cta { display: none !important; }
+body.studio-mode .bar { grid-template-columns: 1fr auto; }
+
+/* Hero suggestions sit in the flow, so they push the Start Free Preview button down instead of covering it. */
+.hero-form .suggest-list { position: static; margin-top: 6px; box-shadow: var(--shadow-sm); max-height: 260px; overflow-y: auto; }
+.hero-form .combo { display: block; }
+
+@media (max-width: 960px) {
+  .menu-toggle { display: inline-flex; }
+  .mobile-menu:not([hidden]) { display: grid; gap: 4px; padding: 8px 24px 18px; border-top: 1px solid var(--line); background: rgba(255, 255, 255, .98); }
+  .mobile-menu a:not(.btn-primary) { padding: 12px 8px; border-radius: 10px; color: var(--ink); font-weight: 600; text-decoration: none; }
+  .mobile-menu a:not(.btn-primary):hover { background: var(--blue-soft); }
+  .mobile-menu .btn-primary { margin-top: 8px; }
+  /* The action card sits right under the H1; the rest of the hero copy follows it. */
+  .hero-copy { display: contents; }
+  .hero-inner { gap: 0; }
+  .hero-copy > .eyebrow-pill { order: 1; justify-self: start; }
+  .hero-copy > h1 { order: 2; margin-bottom: 24px; }
+  .hero-inner > .action-card { order: 3; }
+  .hero-copy > .trust-row, .hero-copy > .hero-sub, .hero-copy > .guarantee, .hero-copy > .trust-items { order: 4; }
+  .hero-copy > .trust-row { margin-top: 28px; }
+}
+@media (max-width: 640px) {
+  #header-cta { display: none; }
+  .metric-grid { grid-template-columns: minmax(0, 1fr); }
 }

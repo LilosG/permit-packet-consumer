@@ -18,6 +18,7 @@ from permit_packets.core.pdf_base import BODY, CELL_BOLD, H1, H2, SMALL, TIGHT, 
 
 DIRECTORY_NOTE = ("Update the panel directory on site so every circuit is legibly identified "
                   "(NEC 408.4(A)).")
+NONE_ENTERED = "Optional: none entered. The schedule is left blank to fill in on site."
 MISSING_FLAG = "Enter the panel's existing circuits for the panel schedule."
 FIELD_VERIFY = "Field verify and fill in"
 PANEL_SCHEDULE_ITEM = "Panel schedule with the panel's existing circuits (NEC 408.4)"
@@ -52,7 +53,7 @@ def panel_schedule_check(job) -> Check:
     if job.existing_circuits:
         count = len(job.existing_circuits)
         return Check("Panel schedule", f"{count} existing circuit{'s' if count != 1 else ''} entered", True)
-    return Check("Panel schedule", MISSING_FLAG, False)
+    return Check("Panel schedule", NONE_ENTERED, False, neutral=True)
 
 
 def panel_schedule_row(job, page: int) -> tuple[str, str]:
