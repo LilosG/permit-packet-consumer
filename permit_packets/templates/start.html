@@ -5,7 +5,7 @@
   <p class="kicker">Your packet studio</p>
   <h1 class="band-title">Build your packet</h1>
   <p class="band-sub">Four quick steps. You only pay once you've seen the finished preview.</p>
-  <div class="studio" id="start" data-job="{{ prefill.job_key }}" data-role="{{ prefill.role }}" data-tier="{{ prefill.tier }}" data-tier-explicit="{{ '1' if prefill.tier_explicit else '' }}" data-job-types='{{ job_map_json }}'>
+  <div class="studio" id="start" data-job="{{ prefill.job_key }}" data-role="{{ prefill.role }}" data-tier="{{ prefill.tier }}" data-tier-explicit="{{ '1' if prefill.tier_explicit else '' }}" data-autolookup="{{ '1' if prefill.address else '' }}" data-job-types='{{ job_map_json }}'>
   <div class="studio-bar"><span class="live-dot" aria-hidden="true"></span><b>PACKET STUDIO</b><i>•</i><span>LIVE NEC 220 ENGINE</span><em>Free preview before you pay</em></div>
   <ol class="steps" id="steps" aria-label="Progress">
     <li data-step="1">Property &amp; Map</li>

@@ -9,10 +9,7 @@ import app as app_module
 from permit_packets import seo
 
 PLACEHOLDERS = [
-    "/for/diy-homeowners/", "/for/homeowners-hiring-an-electrician/", "/for/electricians/", "/for/contractors/",
-    "/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/", "/hot-tub-240v-permit/",
     "/permits/", "/permits/ca/", "/permits/ca/el-cajon/", "/permits/ca/el-cajon/ev-charger/",
-    "/sample-packet/", "/pricing/", "/faq/", "/about/",
 ]
 
 
@@ -60,10 +57,10 @@ def test_sitemap_is_an_index_of_three(client):
 
 
 def test_flipping_the_registry_flag_publishes_a_page(client, monkeypatch):
-    entry = seo.PAGES["/pricing/"]
-    monkeypatch.setitem(seo.PAGES, "/pricing/", seo.PageEntry(entry.path, entry.title, True, "2026-01-02"))
-    assert "/pricing/</loc><lastmod>2026-01-02</lastmod>" in client.get("/sitemap-pages.xml").text
-    assert '<meta name="robots" content="index,follow">' in client.get("/pricing/").text
+    entry = seo.PAGES["/permits/"]
+    monkeypatch.setitem(seo.PAGES, "/permits/", seo.PageEntry(entry.path, entry.title, True, "2026-01-02"))
+    assert "/permits/</loc><lastmod>2026-01-02</lastmod>" in client.get("/sitemap-pages.xml").text
+    assert '<meta name="robots" content="index,follow">' in client.get("/permits/").text
 
 
 def test_robots_and_llms(client):
@@ -103,11 +100,12 @@ def test_header_and_footer_links(client):
     html = client.get("/pricing/").text
     for href in ("/for/diy-homeowners/", "/for/homeowners-hiring-an-electrician/", "/for/electricians/",
                  "/for/contractors/", "/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/",
-                 "/hot-tub-240v-permit/", "/permits/", "/sample-packet/", "/pricing/", "/faq/", "/start/"):
+                 "/hot-tub-240v-permit/", "/sample-packet/", "/pricing/", "/faq/", "/start/"):
         assert f'href="{href}"' in html, href
+    assert 'href="/permits/"' not in html  # stays out of the header until the city guides are indexable
     footer = html[html.index("<footer"):]
-    assert "Permits by job" in footer and "Popular cities" in footer
-    assert footer.count('href="/permits/') == 8 and 'href="/permits/ca/el-cajon/"' in footer
+    assert "Permits by job" in footer and "Popular cities" not in footer  # city links wait for the city guides
+    assert 'href="/permits/' not in footer
 
 
 def test_breadcrumbs_render_html_and_json_ld(client):

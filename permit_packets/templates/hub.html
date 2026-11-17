@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline, cta_band, tier_cards, faq_details, steps, link_cards %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ hub.h1 }}</h1>
+{{ byline() }}
+<p class="answer">{{ hub.answer }}</p>
+<p class="cta-row">{{ cta("/start/?job=" ~ hub.slug) }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+
+<h2>What's in your {{ hub.job_name }} permit packet?</h2>
+<p>{{ hub.sheets_intro }}</p>
+<ol class="sheet-list">
+{%- for sheet in hub.sheets %}
+  <li>{% if sheet.thumb %}<a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ sheet.thumb }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ sheet.title }} sheet from the El Cajon packet"></a>{% endif %}<div><h3>{{ sheet.title }}</h3><p>{{ sheet.text }}</p></div></li>
+{%- endfor %}
+</ol>
+{% if hub.slug == "ev-charger" %}<p class="note-line">Thumbnails are from the <a href="/sample-packet/">El Cajon sample packet</a>.</p>{% endif %}
+{{ cta_band("/start/?job=" ~ hub.slug, "Preview your " ~ hub.job_name ~ " packet free, sheet by sheet.") }}
+
+<h2>What do city plan reviewers check on a {{ hub.job_name }} permit?</h2>
+<p>{{ hub.checks_intro }}</p>
+<ul class="check-list">
+{%- for item in hub.checks %}<li>{{ item }}</li>{% endfor %}
+</ul>
+<p>A packet cannot promise a permit will be approved. Your building department decides, and some cities or jobs need a stamp or a licensed electrician's review.</p>
+
+<h2>How does it work?</h2>
+{{ steps(hub.steps) }}
+
+<h2>How much does a {{ hub.job_name }} permit packet cost?</h2>
+<p>Three packages, each with a free watermarked preview first. Compare them on the <a href="/pricing/">pricing page</a>.</p>
+{{ tier_cards(hub.slug) }}
+
+<h2>Who uses a {{ hub.job_name }} permit packet?</h2>
+{{ link_cards(who_cards) }}
+
+<h2>Which cities have built-in checklists for this job?</h2>
+{% if cities %}<p>{{ cities|join(", ") }}.</p>
+<p>Any other U.S. address works too. It uses a general NEC checklist, and the packet says so. Confirm local requirements with your building department.</p>
+{% else %}<p>No city has its own checklist for this job yet. Any U.S. address works and uses a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>{% endif %}
+
+<h2 id="faq">{{ hub.crumb }} permit questions</h2>
+{{ faq_details(hub.faqs) }}
+</main>
+{% endblock %}

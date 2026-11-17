@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline, cta_band, tier_cards, faq_details %}
+{% block main %}
+<main class="page-main content">
+<h1>Permit Packet Pricing</h1>
+{{ byline() }}
+<p class="answer">Permit Packets costs $39 for a load calculation and panel audit, $89 for the complete permit packet, or $169 for the complete packet checked against your city's published requirements within 24 hours. The preview is always free and watermarked, and you pay only to download.</p>
+<p class="cta-row">{{ cta("/start/") }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+
+<h2>How much does a permit packet cost?</h2>
+{{ tier_cards() }}
+<p class="center-line">Payments processed securely by Whop.</p>
+
+<h2>What does each package unlock?</h2>
+<div class="table-wrap"><table class="compare">
+<thead><tr><th scope="col">What you get</th><th scope="col">$39 Load Calc &amp; Panel Audit</th><th scope="col">$89 Instant Permit Packet</th><th scope="col">$169 24-Hour City-Checked</th></tr></thead>
+<tbody>
+<tr><th scope="row">Free watermarked preview</th><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><th scope="row">NEC 220 load calculation sheet</th><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><th scope="row">Panel schedule and capacity audit sheet</th><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><th scope="row">Full packet: site plan, diagram, schedules, cut sheets</th><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><th scope="row">Clean PDF and individual files</th><td>The two sheets</td><td>Yes</td><td>Yes</td></tr>
+<tr><th scope="row">Checked against your city's published requirements</th><td>No</td><td>No</td><td>Yes</td></tr>
+<tr><th scope="row">When you can download</th><td>After payment</td><td>As soon as payment clears</td><td>After the city-requirements review, released within 24 hours</td></tr>
+</tbody></table></div>
+{{ cta_band("/start/", "Not sure which one? Preview first. It costs nothing.") }}
+
+<h2>What is the refund policy?</h2>
+<p>You get a full refund if you ask before downloading your clean packet. Once it has been downloaded, the sale is final because it is a digital file. A 24-Hour City-Checked order can be refunded in full any time before it is released. Email <a href="mailto:hello@lilosgrowth.com">hello@lilosgrowth.com</a> with your order link. The full text is on the <a href="/refund/">Refund Policy</a> page.</p>
+
+<h2>Pricing questions</h2>
+{{ faq_details(faqs) }}
+</main>
+{% endblock %}

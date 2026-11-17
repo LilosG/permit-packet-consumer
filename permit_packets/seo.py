@@ -27,7 +27,7 @@ TITLE_MAX = 60
 DESCRIPTION_MAX = 155
 
 # The homepage description: also the one-line description in /llms.txt.
-HOME_TITLE = "Electrical Permit Packets. Done in Minutes. | Permit Packets"
+HOME_TITLE = "Electrical Permit Packets: EV, Panel & Subpanel Plans"
 HOME_DESCRIPTION = (
     "Generate a residential electrical permit packet from one address: site plan, single-line diagram, "
     "load calc and cut sheets. Free watermarked preview.")
@@ -158,6 +158,11 @@ def article(headline: str, date_published: str, date_modified: str, author: str 
 def webapp(name: str, url: str) -> dict:
     return {"@context": "https://schema.org", "@type": "WebApplication", "name": name, "url": absolute(url),
             "applicationCategory": "BusinessApplication", "operatingSystem": "Any"}
+
+
+def image_object(name: str, url: str, caption: str, width: int, height: int) -> dict:
+    return {"@context": "https://schema.org", "@type": "ImageObject", "name": name, "caption": caption,
+            "contentUrl": absolute(url), "encodingFormat": "image/webp", "width": width, "height": height}
 
 
 def jsonld_script(data: dict) -> str:

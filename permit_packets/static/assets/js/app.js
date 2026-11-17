@@ -620,6 +620,8 @@
     applyRole();
     applyTier();
     show(1, false);
+    // /start/?address=... (the homepage form, a hub CTA, a sample link): run the lookup without another click.
+    if (studio.dataset.autolookup && addressInput.value.trim()) $('#find').requestSubmit();
   }
   const ready = start();
 })();

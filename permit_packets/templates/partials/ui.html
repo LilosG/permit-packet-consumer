@@ -1,0 +1,43 @@
+{% macro cta(href, label="Start Free Preview") -%}
+<a class="btn-primary" href="{{ href }}">{{ label }} <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+{%- endmacro %}
+
+{% macro byline() -%}
+<p class="byline">{{ author }} · Last reviewed: {{ last_reviewed }}</p>
+{%- endmacro %}
+
+{% macro cta_band(href, text) -%}
+<aside class="inline-cta"><p>{{ text }}</p>{{ cta(href) }}</aside>
+{%- endmacro %}
+
+{% macro tier_cards(job="") -%}
+<div class="price-grid">
+{%- for key, amount, name, text, popular in tiers %}
+  <article class="card price{% if popular %} popular{% endif %}">{% if popular %}<i class="badge">Most popular</i>{% endif %}<h3>{{ name }}</h3><p class="amount">${{ amount }}</p><p>{{ text }}</p><a class="{{ 'btn-primary' if popular else 'btn-secondary' }} full" href="/start/?{% if job %}job={{ job }}&amp;{% endif %}tier={{ amount }}">Start Free Preview</a></article>
+{%- endfor %}
+</div>
+{%- endmacro %}
+
+{% macro faq_details(items) -%}
+<div class="qa-list">
+{%- for item in items %}
+  <details class="qa"><summary>{{ item[0] }}</summary><p>{{ item[1]|fill }}</p></details>
+{%- endfor %}
+</div>
+{%- endmacro %}
+
+{% macro steps(items) -%}
+<ol class="how-steps">
+{%- for title, text in items %}
+  <li><span class="num">{{ loop.index }}</span><b>{{ title }}</b><span>{{ text }}</span></li>
+{%- endfor %}
+</ol>
+{%- endmacro %}
+
+{% macro link_cards(items) -%}
+<ul class="link-cards">
+{%- for url, title, text in items %}
+  <li><a href="{{ url }}"><b>{{ title }}</b><span>{{ text }}</span></a></li>
+{%- endfor %}
+</ul>
+{%- endmacro %}

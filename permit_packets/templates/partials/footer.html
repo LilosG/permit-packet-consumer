@@ -1,5 +1,5 @@
 <footer class="site-footer"><div class="wrap">
-  <div class="foot-grid">
+  <div class="foot-grid{% if not popular_cities %} no-cities{% endif %}">
     <div class="foot-col foot-brand">
       <a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a>
       <p class="foot-disclaimer"><b>Permit Packets</b> is an automated drafting &amp; NEC calculation tool. Documents are not PE-stamped and are not legal or engineering advice. Applicants are responsible for confirming their city's requirements and for submitting their own application through the city's portal.</p>
@@ -9,10 +9,11 @@
       <h2 class="foot-head">Product</h2>
       <ul>
         <li><a href="/#how">How It Works</a></li>
-        <li><a href="/#sample">Sample Packet</a></li>
+        <li><a href="/sample-packet/">Sample Packet</a></li>
         <li><a href="/#included">What's Included</a></li>
-        <li><a href="/#pricing">Pricing</a></li>
-        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/about/">About</a></li>
         <li><a href="/start/">Start Free Preview</a></li>
       </ul>
     </nav>
@@ -22,12 +23,12 @@
         <li><a href="{{ job.url }}">{{ job.label }}</a></li>{% endfor %}
       </ul>
     </nav>
-    <nav class="foot-col" aria-label="Popular cities">
+    {% if popular_cities %}<nav class="foot-col" aria-label="Popular cities">
       <h2 class="foot-head">Popular cities</h2>
       <ul>{% for label, url in popular_cities %}
         <li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}
       </ul>
-    </nav>
+    </nav>{% endif %}
     <nav class="foot-col" aria-label="Support">
       <h2 class="foot-head">Support</h2>
       <ul>

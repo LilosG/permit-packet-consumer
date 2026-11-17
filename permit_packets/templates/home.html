@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "partials/ui.html" import link_cards, byline %}
 {% block head_extra %}{{ verification }}{% endblock %}
 {% block body_attrs %} id="top"{% endblock %}
 {% block main %}
@@ -50,6 +51,18 @@
   </ol>
 </div></section>
 
+<section class="band" id="who"><div class="wrap">
+  <h2 class="band-title">Who it's for</h2>
+  <p class="band-sub">Pick the page that matches how you're doing the job.</p>
+  {{ link_cards(who_cards) }}
+</div></section>
+
+<section class="band alt" id="jobs"><div class="wrap">
+  <h2 class="band-title">Permits by job</h2>
+  <p class="band-sub">Each job has its own sheets and its own checks.</p>
+  {{ link_cards(job_links) }}
+</div></section>
+
 <section class="band" id="sample"><div class="wrap">
   <p class="kicker">Sample packet</p>
   <h2 class="band-title">Here's what a finished packet looks like</h2>
@@ -59,7 +72,7 @@
     <button type="button" class="viewer-stage" id="sample-open" aria-label="Zoom the sample sheet"><img id="sample-img" src="/assets/samples/02-site-plan-1000.webp" alt="Sample packet sheet: Site Plan" width="1000" height="1294" decoding="async"><span class="zoom-pill" id="zoom-pill"><svg class="ic" aria-hidden="true"><use href="#i-zoom"/></svg><span id="zoom-text">Click diagram to zoom</span></span></button>
     <div class="doc-tabs" role="tablist" aria-label="Sample packet sheets"><button type="button" role="tab" class="doc-tab" aria-selected="false" data-sample="01-cover" data-label="EV Charger Permit Packet"><img src="/assets/samples/01-cover-300.webp" alt="" width="300" height="388" loading="lazy" decoding="async"><span><b>01</b> EV Charger Permit Packet</span></button><button type="button" role="tab" class="doc-tab" aria-selected="true" data-sample="02-site-plan" data-label="Site Plan"><img src="/assets/samples/02-site-plan-300.webp" alt="" width="300" height="388" loading="lazy" decoding="async"><span><b>02</b> Site Plan</span></button><button type="button" role="tab" class="doc-tab" aria-selected="false" data-sample="03-single-line" data-label="Single-Line Diagram"><img src="/assets/samples/03-single-line-300.webp" alt="" width="300" height="388" loading="lazy" decoding="async"><span><b>03</b> Single-Line Diagram</span></button><button type="button" role="tab" class="doc-tab" aria-selected="false" data-sample="04-load-calc" data-label="Load Calculation"><img src="/assets/samples/04-load-calc-300.webp" alt="" width="300" height="388" loading="lazy" decoding="async"><span><b>04</b> Load Calculation</span></button><button type="button" role="tab" class="doc-tab" aria-selected="false" data-sample="05-spec-sheet" data-label="Product Overview"><img src="/assets/samples/05-spec-sheet-300.webp" alt="" width="300" height="388" loading="lazy" decoding="async"><span><b>05</b> Product Overview</span></button></div>
   </div>
-  <p class="center"><a class="btn-primary" href="/start/">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  <p class="center"><a class="btn-primary" href="/start/">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a> <a class="link" href="/sample-packet/">See every sheet full size</a></p>
 </div></section>
 
 <section class="band alt" id="included"><div class="wrap">
@@ -150,6 +163,7 @@
     <article class="card price popular"><i class="badge">Most popular</i><h3>Instant Permit Packet</h3><p class="amount">$89</p><p>The complete clean packet and individual files. Download as soon as payment clears.</p><a class="btn-primary full" href="/start/?tier=89">Start Free Preview</a></article>
     <article class="card price"><h3>24-Hour City-Checked Packet</h3><p class="amount">$169</p><p>The complete packet, checked against your city's published requirements within 24 hours.</p><a class="btn-secondary full" href="/start/?tier=169">Start Free Preview</a></article>
   </div>
+  <p class="center"><a class="link" href="/pricing/">Compare the packages</a></p>
 </div></section>
 
 <section class="band" id="faq"><div class="wrap">
@@ -157,7 +171,7 @@
     <div class="faq-side">
       <p class="kicker">FAQ</p>
       <h2 class="band-title">Questions, answered</h2>
-      <p class="faq-sub">Still stuck? Email us and a real person replies.</p>
+      <p class="faq-sub">Still stuck? Email us and a real person replies. More answers are on the <a class="link" href="/faq/">FAQ page</a>.</p>
       <div class="faq-card">
         <a class="faq-mail" href="mailto:hello@lilosgrowth.com">hello@lilosgrowth.com</a>
         <a class="btn-primary" href="/start/">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -170,6 +184,7 @@
   </div>
 </div></section>
 
+<div class="wrap"><div class="home-byline">{{ byline() }}</div></div>
 </main>
 {% endblock %}
 {% block after_footer %}
