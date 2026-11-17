@@ -25,6 +25,8 @@
 <h2>Which permit are you planning?</h2>
 {{ link_cards(job_links) }}
 
+{% set related_job = "" %}{% include "partials/related.html" %}
+
 <h2 id="faq">Questions from {{ aud.crumb|lower }}</h2>
 {{ faq_details(aud.faqs) }}
 </main>

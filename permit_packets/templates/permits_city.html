@@ -12,6 +12,7 @@
 </tbody></table>
 <p class="cta-row">{{ cta("/start/?city=" ~ city.key) }}</p>
 {% if city.fee_note %}<h2>Fees</h2><p>{{ city.fee_note }}</p>{% endif %}
+{% set related_job = "" %}{% include "partials/related.html" %}
 <h2>Official sources</h2>
 <ul class="sources">{% for url in city.sources %}<li><a href="{{ url }}" rel="noopener">{{ url }}</a></li>{% endfor %}</ul>
 </main>

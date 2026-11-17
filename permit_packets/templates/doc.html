@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline, cta_band, faq_details, link_cards %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ d.h1 }}</h1>
+{{ byline() }}
+<p class="answer">{{ d.what[0] }}</p>
+<p class="cta-row">{{ cta(cta_href) }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+<h2>What is a {{ d.name|lower }}?</h2>
+{% for p in d.what[1:] %}<p>{{ p }}</p>{% endfor %}
+<p class="sheet-thumb-row"><a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ d.sample }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ d.name|lower }} sheet from the El Cajon packet"></a></p>
+<h2>When does a building department ask for a {{ d.name|lower }}?</h2>
+{% for p in d.when %}<p>{{ p }}</p>{% endfor %}
+<h2>What does a good {{ d.name|lower }} contain?</h2>
+<ul class="check-list">{% for item in d.contains %}<li>{{ item }}</li>{% endfor %}</ul>
+<p>See one in the <a href="/sample-packet/">sample packet</a>.{% if calc %} Try the free <a href="{{ calc[0] }}">{{ calc[1]|lower }}</a>.{% endif %}</p>
+{{ cta_band(cta_href, "Preview every sheet of your packet free.") }}
+<h2>Other permit documents</h2>
+{{ link_cards(others) }}
+<h2 id="faq">{{ d.name }} questions</h2>
+{{ faq_details(d.faqs) }}
+</main>
+{% endblock %}

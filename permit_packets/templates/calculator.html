@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline, cta_band, faq_details %}
+{% macro result_block(r) -%}
+<p class="calc-headline calc-{{ r.status }}">{{ r.headline }}</p>
+<div class="table-wrap"><table class="compare"><tbody>
+{%- for label, value in r.rows %}<tr><th scope="row">{{ label }}</th><td>{{ value }}</td></tr>{% endfor %}
+</tbody></table></div>
+<h3>NEC sections applied</h3>
+<ul class="check-list">{% for ref, text in r.nec_rows %}<li><b>{{ ref }}</b>: {{ text }}</li>{% endfor %}</ul>
+{% if r.notes %}<ul class="check-list">{% for n in r.notes %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
+{%- endmacro %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ c.h1 }}</h1>
+{{ byline() }}
+<p class="answer">{{ c.answer }}</p>
+<form class="calc-form" id="calc-form" method="get" action="{{ path }}#result" data-calc="{{ slug }}">
+{%- for f in fields %}
+  <label class="field">{{ f.label }}
+  {%- if f.name == "detached" %}<select name="detached">{% for v, text in detached_labels.items() %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ text }}</option>{% endfor %}</select>
+  {%- elif f.choices %}<select name="{{ f.name }}">{% for v in f.choices %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ v }}{% if f.name in ("charger_amps", "service_amps") %} A{% endif %}</option>{% endfor %}</select>
+  {%- else %}<input type="number" name="{{ f.name }}" value="{{ values[f.name] }}" min="{{ f.min }}" max="{{ f.max }}" step="1" inputmode="numeric">{% endif %}
+  {%- if f.hint %}<small class="note-line">{{ f.hint }}</small>{% endif %}</label>
+{%- endfor %}
+  <button class="btn-primary" type="submit">Calculate</button>
+</form>
+<section id="result" aria-live="polite" data-used="{{ 1 if used and not errors else 0 }}">
+{%- if errors %}<ul class="check-list calc-error">{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+{%- if result %}<h2>Your result</h2>{{ result_block(result) }}{% endif %}
+</section>
+<p class="note-line calc-disclaimer">{{ disclaimer }}</p>
+<p class="cta-row">{{ cta(cta_href, "Build the permit packet") }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+
+{% for heading, paragraphs in c.sections %}
+<h2>{{ heading }}</h2>
+{% for paragraph in paragraphs %}<p>{{ paragraph }}</p>
+{% endfor %}
+{% endfor %}
+
+<h2>{{ c.example_label }}</h2>
+<p>Using the default inputs:{% for f in example.fields %} {{ f.label|lower }} {% if f.name == "detached" %}{{ detached_labels[example.inputs[f.name]]|lower }}{% else %}{{ "{:,}".format(example.inputs[f.name]) }}{% endif %}{{ ";" if not loop.last else "." }}{% endfor %}</p>
+{{ result_block(dict(example.result, nec_rows=example_nec)) }}
+
+{{ cta_band(cta_href, "Turn this result into a full permit packet. Preview it free.") }}
+
+<h2>More tools and guides</h2>
+{% set related_job = c.job %}{% include "partials/related.html" %}
+
+<h2 id="faq">{{ c.crumb }} questions</h2>
+{{ faq_details(faqs) }}
+</main>
+{% endblock %}
+{% block scripts %}<script src="/assets/js/calculator.js?v={{ asset_version }}"></script>{% endblock %}

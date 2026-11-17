@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline, link_cards %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ h1 }}</h1>
+{{ byline() }}
+<p class="answer">{{ intro }}</p>
+{{ link_cards(items) }}
+<p class="cta-row">{{ cta("/start/") }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+</main>
+{% endblock %}

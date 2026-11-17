@@ -1,0 +1,3 @@
+{% from "partials/ui.html" import link_cards %}
+<h2>Free tools and document guides</h2>
+{{ link_cards(related_links(related_job|default(""))) }}

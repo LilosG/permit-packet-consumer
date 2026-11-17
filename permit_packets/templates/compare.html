@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline, cta_band, faq_details, link_cards %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ c.h1 }}</h1>
+{{ byline() }}
+<p class="answer">{{ c.intro }}</p>
+<p class="note-line">Date checked: {{ checked }}.{% if c.source %} Source: {{ c.name }}'s public page, <a href="{{ c.source }}" rel="noopener nofollow">{{ c.source }}</a>.{% else %} Category comparison from general traits, not a review of any one provider.{% endif %}</p>
+<h2>How do they compare?</h2>
+<div class="table-wrap"><table class="compare">
+<thead><tr><th scope="col">&nbsp;</th><th scope="col">{{ c.name }}</th><th scope="col">Permit Packets</th></tr></thead>
+<tbody>
+{%- for aspect, them, us in c.rows %}<tr><th scope="row">{{ aspect }}</th><td>{{ them }}</td><td>{{ us }}</td></tr>{% endfor %}
+</tbody></table></div>
+<p class="note-line">{{ c.caveat }}</p>
+<h2>When is {{ c.name }} the better choice?</h2>
+<ul class="check-list">{% for item in c.better %}<li>{{ item }}</li>{% endfor %}</ul>
+<h2>When is Permit Packets the better choice?</h2>
+<p>You have a standard residential electrical job, such as an EV charger, panel upgrade, subpanel or hot tub circuit, and want the electrical sheets built from one address with a free preview before you pay.</p>
+{{ cta_band(cta_href, "See your packet before you pay.") }}
+<h2>More comparisons</h2>
+{{ link_cards(others) }}
+<h2 id="faq">Questions</h2>
+{{ faq_details(c.faqs) }}
+</main>
+{% endblock %}

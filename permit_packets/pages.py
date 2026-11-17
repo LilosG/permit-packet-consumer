@@ -487,6 +487,8 @@ def find_order_page() -> Response:
     return render("find-order.html", meta=meta)
 
 
+from permit_packets import wave2  # noqa: E402,F401  (calculators, document guides, comparisons)
+
 # ---- robots, sitemaps, llms.txt ----
 
 GOOGLE_VERIFICATION_FILE = "google405b3c22f036058e.html"

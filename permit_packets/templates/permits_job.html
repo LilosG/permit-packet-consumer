@@ -46,6 +46,7 @@
 <h2 id="faq">{{ job.label }} permit questions in {{ city.name }}</h2>
 {{ faq_details(faqs) }}
 
+{% set related_job = job.slug %}{% include "partials/related.html" %}
 <h2>Official sources</h2>
 <ul class="sources">
 {%- for url in city.sources %}<li><a href="{{ url }}" rel="noopener">{{ url }}</a></li>{% endfor %}

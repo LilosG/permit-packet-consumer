@@ -31,6 +31,8 @@
 <p>Three packages, each with a free watermarked preview first. Compare them on the <a href="/pricing/">pricing page</a>.</p>
 {{ tier_cards(hub.slug) }}
 
+{% set related_job = hub.slug %}{% include "partials/related.html" %}
+
 <h2>Who uses a {{ hub.job_name }} permit packet?</h2>
 {{ link_cards(who_cards) }}
 
