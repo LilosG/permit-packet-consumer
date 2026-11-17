@@ -77,6 +77,14 @@ AZ_811 = Note(
 
 MESA = Jurisdiction(
     key="mesa-az", name="Mesa", state="AZ", known=True,
+    last_verified="2026-11-17",
+    who_may_pull="",
+    portal_url=DIMES_URL,
+    fee_note="Mesa publishes a citywide Fees and Charges schedule; its Development Services pages list no electrical permit amounts.",
+    sources=("https://www.mesaaz.gov/Business-Development/Development-Services", "https://www.mesaaz.gov/Business-Development/Development-Services/Building-Permit-Plan-Review", NEC_AMENDMENTS_URL, CHECKLIST_URL),
+    nec_edition="2023 NEC",
+    permit_required={},
+    permit_notes={},
     bbox=(-111.8945, 33.2774, -111.5633, 33.5698), center=(-111.8315, 33.4152),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     department="City of Mesa Development Services, Building Safety",
     phone="(480) 644-4273",

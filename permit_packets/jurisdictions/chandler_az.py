@@ -87,6 +87,14 @@ def _fallback(job: str) -> Note:
 
 CHANDLER = Jurisdiction(
     key="chandler-az", name="Chandler", state="AZ", known=True,
+    last_verified="2026-11-17",
+    who_may_pull="A licensed contractor must do work that needs a permit unless the owner-applicant performs it. Where you rent or lease the home to others, a licensed contractor must obtain the permit (Homeowner Building Permit Manual, citing ARS 32-1121A).",
+    portal_url=PORTAL_URL,
+    fee_note="Chandler charges building permit and plan check fees by project valuation under its adopted fee schedule. The Building Safety page links the Building Permit Fees schedule.",
+    sources=(SAFETY_URL, MANUAL_URL, AMENDMENTS_URL),
+    nec_edition="2023 NEC",
+    permit_required={},
+    permit_notes={},
     bbox=(-111.9956, 33.204, -111.7554, 33.3613), center=(-111.8414, 33.3023),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     department="City of Chandler Development Services, Building Safety",
     phone="(480) 782-3000",

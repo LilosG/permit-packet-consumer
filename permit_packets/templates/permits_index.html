@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ h1 or "Electrical Permits by City" }}</h1>
+<p class="byline">{{ author }} · Last verified: {{ latest }}</p>
+<p class="answer">Residential electrical permit rules, checked against each city's own pages. A city appears here only when its facts are confirmed from official sources.</p>
+{% if states %}<p>By state: {% for name, url in states %}<a href="{{ url }}">{{ name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.</p>{% endif %}
+<table class="data-table">
+<thead><tr><th>City</th><th>Jobs covered</th><th>Code</th><th>Verified</th></tr></thead>
+<tbody>
+{%- for r in rows %}<tr><td><a href="{{ r.url }}">{{ r.city }}</a></td><td>{{ r.jobs }}</td><td>{{ r.edition }}</td><td>{{ r.verified }}</td></tr>{% endfor %}
+</tbody></table>
+<p>Any other U.S. address works with a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>
+<p class="cta-row">{{ cta("/start/") }}</p>
+</main>
+{% endblock %}

@@ -321,6 +321,18 @@ APPLIANCE_NOTES = (
 
 BELLEVUE = Jurisdiction(
     key="bellevue-wa", name="Bellevue", state="WA", known=True,
+    last_verified="2026-11-17",
+    who_may_pull="Property owners or their state-licensed electrical contractors. Bellevue Handout B-4 says only property owners or their state-licensed electrical contractors can get an electrical permit and perform the electrical work, and the electrical permit application certifies the applicant is the owner (or owner's authorized agent) or an appropriately licensed contractor.",
+    portal_url="https://mybuildingpermit.com/",
+    fee_note="Bellevue's electrical permits page lists no dollar amounts and points to its Permit Fees and Payment page and Permit Fee Estimator. Handout B-4 describes a flat fee for a single-family EV charger permit and inspection; check the current amount with the city.",
+    sources=(PERMITS_URL, EV_HANDOUT_URL, APPLICATION_URL, BCC_URL, CODES_URL),
+    nec_edition="2023 NEC",
+    permit_required={EV_CHARGER: True, SERVICE_UPGRADE: True, SUBPANEL: True},
+    permit_notes={
+        EV_CHARGER: "Bellevue's electrical permits page lists installing an electric vehicle charging station as work that needs an electrical permit, and Handout B-4 says an electrical permit and an inspection are required.",
+        SERVICE_UPGRADE: "Bellevue's electrical permits page says electrical permits are required for changes to the service panel. Plan review may apply to altered services rated 100 amps or more.",
+        SUBPANEL: "Bellevue's electrical permits page lists adding a panel as work that needs an electrical permit.",
+    },
     # Census TIGERweb incorporated place extent (west, south, east, north) and downtown (lon, lat).
     bbox=(-122.2228, 47.5350, -122.0793, 47.6608), center=(-122.2015, 47.6101),
     department="City of Bellevue Development Services, Permit Processing",

@@ -10,6 +10,8 @@ from __future__ import annotations
 from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
 
 EV_CHARGER = "ev_charger"
+SERVICE_UPGRADE = "service_upgrade"
+SUBPANEL = "subpanel"
 
 # DBI Information Sheet E-02 (December 21, 2020), hosted by SFMTA. It still cites the 2019 codes.
 E02_URL = "https://sfmta.com/media/36888/download"
@@ -38,6 +40,18 @@ CODE_NOTE = (
 
 SAN_FRANCISCO = Jurisdiction(
     key="san-francisco-ca", name="San Francisco", state="CA", known=True,
+    last_verified="2026-11-17",
+    who_may_pull="Contractors must hold a B, C7, C10, C45, C46, C61 or D34 license (a C7 covers only low-voltage work). Only owners of a stand-alone single-family dwelling (R-3 occupancy) may apply to do the work themselves; staff may direct an owner to hire a licensed contractor.",
+    portal_url="https://sf.gov/apply-electrical-permit",
+    fee_note="San Francisco permit fees depend on the scope of work. DBI publishes a fee schedule (Table 1A-E, 2026) that the permit page links.",
+    sources=(PERMIT_PAGE_URL, E02_URL, SFBC_EVSE_URL, SFEC_URL),
+    nec_edition="2023 NEC (2025 California Electrical Code base)",
+    permit_required={EV_CHARGER: True, SERVICE_UPGRADE: True, SUBPANEL: True},
+    permit_notes={
+        EV_CHARGER: "DBI Information Sheet E-02: installing or modifying electrical equipment needed for the charger takes an electrical permit. No permit is required to plug a charger into a previously approved receptacle and circuit that already meets the charger maker's specifications.",
+        SERVICE_UPGRADE: "San Francisco's permit page lists services as Category 3 work on the electrical permit application.",
+        SUBPANEL: "San Francisco's permit page lists subpanels as Category 3 work on the electrical permit application.",
+    },
     bbox=(-122.5446, 37.6011, -122.3011, 37.8665), center=(-122.4194, 37.7792),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
     code_name="CEC",
     department="Department of Building Inspection (DBI), Permit Center",

@@ -123,8 +123,12 @@ def test_last_verified_prints_only_where_set():
     from permit_packets.jurisdictions import KNOWN
 
     verified = {j.key: j.last_verified for j in KNOWN.values() if j.last_verified}
-    assert verified == {"el-cajon-ca": "2026-11-16", "oro-valley-az": "2026-11-16"}
+    six = {key: "2026-11-17" for key in ("bellevue-wa", "chandler-az", "charlotte-nc", "mesa-az", "nashville-tn",
+                                          "san-francisco-ca")}
+    assert verified == {"el-cajon-ca": "2026-11-16", "oro-valley-az": "2026-11-16", **six}
     el_cajon = {**_model_sample("ev_charger"), "jurisdiction_key": "el-cajon-ca", "city": "El Cajon", "state": "CA"}
     assert "City checklist last verified: 2026-11-16" in " ".join(packet_pages(build("ev_charger", el_cajon).pdf)[0].split())
     mesa = {**_model_sample("ev_charger"), "jurisdiction_key": "mesa-az", "city": "Mesa", "state": "AZ"}
-    assert "last verified" not in packet_pages(build("ev_charger", mesa).pdf)[0]
+    assert "City checklist last verified: 2026-11-17" in " ".join(packet_pages(build("ev_charger", mesa).pdf)[0].split())
+    general = {**_model_sample("ev_charger"), "jurisdiction_key": "general", "city": "Nowhere", "state": "KS"}
+    assert "last verified" not in packet_pages(build("ev_charger", general).pdf)[0]

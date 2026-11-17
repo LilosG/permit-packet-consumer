@@ -56,6 +56,17 @@ class Jurisdiction:
     code_name: str = "NEC"
     # ISO date this city's checklist and code edition were last checked against its official sources. Empty: not checked.
     last_verified: str = ""
+    # Location-page facts, each from an official source and left empty where none confirms it (an empty field
+    # keeps the city's pages out of the index: see permit_packets/locations.py).
+    who_may_pull: str = ""  # who may apply for the electrical permit: homeowner and/or licensed contractor
+    portal_url: str = ""  # where the permit application is filed
+    fee_note: str = ""  # text only: how the city sets its fee. Never a dollar amount that is not published
+    sources: tuple[str, ...] = ()  # official pages and documents behind the fields above
+    nec_edition: str = ""  # the NEC edition the city enforces, e.g. "2023 NEC"
+    # Job type -> True where an official source confirms the permit is required. A missing job is unconfirmed.
+    permit_required: dict[str, bool] = field(default_factory=dict)
+    # Job type -> the condition or wording the official source gives with it.
+    permit_notes: dict[str, str] = field(default_factory=dict)
     department: str = ""
     phone: str = ""
     email: str = ""

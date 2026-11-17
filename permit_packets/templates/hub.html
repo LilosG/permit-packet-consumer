@@ -35,7 +35,7 @@
 {{ link_cards(who_cards) }}
 
 <h2>Which cities have built-in checklists for this job?</h2>
-{% if cities %}<p>{{ cities|join(", ") }}.</p>
+{% if cities %}<p>{% for label, url in cities %}{% if url %}<a href="{{ url }}">{{ label }}</a>{% else %}{{ label }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}.</p>
 <p>Any other U.S. address works too. It uses a general NEC checklist, and the packet says so. Confirm local requirements with your building department.</p>
 {% else %}<p>No city has its own checklist for this job yet. Any U.S. address works and uses a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>{% endif %}
 

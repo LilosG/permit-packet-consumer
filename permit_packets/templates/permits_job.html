@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, cta_band, faq_details %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ h1 }}</h1>
+<p class="byline">{{ author }} · Last verified: {{ verified }}</p>
+<p class="answer">{{ city.label }} requires an electrical permit for a {{ job.label|lower }}. This page collects what {{ city.name }}'s own pages and documents say, with the sources listed at the bottom.</p>
+<p class="cta-row">{{ cta(cta_href) }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+
+<h2>Do you need a permit for a {{ job.label|lower }} in {{ city.name }}?</h2>
+<p>{{ city.permit_notes.get(job.type_key) or (city.label ~ "'s official sources confirm an electrical permit is required for this job.") }}</p>
+<p>Check the sources below before you buy materials. The city decides what your project needs, and a permit exemption in one place does not carry over to another.</p>
+
+<h2>Who can pull the permit?</h2>
+<p>{{ city.who_may_pull }}</p>
+
+<h2>How do you apply in {{ city.name }}?</h2>
+<p>{{ city.submit_how }}</p>
+<ul>
+{%- if city.department %}<li>Department: {{ city.department }}</li>{% endif %}
+{%- if city.portal_url %}<li>Where to file: <a href="{{ city.portal_url }}" rel="noopener">{{ city.website_label or city.portal_url }}</a></li>{% endif %}
+{%- if city.phone %}<li>Phone: {{ city.phone }}</li>{% endif %}
+{%- if city.email %}<li>Email: {{ city.email }}</li>{% endif %}
+{%- if city.sets_required and city.sets_required > 1 %}<li>Sets of plans: {{ city.sets_required }}</li>{% endif %}
+{%- if city.needs_parcel_number %}<li>Have the parcel number ready.</li>{% endif %}
+{%- if city.utility %}<li>Electric utility: {{ city.utility }}</li>{% endif %}
+</ul>
+
+<h2>What does {{ city.name }} ask you to submit for a {{ job.label|lower }}?</h2>
+<p>{% if own_checklist %}{{ checklist.source_label }}.{% else %}{{ city.name }} publishes no {{ job.label|lower }} checklist of its own, so this is the general NEC checklist for the job, with {{ city.name }}'s code notes added.{% endif %} A packet cannot promise approval, and the building department can ask for more.</p>
+<ol class="check-list">
+{%- for req in checklist.items %}<li>{{ req.item }}</li>{% endfor %}
+</ol>
+{% if notes %}<h3>Notes for this job</h3>
+<ul>
+{%- for note in notes %}<li>{{ note }}</li>{% endfor %}
+</ul>{% if more_notes %}<p>{{ more_notes }} more notes are in the official sources below.</p>{% endif %}{% endif %}
+{{ cta_band(cta_href, "Preview a " ~ city.name ~ " " ~ job.label|lower ~ " packet free, sheet by sheet.") }}
+
+<h2>Which electrical code applies?</h2>
+<p>{{ checklist.code_note }} Edition on file: {{ city.nec_edition }}.</p>
+<p>The NEC is a national model code. Each state or city adopts an edition and may amend it, which is why the edition and local amendments above matter more than the national text. Confirm the edition on the city's own page before you rely on any code section.</p>
+{% if city.fee_note %}<h2>What does the permit cost?</h2>
+<p>{{ city.fee_note }}</p>{% endif %}
+
+<h2 id="faq">{{ job.label }} permit questions in {{ city.name }}</h2>
+{{ faq_details(faqs) }}
+
+<h2>Official sources</h2>
+<ul class="sources">
+{%- for url in city.sources %}<li><a href="{{ url }}" rel="noopener">{{ url }}</a></li>{% endfor %}
+</ul>
+<p>Last verified against these sources on {{ verified }}.</p>
+<p>More in {{ city.label }}: <a href="{{ city_path }}">all {{ city.name }} electrical permits</a>.</p>
+</main>
+{% endblock %}

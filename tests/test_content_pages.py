@@ -7,7 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 import app as app_module
-from permit_packets import content, seo
+from permit_packets import content, locations, seo
 
 HUB_PATHS = ["/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/", "/hot-tub-240v-permit/"]
 AUDIENCE_PATHS = ["/for/diy-homeowners/", "/for/homeowners-hiring-an-electrician/", "/for/electricians/",
@@ -178,19 +178,19 @@ def test_no_indexable_page_links_to_a_noindex_page(client):
             if not target.startswith("/") or target in utility or "." in target.rsplit("/", 1)[-1]:
                 continue
             entry = seo.PAGES.get(target)
-            assert not target.startswith("/permits/"), f"{path} links to {link}"
+            if target.startswith("/permits/"):
+                assert locations.path_indexable(target), f"{path} links to the gated page {link}"
+                continue
             assert entry is None or entry.indexable, f"{path} links to the noindex page {link}"
             if entry is None:
                 assert client.get(target).status_code == 200, f"{path} links to {link}"
 
 
-def test_permits_link_appears_only_when_the_guides_are_live(client, monkeypatch):
-    assert "/permits/" not in hrefs(client.get("/for/diy-homeowners/").text)
-    entry = seo.PAGES["/permits/"]
-    monkeypatch.setitem(seo.PAGES, "/permits/", seo.PageEntry(entry.path, entry.title, True, "2026-01-02"))
+def test_permits_link_follows_the_gate(client, monkeypatch):
     assert "/permits/" in hrefs(client.get("/for/diy-homeowners/").text)
+    monkeypatch.setattr(locations, "permits_indexable", lambda: False)
+    assert "/permits/" not in hrefs(client.get("/for/diy-homeowners/").text)
 
 
-def test_location_pages_stay_out_of_the_sitemap(client):
+def test_location_pages_stay_out_of_the_pages_sitemap(client):
     assert "/permits/" not in client.get("/sitemap-pages.xml").text
-    assert seo.location_robots() == "noindex,follow"

@@ -3,7 +3,7 @@
 THE INDEXABLE REGISTRY is `PAGES` below. A page is in a sitemap and in /llms.txt only when its entry has
 indexable=True. A content prompt that ships a page flips that one flag (and sets its content date).
 City, state and job pages under /permits/ are generated from the jurisdiction modules; they enter
-/sitemap-locations.xml when LOCATIONS_INDEXABLE is flipped.
+/sitemap-locations.xml page by page: permit_packets/locations.py holds the gating rules.
 """
 from __future__ import annotations
 
@@ -201,15 +201,6 @@ def robots_for(path: str) -> str:
     return "index,follow" if entry and entry.indexable else "noindex,follow"
 
 
-# Flip to True when the city, state and job page content ships: the pages then serve index,follow and
-# /sitemap-locations.xml lists them (lastmod = the city module's last_verified).
-LOCATIONS_INDEXABLE = False
-
-
-def location_robots() -> str:
-    return "index,follow" if LOCATIONS_INDEXABLE else "noindex,follow"
-
-
 # ---- Sitemaps and llms.txt ----
 
 def _url_entry(path: str, lastmod: str = "") -> str:
@@ -223,8 +214,11 @@ def _urlset(entries: list[str]) -> str:
 
 
 def sitemap_index() -> str:
-    names = ("sitemap-pages.xml", "sitemap-locations.xml", "sitemap-guides.xml")
-    body = "".join(f"  <sitemap><loc>{escape(absolute('/' + name))}</loc></sitemap>\n" for name in names)
+    """The index lists a child sitemap only when it holds at least one URL."""
+    children = (("sitemap-pages.xml", sitemap_pages()), ("sitemap-locations.xml", sitemap_locations()),
+                ("sitemap-guides.xml", sitemap_guides()))
+    body = "".join(f"  <sitemap><loc>{escape(absolute('/' + name))}</loc></sitemap>\n"
+                   for name, xml in children if "<url>" in xml)
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + "</sitemapindex>\n")
 
@@ -241,23 +235,9 @@ def sitemap_guides() -> str:
     return _urlset([_url_entry(entry.path, entry.lastmod) for entry in _registered("guides")])
 
 
-def location_paths() -> list[tuple[str, str]]:
-    """(path, lastmod) for every state, city and job page the jurisdiction modules support."""
-    from permit_packets import sitedata
-    paths: list[tuple[str, str]] = []
-    for state, cities in sitedata.cities_by_state().items():
-        paths.append((f"/permits/{state}/", max((c.last_verified for c in cities), default="")))
-        for city in cities:
-            base = f"/permits/{state}/{sitedata.city_slug(city)}/"
-            paths.append((base, city.last_verified))
-            paths.extend((f"{base}{job}/", city.last_verified) for job in sitedata.JOBS)
-    return paths
-
-
 def sitemap_locations() -> str:
-    if not LOCATIONS_INDEXABLE:
-        return _urlset([])
-    return _urlset([_url_entry(path, lastmod) for path, lastmod in location_paths()])
+    from permit_packets import locations
+    return _urlset([_url_entry(path, lastmod) for path, lastmod in locations.location_paths()])
 
 
 def robots_txt() -> str:
@@ -268,8 +248,8 @@ def robots_txt() -> str:
 def llms_txt() -> str:
     lines = [f"# {SITE_NAME}", "", f"> {HOME_DESCRIPTION}", "", "## Pages", ""]
     lines += [f"- [{entry.title}]({absolute(entry.path)})" for entry in PAGES.values() if entry.indexable]
-    if LOCATIONS_INDEXABLE:
-        lines += [f"- [{path}]({absolute(path)})" for path, _ in location_paths()]
+    from permit_packets import locations
+    lines += [f"- [{path}]({absolute(path)})" for path, _ in locations.location_paths()]
     return "\n".join(lines) + "\n"
 
 
@@ -289,3 +269,12 @@ def ga_snippet() -> Markup:
         f'<script async src="https://www.googletagmanager.com/gtag/js?id={measurement}"></script>\n'
         "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
         f"gtag('js',new Date());gtag('config','{measurement}');</script>")
+
+
+def dataset(name: str, description: str, path: str, date_modified: str, keywords: list[str],
+            places: list[str]) -> dict:
+    """Dataset JSON-LD for a page whose main content is a table of verified permit facts."""
+    return {"@context": "https://schema.org", "@type": "Dataset", "name": name, "description": description,
+            "url": absolute(canonical_path(path)), "dateModified": date_modified, "keywords": keywords,
+            "isAccessibleForFree": True, "creator": {"@type": "Organization", "name": AUTHOR},
+            "spatialCoverage": [{"@type": "Place", "name": place} for place in places]}

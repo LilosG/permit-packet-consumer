@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ h1 }}</h1>
+<p class="byline">{{ author }} · Last verified: {{ verified }}</p>
+<p class="answer">{{ city.label }} is verified for {{ rows|length }} residential electrical jobs. {{ city.name }} enforces the {{ city.nec_edition }}.</p>
+<table class="data-table">
+<thead><tr><th>Job</th><th>Permit</th><th>Who may pull it</th><th>Code</th><th>Verified</th></tr></thead>
+<tbody>
+{%- for r in rows %}<tr><td><a href="{{ r.url }}">{{ r.job }}</a></td><td>{{ r.permit }}</td><td>{{ r.who }}</td><td>{{ r.edition }}</td><td>{{ r.verified }}</td></tr>{% endfor %}
+</tbody></table>
+<p class="cta-row">{{ cta("/start/?city=" ~ city.key) }}</p>
+{% if city.fee_note %}<h2>Fees</h2><p>{{ city.fee_note }}</p>{% endif %}
+<h2>Official sources</h2>
+<ul class="sources">{% for url in city.sources %}<li><a href="{{ url }}" rel="noopener">{{ url }}</a></li>{% endfor %}</ul>
+</main>
+{% endblock %}

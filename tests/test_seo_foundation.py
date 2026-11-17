@@ -8,8 +8,9 @@ from fastapi.testclient import TestClient
 import app as app_module
 from permit_packets import seo
 
-PLACEHOLDERS = [
-    "/permits/", "/permits/ca/", "/permits/ca/el-cajon/", "/permits/ca/el-cajon/ev-charger/",
+PLACEHOLDERS = [  # gated: a city or job that has not passed locations.py
+    "/permits/az/", "/permits/az/chandler/", "/permits/az/chandler/ev-charger/", "/permits/ca/el-cajon/",
+    "/permits/ca/el-cajon/ev-charger/", "/permits/wa/bellevue/hot-tub-240v/",
 ]
 
 
@@ -47,20 +48,22 @@ def test_placeholders_are_noindex_and_in_no_sitemap(client, path):
     assert path not in client.get("/llms.txt").text
 
 
-def test_sitemap_is_an_index_of_three(client):
+def test_sitemap_index_lists_only_children_with_urls(client):
     body = client.get("/sitemap.xml").text
     assert "<sitemapindex" in body and "<urlset" not in body
-    for name in ("sitemap-pages", "sitemap-locations", "sitemap-guides"):
-        assert f"/{name}.xml</loc>" in body
+    assert "/sitemap-pages.xml</loc>" in body and "/sitemap-locations.xml</loc>" in body
+    assert "sitemap-guides" not in body  # empty: not listed
     pages = client.get("/sitemap-pages.xml").text
     assert "<lastmod>" in pages and "/terms/</loc>" in pages
 
 
-def test_flipping_the_registry_flag_publishes_a_page(client, monkeypatch):
-    entry = seo.PAGES["/permits/"]
-    monkeypatch.setitem(seo.PAGES, "/permits/", seo.PageEntry(entry.path, entry.title, True, "2026-01-02"))
-    assert "/permits/</loc><lastmod>2026-01-02</lastmod>" in client.get("/sitemap-pages.xml").text
-    assert '<meta name="robots" content="index,follow">' in client.get("/permits/").text
+def test_sitemap_index_drops_a_child_when_it_empties(client, monkeypatch):
+    from permit_packets import locations
+    monkeypatch.setattr(locations, "location_paths", lambda: [])
+    body = client.get("/sitemap.xml").text
+    assert "sitemap-locations" not in body and "sitemap-guides" not in body and "sitemap-pages.xml" in body
+    monkeypatch.setitem(seo.PAGES, "/guide-x/", seo.PageEntry("/guide-x/", "G", True, "2026-01-02", "guides"))
+    assert "sitemap-guides.xml</loc>" in client.get("/sitemap.xml").text
 
 
 def test_robots_and_llms(client):
@@ -102,19 +105,19 @@ def test_header_and_footer_links(client):
                  "/for/contractors/", "/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/",
                  "/hot-tub-240v-permit/", "/sample-packet/", "/pricing/", "/faq/", "/start/"):
         assert f'href="{href}"' in html, href
-    assert 'href="/permits/"' not in html  # stays out of the header until the city guides are indexable
+    assert 'href="/permits/"' in html and ">All cities<" in html
     footer = html[html.index("<footer"):]
-    assert "Permits by job" in footer and "Popular cities" not in footer  # city links wait for the city guides
-    assert 'href="/permits/' not in footer
+    assert "Permits by job" in footer and "Popular cities" in footer
+    assert 'href="/permits/wa/bellevue/"' in footer and 'href="/permits/ca/san-francisco/"' in footer
 
 
 def test_breadcrumbs_render_html_and_json_ld(client):
-    html = client.get("/permits/ca/el-cajon/ev-charger/").text
+    html = client.get("/permits/wa/bellevue/ev-charger/").text
     assert '<nav class="crumbs"' in html
     blocks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
     crumbs = next(b for b in blocks if b["@type"] == "BreadcrumbList")
     assert [i["name"] for i in crumbs["itemListElement"]][:2] == ["Home", "Permits"]
-    assert crumbs["itemListElement"][-1]["item"].endswith("/permits/ca/el-cajon/ev-charger/")
+    assert crumbs["itemListElement"][-1]["item"].endswith("/permits/wa/bellevue/ev-charger/")
 
 
 def test_json_ld_builders():

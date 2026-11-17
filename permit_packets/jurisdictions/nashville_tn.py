@@ -123,6 +123,14 @@ def _note(job: str) -> Note:
 
 NASHVILLE = Jurisdiction(
     key="nashville-tn", name="Nashville", state="TN", known=True,
+    last_verified="2026-11-17",
+    who_may_pull="Only licensed contractors with an e-permit account can apply for a trade permit online. Homeowners and other unlicensed applicants apply in person at the Department of Codes and Building Safety.",
+    portal_url="https://www.nashville.gov/departments/codes/construction-and-permits/e-permits-system",
+    fee_note="",
+    sources=("https://www.nashville.gov/departments/codes/construction-and-permits/trades-permits", "https://www.nashville.gov/departments/codes/construction-and-permits/e-permits-system", ADOPTED_CODES_URL),
+    nec_edition="2023 NEC",
+    permit_required={},
+    permit_notes={},
     bbox=(-87.0547, 35.9678, -86.5156, 36.4055), center=(-86.7811, 36.1645),  # Davidson County extent (Census) and downtown
     permit_area_by_location=True,
     department="Metro Codes and Building Safety, Permit Issuance",

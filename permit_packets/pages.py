@@ -19,7 +19,7 @@ from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from starlette.requests import Request
 
-from permit_packets import content, seo, sitedata
+from permit_packets import content, locations, seo, sitedata
 from permit_packets import faq as faq_data
 from permit_packets.jurisdictions import KNOWN
 
@@ -38,9 +38,8 @@ env.globals.update(
 
 
 def permits_live() -> bool:
-    """True once /permits/ is an indexable page. Until then no page links to it."""
-    entry = seo.PAGES.get("/permits/")
-    return bool(entry and entry.indexable)
+    """True once at least one city is indexable, so /permits/ is. Until then no page links to it."""
+    return locations.permits_indexable()
 
 
 def fill(text: str) -> Markup:
@@ -64,7 +63,7 @@ def set_asset_version(version: str) -> None:
 def _context() -> dict:
     """Header and footer data. Links to the /permits/ pages stay out until those pages are indexable."""
     live = permits_live()
-    return {"popular_cities": sitedata.popular_cities() if seo.LOCATIONS_INDEXABLE else [],
+    return {"popular_cities": locations.popular_cities(),
             "nav_permits": [item for item in sitedata.NAV_PERMITS if live or item[1] != "/permits/"],
             "city_count": len(KNOWN), "ga": seo.ga_snippet()}
 
@@ -174,14 +173,16 @@ def _register_content(path: str, name: str) -> None:
 
 def _hub_page(hub: content.Hub):
     _register_content(hub.path, hub.h1)
-    cities = [city.label for city in sitedata.known_cities() if city.known_for(hub.type_key)]
+    cities = [(city.label, locations.job_path(city, hub.slug) if locations.job_indexable(city, hub.slug) else "")
+              for city in sitedata.known_cities() if city.known_for(hub.type_key)]
+    city_links = locations.city_job_links(hub.slug)
 
     def handler() -> Response:
         return render(
             "hub.html", meta=seo.page_meta(hub.title, hub.description, hub.path, robots=seo.robots_for(hub.path)),
             jsonld=[seo.product_offers(), seo.faq(_qas(hub.faqs))],
             crumbs=[("Home", "/"), (hub.crumb, hub.path)], final_cta=True,
-            hub=hub, cities=cities, who_cards=who_cards())
+            hub=hub, cities=cities, city_links=city_links, who_cards=who_cards())
 
     router.add_api_route(hub.path, handler, methods=["GET", "HEAD"], include_in_schema=False)
 
@@ -302,8 +303,6 @@ def _placeholder(path: str, h1: str, crumb: str, parents: list[tuple[str, str]] 
     router.add_api_route(path, handler, methods=["GET", "HEAD"], include_in_schema=False)
 
 
-_placeholder("/permits/", "Electrical Permits by City", "Permits")
-
 STATE_NAMES = {"az": "Arizona", "ca": "California", "nc": "North Carolina", "tn": "Tennessee", "wa": "Washington"}
 
 
@@ -311,9 +310,44 @@ def _state_name(state: str) -> str:
     return STATE_NAMES.get(state, state.upper())
 
 
-def _location_page(title: str, h1: str, path: str, crumbs: list[tuple[str, str]]) -> Response:
-    meta = seo.page_meta(title, f"{h1}. This page is coming soon.", path, robots=seo.location_robots())
+def _soon(title: str, h1: str, path: str, crumbs: list[tuple[str, str]]) -> Response:
+    """A /permits/ page that has not passed its gate: 200, noindex, no content."""
+    meta = seo.page_meta(title, f"{h1}. This page is coming soon.", path, robots="noindex,follow")
     return render("placeholder.html", meta=meta, h1=h1, crumbs=crumbs)
+
+
+def _date(iso: str) -> str:
+    return datetime.date.fromisoformat(iso).strftime("%B %-d, %Y")
+
+
+def _hub_row(city, slug):
+    job = sitedata.JOBS[slug]
+    return {"city": city.label, "city_url": sitedata.city_path(city), "job": job.label,
+            "url": locations.job_path(city, slug), "who": city.who_may_pull, "edition": city.nec_edition,
+            "verified": _date(city.last_verified), "permit": "Required"}
+
+
+@router.api_route("/permits/", methods=["GET", "HEAD"], include_in_schema=False)
+def permits_index() -> Response:
+    crumbs = [("Home", "/"), ("Permits", "/permits/")]
+    if not locations.permits_indexable():
+        return _soon("Electrical Permits by City | Permit Packets", "Electrical Permits by City", "/permits/", crumbs)
+    cities = locations.indexable_cities()
+    rows = [{"city": c.label, "url": sitedata.city_path(c), "edition": c.nec_edition,
+             "jobs": ", ".join(sitedata.JOBS[j].label for j in locations.indexable_jobs(c)),
+             "verified": _date(c.last_verified)} for c in cities]
+    latest = max(c.last_verified for c in cities)
+    meta = seo.page_meta(
+        "Electrical Permits by City | Permit Packets",
+        f"Verified residential electrical permit rules for {len(cities)} cities: who may pull, code edition and official sources.",
+        "/permits/", robots="index,follow")
+    data = seo.dataset("Residential electrical permit rules by city",
+                       "Per city: the jobs covered, the NEC edition enforced and the date the facts were last checked against official sources.",
+                       "/permits/", latest, ["electrical permit", "NEC", "EV charger", "panel upgrade"],
+                       [c.label for c in cities])
+    return render("permits_index.html", meta=meta, jsonld=[data], crumbs=crumbs, final_cta=True, rows=rows,
+                  states=[(_state_name(st), f"/permits/{st}/") for st in locations.indexable_states()],
+                  latest=_date(latest))
 
 
 @router.api_route("/permits/{state}/", methods=["GET", "HEAD"], include_in_schema=False)
@@ -321,9 +355,25 @@ def permits_state(state: str) -> Response:
     if state not in sitedata.cities_by_state():
         raise HTTPException(404)
     name = _state_name(state)
+    path = f"/permits/{state}/"
+    crumbs = [("Home", "/"), ("Permits", "/permits/"), (name, path)]
     h1 = f"Electrical Permits in {name}"
-    return _location_page(f"{h1} | {seo.SITE_NAME}", h1, f"/permits/{state}/",
-                          [("Home", "/"), ("Permits", "/permits/"), (name, f"/permits/{state}/")])
+    if not locations.state_indexable(state):
+        return _soon(f"{h1} | {seo.SITE_NAME}", h1, path, crumbs)
+    cities = locations.indexable_cities(state)
+    rows = [{"city": c.label, "url": sitedata.city_path(c), "edition": c.nec_edition,
+             "jobs": ", ".join(sitedata.JOBS[j].label for j in locations.indexable_jobs(c)),
+             "verified": _date(c.last_verified)} for c in cities]
+    latest = max(c.last_verified for c in cities)
+    meta = seo.page_meta(
+        f"{h1} | {seo.SITE_NAME}",
+        f"Residential electrical permit rules for {', '.join(c.name for c in cities)} in {name}: code edition, who may pull, sources.",
+        path, robots="index,follow")
+    data = seo.dataset(f"Residential electrical permit rules in {name}",
+                       f"Per {name} city: the jobs covered, the NEC edition enforced and the date last checked.",
+                       path, latest, ["electrical permit", name], [c.label for c in cities])
+    return render("permits_index.html", meta=meta, jsonld=[data], crumbs=crumbs, final_cta=True, rows=rows,
+                  h1=h1, states=[], latest=_date(latest))
 
 
 @router.api_route("/permits/{state}/{city}/", methods=["GET", "HEAD"], include_in_schema=False)
@@ -331,11 +381,61 @@ def permits_city(state: str, city: str) -> Response:
     found = sitedata.find_city(state, city)
     if found is None:
         raise HTTPException(404)
-    h1 = f"Electrical Permits in {found.label}"
     path = sitedata.city_path(found)
-    return _location_page(f"{h1} | {seo.SITE_NAME}", h1, path,
-                          [("Home", "/"), ("Permits", "/permits/"), (_state_name(state), f"/permits/{state}/"),
-                           (found.label, path)])
+    crumbs = [("Home", "/"), ("Permits", "/permits/"), (_state_name(state), f"/permits/{state}/"), (found.label, path)]
+    h1 = f"Electrical Permits in {found.label}"
+    if not locations.city_indexable(found):
+        return _soon(f"{h1} | {seo.SITE_NAME}", h1, path, crumbs)
+    rows = [_hub_row(found, slug) for slug in locations.indexable_jobs(found)]
+    meta = seo.page_meta(
+        f"{h1} | {seo.SITE_NAME}",
+        f"{found.label} electrical permits: {', '.join(r['job'].lower() for r in rows)}. Who may pull, code edition, sources. Checked {rows[0]['verified']}.",
+        path, robots="index,follow")
+    data = seo.dataset(f"Residential electrical permit rules in {found.label}",
+                       f"Permit requirement, who may pull it and the NEC edition for each job in {found.label}.",
+                       path, found.last_verified, ["electrical permit", found.label], [found.label])
+    return render("permits_city.html", meta=meta, jsonld=[data], crumbs=crumbs, final_cta=True, rows=rows,
+                  city=found, h1=h1, verified=_date(found.last_verified))
+
+
+NOTE_WORDS = 170
+
+
+def _first_sentence(text: str) -> str:
+    match = re.match(r"(.+?[.!?])(\s|$)", text.strip())
+    return match.group(1) if match else text.strip()
+
+
+def _job_view(found, slug: str) -> dict:
+    """Everything a city x job page says, taken from the city module. Nothing here is written by hand per city."""
+    job = sitedata.JOBS[slug]
+    checklist = found.checklist_for(job.type_key)
+    own = found.known_for(job.type_key)
+    labels = {"always": "", "disconnect": "If the work includes a disconnect: ", "trench": "If the run is trenched: ",
+              "indoor": "For an indoor installation: ", "outdoor": "For an outdoor installation: "}
+    notes, used = [], 0
+    for n in checklist.notes:  # as many of the city's notes as fit a page of about 800 words; the sources hold the rest
+        text = labels.get(n.when, f"If {n.when}: ") + n.text
+        if used + len(text.split()) > NOTE_WORDS and notes:
+            continue
+        notes.append(text)
+        used += len(text.split())
+    more_notes = len(checklist.notes) - len(notes)
+    reviewer = [r.item for r in checklist.items]
+    faqs = [
+        (f"Do I need a permit for a {job.label.lower()} in {found.name}?", found.permit_notes.get(job.type_key) or f"{found.label}'s official sources confirm an electrical permit is required for this job."),
+        (f"Who can pull the {job.label.lower()} permit in {found.name}?", _first_sentence(found.who_may_pull)),
+        (f"Where do I apply in {found.name}?",
+         f"{found.submit_how}" + (f" Portal: {found.portal_url}." if found.portal_url else "") + (f" Department: {found.department}." if found.department else "")),
+        (f"Which electrical code does {found.name} enforce?",
+         f"{found.nec_edition}, with the city's local amendments."),
+    ]
+    if found.fee_note:
+        faqs.append((f"What does the permit cost in {found.name}?", found.fee_note))
+    faqs.append((f"What does {found.name} ask to see with a {job.label.lower()} permit?",
+                 "; ".join(item.split(" (")[0] for item in reviewer[:3]) + ", among other items listed above."))
+    return {"job": job, "checklist": checklist, "own_checklist": own, "notes": notes, "more_notes": more_notes,
+            "faqs": faqs}
 
 
 @router.api_route("/permits/{state}/{city}/{job}/", methods=["GET", "HEAD"], include_in_schema=False)
@@ -345,10 +445,19 @@ def permits_job(state: str, city: str, job: str) -> Response:
         raise HTTPException(404)
     label = sitedata.JOBS[job].label
     h1 = f"{label} Permit in {found.label}"
-    path = f"{sitedata.city_path(found)}{job}/"
-    return _location_page(f"{label} Permit: {found.label} | {seo.SITE_NAME}", h1, path,
-                          [("Home", "/"), ("Permits", "/permits/"), (_state_name(state), f"/permits/{state}/"),
-                           (found.label, sitedata.city_path(found)), (label, path)])
+    path = locations.job_path(found, job)
+    crumbs = [("Home", "/"), ("Permits", "/permits/"), (_state_name(state), f"/permits/{state}/"),
+              (found.label, sitedata.city_path(found)), (label, path)]
+    if not locations.job_indexable(found, job):
+        return _soon(f"{label} Permit: {found.label} | {seo.SITE_NAME}", h1, path, crumbs)
+    view = _job_view(found, job)
+    meta = seo.page_meta(
+        f"{label} Permit in {found.label} | {seo.SITE_NAME}",
+        f"{label} permit in {found.label}: who may pull it, the {found.nec_edition.split(' (')[0]} edition, what the city asks for. Checked {_date(found.last_verified)}.",
+        path, robots="index,follow")
+    return render("permits_job.html", meta=meta, jsonld=[seo.faq(view["faqs"])], crumbs=crumbs, final_cta=True,
+                  city=found, h1=h1, verified=_date(found.last_verified),
+                  cta_href=f"/start/?job={job}&city={found.key}", **view)
 
 
 # ---- Legal and support pages ----
