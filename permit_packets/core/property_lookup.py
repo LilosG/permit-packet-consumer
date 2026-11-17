@@ -26,7 +26,7 @@ from io import BytesIO
 from typing import NamedTuple
 
 import httpx
-from PIL import Image, ImageFilter, ImageOps, ImageStat
+from PIL import Image, ImageChops, ImageFilter, ImageOps, ImageStat
 
 from permit_packets.jurisdictions import Jurisdiction, jurisdiction_for
 from permit_packets.core.property_plan import (
@@ -214,11 +214,17 @@ USGS_CREDIT = "Map services and data available from U.S. Geological Survey, Nati
 MAPBOX_CREDIT = "Imagery © Mapbox © OpenStreetMap © Maxar"
 LOOKUP_TIMEOUT = httpx.Timeout(14, connect=6)
 AERIAL_TIMEOUT = httpx.Timeout(40, connect=6)
-AERIAL_PIXELS = 1400
+# The plan prints 7 in square on letter, so 2100 px is 300 dpi at print size. Every source is fetched at up to
+# AERIAL_SUPERSAMPLE times that (or as fine as it has detail) and brought down or up to AERIAL_PIXELS with LANCZOS.
+AERIAL_PIXELS = 2100
+AERIAL_SUPERSAMPLE = 2
+AERIAL_MAX_REQUEST_PIXELS = 4096  # the ArcGIS servers' own maxImageWidth
+DESPECKLE_DELTA = 55  # a pixel this much brighter than its neighborhood median is a decoding speck, not detail
 TARGET_BRIGHTNESS = 110  # mean 0-255; darker pictures are lifted to about this
 # The one lossy encode the picture gets on our side: sources come in as PNG (or Mapbox's own jpg90) and are
-# encoded once, at full chroma, because 4:2:0 chroma smears thin roof edges, lot fences and curbs.
-JPEG_QUALITY = 90
+# encoded once, at full chroma, because 4:2:0 chroma smears thin roof edges, lot fences and curbs. The picture
+# stays full RGB end to end (no palette, quantize or threshold) and reportlab embeds the JPEG bytes unchanged.
+JPEG_QUALITY = 92
 # ArcGIS export format. "png" is 8-bit palette on MapServer exports (lossy color); png24 is full color, lossless.
 EXPORT_FORMAT = "png24"
 USER_AGENT = "LilosGrowth-PermitPackets/1.0"
@@ -794,14 +800,28 @@ def _balance(image: Image.Image) -> Image.Image:
     return image
 
 
-def _finish(image_bytes: bytes) -> bytes:
-    """Levels and a light sharpen at the source's own resolution, one resize to AERIAL_PIXELS, one JPEG encode."""
+def _despeckle(image: Image.Image) -> Image.Image:
+    """Replace isolated blown-out pixels with the neighborhood median. The county's mosaic carries white specks
+    inside dark shadows; stretched to print size they show as black-and-white noise. Run at the orthophoto's
+    own pixel size, where a speck is one to three pixels across."""
+    for radius in (7, 5):
+        median = image.filter(ImageFilter.MedianFilter(radius))
+        brighter = ImageChops.subtract(image.convert("L"), median.convert("L"))
+        mask = brighter.point(lambda value: 255 if value > DESPECKLE_DELTA else 0).filter(ImageFilter.MaxFilter(3))
+        image = Image.composite(median, image, mask)
+    return image
+
+
+def _finish(image_bytes: bytes, despeckle: bool = False) -> bytes:
+    """Despeckle (county orthophotos) and level at the source's own resolution, one LANCZOS resize to
+    AERIAL_PIXELS (300 dpi at print size), a light sharpen at that size, one full-chroma JPEG encode. Always RGB."""
     image = Image.open(BytesIO(image_bytes)).convert("RGB")
-    image = _balance(image).filter(ImageFilter.UnsharpMask(radius=1, percent=60, threshold=2))
+    image = _balance(_despeckle(image) if despeckle else image)
     if image.size != (AERIAL_PIXELS, AERIAL_PIXELS):
         image = image.resize((AERIAL_PIXELS, AERIAL_PIXELS), Image.Resampling.LANCZOS)
+    image = image.filter(ImageFilter.UnsharpMask(radius=1.6, percent=45, threshold=3))
     buffer = BytesIO()
-    image.save(buffer, format="JPEG", quality=JPEG_QUALITY, subsampling=0, optimize=True)
+    image.save(buffer, format="JPEG", quality=JPEG_QUALITY, subsampling=0, optimize=True, dpi=(300, 300))
     return buffer.getvalue()
 
 
@@ -827,10 +847,10 @@ def _tile_count(box: tuple[float, float, float, float], zoom: int) -> int:
 
 
 def mapbox_zoom(view: PlanView, box: tuple[float, float, float, float] | None = None, tile_px: int = 512) -> int:
-    """The coarsest zoom whose tile pixels fill the plan at AERIAL_PIXELS across, capped at MAPBOX_MAX_ZOOM and
+    """The coarsest zoom whose tile pixels fill the plan at AERIAL_SUPERSAMPLE x AERIAL_PIXELS across, capped at MAPBOX_MAX_ZOOM and
     stepped down until the box takes MAPBOX_TILE_LIMIT tiles or fewer."""
     box = box or view.bbox()
-    wanted_m_per_pixel = view.size_ft / FEET_PER_METER / AERIAL_PIXELS
+    wanted_m_per_pixel = view.size_ft / FEET_PER_METER / (AERIAL_PIXELS * AERIAL_SUPERSAMPLE)
     ground_per_pixel_at_zoom_0 = WEB_MERCATOR_SPAN_M / tile_px * math.cos(math.radians(view.latitude))
     zoom = min(MAPBOX_MAX_ZOOM, math.ceil(math.log2(ground_per_pixel_at_zoom_0 / wanted_m_per_pixel)))
     while zoom > 0 and _tile_count(box, zoom) > MAPBOX_TILE_LIMIT:
@@ -876,7 +896,7 @@ def _usgs_aerial(client: httpx.Client, view: PlanView) -> bytes:
     west, south, east, north = view.bbox(shift_for(view, "usgs"))
     response = client.get(USGS_IMAGE_URL, timeout=AERIAL_TIMEOUT, params={
         "bbox": f"{west},{south},{east},{north}", "bboxSR": 102100, "imageSR": 102100,
-        "size": "1000,1000", "format": EXPORT_FORMAT, "f": "image",
+        "size": f"{AERIAL_PIXELS},{AERIAL_PIXELS}", "format": EXPORT_FORMAT, "f": "image",
         "interpolation": "RSP_BilinearInterpolation",
     })
     response.raise_for_status()
@@ -892,23 +912,45 @@ def _local_sources(view: PlanView) -> list[tuple[str, str]]:
     ]
 
 
+def local_request_pixels(view: PlanView, gsd_m: float) -> int:
+    """Pixels to ask a county server for: AERIAL_SUPERSAMPLE x the print size, but never finer than half the
+    orthophoto's own pixel (some servers draw nothing past their display scale) and never past the server cap."""
+    finest = math.ceil(view.size_ft / FEET_PER_METER / (gsd_m / 2))
+    return min(AERIAL_MAX_REQUEST_PIXELS, AERIAL_PIXELS * AERIAL_SUPERSAMPLE, max(400, finest))
+
+
 def _local_aerial(client: httpx.Client, view: PlanView) -> tuple[bytes, str] | None:
     """A local government orthophoto covering the view, if one is set up."""
     for url, credit in _local_sources(view):
         x_min, y_min, x_max, y_max = view.bbox(shift_for(view, url))
-        # No finer than half the orthophoto's own pixel: some servers draw nothing past their display scale.
-        pixels = min(AERIAL_PIXELS, max(400, math.ceil(view.size_ft / FEET_PER_METER / (LOCAL_AERIAL_GSD_M.get(url, 0.15) / 2))))
-        response = client.get(url, timeout=AERIAL_TIMEOUT, params={
-            "bbox": f"{x_min},{y_min},{x_max},{y_max}", "bboxSR": 102100, "imageSR": 102100,
-            "size": f"{pixels},{pixels}", "format": EXPORT_FORMAT, "f": "image",
-        })
-        response.raise_for_status()
-        if not response.headers.get("content-type", "").startswith("image/"):
-            raise httpx.HTTPError("no image returned")
-        if _blank(response.content):
-            continue  # the box reaches past this county's coverage
-        return response.content, credit
+        pixels = local_request_pixels(view, LOCAL_AERIAL_GSD_M.get(url, 0.15))
+        # These servers sometimes return a blank image for a size they drew fine a moment ago, so a blank
+        # is asked again at a slightly different size before it is taken to mean "outside coverage".
+        for attempt in range(3):
+            size = pixels + attempt * 2
+            response = client.get(url, timeout=AERIAL_TIMEOUT, params={
+                "bbox": f"{x_min},{y_min},{x_max},{y_max}", "bboxSR": 102100, "imageSR": 102100,
+                "size": f"{size},{size}", "format": EXPORT_FORMAT, "f": "image",
+            })
+            response.raise_for_status()
+            if not response.headers.get("content-type", "").startswith("image/"):
+                raise httpx.HTTPError("no image returned")
+            if not _blank(response.content):
+                return _to_native(response.content, view, LOCAL_AERIAL_GSD_M.get(url, 0.15)), credit
     return None
+
+
+def _to_native(image_bytes: bytes, view: PlanView, gsd_m: float) -> bytes:
+    """The county servers repeat the orthophoto's pixels (nearest neighbor) when asked for more than it has, so
+    the 2x request is averaged back to the true pixel grid. Despeckling and the final LANCZOS resize then work
+    on real pixels and the print gets smooth edges instead of 2 x 2 blocks. Lossless PNG, still full RGB."""
+    image = Image.open(BytesIO(image_bytes)).convert("RGB")
+    native = max(1, math.ceil(view.size_ft / FEET_PER_METER / gsd_m))
+    if image.width > native:
+        image = image.resize((native, native), Image.Resampling.BOX)
+    out = BytesIO()
+    image.save(out, format="PNG", compress_level=3)
+    return out.getvalue()
 
 
 def _blank(image: bytes) -> bool:
@@ -926,8 +968,7 @@ def fetch_aerial(view: PlanView, client: httpx.Client | None = None) -> tuple[by
     local_is_sharp = any(LOCAL_AERIAL_GSD_M.get(url, 1.0) <= MAPBOX_GSD_M for url, _ in _local_sources(view))
 
     def local() -> tuple[bytes, str] | None:
-        found = _local_aerial(client, view)
-        return (found[0], found[1]) if found else None
+        return _local_aerial(client, view)
 
     def mapbox() -> tuple[bytes, str] | None:
         return (_mapbox_aerial(client, view, token), MAPBOX_CREDIT) if token else None
@@ -939,7 +980,7 @@ def fetch_aerial(view: PlanView, client: httpx.Client | None = None) -> tuple[by
             except (httpx.HTTPError, OSError):
                 continue
             if found:
-                return _finish(found[0]), found[1]
+                return _finish(found[0], despeckle=source is local), found[1]
         for _ in range(2):
             try:
                 return _finish(_usgs_aerial(client, view)), USGS_CREDIT

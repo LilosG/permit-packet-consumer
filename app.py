@@ -95,7 +95,9 @@ def public_base_url() -> str:
 
 
 FOOTER_HTML = (STATIC / "partials" / "footer.html").read_text(encoding="utf-8")
-FAQ_ITEM = re.compile(r'<details class="faq"><summary>(.*?)</summary><p>(.*?)</p></details>', re.S)
+FAQ_ITEM = re.compile(
+    r'<button [^>]*class="faq-q"[^>]*>(.*?)<span class="faq-ic"[^>]*></span></button></h3>'
+    r'<div [^>]*class="faq-a"[^>]*><div class="faq-a-in"><p>(.*?)</p></div></div>', re.S)
 
 
 def _plain(fragment: str) -> str:

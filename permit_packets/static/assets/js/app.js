@@ -48,7 +48,7 @@
   const hasMarks = () => marks.bends.length > 0 || Object.keys(marks.points).length > 0;
 
   /* ---- Focus mode: the studio hides the page sections; "Exit studio" brings them back ---- */
-  const PAGE_SECTIONS = '.metrics, #sample, #included, #compare, #pricing, #how, #faq';
+  const PAGE_SECTIONS = '.metrics, #sample, #included, #compare, #pricing, #how, #faq, #final-cta';
   function enterStudio() {
     $$(PAGE_SECTIONS).forEach((el) => { el.hidden = true; });
     document.body.classList.add('studio-mode');
@@ -711,12 +711,23 @@
     goToWorkspace();
     $('#find').requestSubmit();
   });
-  $('#hero-sample').addEventListener('click', async () => {
+  [$('#hero-sample'), $('#cta-sample')].forEach((link) => link.addEventListener('click', async () => {
     await ready;
     if (!current) return;
     goToWorkspace();
     $('#use-sample').click();
-  });
+  }));
+
+  /* FAQ accordion: one open at a time, real buttons with aria-expanded; the height animates in CSS. */
+  const faqItems = $$('.faq-item');
+  faqItems.forEach((item) => item.querySelector('.faq-q').addEventListener('click', () => {
+    const open = !item.classList.contains('is-open');
+    faqItems.forEach((other) => {
+      const isThis = other === item && open;
+      other.classList.toggle('is-open', isThis);
+      other.querySelector('.faq-q').setAttribute('aria-expanded', String(isThis));
+    });
+  }));
   document.addEventListener('click', (event) => {
     const start = event.target.closest('[data-start]');
     if (!start) return;
@@ -732,7 +743,7 @@
     sampleTabs.forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
     const image = $('#sample-img');
     image.src = `/assets/samples/${tab.dataset.sample}-1000.webp`;
-    image.dataset.full = `/assets/samples/${tab.dataset.sample}.png`;
+    image.dataset.full = `/assets/samples/${tab.dataset.sample}-2000.webp`;
     image.alt = `Sample packet sheet: ${tab.dataset.label}`;
     $('#zoom-text').textContent = ['02-site-plan', '03-single-line'].includes(tab.dataset.sample) ? 'Click diagram to zoom' : 'Click sheet to zoom';
   }
@@ -748,7 +759,7 @@
   });
   $('#sample-open').addEventListener('click', () => {
     const image = $('#lightbox-img');
-    image.src = $('#sample-img').dataset.full || $('#sample-img').src.replace(/-1000\.webp$/, '.png');
+    image.src = $('#sample-img').dataset.full || $('#sample-img').src.replace(/-1000\.webp$/, '-2000.webp');
     image.alt = $('#sample-img').alt;
     lightbox.hidden = false;
     $('#lightbox-close').focus();

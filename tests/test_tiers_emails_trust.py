@@ -274,8 +274,10 @@ def test_the_homepage_has_organization_and_faq_json_ld(client):
     org = next(b for b in blocks if b["@type"] == "Organization")
     assert (org["name"], org["url"], org["email"]) == ("Lilos Growth", "https://lilosgrowth.com", "hello@lilosgrowth.com")
     faq = next(b for b in blocks if b["@type"] == "FAQPage")
-    questions = re.findall(r'<details class="faq"><summary>(.*?)</summary>', html)
-    assert [q["name"] for q in faq["mainEntity"]] == [q.replace("&amp;", "&") for q in questions] and len(questions) >= 6
+    questions = re.findall(r'<button [^>]*class="faq-q"[^>]*>(.*?)<span class="faq-ic"', html)
+    assert [q["name"] for q in faq["mainEntity"]] == [q.replace("&amp;", "&") for q in questions] and len(questions) == 10
+    assert faq["mainEntity"][0]["name"] == "What's in a packet?" and faq["mainEntity"][8]["name"] == "Can I get a refund?"
+    assert "<" not in faq["mainEntity"][8]["acceptedAnswer"]["text"]
 
 
 def test_checkout_wording_on_the_wizard(client):

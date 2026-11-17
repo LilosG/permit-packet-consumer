@@ -223,21 +223,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .how-steps b { color: var(--ink); font: 700 18px var(--display); letter-spacing: -.02em; }
 .how-steps .num { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--blue-soft); color: var(--blue); font: 800 17px var(--display); }
 .how-steps span:not(.num) { font-size: 15px; }
-.site-footer { padding: 44px 0 52px; background: var(--bg); border-top: 1px solid var(--line); font-size: 13.5px; }
-.site-footer .brand { margin-bottom: 14px; }
-.site-footer p { max-width: 82ch; margin: 0; color: var(--muted); }
-.site-footer b { color: var(--ink); }
-
 /* ---- FAQ ---- */
-.faq-list { max-width: 800px; margin: 32px auto 0; }
-details.faq { margin-bottom: 12px; background: #ffffff; border: 1px solid rgba(15, 23, 42, .07); border-radius: 8px; box-shadow: 0 1px 3px rgba(15, 23, 42, .03); overflow: hidden; transition: box-shadow .15s, border-color .15s; }
-details.faq:hover { border-color: var(--blue-tint); box-shadow: 0 6px 16px -8px rgba(15, 23, 42, .12); }
-details.faq summary { position: relative; display: block; padding: 16px 52px 16px 20px; color: #0f172a; font: 700 16px var(--display); letter-spacing: -.01em; cursor: pointer; list-style: none; }
-details.faq summary::-webkit-details-marker { display: none; }
-details.faq summary:focus-visible { outline: 3px solid rgba(29, 78, 216, .3); outline-offset: -3px; }
-details.faq summary::after { content: ""; position: absolute; right: 20px; top: 50%; width: 8px; height: 8px; margin-top: -6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s, border-color .2s; }
-details.faq[open] summary::after { margin-top: -2px; border-color: var(--blue); transform: rotate(-135deg); }
-details.faq p { margin: 0; padding: 0 20px 16px; color: #475569; font-size: 15px; line-height: 1.65; }
 
 /* ---- Workspace ---- */
 .workspace-band { background: linear-gradient(180deg, #f0f7ff 0%, #f8fafc 100%); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); scroll-margin-top: 60px; }
@@ -528,8 +514,66 @@ body.studio-mode .bar { grid-template-columns: 1fr auto; }
 .prose ul { padding-left: 22px; }
 .prose li { margin-bottom: 8px; }
 .prose .lead { font-size: 17px; }
-.site-footer .foot-line { margin: 0 0 8px; color: var(--ink); }
-.site-footer .foot-links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 14px; }
-.site-footer .foot-links a, .site-footer .foot-line a { color: var(--blue); }
 .pay-note { margin: 12px 0 0; color: var(--muted); font-size: 13.5px; }
 .status-pill.in_review { background: var(--blue-soft); color: var(--blue); }
+
+/* ---- FAQ: sticky intro on the left, one-open accordion on the right ---- */
+.faq-layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: start; }
+.faq-side { position: sticky; top: 96px; }
+.faq-side .kicker, .faq-side .band-title { text-align: left; }
+.faq-sub { margin: 14px 0 0; max-width: 34ch; color: var(--body); font-size: 17px; }
+.faq-card { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; margin-top: 24px; padding: 20px; background: var(--white); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: var(--shadow-sm); }
+.faq-mail { color: var(--blue); font: 700 15.5px var(--display); text-decoration: none; overflow-wrap: anywhere; }
+.faq-mail:hover { text-decoration: underline; }
+.faq-list { border-top: 1px solid var(--line-strong); }
+.faq-item { border-bottom: 1px solid var(--line-strong); }
+.faq-item h3 { margin: 0; font: inherit; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; padding: 20px 8px 20px 0; border: 0; background: none; color: var(--ink); font: 700 17px/1.35 var(--display); letter-spacing: -.01em; text-align: left; cursor: pointer; transition: color .15s, padding .15s; }
+.faq-q:hover { color: var(--blue); padding-left: 6px; }
+.faq-q:focus-visible { outline: 3px solid rgba(29, 78, 216, .3); outline-offset: 2px; border-radius: 6px; }
+.faq-ic { position: relative; flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line-strong); transition: background .2s, border-color .2s; }
+.faq-ic::before, .faq-ic::after { content: ""; position: absolute; left: 50%; top: 50%; width: 11px; height: 2px; margin: -1px 0 0 -5.5px; border-radius: 2px; background: var(--ink); transition: transform .25s, background .2s; }
+.faq-ic::after { transform: rotate(90deg); }
+.faq-item.is-open .faq-ic { background: var(--blue); border-color: var(--blue); }
+.faq-item.is-open .faq-ic::before, .faq-item.is-open .faq-ic::after { background: #fff; }
+.faq-item.is-open .faq-ic::after { transform: rotate(0deg); }
+.faq-item.is-open .faq-q { color: var(--blue); }
+.faq-a { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows .3s ease, visibility 0s linear .3s; }
+.faq-item.is-open .faq-a { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows .3s ease, visibility 0s; }
+.faq-a-in { min-height: 0; overflow: hidden; }
+.faq-a-in p { margin: 0; padding: 0 44px 22px 0; color: var(--body); font-size: 16px; line-height: 1.65; }
+.faq-a-in a { color: var(--blue); }
+@media (max-width: 900px) {
+  .faq-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .faq-side { position: static; }
+  .faq-a-in p { padding-right: 0; }
+}
+
+/* ---- Final call to action, homepage only ---- */
+.cta-band { padding: 72px 0; background: var(--blue); color: #fff; text-align: center; }
+.cta-band h2 { margin: 0; color: #fff; font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; text-wrap: balance; }
+.cta-band p { max-width: 52ch; margin: 12px auto 0; color: rgba(255, 255, 255, .88); font-size: 18px; }
+.cta-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 28px; margin-top: 30px; }
+.btn-white { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background: #fff; color: var(--blue); font: 700 16px var(--display); text-decoration: none; box-shadow: 0 12px 24px -12px rgba(15, 23, 42, .5); transition: transform .15s, background .15s; }
+.btn-white:hover { background: var(--blue-soft); transform: translateY(-1px); }
+.cta-link { padding: 4px 0; border: 0; border-bottom: 1px solid rgba(255, 255, 255, .6); background: none; color: #fff; font: 600 15.5px var(--display); cursor: pointer; }
+.cta-link:hover { border-bottom-color: #fff; }
+.btn-white:focus-visible, .cta-link:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* ---- Footer: dark, four columns ---- */
+.site-footer { padding: 56px 0 28px; background: var(--ink); border-top: 3px solid var(--blue); color: #cbd5e1; font-size: 14px; }
+.foot-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); gap: 40px; }
+.site-footer .brand { margin-bottom: 14px; color: #fff; }
+.site-footer .brand span { color: #fff; }
+.foot-disclaimer { max-width: 44ch; margin: 0; color: var(--faint); font-size: 12.5px; line-height: 1.6; }
+.foot-disclaimer b { color: #e2e8f0; }
+.foot-product { margin: 14px 0 0; color: #cbd5e1; }
+.foot-head { margin: 0 0 14px; color: #fff; font: 700 13px var(--display); letter-spacing: .08em; text-transform: uppercase; }
+.site-footer ul { margin: 0; padding: 0; list-style: none; }
+.site-footer li { margin-bottom: 10px; }
+.site-footer a { color: #cbd5e1; text-decoration: none; overflow-wrap: anywhere; }
+.site-footer a:hover { color: #fff; text-decoration: underline; }
+.site-footer a:focus-visible { outline: 2px solid #93c5fd; outline-offset: 3px; border-radius: 3px; }
+.foot-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 44px; padding-top: 22px; border-top: 1px solid rgba(255, 255, 255, .12); color: var(--faint); font-size: 13px; }
+@media (max-width: 960px) { .foot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .foot-brand { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .foot-grid { grid-template-columns: minmax(0, 1fr); gap: 30px; } .foot-bar { flex-direction: column; } }

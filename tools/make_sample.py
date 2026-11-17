@@ -1,5 +1,7 @@
 """Regenerate the homepage sample sheets from one real lookup.
 
+Pages are rendered 4000 px wide and downsampled to 300 / 1000 / 2000 px WebP (quality 90).
+
 The sample job: EV charger, 48 A, 200 A panel, El Cajon CA, owner-builder, charger at a detached garage.
 It runs the same lookup and packet build the site does, so the images, the homepage cards and the wizard
 sample all carry the same numbers.
@@ -101,7 +103,7 @@ def _inside(pt, poly):
 
 def render(pdf: bytes) -> list[Image.Image]:
     doc = pypdfium2.PdfDocument(pdf)
-    return [doc[i].render(scale=1801 / doc[i].get_width()).to_pil().convert("RGB") for i in range(len(doc))]
+    return [doc[i].render(scale=4000 / doc[i].get_width()).to_pil().convert("RGB") for i in range(len(doc))]
 
 
 def main(dry_run: bool) -> None:
@@ -120,10 +122,15 @@ def main(dry_run: bool) -> None:
         return
     for name, index in chosen.items():
         image = pages[index]
-        image.save(OUT / f"{name}.png", optimize=True)
-        for width, height in ((300, 388), (1000, 1294)):
-            image.resize((width, height), Image.LANCZOS).save(OUT / f"{name}-{width}.webp", quality=82, method=6)
-
+        # 300 px tab thumbnail, 1000 px viewer, 2000 px lightbox zoom. All WebP q90; the page render is 2x the
+        # zoom size so each is a LANCZOS downsample, never an upscale. No PNG is written.
+        for width in (300, 1000, 2000):
+            height = round(image.height * width / image.width)
+            image.resize((width, height), Image.LANCZOS).save(OUT / f"{name}-{width}.webp", quality=90, method=6)
+    # The link-preview image (og:image) is a JPEG because not every crawler reads WebP.
+    site = pages[chosen["02-site-plan"]]
+    site.resize((1200, round(site.height * 1200 / site.width)), Image.LANCZOS).save(
+        OUT / "02-site-plan-og.jpg", quality=90, subsampling=0, optimize=True)
 
 if __name__ == "__main__":
     main("--dry-run" in sys.argv)
