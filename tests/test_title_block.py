@@ -77,3 +77,54 @@ def test_a_city_without_a_stamp_box_draws_none():
 def test_the_cover_stays_one_page_with_the_stamp_box():
     result = build("ev_charger", _stamp_payload("ev_charger", "mesa-az", "Mesa", "AZ"))
     assert len(result.body["documents"]) == len(packet_pages(result.pdf))
+
+
+OWNER_PAYLOAD = {"customer": "Sample Homeowner", "contractor": "Homeowner (Owner-Builder)", "license_number": "Owner-Builder"}
+
+
+@pytest.mark.parametrize("key", ALL)
+def test_owner_builder_title_block_has_no_designer_of_record(key):
+    pages = packet_pages(build(key, {**_model_sample(key), **OWNER_PAYLOAD}).pdf)
+    for number, text in enumerate(pages, start=1):
+        flat = " ".join(text.split())
+        assert "Prepared by: Sample Homeowner (Owner-Builder)" in flat, number
+        assert "OWNER SIGNATURE" in text and "Signature" in text and "Date" in text
+        assert "DESIGNER OF RECORD" not in text, number
+
+
+@pytest.mark.parametrize("key", ALL)
+def test_contractor_title_block_keeps_designer_of_record(key):
+    pages = packet_pages(build(key, {**_model_sample(key), "contractor": "Desert Volt", "license_number": "ROC 1"}).pdf)
+    assert all("ELECTRICIAN (DESIGNER OF RECORD)" in text and "ROC 1" in text for text in pages)
+
+
+@pytest.mark.parametrize("key", ALL)
+def test_footer_is_the_same_for_every_role(key):
+    footer = ("Prepared with Permit Packets drafting software. Not PE-stamped. "
+              "Confirm current city requirements before submitting.")
+    for extra in (OWNER_PAYLOAD, {"contractor": "Desert Volt", "license_number": "ROC 1"}):
+        for text in packet_pages(build(key, {**_model_sample(key), **extra}).pdf):
+            assert footer in " ".join(text.split())
+            assert "Draft for review by a licensed electrician" not in text
+
+
+def test_single_line_title_replaces_one_line():
+    pages = packet_pages(build("ev_charger", _model_sample("ev_charger")).pdf)
+    assert any("Single-Line Diagram" in page for page in pages)
+    assert not any("One-Line Diagram" in page for page in pages)
+
+
+def test_empty_panel_schedule_is_a_note_not_a_fix():
+    cover = " ".join(packet_pages(build("ev_charger", _model_sample("ev_charger")).pdf)[0].split())
+    assert "left blank to fill in on site. Note" in cover
+
+
+def test_last_verified_prints_only_where_set():
+    from permit_packets.jurisdictions import KNOWN
+
+    verified = {j.key: j.last_verified for j in KNOWN.values() if j.last_verified}
+    assert verified == {"el-cajon-ca": "2026-11-16", "oro-valley-az": "2026-11-16"}
+    el_cajon = {**_model_sample("ev_charger"), "jurisdiction_key": "el-cajon-ca", "city": "El Cajon", "state": "CA"}
+    assert "City checklist last verified: 2026-11-16" in " ".join(packet_pages(build("ev_charger", el_cajon).pdf)[0].split())
+    mesa = {**_model_sample("ev_charger"), "jurisdiction_key": "mesa-az", "city": "Mesa", "state": "AZ"}
+    assert "last verified" not in packet_pages(build("ev_charger", mesa).pdf)[0]

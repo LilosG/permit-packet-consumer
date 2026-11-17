@@ -290,6 +290,8 @@ def _cover(packet: SubpanelPacket) -> list:
         if jurisdiction.known_for("subpanel")
         else f"{jurisdiction.label}\nUsing the national NEC checklist. Confirm local amendments with {jurisdiction.name if jurisdiction.name != 'This area' else 'your city'}."
     )
+    if jurisdiction.last_verified:
+        checklist_cell += f"\nCity checklist last verified: {jurisdiction.last_verified}"
     parcel = f"\nParcel {job.plan.parcel_number}" if job.plan and job.plan.parcel_number else ""
     return cover_page(
         title="Subpanel Permit Packet",
@@ -300,7 +302,7 @@ def _cover(packet: SubpanelPacket) -> list:
         contractor_cell=contractor_with_license(job.contractor, job.license_number),
         checklist_cell=checklist_cell,
         checklist_rows=checklist_rows(packet),
-        checks=[(check.name, check.result, check.passed) for check in packet.checks],
+        checks=[(check.name, check.result, check.passed, check.neutral) for check in packet.checks],
         flags=packet.flags,
         stamp_box_in=job.jurisdiction.stamp_box_in,
     )
@@ -394,7 +396,7 @@ def _one_line(packet: SubpanelPacket) -> list:
         rows.append(["Grounding electrode", "Electrode per 250.52, GEC per 250.66", "As required (250.64)",
                      "Listed clamp or weld (250.70)"])
     story = [
-        _p("One-Line Diagram", H1),
+        _p("Single-Line Diagram", H1),
         _p("Main panel, feeder conductors, subpanel and grounding.", SMALL),
         Spacer(1, 10),
         diagram(OneLine(packet), legend=one_line_data(packet.job)),
@@ -534,7 +536,7 @@ def render_subpanel_packet_pdf(packet: SubpanelPacket) -> bytes:
          _feeder_schedule(packet), _load(packet), _panel_schedule(packet), _equipment(packet), _review(packet)],
         title=demo_title("Subpanel Permit Packet"),
         block=title_block_for(packet.job),
-        sheet_titles=["Checklist and Checks","Permit Application Data","Site Plan","One-Line Diagram","Feeder Schedule","Load Calculation","Panel Schedule","Equipment Data","Pre-Submittal Review"],
+        sheet_titles=["Checklist and Checks","Permit Application Data","Site Plan","Single-Line Diagram","Feeder Schedule","Load Calculation","Panel Schedule","Equipment Data","Pre-Submittal Review"],
     )
     sheet = find_equipment(packet.job.subpanel_model, "panel")
     return attach_data_sheets(pdf, [sheet] if sheet else [], after_title="Equipment Data")

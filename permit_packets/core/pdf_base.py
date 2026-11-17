@@ -351,7 +351,7 @@ def cover_page(
     contractor_cell: str,
     checklist_cell: str,
     checklist_rows: list[tuple[str, str, str]],
-    checks: list[tuple[str, str, bool]],
+    checks: list[tuple],
     flags: list[str],
     stamp_box_in: float | None = None,
 ) -> list:
@@ -390,8 +390,11 @@ def cover_page(
         [width / 3] * 3,
     )
     rows = [[_p(item), _p(where), _p(status, CELL_BOLD)] for item, where, status in checklist_rows]
-    check_rows = [[_p(name), _p(result), _p("Pass" if passed else "Fix", CELL_BOLD)]
-                  for name, result, passed in checks]
+    def check_status(passed: bool, neutral: bool = False) -> str:
+        return "Pass" if passed else "Note" if neutral else "Fix"  # neutral: an optional item left empty
+
+    check_rows = [[_p(name), _p(result), _p(check_status(passed, *rest), CELL_BOLD)]
+                  for name, result, passed, *rest in checks]
 
     def checklist_table(w):
         return _table([_heads("Required", "In this packet", "Status")] + rows,

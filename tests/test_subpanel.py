@@ -241,7 +241,7 @@ def test_the_sample_checks_read_as_specified(client):
 
 def test_the_pdf_carries_the_subpanel_pages(client):
     text = _text(_packet(client))
-    for heading in ("Subpanel Permit Packet", "Permit Application Data", "Site Plan", "One-Line Diagram",
+    for heading in ("Subpanel Permit Packet", "Permit Application Data", "Site Plan", "Single-Line Diagram",
                     "Feeder Schedule", "Load Calculation", "Equipment Data", "Pre-Submittal Review"):
         assert heading in text
     assert "PREVIEW PACKET — UNLOCK CLEAN PDF BEFORE SUBMISSION" in text

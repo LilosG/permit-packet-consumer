@@ -10,7 +10,8 @@
 
   const TICK_MS = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 320;
   /* The address used by "Try with a sample address". */
-  const SAMPLE = { address: '123 Sample St, Oro Valley, AZ 85737', jurisdiction_key: 'oro-valley-az', label: 'Oro Valley, AZ' };
+  // The sample job: the same El Cajon address the sample sheets on the homepage were generated from (tools/make_sample.py).
+  const SAMPLE = { address: '453 Brockton St, El Cajon, CA 92020', jurisdiction_key: 'el-cajon-ca', label: 'El Cajon, CA', owner: 'Sample Homeowner', location: 'detached_garage' };
   const TYPE_COPY = {
     ev_charger: ['EV Charger', 'A Level 2 home charger circuit'],
     service_upgrade: ['200A Service Upgrade', 'A new or larger main panel and service'],
@@ -464,14 +465,16 @@
       : `${property.address}. ${nationalChecklistNote(property)}`;
     show(2);
   });
+  // The sample runs the real lookup on the sample address, so it shows the same plan as the homepage sample sheets.
   $('#use-sample').addEventListener('click', async () => {
     await ready;
     if (!current) return;
-    property = null;
-    typeModule().onSample?.();
-    enterStudio();
-    $('#job-lead').textContent = `A sample job with a schematic layout, using the ${SAMPLE.label} checklist. Use your own address to order a packet.`;
-    show(2);
+    $('#address').value = SAMPLE.address;
+    form.elements.customer.value = SAMPLE.owner;
+    const garage = form.querySelector(`input[name=location][value=${SAMPLE.location}]`);
+    if (garage) { garage.checked = true; garage.dispatchEvent(new Event('change', { bubbles: true })); }
+    show(1, false);
+    $('#find').requestSubmit();
   });
   $('#back-property').addEventListener('click', () => show(1));
   $$('#appliances input[data-load]').forEach((box) => box.addEventListener('change', () => {

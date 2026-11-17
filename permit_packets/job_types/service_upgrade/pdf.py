@@ -369,6 +369,8 @@ def _cover(packet: ServicePacket) -> list:
         if jurisdiction.known_for("service_upgrade")
         else f"{jurisdiction.label}\nUsing the national NEC checklist. Confirm local amendments with {jurisdiction.name if jurisdiction.name != 'This area' else 'your city'}."
     )
+    if jurisdiction.last_verified:
+        checklist_cell += f"\nCity checklist last verified: {jurisdiction.last_verified}"
     parcel = f"\nParcel {job.plan.parcel_number}" if job.plan and job.plan.parcel_number else ""
     return cover_page(
         title=_title(packet),
@@ -379,7 +381,7 @@ def _cover(packet: ServicePacket) -> list:
         contractor_cell=contractor_with_license(job.contractor, job.license_number),
         checklist_cell=checklist_cell,
         checklist_rows=checklist_rows(packet),
-        checks=[(check.name, check.result, check.passed) for check in packet.checks],
+        checks=[(check.name, check.result, check.passed, check.neutral) for check in packet.checks],
         flags=packet.flags,
         stamp_box_in=job.jurisdiction.stamp_box_in,
     )

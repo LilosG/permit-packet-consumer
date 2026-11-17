@@ -54,6 +54,8 @@ class Jurisdiction:
     # in this jurisdiction (Nashville: all of Davidson County except the satellite cities with their own offices).
     permit_area_by_location: bool = False
     code_name: str = "NEC"
+    # ISO date this city's checklist and code edition were last checked against its official sources. Empty: not checked.
+    last_verified: str = ""
     department: str = ""
     phone: str = ""
     email: str = ""

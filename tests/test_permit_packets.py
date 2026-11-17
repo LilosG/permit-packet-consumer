@@ -310,7 +310,7 @@ def test_el_cajon_rules_reach_the_flags():
     packet = build_ev_packet(_job(jurisdiction=EL_CAJON, plan=_plan(parcel_number="")))
     assert any("parcel number" in flag for flag in packet.flags)
     assert any("within 50 ft" in flag for flag in packet.flags)
-    assert any("2019 California" in flag for flag in packet.flags)
+    assert any("2025 California Electrical Code" in flag for flag in packet.flags)
 
 
 def test_plan_measures_route_and_setback_at_scale():

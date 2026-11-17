@@ -43,6 +43,8 @@ tests/
   golden/                      Request payloads and the packets they must produce
 ```
 
+Set `last_verified` (an ISO date) on a city only after its checklist and adopted code edition were checked against its official site; the cover sheet prints it, and leaves it off when empty. The homepage sample sheets come from `tools/make_sample.py` (network needed); rerun it, then copy its printed numbers into the two homepage mock cards in `static/index.html`.
+
 A city not in `jurisdictions/` gets the general checklist and says so. So does a known city that has no checklist for the job type.
 
 Job types so far: `ev_charger`, `service_upgrade`, `subpanel` and `appliance_circuit`. City service-upgrade, subpanel and 240 V circuit checklists are added per client during setup, so Oro Valley and El Cajon use the general ones for now.

@@ -34,7 +34,7 @@ COVER_TITLE = "Checklist and Checks"
 # Sheets that are drawings and calculations. Everything else (application data, utility request,
 # equipment data and its attached data sheets, the pre-submittal review) is a supplemental document.
 DRAWING_TITLES = frozenset({
-    COVER_TITLE, "Site Plan", "One-Line Diagram", "Riser Diagram", "Feeder Schedule", "Load Calculation",
+    COVER_TITLE, "Site Plan", "Single-Line Diagram", "Riser Diagram", "Feeder Schedule", "Load Calculation",
     "Panel Schedule",
 })
 INK = colors.HexColor("#15212c")

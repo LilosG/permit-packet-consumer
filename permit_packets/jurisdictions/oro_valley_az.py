@@ -8,6 +8,7 @@ EV_CHARGER = "ev_charger"
 ORO_VALLEY = Jurisdiction(
     key="oro-valley-az", name="Oro Valley", state="AZ", known=True,
     bbox=(-111.0302, 32.3372, -110.9275, 32.4849), center=(-110.9554, 32.4001),  # Mapbox place bounds (west, south, east, north) and (lon, lat)
+    last_verified="2026-11-16",
     department="Community and Economic Development, Permitting",
     phone="(520) 229-4800",
     email="permits@orovalleyaz.gov",
@@ -27,7 +28,7 @@ ORO_VALLEY = Jurisdiction(
                 Requirement("HOA or subdivision rules", "hoa"),
             ),
             source_url="https://www.orovalleyaz.gov/files/assets/public/v/1/documents/community-and-economic-development/permitting-division/electric-car-charging-stations.pdf",
-            code_note="The town's checklist cites the 2017 NEC. Confirm the edition in force.",
+            code_note="Oro Valley enforces the 2023 NEC with local amendments, effective January 1, 2026 (Town building codes page). The town's checklist PDF still cites the 2017 NEC.",
             notes=(Note("always", "Hot climate: check the ambient temperature correction for conduit exposed to sun."),),
         ),
     },

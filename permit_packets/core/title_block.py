@@ -13,7 +13,7 @@ INK = colors.HexColor("#15212c")
 MUTED = colors.HexColor("#566572")
 COPPER = colors.HexColor("#a8551f")
 RULE = colors.HexColor("#8794a0")
-DRAFT_NOTE = "Draft for review by a licensed electrician. Confirm against the city's current requirements before use."
+DRAFT_NOTE = "Prepared with Permit Packets drafting software. Not PE-stamped. Confirm current city requirements before submitting."
 
 
 @dataclass(frozen=True)
@@ -22,6 +22,11 @@ class TitleBlock:
     parcel: str
     contractor: str
     license_number: str
+    owner: str = ""  # the property owner; the preparer when the applicant is an owner-builder
+
+    @property
+    def owner_builder(self) -> bool:
+        return not has_license(self.license_number)
 
 
 def has_license(license_number: str | None) -> bool:
@@ -37,7 +42,7 @@ def contractor_with_license(contractor: str, license_number: str | None, joiner:
 def title_block_for(job) -> TitleBlock:
     """The title block for any job: every job type has an address, a plan, a contractor and a license."""
     parcel = job.plan.parcel_number if job.plan and job.plan.parcel_number else ""
-    return TitleBlock(job.address, parcel, job.contractor, job.license_number)
+    return TitleBlock(job.address, parcel, job.contractor, job.license_number, job.customer)
 
 
 def sheet_number(index: int) -> str:
@@ -68,15 +73,16 @@ def _cell(c, x, y, w, h, label, value, *, font="Helvetica-Bold", size=8.2, lines
         c.drawString(x + pad, top - i * (size + 1.1), line)
 
 
-def _signature_cell(c, x, y, w, h, *, pad=4):
+def _signature_cell(c, x, y, w, h, *, pad=4, owner_builder=False):
     c.setStrokeColor(RULE)
     c.setLineWidth(0.5)
     c.rect(x, y, w, h, stroke=1, fill=0)
     c.setFillColor(COPPER)
     c.setFont("Helvetica-Bold", 6.4)
-    c.drawString(x + pad, y + h - 7.4, "ELECTRICIAN (DESIGNER OF RECORD)")
+    c.drawString(x + pad, y + h - 7.4, "OWNER SIGNATURE" if owner_builder else "ELECTRICIAN (DESIGNER OF RECORD)")
     base = y + 5
-    fields = (("Prepared by", 0.36), ("Signature", 0.40), ("Date", 0.24))
+    fields = (("Signature", 0.68), ("Date", 0.32)) if owner_builder else (
+        ("Prepared by", 0.36), ("Signature", 0.40), ("Date", 0.24))
     inner = w - 2 * pad - 2 * 6
     cursor = x + pad
     c.setFont("Helvetica", 6.6)
@@ -97,7 +103,10 @@ def draw_title_block(c, sheet: Sheet, block: TitleBlock, *, title: str, number: 
     address = block.address
     parcel = f"Parcel {block.parcel}" if block.parcel else "Parcel: not on file"
     project = f"{address}\n{parcel}"
-    contractor = contractor_with_license(block.contractor, block.license_number)
+    owner_builder = block.owner_builder
+    contractor = (f"Prepared by: {block.owner} (Owner-Builder)" if owner_builder
+                  else contractor_with_license(block.contractor, block.license_number))
+    contractor_label = "OWNER-BUILDER" if owner_builder else "CONTRACTOR"
 
     def project_cell(x, y, cw, ch):
         _cell(c, x, y, cw, ch, "PROJECT ADDRESS", address, lines=2)
@@ -128,8 +137,8 @@ def draw_title_block(c, sheet: Sheet, block: TitleBlock, *, title: str, number: 
         _cell(c, x0 + a, y_top, b, top_h, "SHEET TITLE", title, size=9.5, lines=2)
         number_cell(x0 + a + b, y_top, w - a - b, top_h)
         d = 0.32 * w
-        _cell(c, x0, y0, d, bottom_h, "CONTRACTOR", contractor, lines=2)
-        _signature_cell(c, x0 + d, y0, w - d, bottom_h)
+        _cell(c, x0, y0, d, bottom_h, contractor_label, contractor, lines=2)
+        _signature_cell(c, x0 + d, y0, w - d, bottom_h, owner_builder=owner_builder)
     else:
         shares = (0.27, 0.19, 0.17, 0.28, 0.09)
         xs = [x0]
@@ -137,8 +146,8 @@ def draw_title_block(c, sheet: Sheet, block: TitleBlock, *, title: str, number: 
             xs.append(xs[-1] + share * w)
         project_cell(xs[0], y0, xs[1] - xs[0], h)
         _cell(c, xs[1], y0, xs[2] - xs[1], h, "SHEET TITLE", title, size=11, lines=3)
-        _cell(c, xs[2], y0, xs[3] - xs[2], h, "CONTRACTOR", contractor, lines=3)
-        _signature_cell(c, xs[3], y0, xs[4] - xs[3], h)
+        _cell(c, xs[2], y0, xs[3] - xs[2], h, contractor_label, contractor, lines=3)
+        _signature_cell(c, xs[3], y0, xs[4] - xs[3], h, owner_builder=owner_builder)
         number_cell(xs[4], y0, xs[5] - xs[4], h)
     c.setFillColor(MUTED)
     c.setFont("Helvetica", 6.4)

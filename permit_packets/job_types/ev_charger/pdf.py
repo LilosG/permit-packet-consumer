@@ -307,6 +307,8 @@ def _cover(packet: EvPacket) -> list:
         if jurisdiction.known_for("ev_charger")
         else f"{jurisdiction.label}\nUsing the national NEC checklist. Confirm local amendments with {jurisdiction.name if jurisdiction.name != 'This area' else 'your city'}."
     )
+    if jurisdiction.last_verified:
+        checklist_cell += f"\nCity checklist last verified: {jurisdiction.last_verified}"
     parcel = f"\nParcel {job.plan.parcel_number}" if job.plan and job.plan.parcel_number else ""
     return cover_page(
         title="EV Charger Permit Packet",
@@ -316,7 +318,7 @@ def _cover(packet: EvPacket) -> list:
         contractor_cell=contractor_with_license(job.contractor, job.license_number),
         checklist_cell=checklist_cell,
         checklist_rows=checklist_rows(packet),
-        checks=[(check.name, check.result, check.passed) for check in packet.checks],
+        checks=[(check.name, check.result, check.passed, check.neutral) for check in packet.checks],
         flags=packet.flags,
         stamp_box_in=job.jurisdiction.stamp_box_in,
     )
@@ -414,7 +416,7 @@ def _one_line(packet: EvPacket) -> list:
     if packet.interior_ft:
         rows.append(["Above ground run", wires, f"{packet.interior_conduit} EMT, {packet.interior_ft} ft", protection])
     story = [
-        _p("One-Line Diagram", H1),
+        _p("Single-Line Diagram", H1),
         _p("Conductors, conduit sizes and types, and overcurrent protection.", SMALL),
         Spacer(1, 10),
         diagram(OneLine(packet), legend=one_line_data(packet.job)),
@@ -545,7 +547,7 @@ def render_ev_packet_pdf(packet: EvPacket) -> bytes:
          _load(packet), _panel_schedule(packet), _equipment(packet), _review(packet)],
         title=demo_title("EV Charger Permit Packet"),
         block=title_block_for(packet.job),
-        sheet_titles=["Checklist and Checks","Permit Application Data","Site Plan","One-Line Diagram","Load Calculation","Panel Schedule","Equipment Data","Pre-Submittal Review"],
+        sheet_titles=["Checklist and Checks","Permit Application Data","Site Plan","Single-Line Diagram","Load Calculation","Panel Schedule","Equipment Data","Pre-Submittal Review"],
     )
     sheet = find_equipment(packet.job.charger_model, "charger")
     return attach_data_sheets(pdf, [sheet] if sheet else [], after_title="Equipment Data")
