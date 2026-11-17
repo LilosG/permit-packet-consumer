@@ -283,7 +283,7 @@ def about() -> Response:
         "About Permit Packets | Permit Packets",
         "Permit Packets is an automated drafting and NEC calculation tool by Lilos Growth. How packets are built and how city checklists are verified.",
         ABOUT_PATH, robots=seo.robots_for(ABOUT_PATH))
-    cities = [{"label": city.label, "verified": city.last_verified, "url": city.website,
+    cities = [{"label": city.label, "verified": city.rules_date, "url": city.website,
                "source": city.website_label or "Official source"} for city in sitedata.known_cities()]
     return render("about.html", meta=meta, jsonld=[seo.organization()], crumbs=[("Home", "/"), ("About", ABOUT_PATH)],
                   final_cta=True, build_steps=content.ABOUT_STEPS, cities=cities)
@@ -324,7 +324,7 @@ def _hub_row(city, slug):
     job = sitedata.JOBS[slug]
     return {"city": city.label, "city_url": sitedata.city_path(city), "job": job.label,
             "url": locations.job_path(city, slug), "who": city.who_may_pull, "edition": city.nec_edition,
-            "verified": _date(city.last_verified), "permit": "Required"}
+            "verified": _date(city.rules_date), "permit": "Required"}
 
 
 @router.api_route("/permits/", methods=["GET", "HEAD"], include_in_schema=False)
@@ -335,8 +335,8 @@ def permits_index() -> Response:
     cities = locations.indexable_cities()
     rows = [{"city": c.label, "url": sitedata.city_path(c), "edition": c.nec_edition,
              "jobs": ", ".join(sitedata.JOBS[j].label for j in locations.indexable_jobs(c)),
-             "verified": _date(c.last_verified)} for c in cities]
-    latest = max(c.last_verified for c in cities)
+             "verified": _date(c.rules_date)} for c in cities]
+    latest = max(c.rules_date for c in cities)
     meta = seo.page_meta(
         "Electrical Permits by City | Permit Packets",
         f"Verified residential electrical permit rules for {len(cities)} cities: who may pull, code edition and official sources.",
@@ -363,8 +363,8 @@ def permits_state(state: str) -> Response:
     cities = locations.indexable_cities(state)
     rows = [{"city": c.label, "url": sitedata.city_path(c), "edition": c.nec_edition,
              "jobs": ", ".join(sitedata.JOBS[j].label for j in locations.indexable_jobs(c)),
-             "verified": _date(c.last_verified)} for c in cities]
-    latest = max(c.last_verified for c in cities)
+             "verified": _date(c.rules_date)} for c in cities]
+    latest = max(c.rules_date for c in cities)
     meta = seo.page_meta(
         f"{h1} | {seo.SITE_NAME}",
         f"Residential electrical permit rules for {', '.join(c.name for c in cities)} in {name}: code edition, who may pull, sources.",
@@ -393,9 +393,9 @@ def permits_city(state: str, city: str) -> Response:
         path, robots="index,follow")
     data = seo.dataset(f"Residential electrical permit rules in {found.label}",
                        f"Permit requirement, who may pull it and the NEC edition for each job in {found.label}.",
-                       path, found.last_verified, ["electrical permit", found.label], [found.label])
+                       path, found.rules_date, ["electrical permit", found.label], [found.label])
     return render("permits_city.html", meta=meta, jsonld=[data], crumbs=crumbs, final_cta=True, rows=rows,
-                  city=found, h1=h1, verified=_date(found.last_verified))
+                  city=found, h1=h1, verified=_date(found.rules_date))
 
 
 NOTE_WORDS = 170
@@ -453,10 +453,10 @@ def permits_job(state: str, city: str, job: str) -> Response:
     view = _job_view(found, job)
     meta = seo.page_meta(
         f"{label} Permit in {found.label} | {seo.SITE_NAME}",
-        f"{label} permit in {found.label}: who may pull it, the {found.nec_edition.split(' (')[0]} edition, what the city asks for. Checked {_date(found.last_verified)}.",
+        f"{label} permit in {found.label}: who may pull it, the {found.nec_edition.split(' (')[0]} edition, what the city asks for. Checked {_date(found.rules_date)}.",
         path, robots="index,follow")
     return render("permits_job.html", meta=meta, jsonld=[seo.faq(view["faqs"])], crumbs=crumbs, final_cta=True,
-                  city=found, h1=h1, verified=_date(found.last_verified),
+                  city=found, h1=h1, verified=_date(found.rules_date),
                   cta_href=f"/start/?job={job}&city={found.key}", **view)
 
 

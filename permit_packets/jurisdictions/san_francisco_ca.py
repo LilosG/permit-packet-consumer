@@ -40,7 +40,7 @@ CODE_NOTE = (
 
 SAN_FRANCISCO = Jurisdiction(
     key="san-francisco-ca", name="San Francisco", state="CA", known=True,
-    last_verified="2026-11-17",
+    permit_rules_verified="2026-11-17",
     who_may_pull="Contractors must hold a B, C7, C10, C45, C46, C61 or D34 license (a C7 covers only low-voltage work). Only owners of a stand-alone single-family dwelling (R-3 occupancy) may apply to do the work themselves; staff may direct an owner to hire a licensed contractor.",
     portal_url="https://sf.gov/apply-electrical-permit",
     fee_note="San Francisco permit fees depend on the scope of work. DBI publishes a fee schedule (Table 1A-E, 2026) that the permit page links.",

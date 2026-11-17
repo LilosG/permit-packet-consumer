@@ -77,7 +77,7 @@ AZ_811 = Note(
 
 MESA = Jurisdiction(
     key="mesa-az", name="Mesa", state="AZ", known=True,
-    last_verified="2026-11-17",
+    permit_rules_verified="2026-11-17",
     who_may_pull="",
     portal_url=DIMES_URL,
     fee_note="Mesa publishes a citywide Fees and Charges schedule; its Development Services pages list no electrical permit amounts.",

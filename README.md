@@ -43,7 +43,7 @@ tests/
   golden/                      Request payloads and the packets they must produce
 ```
 
-Set `last_verified` (an ISO date) on a city only after its checklist and adopted code edition were checked against its official site; the cover sheet prints it, and leaves it off when empty. The homepage sample sheets come from `tools/make_sample.py` (network needed); rerun it, then copy its printed numbers into the two homepage mock cards in `templates/home.html`.
+Set `permit_rules_verified` (an ISO date) when a city's permit rules were checked against its official site; it drives page gating, sitemap lastmod and the page's "last verified" text. Set `last_verified` only after the full checklist and adopted code edition were checked; the cover sheet prints only that, and leaves it off when empty. The homepage sample sheets come from `tools/make_sample.py` (network needed); rerun it, then copy its printed numbers into the two homepage mock cards in `templates/home.html`.
 
 A city not in `jurisdictions/` gets the general checklist and says so. So does a known city that has no checklist for the job type.
 

@@ -56,6 +56,9 @@ class Jurisdiction:
     code_name: str = "NEC"
     # ISO date this city's checklist and code edition were last checked against its official sources. Empty: not checked.
     last_verified: str = ""
+    # ISO date this city's permit rules (permit required, who may pull, code edition, portal) were checked. The full
+    # checklist may not have been: the packet cover prints only last_verified.
+    permit_rules_verified: str = ""
     # Location-page facts, each from an official source and left empty where none confirms it (an empty field
     # keeps the city's pages out of the index: see permit_packets/locations.py).
     who_may_pull: str = ""  # who may apply for the electrical permit: homeowner and/or licensed contractor
@@ -114,6 +117,11 @@ class Jurisdiction:
     afci_note: str = ""  # replaces the general AFCI flag on a service upgrade
     fallback_notes: tuple[Note, ...] = ()
     checklists: dict[str, Checklist] = field(default_factory=dict)
+
+    @property
+    def rules_date(self) -> str:
+        """Date shown and used for page gating/lastmod: permit_rules_verified, else last_verified."""
+        return self.permit_rules_verified or self.last_verified
 
     @property
     def label(self) -> str:

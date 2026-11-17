@@ -30,7 +30,7 @@ def test_a_complete_city_job_is_indexable():
 
 
 @pytest.mark.parametrize("field,value", [
-    ("last_verified", ""), ("permit_required", {}), ("nec_edition", ""), ("who_may_pull", ""), ("sources", ()),
+    ("permit_rules_verified", ""), ("permit_required", {}), ("nec_edition", ""), ("who_may_pull", ""), ("sources", ()),
 ])
 def test_each_missing_field_gates_the_page(field, value):
     city = dataclasses.replace(BELLEVUE, **{field: value})
@@ -87,11 +87,11 @@ def test_passing_pages_are_index_and_in_the_sitemap(client, path):
     assert f"{path}</loc>" in client.get("/sitemap-locations.xml").text
 
 
-def test_sitemap_locations_lastmod_is_last_verified(client):
+def test_sitemap_locations_lastmod_is_rules_date(client):
     body = client.get("/sitemap-locations.xml").text
     entries = re.findall(r"<url><loc>[^<]+(/permits/[^<]*)</loc><lastmod>([^<]+)</lastmod></url>", body)
     assert len(entries) == len(locations.location_paths()) == 11
-    assert {lastmod for _, lastmod in entries} == {BELLEVUE.last_verified, SF.last_verified}
+    assert {lastmod for _, lastmod in entries} == {BELLEVUE.rules_date, SF.rules_date}
 
 
 # ---- no unverified city in any link ----

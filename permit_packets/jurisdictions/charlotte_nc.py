@@ -36,7 +36,7 @@ NC_811 = Note("trench", "Call NC 811 at least 3 full working days before digging
 
 CHARLOTTE = Jurisdiction(
     key="charlotte-nc", name="Charlotte", state="NC", known=True,
-    last_verified="2026-11-17",
+    permit_rules_verified="2026-11-17",
     who_may_pull="Mecklenburg County describes two online routes: Homeowner Internet Permitting (HIP) for residential projects where the homeowner acts as their own contractor, and Trade Internet Permitting (TIP) for trade contractors on residential work that needs no plan review.",
     portal_url=TIP_URL,
     fee_note="Fees are set by the LUESA Fee Ordinance. Mecklenburg's TIP page lists no dollar amounts.",
