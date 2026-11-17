@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Find my order | Permit Packets</title>
+<meta name="description" content="Get your Permit Packets order links by email.">
+<link rel="canonical" href="{{BASE_URL}}/find-order">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="/assets/css/app.css?v={{ASSET_VERSION}}">
+</head>
+<body>
+<header class="site-header"><div class="bar"><a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a><span></span><a class="pill-cta" href="/">Home</a></div></header>
+<main class="page-main prose">
+<h1>Find my order</h1>
+<p class="lead">Enter the email you used when you ordered. We'll email you the link to each of your orders.</p>
+<form id="find-form" novalidate>
+  <label class="field">Email address<input type="email" id="find-email" required maxlength="200" autocomplete="email" placeholder="you@example.com"></label>
+  <div class="actions"><button type="submit" id="find-submit">Email me my order links</button></div>
+</form>
+<p class="note" id="find-result" role="status" aria-live="polite" hidden></p>
+<script>
+(() => {
+  const form = document.getElementById('find-form'), result = document.getElementById('find-result');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = document.getElementById('find-email').value.trim();
+    if (!email) { document.getElementById('find-email').focus(); return; }
+    const button = document.getElementById('find-submit');
+    button.disabled = true;
+    let message = "If we have orders for that email, we've sent the links.";
+    try {
+      const response = await fetch('/api/find-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+      if (response.ok) message = (await response.json()).message || message;
+    } catch (error) { /* the same message is shown whatever happens */ }
+    result.textContent = message;
+    result.hidden = false;
+    button.disabled = false;
+  });
+})();
+</script>
+
+</main>
+{{FOOTER}}
+</body>
+</html>

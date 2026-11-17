@@ -30,7 +30,14 @@
     </div>
     <p class="note" id="no-wave" hidden>Payment isn't set up for this package yet. Keep this page and contact us with your order code.</p>
     <p class="note" id="refreshed" aria-live="polite"></p>
-    <p class="note">Bookmark this page. It's the only way back to your order.</p>
+    <p class="note">We've emailed you this link. Lost it? <a href="/find-order">Use Find my order</a>.</p>
+  </section>
+
+  <section id="review" hidden>
+    <div class="panel">
+      <p class="tb-label" style="margin:0">Order <span id="review-code"></span> <span class="status-pill in_review">In review</span></p>
+      <p class="lead" id="review-text" style="margin:10px 0 0"></p>
+    </div>
   </section>
 
   <section id="paid" hidden>
@@ -41,15 +48,16 @@
         <a class="button cta" id="pdf">Download PDF</a>
         <a class="button quiet" id="zip" hidden>Download ZIP (individual files)</a>
       </div>
+      <ul class="file-list" id="files" hidden></ul>
       <p class="note" id="one-pdf" hidden>This city takes one combined PDF, so upload the PDF as a single file.</p>
     </div>
-    <div class="panel">
+    <div class="panel" data-packet-only>
       <h2>Submit to <span id="city-name"></span></h2>
       <p id="submit-how"></p>
       <p class="note" id="city-contact"></p>
       <div class="actions"><a class="button quiet" id="portal" target="_blank" rel="noopener" hidden>Open the city portal</a></div>
     </div>
-    <div class="panel">
+    <div class="panel" data-packet-only>
       <h2>Portal fields</h2>
       <p class="lead" style="margin:-4px 0 6px">Ready to paste into the city's form.</p>
       <div class="actions" style="margin:8px 0 10px"><button type="button" class="quiet" id="copy-fields">Copy Portal Fields</button></div>
@@ -64,6 +72,7 @@
     <p class="note">This is an automated drafting &amp; NEC calculation document, not PE-stamped. Confirm your city's current requirements before submitting.</p>
   </section>
 </main>
+{{FOOTER}}
 <script>
 (() => {
   const token = location.pathname.split('/').filter(Boolean).pop();
@@ -89,6 +98,13 @@
     $('error').hidden = true;
     const order = await response.json();
     $('address').textContent = order.address;
+    $('review').hidden = !order.in_review;
+    if (order.in_review) {
+      $('pending').hidden = true; $('paid').hidden = true;
+      $('review-code').textContent = order.order_code;
+      $('review-text').textContent = `Paid. Your packet is being checked against ${order.city_name || 'your city'}'s requirements. You'll get an email when it's released, within 24 hours.`;
+      return;
+    }
     if (!order.paid) {
       $('pending').hidden = false; $('paid').hidden = true;
       $('code').textContent = order.order_code;
@@ -99,10 +115,22 @@
     }
     $('pending').hidden = true; $('paid').hidden = false;
     $('paid-code').textContent = order.order_code;
+    const sheetsOnly = Array.isArray(order.files);  // the $39 package: its two sheets, no city submission pages
+    document.querySelectorAll('[data-packet-only]').forEach((panel) => { panel.hidden = sheetsOnly; });
+    $('files').hidden = !sheetsOnly;
+    $('files').replaceChildren(...(order.files || []).map((file) => {
+      const item = document.createElement('li'); const link = document.createElement('a');
+      link.href = file.url; link.textContent = `${file.title} (PDF)`; item.append(link); return item;
+    }));
+    $('pdf').textContent = sheetsOnly ? 'Download both sheets (PDF)' : 'Download PDF';
     $('pdf').href = order.pdf_url;
     $('zip').hidden = !order.documents_url;
     if (order.documents_url) $('zip').href = order.documents_url;
-    $('one-pdf').hidden = Boolean(order.documents_url);
+    $('one-pdf').hidden = Boolean(order.documents_url) || sheetsOnly;
+    if (sheetsOnly) {
+      $('paid').querySelector('.check-card strong').textContent = 'Your load calc & panel audit are unlocked';
+      return;
+    }
     const city = order.jurisdiction || {};
     $('city-name').textContent = city.name ? `${city.name}, ${city.state}` : 'your city';
     const sets = city.sets_required > 1 ? ` The city asks for ${city.sets_required} sets.` : '';

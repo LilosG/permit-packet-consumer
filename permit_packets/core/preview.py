@@ -63,22 +63,45 @@ def _document_pages(page_count: int, attachments: tuple[int, int] | None) -> lis
     return documents
 
 
-def packet_documents_zip(pdf: bytes, file_stems: tuple[str, ...]) -> bytes:
-    """Portals often want each document as its own upload, one file per page."""
+def _named_groups(pdf: bytes, file_stems: tuple[str, ...]) -> list[tuple[str, list[int]]]:
+    """(file name without .pdf, page indexes) for each document in the packet, in order."""
     from permit_packets.core.equipment import attachment_span
 
+    count = pdf_page_count(pdf)
+    groups = _document_pages(count, attachment_span(pdf))
+    return [(file_stems[index] if index < len(file_stems) else f"{index + 1:02d}-page", pages)
+            for index, pages in enumerate(groups)]
+
+
+def _pdf_of_pages(source: pypdfium2.PdfDocument, page_lists: list[list[int]]) -> bytes:
+    single = pypdfium2.PdfDocument.new()
+    try:
+        single.import_pages(source, [page for pages in page_lists for page in pages])
+        buffer = BytesIO()
+        single.save(buffer)
+        return buffer.getvalue()
+    finally:
+        single.close()
+
+
+def packet_documents_zip(pdf: bytes, file_stems: tuple[str, ...], only: frozenset[str] | None = None) -> bytes:
+    """Portals often want each document as its own upload, one file per page. `only` limits it to those file names."""
     source = pypdfium2.PdfDocument(pdf)
     buffer = BytesIO()
     try:
         with ZipFile(buffer, "w", ZIP_DEFLATED) as archive:
-            for index, pages in enumerate(_document_pages(len(source), attachment_span(pdf))):
-                name = file_stems[index] if index < len(file_stems) else f"{index + 1:02d}-page"
-                single = pypdfium2.PdfDocument.new()
-                single.import_pages(source, pages)
-                page = BytesIO()
-                single.save(page)
-                single.close()
-                archive.writestr(f"{name}.pdf", page.getvalue())
+            for name, pages in _named_groups(pdf, file_stems):
+                if only is None or name in only:
+                    archive.writestr(f"{name}.pdf", _pdf_of_pages(source, [pages]))
     finally:
         source.close()
     return buffer.getvalue()
+
+
+def packet_subset_pdf(pdf: bytes, file_stems: tuple[str, ...], only: frozenset[str]) -> bytes:
+    """One PDF holding just the named documents, in packet order."""
+    source = pypdfium2.PdfDocument(pdf)
+    try:
+        return _pdf_of_pages(source, [pages for name, pages in _named_groups(pdf, file_stems) if name in only])
+    finally:
+        source.close()

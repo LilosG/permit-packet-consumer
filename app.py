@@ -4,6 +4,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import hmac
+import html as htmllib
 import json
 import logging
 import os
@@ -13,7 +14,9 @@ import threading
 import time
 from collections import deque
 from contextlib import asynccontextmanager
+from functools import lru_cache
 from dataclasses import asdict
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
@@ -28,9 +31,9 @@ from fastapi.exception_handlers import http_exception_handler as default_http_ex
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import ValidationError
 
-from permit_packets import orders
+from permit_packets import emails, orders
 from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
-from permit_packets.core.preview import packet_documents_zip, packet_page_images
+from permit_packets.core.preview import packet_documents_zip, packet_page_images, packet_subset_pdf
 from permit_packets.core.property_lookup import (
     AddressNotFound,
     AerialUnavailable,
@@ -91,9 +94,36 @@ def public_base_url() -> str:
     return os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/") or DEFAULT_BASE_URL
 
 
+FOOTER_HTML = (STATIC / "partials" / "footer.html").read_text(encoding="utf-8")
+FAQ_ITEM = re.compile(r'<details class="faq"><summary>(.*?)</summary><p>(.*?)</p></details>', re.S)
+
+
+def _plain(fragment: str) -> str:
+    return htmllib.unescape(re.sub(r"<[^>]+>", "", fragment)).strip()
+
+
+def _json_ld(html: str) -> str:
+    """Organization and FAQPage structured data. The FAQ comes from the page's own questions, so the two never differ."""
+    data = [
+        {"@context": "https://schema.org", "@type": "Organization", "name": "Lilos Growth",
+         "url": "https://lilosgrowth.com", "email": "hello@lilosgrowth.com"},
+        {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": _plain(question),
+             "acceptedAnswer": {"@type": "Answer", "text": _plain(answer)}}
+            for question, answer in FAQ_ITEM.findall(html)]},
+    ]
+    # "<" is escaped so no answer text can close the script tag.
+    return "".join(
+        f'<script type="application/ld+json">{json.dumps(item, ensure_ascii=False).replace("<", chr(92) + "u003c")}</script>'
+        for item in data)
+
+
 def _fill(html: str) -> str:
+    if "{{JSON_LD}}" in html:
+        html = html.replace("{{JSON_LD}}", _json_ld(html))
     return (
-        html.replace("{{ASSET_VERSION}}", ASSET_VERSION)
+        html.replace("{{FOOTER}}", FOOTER_HTML)
+        .replace("{{ASSET_VERSION}}", ASSET_VERSION)
         .replace("{{BASE_URL}}", public_base_url())
         .replace("{{CITY_COUNT}}", str(len(KNOWN)))  # cities with their own checklist module
     )
@@ -140,6 +170,18 @@ for _path, (_name, _type) in ICON_FILES.items():
     app.add_api_route(_path, lambda _n=_name, _t=_type: _icon(_n, _t), methods=["GET", "HEAD"], include_in_schema=False)
 
 
+PUBLIC_PAGE = {"Cache-Control": "public, max-age=300"}
+
+
+def _public_page(name: str) -> HTMLResponse:
+    return HTMLResponse(_fill((STATIC / name).read_text(encoding="utf-8")), headers=PUBLIC_PAGE)
+
+
+for _route, _file in (("/terms", "terms.html"), ("/privacy", "privacy.html"), ("/refund", "refund.html"),
+                      ("/find-order", "find-order.html")):
+    app.add_api_route(_route, lambda _f=_file: _public_page(_f), methods=["GET", "HEAD"], include_in_schema=False)
+
+
 @app.api_route("/robots.txt", methods=["GET", "HEAD"])
 def robots() -> Response:
     body = f"User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nDisallow: /order/\n\nSitemap: {public_base_url()}/sitemap.xml\n"
@@ -152,6 +194,9 @@ def sitemap() -> Response:
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         f"  <url><loc>{public_base_url()}/</loc></url>\n"
+        f"  <url><loc>{public_base_url()}/terms</loc></url>\n"
+        f"  <url><loc>{public_base_url()}/privacy</loc></url>\n"
+        f"  <url><loc>{public_base_url()}/refund</loc></url>\n"
         "</urlset>\n"
     )
     return Response(body, media_type="application/xml", headers={"Cache-Control": "public, max-age=3600"})
@@ -245,9 +290,41 @@ def _property_json(found: FoundProperty, job_type: str) -> dict:
     }
 
 
+# "Try with a sample address" answers from lookup results saved in the repo (permit_packets/data), so the sample never
+# depends on, or calls, the live lookup services. tools/make_sample.py's address is the sample.
+DATA = Path(__file__).parent / "permit_packets" / "data"
+SAMPLE_ADDRESS = "453 Brockton St, El Cajon, CA 92020"
+SAMPLE_JURISDICTION = "el-cajon-ca"
+
+
+def _is_sample_address(address: str) -> bool:
+    return " ".join(address.lower().split()) == SAMPLE_ADDRESS.lower()
+
+
+@lru_cache(maxsize=1)
+def _sample_data() -> dict[str, Any]:
+    return {
+        "property": json.loads((DATA / "sample_property.json").read_text(encoding="utf-8")),
+        "aerial": base64.b64encode((DATA / "sample_aerial.jpg").read_bytes()).decode(),
+        "credit": (DATA / "sample_aerial_credit.txt").read_text(encoding="utf-8").strip(),
+    }
+
+
+def _sample_property(job_type: str) -> dict:
+    return {**_sample_data()["property"], "jurisdiction": jurisdiction_json(jurisdiction_by_key(SAMPLE_JURISDICTION), job_type)}
+
+
+def _is_sample_view(view: PlanView) -> bool:
+    saved = _sample_data()["property"]["view"]
+    return (abs(view.latitude - saved["latitude"]) < 1e-6 and abs(view.longitude - saved["longitude"]) < 1e-6
+            and abs(view.scale_ft_per_in - saved["scale_ft_per_in"]) < 1e-6)
+
+
 @app.post("/api/property", dependencies=[Depends(rate_limit("property"))])
 def look_up_property(payload: LookupRequest) -> dict:
     job_type = _known_job_type(payload.job_type)
+    if _is_sample_address(payload.address):
+        return _sample_property(job_type)
     try:
         found = find_property(payload.address)
     except AddressNotFound as error:
@@ -262,6 +339,8 @@ def change_property_view(payload: PropertyViewRequest) -> dict:
         county_fips=payload.county_fips, house_number=payload.house_number,
     )
     job_type = _known_job_type(payload.job_type)
+    if _is_sample_address(payload.address):  # the sample keeps its saved view; no live lookup
+        return _sample_property(job_type)
     view = PlanView(payload.latitude, payload.longitude, payload.scale_ft_per_in)
     if payload.tap:
         found = property_at(**fields, point=view.to_latlon(*payload.tap), located_by="tap")
@@ -277,6 +356,8 @@ def change_property_view(payload: PropertyViewRequest) -> dict:
 @app.post("/api/property/aerial", dependencies=[Depends(rate_limit("property"))])
 def property_aerial(payload: AerialRequest) -> dict:
     view = PlanView(payload.latitude, payload.longitude, payload.scale_ft_per_in)
+    if _is_sample_view(view):
+        return {"image": _sample_data()["aerial"], "credit": _sample_data()["credit"]}
     try:
         image, credit = fetch_aerial(view)
     except AerialUnavailable as error:
@@ -470,20 +551,66 @@ def create_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
     job_type = _job_type(str(body.get("job_slug") or ""))
     working = dict(payload)
     _contractor_logo(working)  # refuse a bad logo now, not after the customer has paid
-    request = _validated(job_type, working)
+    job = _validated(job_type, working)
     city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
     order = orders.create_order(
-        customer_email=email, tier=tier, job_slug=job_type.slug, address=request.address,
+        customer_email=email, tier=tier, job_slug=job_type.slug, address=job.address,
         jurisdiction_key=city.key, payload=payload,
     )
     if os.environ.get("DEV_AUTO_APPROVE", "").strip().lower() == "true":
-        order = orders.set_status(order["id"], "paid") or order
+        order = _mark_paid(order, request)
+    else:
+        _notify(emails.order_created, order, _order_link(request, order))
     return {
         "order_code": order["order_code"],
         "access_token": order["access_token"],
         "order_url": f"/order/{order['access_token']}",
         "whop_checkout_url": _checkout_url(tier, order["access_token"], request),
     }
+
+
+# The $39 package is only the NEC 220 load calculation and the panel schedule / capacity audit sheets.
+LOAD_CALC_SHEETS = ("load-calculation", "panel-schedule")
+REVIEW_HOURS = 24
+
+
+def _order_link(request: Request, order: dict[str, Any]) -> str:
+    return f"{_base_url(request)}/order/{order['access_token']}"
+
+
+def _notify(send, *args) -> None:
+    """Run an email send. Whatever goes wrong, the order flow carries on."""
+    try:
+        send(*args)
+    except Exception:
+        log.exception("Order email failed")
+
+
+def _city_name(order: dict[str, Any]) -> str:
+    payload = order["payload"] if isinstance(order.get("payload"), dict) else {}
+    city = jurisdiction_by_key(order["jurisdiction_key"], payload.get("city"), payload.get("state"))
+    return city.name if city.known and city.name else (payload.get("city") or "your city")
+
+
+def _mark_paid(order: dict[str, Any], request: Request) -> dict[str, Any]:
+    """Record a payment. A $169 order goes into the review hold and does not unlock; the others unlock now."""
+    link = _order_link(request, order)
+    if order["tier"] == "city_checked_24h":
+        order = orders.set_status(order["id"], "in_review") or order
+        _notify(emails.in_review, order, link, _city_name(order))
+        _notify(emails.review_alert, order, link, f"{_base_url(request)}/admin")
+    else:
+        order = orders.set_status(order["id"], "paid") or order
+        _notify(emails.paid_ready, order, link)
+    return order
+
+
+def _allowed_sheets(order: dict[str, Any], job_type: JobType) -> frozenset[str] | None:
+    """The file names this order may download, or None when it gets the whole packet."""
+    if order["tier"] != "load_calc":
+        return None
+    return frozenset(
+        document.file_stem for document in job_type.documents if document.file_stem.split("-", 1)[-1] in LOAD_CALC_SHEETS)
 
 
 def _order_or_404(access_token: str) -> dict[str, Any]:
@@ -495,6 +622,8 @@ def _order_or_404(access_token: str) -> dict[str, Any]:
 
 def _paid_order(access_token: str) -> dict[str, Any]:
     order = _order_or_404(access_token)
+    if order["status"] == "in_review":
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "This packet is being checked and hasn't been released yet")
     if order["status"] not in ("paid", "delivered"):
         raise HTTPException(status.HTTP_402_PAYMENT_REQUIRED, "This order isn't paid yet")
     return order
@@ -534,38 +663,59 @@ def order_status(access_token: str) -> JSONResponse:
         "order_code": order["order_code"],
         "status": order["status"],
         "paid": paid,
+        "in_review": order["status"] == "in_review",
         "tier": order["tier"],
         "address": order["address"],
         "whop_checkout_url": f"/api/orders/{access_token}/pay" if _payment_ready(order["tier"]) else "",
     }
+    if view["in_review"]:
+        view["city_name"] = _city_name(order)
     if paid:
-        _, result = _build(order["job_slug"], order["payload"], preview=False)
+        job_type = _job_type(order["job_slug"])
+        only = _allowed_sheets(order, job_type)
+        zip_ok = not _single_pdf_only(order["payload"])
         view.update({
             "pdf_url": f"/api/orders/{access_token}/pdf",
-            "documents_url": None if _single_pdf_only(order["payload"]) else f"/api/orders/{access_token}/documents",
-            "jurisdiction": result.body.get("jurisdiction"),
-            "portal_fields": result.body.get("fields", []),
-            "submission_email": result.body.get("submission_email"),
+            "documents_url": f"/api/orders/{access_token}/documents" if zip_ok else None,
         })
+        if only is not None:  # the $39 package: just its two sheets, no city submission pages
+            view["files"] = [
+                {"title": document.title, "url": f"/api/orders/{access_token}/documents/{document.file_stem}"}
+                for document in job_type.documents if document.file_stem in only]
+        else:
+            _, result = _build(order["job_slug"], order["payload"], preview=False)
+            view.update({
+                "jurisdiction": result.body.get("jurisdiction"),
+                "portal_fields": result.body.get("fields", []),
+                "submission_email": result.body.get("submission_email"),
+            })
     return JSONResponse(view, headers=PRIVATE_DATA)
 
 
-def _delivered(order: dict[str, Any]) -> None:
+def _downloaded(order: dict[str, Any]) -> None:
+    """A clean file went out: the order is delivered, and the first time is recorded for the refund rule."""
     if order["status"] == "paid":
         orders.set_status(order["id"], "delivered")
+    orders.mark_downloaded(order["id"])
+
+
+def _pdf_download(content: bytes, name: str, inline: bool = False) -> Response:
+    disposition = "inline" if inline else f'attachment; filename="{name}"'
+    return Response(content=content, media_type="application/pdf", headers={"Content-Disposition": disposition, **PRIVATE_DATA})
 
 
 @app.get("/api/orders/{access_token}/pdf")
 def order_pdf(access_token: str) -> Response:
-    """The clean PDF, built on the fly so no file is stored."""
+    """The clean PDF, built on the fly so no file is stored. A $39 order gets just its two sheets."""
     order = _paid_order(access_token)
-    _, result = _build(order["job_slug"], order["payload"], preview=False)
-    _delivered(order)
-    return Response(
-        content=result.pdf,
-        media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{order["order_code"]}-permit-packet.pdf"', **PRIVATE_DATA},
-    )
+    job_type, result = _build(order["job_slug"], order["payload"], preview=False)
+    pdf, name = result.pdf, f'{order["order_code"]}-permit-packet.pdf'
+    only = _allowed_sheets(order, job_type)
+    if only is not None:
+        pdf = packet_subset_pdf(pdf, tuple(d.file_stem for d in job_type.documents), only)
+        name = f'{order["order_code"]}-load-calc-and-panel-audit.pdf'
+    _downloaded(order)
+    return _pdf_download(pdf, name)
 
 
 @app.get("/api/orders/{access_token}/documents")
@@ -574,8 +724,52 @@ def order_documents(access_token: str) -> Response:
     if _single_pdf_only(order["payload"]):
         raise HTTPException(status.HTTP_409_CONFLICT, "This city takes one combined PDF, not separate plan sheets")
     job_type, result = _build(order["job_slug"], order["payload"], preview=False)
-    _delivered(order)
-    return _documents_response(job_type, result, job_type.zip_name.replace("-demo.zip", ".zip"))
+    stems = tuple(document.file_stem for document in job_type.documents)
+    zip_name = job_type.zip_name.replace("-demo.zip", ".zip")
+    only = _allowed_sheets(order, job_type)
+    content = packet_documents_zip(result.pdf, stems, only)
+    _downloaded(order)
+    return Response(content=content, media_type="application/zip",
+                    headers={"Content-Disposition": f'attachment; filename="{zip_name}"', **PRIVATE_DATA})
+
+
+@app.get("/api/orders/{access_token}/documents/{file_stem}")
+def order_document(access_token: str, file_stem: str) -> Response:
+    """One sheet of the packet as its own PDF. A $39 order may only take its load calculation and panel schedule."""
+    order = _paid_order(access_token)
+    job_type = _job_type(order["job_slug"])
+    only = _allowed_sheets(order, job_type)
+    if only is not None and file_stem not in only:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "This package includes only the load calculation and panel audit")
+    stems = tuple(document.file_stem for document in job_type.documents)
+    if file_stem not in stems:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such sheet")
+    if _single_pdf_only(order["payload"]):
+        raise HTTPException(status.HTTP_409_CONFLICT, "This city takes one combined PDF, not separate plan sheets")
+    _, result = _build(order["job_slug"], order["payload"], preview=False)
+    content = packet_subset_pdf(result.pdf, stems, frozenset({file_stem}))
+    _downloaded(order)
+    return _pdf_download(content, f'{order["order_code"]}-{file_stem}.pdf')
+
+
+# ---- Find my order ----
+
+FIND_ORDER_MESSAGE = "If we have orders for that email, we've sent the links."
+
+
+@app.post("/api/find-order")
+def find_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
+    """Email every order link for an address. The answer never says whether the address has orders."""
+    email = str(body.get("email") or "").strip()
+    if EMAIL.match(email) and len(email) <= 200:
+        try:
+            if orders.find_order_allowed(email):  # 3 requests per email per hour
+                found = orders.list_by_email(email)
+                if found:
+                    _notify(emails.find_order, email, [(order, _order_link(request, order)) for order in found])
+        except Exception:
+            log.exception("Find my order failed")
+    return {"message": FIND_ORDER_MESSAGE}
 
 
 # ---- Admin ----
@@ -636,8 +830,8 @@ async def whop_webhook(request: Request) -> dict:
     if payload.get("type") in PAID_EVENTS and isinstance(token, str) and token:
         order = orders.get_by_token(token)
         if order is not None and order["status"] == "pending_payment":
-            orders.set_status(order["id"], "paid")
-            log.info("Order %s paid through Whop", order["order_code"])
+            order = _mark_paid(order, request)
+            log.info("Order %s paid through Whop (now %s)", order["order_code"], order["status"])
     return {"ok": True}  # always 200 once signed, so Whop doesn't retry events we don't act on
 
 
@@ -646,19 +840,65 @@ def admin_page() -> Response:
     return _page("admin.html")
 
 
+def _hours_left(order: dict[str, Any]) -> float | None:
+    """Hours left of the 24-hour check; negative once it is overdue."""
+    if not order.get("paid_at"):
+        return None
+    paid = datetime.fromisoformat(order["paid_at"])
+    if paid.tzinfo is None:
+        paid = paid.replace(tzinfo=timezone.utc)
+    return round(REVIEW_HOURS - (datetime.now(timezone.utc) - paid).total_seconds() / 3600, 1)
+
+
+def _job_label(slug: str) -> str:
+    job_type = get_job_type(slug)
+    return job_type.label if job_type else slug
+
+
 @app.get("/api/admin/orders", dependencies=[Depends(require_admin)])
-def admin_orders() -> JSONResponse:
-    keys = ("id", "order_code", "customer_email", "address", "tier", "status", "created_at")
+def admin_orders(request: Request) -> JSONResponse:
+    keys = ("id", "order_code", "customer_email", "address", "tier", "status", "created_at", "paid_at", "released_at", "downloaded_at")
+
+    def row(order: dict[str, Any]) -> dict[str, Any]:
+        return {**{key: order[key] for key in keys}, "downloaded": bool(order["downloaded_at"])}
+
+    in_review = [
+        {**row(order), "job_type": _job_label(order["job_slug"]), "hours_remaining": _hours_left(order),
+         "order_url": f"/order/{order['access_token']}"}
+        for order in orders.list_in_review()]
     return JSONResponse(
-        {"orders": [{key: order[key] for key in keys} for order in orders.list_recent(100)]}, headers=PRIVATE_DATA)
+        {"in_review": in_review, "orders": [row(order) for order in orders.list_recent(100)]}, headers=PRIVATE_DATA)
 
 
 @app.post("/api/admin/orders/{order_id}/approve", dependencies=[Depends(require_admin)])
-def approve_order(order_id: str) -> dict:
-    """Mark a payment as received by hand, for a payment the webhook missed. An order that is already paid or delivered stays as it is."""
+def approve_order(order_id: str, request: Request) -> dict:
+    """Mark a payment as received by hand, for a payment the webhook missed. Only a pending order changes: a $169 order goes to review like a webhook payment."""
     order = orders.get_by_id(order_id)
     if order is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such order")
     if order["status"] == "pending_payment":
-        order = orders.set_status(order_id, "paid") or order
+        order = _mark_paid(order, request)
     return {"id": order["id"], "order_code": order["order_code"], "status": order["status"]}
+
+
+@app.post("/api/admin/orders/{order_id}/release", dependencies=[Depends(require_admin)])
+def release_order(order_id: str, request: Request) -> dict:
+    """End the review hold: the order unlocks, and the buyer is emailed."""
+    order = orders.get_by_id(order_id)
+    if order is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such order")
+    released = orders.release(order_id)
+    if released is None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "This order isn't in review")
+    _notify(emails.released, released, _order_link(request, released))
+    return {"id": released["id"], "order_code": released["order_code"], "status": released["status"], "released_at": released["released_at"]}
+
+
+@app.get("/api/admin/orders/{order_id}/pdf", dependencies=[Depends(require_admin)])
+def admin_order_pdf(order_id: str, download: int = 0) -> Response:
+    """The order's clean packet for the reviewer. It never counts as the buyer's download."""
+    order = orders.get_by_id(order_id)
+    if order is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such order")
+    _, result = _build(order["job_slug"], order["payload"], preview=False)
+    return _pdf_download(result.pdf, f'{order["order_code"]}-permit-packet.pdf', inline=not download)

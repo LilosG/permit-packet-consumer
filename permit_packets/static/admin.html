@@ -15,22 +15,59 @@
   <h1>Orders</h1>
   <p class="lead">Newest first. Orders unlock automatically when Whop confirms payment. Use the button only if a confirmed payment didn't unlock its order.</p>
   <p id="msg" class="note" aria-live="polite"></p>
+  <h2>In review</h2>
+  <p class="lead" id="review-empty">Nothing waiting for review.</p>
+  <div class="table-wrap" id="review-wrap" hidden><table class="orders">
+    <thead><tr><th>Address</th><th>Job</th><th>Buyer</th><th>Paid</th><th>Hours left of 24</th><th>Packet</th><th></th></tr></thead>
+    <tbody id="review-rows"></tbody>
+  </table></div>
+  <h2 style="margin-top:32px">All orders</h2>
   <div class="table-wrap"><table class="orders">
-    <thead><tr><th>Code</th><th>Email</th><th>Address</th><th>Package</th><th>Status</th><th>Created</th><th></th></tr></thead>
+    <thead><tr><th>Code</th><th>Email</th><th>Address</th><th>Package</th><th>Status</th><th>Downloaded</th><th>Created</th><th></th></tr></thead>
     <tbody id="rows"></tbody>
   </table></div>
 </main>
+{{FOOTER}}
 <script>
 (() => {
   const rows = document.getElementById('rows'), msg = document.getElementById('msg');
   const TIERS = { load_calc: '$39 Load Calc', instant_packet: '$89 Instant', city_checked_24h: '$169 City-Checked' };
-  const LABELS = { pending_payment: 'Pending payment', paid: 'Paid', delivered: 'Delivered' };
+  const LABELS = { pending_payment: 'Pending payment', in_review: 'In review', paid: 'Paid', delivered: 'Delivered' };
+  const reviewRows = document.getElementById('review-rows');
   const cell = (text) => { const td = document.createElement('td'); td.textContent = text; return td; };
 
   async function load() {
     const response = await fetch('/api/admin/orders');
     if (!response.ok) { msg.textContent = `Could not load orders (${response.status}).`; return; }
-    const { orders } = await response.json();
+    const { orders, in_review: inReview } = await response.json();
+    document.getElementById('review-empty').hidden = inReview.length > 0;
+    document.getElementById('review-wrap').hidden = inReview.length === 0;
+    reviewRows.replaceChildren(...inReview.map((order) => {
+      const tr = document.createElement('tr');
+      const left = order.hours_remaining;
+      const hours = left === null ? '' : (left >= 0 ? `${left} h left` : `Overdue by ${Math.abs(left)} h`);
+      const links = document.createElement('td');
+      for (const [label, suffix] of [['View', ''], ['Download', '?download=1']]) {
+        const a = document.createElement('a'); a.href = `/api/admin/orders/${order.id}/pdf${suffix}`; a.target = '_blank'; a.rel = 'noopener'; a.textContent = label;
+        links.append(a, ' ');
+      }
+      const order_link = document.createElement('a'); order_link.href = order.order_url; order_link.target = '_blank'; order_link.rel = 'noopener'; order_link.textContent = 'Order page';
+      links.append(order_link);
+      const action = document.createElement('td');
+      const button = document.createElement('button');
+      button.textContent = 'Release';
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        const result = await fetch(`/api/admin/orders/${order.id}/release`, { method: 'POST' });
+        if (!result.ok) { msg.textContent = `Could not release ${order.order_code} (${result.status}).`; button.disabled = false; return; }
+        msg.textContent = `${order.order_code} released. The buyer has been emailed.`;
+        load();
+      });
+      action.append(button);
+      tr.append(cell(order.address), cell(order.job_type), cell(order.customer_email),
+        cell(order.paid_at ? new Date(order.paid_at).toLocaleString() : ''), cell(hours), links, action);
+      return tr;
+    }));
     msg.textContent = orders.length ? '' : 'No orders yet.';
     rows.replaceChildren(...orders.map((order) => {
       const tr = document.createElement('tr');
@@ -52,7 +89,7 @@
         action.append(button);
       }
       tr.append(cell(order.order_code), cell(order.customer_email), cell(order.address), cell(TIERS[order.tier] || order.tier), status,
-        cell(new Date(order.created_at).toLocaleString()), action);
+        cell(order.downloaded ? 'Downloaded' : 'Not downloaded'), cell(new Date(order.created_at).toLocaleString()), action);
       return tr;
     }));
   }

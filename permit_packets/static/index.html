@@ -21,6 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="/assets/css/app.css?v={{ASSET_VERSION}}">
+{{JSON_LD}}
 </head>
 <body id="top">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -618,12 +619,13 @@
           <label class="plan popular"><input type="radio" name="tier" value="instant_packet" checked><span class="plan-body"><i class="badge">Most popular</i><b class="plan-price">$89</b><span class="plan-name">Instant Permit Packet</span><span class="plan-desc">The full clean packet: site plan, diagram, schedule, load calc and cut sheets. Download as soon as payment clears.</span></span></label>
           <label class="plan"><input type="radio" name="tier" value="city_checked_24h"><span class="plan-body"><b class="plan-price">$169</b><span class="plan-name">24-Hour City-Checked Packet</span><span class="plan-desc">Full packet, checked against your city's requirements within 24 hours</span></span></label>
         </div>
-        <label class="flag"><input type="checkbox" id="ack" required><span>I understand this is a drafting &amp; calculation document, not a PE stamp.</span></label>
+        <label class="flag"><input type="checkbox" id="ack" required><span>I understand this is a drafting &amp; calculation document, not a PE stamp, and I agree to the <a href="/terms" target="_blank" rel="noopener">Terms</a> and <a href="/refund" target="_blank" rel="noopener">Refund Policy</a>.</span></label>
         <div class="error" id="pay-error" role="alert" hidden></div>
         <div class="actions">
           <button type="submit" id="pay-button">Continue to Payment</button>
           <button type="button" class="quiet" id="back-preview">Back to preview</button>
         </div>
+        <p class="pay-note">Payments processed securely by Whop · <a href="/refund">Full refund before you download</a></p>
       </form>
       <p class="note">After you pay on Whop, your files unlock automatically on your order page.</p>
     </section>
@@ -657,15 +659,12 @@
   <details class="faq"><summary>Who submits it to the city?</summary><p>You do. After you pay, your order page gives you the clean PDF, the individual files, the city's submission steps and copy-paste fields for the portal.</p></details>
   <details class="faq"><summary>Which cities does it cover?</summary><p>Any U.S. address works. Cities we've set up use their published checklist; everywhere else uses a general checklist, so confirm local requirements with your building department.</p></details>
   <details class="faq"><summary>Can a homeowner pull their own permit?</summary><p>Many cities allow owner-builder permits for a home you live in, and rules vary. Choose "Homeowner (Owner-Builder)" in the details step and the packet prints your name with no license number.</p></details>
-  <details class="faq"><summary>How does payment work?</summary><p>You pay securely through Whop. Once the payment goes through, your order unlocks automatically. Bookmark your order page to come back to it.</p></details>
+  <details class="faq"><summary>How does payment work?</summary><p>You pay securely through Whop. Once the payment goes through, your order unlocks automatically. We email you the link to your order page; lost it? Use Find my order.</p></details>
   <details class="faq"><summary>What if my city asks for changes?</summary><p>We can't guarantee approval. The packet follows the city's published checklist where we have it, and the $169 package adds a check against your city's requirements.</p></details>
   </div>
 </div></section>
 
-<footer class="site-footer"><div class="wrap">
-  <a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a>
-  <p><b>Permit Packets</b> is an automated drafting &amp; NEC calculation tool. Documents are not PE-stamped and are not legal or engineering advice. Applicants are responsible for confirming their city's requirements and for submitting their own application through the city's portal.</p>
-</div></footer>
+{{FOOTER}}
 
 <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Packet sheet, zoomed">
   <button type="button" id="lightbox-close" aria-label="Close">&times;</button>

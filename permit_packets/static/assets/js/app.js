@@ -521,8 +521,12 @@
   document.addEventListener('click', (event) => {
     const pill = event.target.closest('[data-fill]');
     if (pill) { form.elements[pill.dataset.fill].value = pill.dataset.value; return; }
-    const plan = event.target.closest('[data-plan]');
-    if (plan) { const radio = document.querySelector(`input[name="tier"][value="${plan.dataset.plan}"]`); if (radio) radio.checked = true; }
+    /* A pricing card preselects its own tier. Every other start button goes back to the $89 default. */
+    const start = event.target.closest('[data-start]');
+    if (start) {
+      const radio = document.querySelector(`input[name="tier"][value="${start.dataset.plan || 'instant_packet'}"]`);
+      if (radio) radio.checked = true;
+    }
   });
 
   /* ---- The job ---- */
@@ -667,7 +671,7 @@
     const email = $('#email').value.trim();
     if (lastWasSample) return payError('This preview uses the sample address. Go back and enter the real job address before ordering.');
     if (!EMAIL.test(email)) return payError('Enter a valid email address so we can find your order.');
-    if (!$('#ack').checked) return payError('Please confirm you understand this is a drafting & calculation document, not a PE stamp.');
+    if (!$('#ack').checked) return payError('Please confirm you understand this is a drafting & calculation document, not a PE stamp, and that you agree to the Terms and Refund Policy.');
     const button = $('#pay-button');
     button.disabled = true;
     button.textContent = 'Saving your order…';
