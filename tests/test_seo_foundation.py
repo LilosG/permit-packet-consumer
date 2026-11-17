@@ -147,3 +147,11 @@ def test_gtag_loads_only_when_configured_and_never_on_admin(client, monkeypatch)
         assert "gtag/js?id=G-TEST1234" in client.get(path).text, path
     monkeypatch.setenv("ADMIN_PASSWORD", "x")
     assert "googletagmanager" not in app_module.STATIC.joinpath("admin.html").read_text()
+
+
+def test_google_search_console_verification_file(client):
+    response = client.get("/google405b3c22f036058e.html", follow_redirects=False)
+    assert response.status_code == 200 and response.headers["content-type"].startswith("text/html")
+    assert response.text == "google-site-verification: google405b3c22f036058e.html"
+    for path in ("/sitemap-pages.xml", "/sitemap-locations.xml", "/sitemap-guides.xml", "/llms.txt"):
+        assert "google405b3c22f036058e" not in client.get(path).text

@@ -380,6 +380,15 @@ def find_order_page() -> Response:
 
 # ---- robots, sitemaps, llms.txt ----
 
+GOOGLE_VERIFICATION_FILE = "google405b3c22f036058e.html"
+
+
+@router.api_route(f"/{GOOGLE_VERIFICATION_FILE}", methods=["GET", "HEAD"], include_in_schema=False)
+def google_verification() -> Response:
+    """Search Console ownership file. Not registered in seo.PAGES, so it stays out of the sitemaps and llms.txt."""
+    return HTMLResponse(f"google-site-verification: {GOOGLE_VERIFICATION_FILE}", headers={"Cache-Control": "public, max-age=3600"})
+
+
 @router.api_route("/robots.txt", methods=["GET", "HEAD"], include_in_schema=False)
 def robots() -> Response:
     return PlainTextResponse(seo.robots_txt(), headers={"Cache-Control": "public, max-age=3600"})
