@@ -40,6 +40,10 @@
 <h2>Which electrical code applies?</h2>
 <p>{{ checklist.code_note }} Edition on file: {{ city.nec_edition }}.</p>
 <p>The NEC is a national model code. Each state or city adopts an edition and may amend it, which is why the edition and local amendments above matter more than the national text. Confirm the edition on the city's own page before you rely on any code section.</p>
+{% if engineering_rows %}<h3>Local engineering &amp; utility parameters in {{ city.name }}</h3>
+<div class="table-wrap"><table class="compare"><tbody>
+{%- for param_label, param_value in engineering_rows %}<tr><th scope="row">{{ param_label }}</th><td>{{ param_value }}</td></tr>{% endfor %}
+</tbody></table></div>{% endif %}
 {% if city.fee_note %}<h2>What does the permit cost?</h2>
 <p>{{ city.fee_note }}</p>{% endif %}
 
@@ -52,6 +56,6 @@
 {%- for url in city.sources %}<li><a href="{{ url }}" rel="noopener">{{ url }}</a></li>{% endfor %}
 </ul>
 <p>Last verified against these sources on {{ verified }}.</p>
-<p>More in {{ city.label }}: <a href="{{ city_path }}">all {{ city.name }} electrical permits</a>.</p>
+<p>More in {{ city.label }}: <a href="{{ city_path }}">all {{ city.name }} electrical permits</a>{% if sibling_jobs %} · {% for s_url, s_label in sibling_jobs %}<a href="{{ s_url }}">{{ s_label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}. National guide: <a href="{{ job.url }}">{{ job.label }} permit plans</a>.</p>
 </main>
 {% endblock %}

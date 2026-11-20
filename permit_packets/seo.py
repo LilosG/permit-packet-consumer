@@ -20,14 +20,14 @@ from markupsafe import Markup
 log = logging.getLogger("permit_packets")
 
 SITE_NAME = "Permit Packets"
-DEFAULT_BASE_URL = "https://permit-packet-consumer.vercel.app"
+DEFAULT_BASE_URL = "https://myelectricalpermit.com"
 DEFAULT_OG_IMAGE = "/assets/samples/02-site-plan-og.jpg"
 AUTHOR = "Permit Packets by Lilos Growth"
 TITLE_MAX = 60
 DESCRIPTION_MAX = 155
 
 # The homepage description: also the one-line description in /llms.txt.
-HOME_TITLE = "Electrical Permit Packets: EV, Panel & Subpanel Plans"
+HOME_TITLE = "Electrical Permit Packet Generator: Plans & Load Calcs"
 HOME_DESCRIPTION = (
     "Generate a residential electrical permit packet from one address: site plan, single-line diagram, "
     "load calc and cut sheets. Free watermarked preview.")
@@ -104,9 +104,27 @@ def verification_tags() -> Markup:
 
 # ---- JSON-LD ----
 
+def website() -> dict:
+    return {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "MyElectricalPermit",
+        "alternateName": SITE_NAME,
+        "url": absolute("/"),
+        "publisher": {"@type": "Organization", "name": "Lilos Growth", "url": "https://lilosgrowth.com"},
+    }
+
+
 def organization() -> dict:
-    return {"@context": "https://schema.org", "@type": "Organization", "name": "Lilos Growth",
-            "url": "https://lilosgrowth.com", "email": "hello@lilosgrowth.com"}
+    return {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": SITE_NAME,
+        "url": absolute("/"),
+        "logo": absolute("/apple-touch-icon.png"),
+        "email": "hello@lilosgrowth.com",
+        "parentOrganization": {"@type": "Organization", "name": "Lilos Growth", "url": "https://lilosgrowth.com"},
+    }
 
 
 def breadcrumb(items: list[tuple[str, str]]) -> dict:
@@ -241,15 +259,53 @@ def sitemap_locations() -> str:
 
 
 def robots_txt() -> str:
-    return ("User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nDisallow: /order/\nDisallow: /start/?\n\n"
-            f"Sitemap: {public_base_url()}/sitemap.xml\n")
+    return (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /admin\n"
+        "Disallow: /api/\n"
+        "Disallow: /order/\n"
+        "Disallow: /start/?\n"
+        "Disallow: /tools/*?\n"
+        "Disallow: /compare/*?\n\n"
+        f"Sitemap: {public_base_url()}/sitemap.xml\n"
+    )
 
 
 def llms_txt() -> str:
-    lines = [f"# {SITE_NAME}", "", f"> {HOME_DESCRIPTION}", "", "## Pages", ""]
-    lines += [f"- [{entry.title}]({absolute(entry.path)})" for entry in PAGES.values() if entry.indexable]
+    indexable = [entry for entry in PAGES.values() if entry.indexable]
+    generators = [e for e in indexable if e.path in (
+        "/", "/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/", "/hot-tub-240v-permit/",
+        "/sample-packet/", "/pricing/"
+    )]
+    audiences = [e for e in indexable if e.path.startswith("/for/")]
+    tools = [e for e in indexable if e.path.startswith("/tools/")]
+    docs = [e for e in indexable if e.path.startswith("/permit-documents/")]
+    compares = [e for e in indexable if e.path.startswith("/compare/")]
+    guides = [e for e in indexable if e.sitemap == "guides"]
+    categorized = {e.path for e in generators + audiences + tools + docs + compares + guides}
+    other = [e for e in indexable if e.path not in categorized]
+
+    lines = [f"# {SITE_NAME} (MyElectricalPermit)", "", f"> {HOME_DESCRIPTION}"]
+    sections = [
+        ("Core Permit Generators & Pricing", generators),
+        ("Who It's For", audiences),
+        ("Free NEC Electrical Calculators", tools),
+        ("Electrical Permit Document Guides", docs),
+        ("Comparisons", compares),
+        ("Guides & Checklists", guides),
+        ("Company & Policies", other),
+    ]
+    for heading, entries in sections:
+        if entries:
+            lines += ["", f"## {heading}", ""]
+            lines += [f"- [{entry.title}]({absolute(entry.path)})" for entry in entries]
+
     from permit_packets import locations
-    lines += [f"- [{path}]({absolute(path)})" for path, _ in locations.location_paths()]
+    loc_paths = locations.location_paths()
+    if loc_paths:
+        lines += ["", "## City & State Electrical Permit Rules", ""]
+        lines += [f"- [{path}]({absolute(path)})" for path, _ in loc_paths]
     return "\n".join(lines) + "\n"
 
 

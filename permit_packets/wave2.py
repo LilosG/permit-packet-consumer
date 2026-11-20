@@ -41,14 +41,14 @@ for _p, _n in [(w2.TOOLS_PATH, "Free Electrical Permit Calculators"), (w2.DOCS_P
 JOB_CALCS = {"ev-charger": ("ev-charger-load-calculator", "ev-charger-wire-breaker-size"),
              "panel-upgrade": ("residential-load-calculator",), "subpanel": ("residential-load-calculator",),
              "hot-tub-240v": ("residential-load-calculator",)}
-JOB_DOCS = ("site-plan", "single-line-diagram", "load-calculation", "panel-schedule")
+JOB_DOCS = ("site-plan", "single-line-diagram", "load-calculation", "panel-schedule", "equipment-cut-sheets")
 
 
 def related_links(job: str = "") -> list[tuple[str, str, str]]:
     """(url, title, text) for the tools and document guides that match a job. Every target is an indexable page."""
     slugs = JOB_CALCS.get(job) or tuple(w2.CALCS)
     items = [(calc_path(s), w2.CALCS[s].crumb, w2.CALCS[s].card) for s in slugs]
-    items += [(doc_path(s), w2.DOCS[s].name, w2.DOCS[s].card) for s in JOB_DOCS[:2 if job else 4]]
+    items += [(doc_path(s), w2.DOCS[s].name, w2.DOCS[s].card) for s in JOB_DOCS[:2 if job else 5]]
     return items
 
 
@@ -73,6 +73,16 @@ _hub(w2.TOOLS_PATH, w2.TOOLS_TITLE, w2.TOOLS_DESCRIPTION, "Free Electrical Permi
      [(calc_path(s), c.crumb, c.card) for s, c in w2.CALCS.items()], "Tools")
 _hub(w2.DOCS_PATH, w2.DOCS_TITLE, w2.DOCS_DESCRIPTION, "Electrical Permit Documents Explained", w2.DOCS_INTRO,
      [(doc_path(s), d.name, d.card) for s, d in w2.DOCS.items()], "Permit Documents")
+
+COMPARE_PATH = "/compare/"
+COMPARE_TITLE = "Compare Permit Packets vs CAD & Site Plan Tools"
+COMPARE_DESCRIPTION = (
+    "Compare Permit Packets against CAD drafters, Fiverr freelancers, and site-plan-only services for residential electrical permits."
+)
+seo.register(COMPARE_PATH, "Compare Permit Packets", indexable=True, lastmod=WAVE2_DATE)
+_hub(COMPARE_PATH, COMPARE_TITLE, COMPARE_DESCRIPTION, "Compare Permit Packets",
+     "See how automated residential electrical permit packets compare to CAD drafters, freelance drafters, and site-plan-only services.",
+     [(compare_path(s), c.h1, c.card) for s, c in w2.COMPARES.items()], "Comparisons")
 
 
 # ---- Calculators ----
@@ -146,7 +156,7 @@ def _doc(slug: str):
 
     def handler() -> Response:
         meta = seo.page_meta(d.title, d.description, path, robots=seo.robots_for(path))
-        return render("doc.html", meta=meta, jsonld=[seo.faq(_qas(d.faqs))],
+        return render("doc.html", meta=meta, jsonld=[seo.article(d.h1, WAVE2_DATE, WAVE2_DATE), seo.faq(_qas(d.faqs))],
                       crumbs=[("Home", "/"), ("Permit Documents", w2.DOCS_PATH), (d.name, path)], final_cta=True,
                       d=d, calc=(calc_path(calc), w2.CALCS[calc].crumb) if calc else None,
                       others=[(doc_path(s), x.name, x.card) for s, x in w2.DOCS.items() if s != slug],
@@ -168,8 +178,8 @@ def _compare(slug: str):
     def handler() -> Response:
         checked = datetime.date.fromisoformat(c.checked).strftime("%B %-d, %Y")
         meta = seo.page_meta(c.title, c.description, path, robots=seo.robots_for(path))
-        return render("compare.html", meta=meta, jsonld=[seo.faq(_qas(c.faqs))],
-                      crumbs=[("Home", "/"), (c.h1, path)], final_cta=True, c=c, checked=checked,
+        return render("compare.html", meta=meta, jsonld=[seo.article(c.h1, c.checked, c.checked), seo.faq(_qas(c.faqs))],
+                      crumbs=[("Home", "/"), ("Comparisons", COMPARE_PATH), (c.h1, path)], final_cta=True, c=c, checked=checked,
                       cta_href="/start/?job=ev-charger&role=diy",
                       others=[(compare_path(s), x.h1, x.card) for s, x in w2.COMPARES.items() if s != slug])
 

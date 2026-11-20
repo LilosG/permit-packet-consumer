@@ -122,7 +122,7 @@ def home() -> Response:
     qas = [(_plain(question), _plain(answer)) for question, answer in faq_data.FAQ]
     return render(
         "home.html", meta=seo.page_meta(seo.HOME_TITLE, seo.HOME_DESCRIPTION, "/", robots=seo.robots_for("/")),
-        jsonld=[seo.organization(), seo.faq(qas)], final_cta=True, headers=NO_CACHE,
+        jsonld=[seo.website(), seo.organization(), seo.product_offers(), seo.faq(qas)], final_cta=True, headers=NO_CACHE,
         faq=faq_data.FAQ, verification=seo.verification_tags(),
         who_cards=who_cards(), job_links=job_links())
 
@@ -449,8 +449,41 @@ def _job_view(found, slug: str) -> dict:
         faqs.append((f"What does the permit cost in {found.name}?", found.fee_note))
     faqs.append((f"What does {found.name} ask to see with a {job.label.lower()} permit?",
                  "; ".join(item.split(" (")[0] for item in reviewer[:3]) + ", among other items listed above."))
+    engineering_rows: list[tuple[str, str]] = []
+    if found.nec_edition:
+        engineering_rows.append(("Adopted electrical code", found.nec_edition))
+    if found.utility:
+        engineering_rows.append(("Electric utility", found.utility))
+    if found.design_ambient_f is not None:
+        ambient_c = round((found.design_ambient_f - 32) * 5 / 9)
+        engineering_rows.append((
+            "Outdoor design temperature (NEC 310.15)",
+            f"{found.design_ambient_f}°F ({ambient_c}°C) — {found.design_ambient_label}",
+        ))
+    if found.max_meter_to_main_ft is not None:
+        engineering_rows.append(("Max meter-to-main disconnect distance", f"{found.max_meter_to_main_ft} ft"))
+    if found.service_raceways:
+        engineering_rows.append(("Allowed above-ground service raceways", ", ".join(found.service_raceways)))
+    if found.min_service_raceway:
+        engineering_rows.append(("Minimum service raceway trade size", found.min_service_raceway))
+    if found.pvc_underground_only:
+        engineering_rows.append(("PVC conduit rule", "Underground or concrete-encased only; metal raceway above ground"))
+    if not found.cable_outdoors:
+        engineering_rows.append(("Outdoor 240V wiring method", "Raceway required outdoors (exposed cable prohibited)"))
+    if found.approved_meter_mains:
+        sample_models = ", ".join(found.approved_meter_mains[:3])
+        extra = len(found.approved_meter_mains) - 3
+        suffix = f" (+ {extra} more utility-approved models checked in generator)" if extra > 0 else ""
+        engineering_rows.append(("Utility-approved meter-mains", sample_models + suffix))
+
+    sibling_jobs = [
+        (locations.job_path(found, s), sitedata.JOBS[s].label)
+        for s in sitedata.JOBS
+        if s != slug and locations.job_indexable(found, s)
+    ]
+
     return {"job": job, "checklist": checklist, "own_checklist": own, "notes": notes, "more_notes": more_notes,
-            "faqs": faqs}
+            "faqs": faqs, "engineering_rows": engineering_rows, "sibling_jobs": sibling_jobs}
 
 
 @router.api_route("/permits/{state}/{city}/{job}/", methods=["GET", "HEAD"], include_in_schema=False)
@@ -471,9 +504,10 @@ def permits_job(state: str, city: str, job: str) -> Response:
         f"{label} permit in {found.label}: who may pull it, the {found.nec_edition.split(' (')[0] or 'NEC'} edition, what the city asks for."
         + (f" Checked {_date(found.rules_date)}." if found.rules_date else ""),
         path, robots="index,follow")
-    return render("permits_job.html", meta=meta, jsonld=[seo.faq(view["faqs"])], crumbs=crumbs, final_cta=True,
+    service_schema = seo.service(f"{label} Permit Packet in {found.label}", found.label, seo.tier_offers())
+    return render("permits_job.html", meta=meta, jsonld=[seo.faq(view["faqs"]), service_schema], crumbs=crumbs, final_cta=True,
                   city=found, h1=h1, verified=_date(found.rules_date) if found.rules_date else "",
-                  cta_href=f"/start/?job={job}&city={found.key}", **view)
+                  city_path=sitedata.city_path(found), cta_href=f"/start/?job={job}&city={found.key}", **view)
 
 
 # ---- Legal and support pages ----

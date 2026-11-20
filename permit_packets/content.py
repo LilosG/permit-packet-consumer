@@ -67,7 +67,7 @@ def _hub(hub: Hub) -> None:
 _hub(Hub(
     slug="ev-charger", type_key="ev_charger", path="/ev-charger-permit/",
     h1="EV Charger Permit Plans & Packet", crumb="EV Charger", job_name="EV charger",
-    title="EV Charger Permit Plans & Packet | Permit Packets",
+    title="EV Charger Permit Plans, Load Calc & Site Plan Online",
     description="Site plan, single-line diagram and load calc for a Level 2 EV charger permit, built from your address. Free watermarked preview.",
     answer=("An EV charger permit packet is the set of plans and calculations a building department reviews before "
             "you install a Level 2 charger: a site plan, single-line diagram, load calculation, panel schedule and "
@@ -123,7 +123,7 @@ _hub(Hub(
 _hub(Hub(
     slug="panel-upgrade", type_key="service_upgrade", path="/panel-upgrade-permit/",
     h1="Panel Upgrade Permit Plans & Load Calculation", crumb="Panel Upgrade", job_name="panel upgrade",
-    title="Panel Upgrade Permit Plans & Load Calc | Permit Packets",
+    title="200A Panel Upgrade Permit Plans, Riser & Load Calc",
     description="Riser diagram, site plan and NEC 220 load calc for a residential service or panel upgrade permit, built from your address. Free preview.",
     answer=("A panel upgrade permit packet shows a building department what is changing at your service: a site plan, "
             "riser diagram, NEC Article 220 load calculation, panel schedule and a utility service request page. "
@@ -179,7 +179,7 @@ _hub(Hub(
 _hub(Hub(
     slug="subpanel", type_key="subpanel", path="/subpanel-permit/",
     h1="Subpanel Permit Plans & Drawings", crumb="Subpanel", job_name="subpanel",
-    title="Subpanel Permit Plans & Drawings | Permit Packets",
+    title="Subpanel Permit Plans, Feeder Schedule & Load Calc",
     description="Feeder schedule, single-line diagram, voltage drop and load calc for a residential subpanel permit, built from your address. Free preview.",
     answer=("A subpanel permit packet shows a building department the new panel and the feeder that serves it: a site plan, "
             "single-line diagram, feeder schedule, load calculation and panel schedule. Permit Packets builds it from one "
@@ -235,7 +235,7 @@ _hub(Hub(
 _hub(Hub(
     slug="hot-tub-240v", type_key="appliance_circuit", path="/hot-tub-240v-permit/",
     h1="Hot Tub & 240V Circuit Permit Plans", crumb="Hot Tub / 240V", job_name="hot tub or 240V circuit",
-    title="Hot Tub & 240V Circuit Permit Plans | Permit Packets",
+    title="Hot Tub & 240V Circuit Permit Plans & Load Calc",
     description="Site plan, single-line diagram and load calc for a hot tub, sauna, heat pump or mini-split circuit permit. Free watermarked preview.",
     answer=("A hot tub or 240V circuit permit packet shows a building department the new circuit and the appliance on it: a "
             "site plan, single-line diagram, load calculation and panel schedule. Permit Packets builds it from one "
