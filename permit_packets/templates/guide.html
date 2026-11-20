@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline, cta_band, faq_details, link_cards %}
+{% block main %}
+<main class="page-main content">
+<p class="kicker" style="text-align:left">{{ cat_label }}</p>
+<h1>{{ g.h1 }}</h1>
+{{ byline() }}
+<p class="answer">{{ g.answer }}</p>
+<p class="cta-row">{{ cta(cta_href, "Build your permit packet") }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+{% if g.table_headers and g.table_rows %}
+<h2>{{ g.table_caption or "Quick reference comparison" }}</h2>
+<div class="table-wrap"><table class="compare">
+<thead><tr>{% for h in g.table_headers %}<th scope="col">{{ h }}</th>{% endfor %}</tr></thead>
+<tbody>
+{%- for row in g.table_rows %}<tr><th scope="row">{{ row[0] }}</th>{% for cell in row[1:] %}<td>{{ cell }}</td>{% endfor %}</tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+{% for heading, paragraphs in g.sections %}
+<h2>{{ heading }}</h2>
+{% for paragraph in paragraphs %}<p>{{ paragraph|safe }}</p>
+{% endfor %}
+{% if loop.index == 2 %}{{ cta_band(cta_href, "Generate your site plan, single-line diagram and NEC 220 load calc from one address. Preview free.") }}{% endif %}
+{% endfor %}
+{% if related_cards %}
+<h2>Calculators, document guides &amp; related reading</h2>
+{{ link_cards(related_cards) }}
+{% endif %}
+<h2 id="faq">Frequently asked questions</h2>
+{{ faq_details(g.faqs) }}
+</main>
+{% endblock %}

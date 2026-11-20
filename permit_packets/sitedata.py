@@ -103,4 +103,4 @@ NAV_PERMITS = [
     ("Hot Tub / 240V", "/hot-tub-240v-permit/"),
     ("All cities", "/permits/"),
 ]
-NAV_LINKS = [("Tools", "/tools/"), ("Permit Documents", "/permit-documents/"), ("Sample Packet", "/sample-packet/"), ("Pricing", "/pricing/"), ("FAQ", "/faq/")]
+NAV_LINKS = [("Tools", "/tools/"), ("Guides", "/guides/"), ("Permit Documents", "/permit-documents/"), ("Sample Packet", "/sample-packet/"), ("Pricing", "/pricing/"), ("FAQ", "/faq/")]

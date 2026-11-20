@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ h1 }}</h1>
+{{ byline() }}
+<p class="answer">{{ intro }}</p>
+<nav class="faq-jump" id="guide-filters" aria-label="Guide categories">
+  <a href="/guides/" data-filter="all"{% if not active_cat %} aria-current="page"{% endif %}>All ({{ grouped|map(attribute='guides')|map('length')|sum }})</a>
+  {%- for cat_key, (cat_label, _cat_desc) in categories.items() %}
+  <a href="#cat-{{ cat_key }}" data-filter="{{ cat_key }}"{% if active_cat == cat_key %} aria-current="page"{% endif %}>{{ cat_label }}</a>
+  {%- endfor %}
+</nav>
+{%- for group in grouped %}
+<section class="guide-group" id="cat-{{ group.key }}" data-cat="{{ group.key }}"{% if active_cat and active_cat != group.key %} hidden{% endif %}>
+  <h2>{{ group.label }}</h2>
+  <p>{{ group.desc }}</p>
+  <ul class="link-cards">
+  {%- for url, title, text, _slug in group.guides %}
+    <li><a href="{{ url }}"><b>{{ title }}</b><span>{{ text }}</span></a></li>
+  {%- endfor %}
+  </ul>
+</section>
+{%- endfor %}
+<p class="cta-row">{{ cta("/start/") }}<a class="link" href="/tools/">Explore free NEC calculators</a></p>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+(() => {
+  const nav = document.getElementById('guide-filters');
+  const groups = [...document.querySelectorAll('.guide-group')];
+  if (!nav || !groups.length) return;
+  nav.addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-filter]');
+    if (!link) return;
+    e.preventDefault();
+    const key = link.dataset.filter;
+    nav.querySelectorAll('a[data-filter]').forEach((a) => {
+      if (a === link) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    groups.forEach((sec) => { sec.hidden = key !== 'all' && sec.dataset.cat !== key; });
+  });
+})();
+</script>
+{% endblock %}

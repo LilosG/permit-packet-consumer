@@ -538,6 +538,7 @@ def find_order_page() -> Response:
 
 
 from permit_packets import wave2  # noqa: E402,F401  (calculators, document guides, comparisons)
+from permit_packets import guides  # noqa: E402,F401  (guides, A vs B comparisons, best-of listicles, DIY tips)
 
 # ---- robots, sitemaps, llms.txt ----
 

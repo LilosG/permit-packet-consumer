@@ -16,7 +16,7 @@ WAVE2_DATE = "2026-11-17"
 
 CALC_RUN = {"ev-charger-load-calculator": (calc_math.EV_FIELDS, calc_math.ev_load),
             "residential-load-calculator": (calc_math.LOAD_FIELDS, calc_math.residential_load),
-            "ev-charger-wire-breaker-size": (calc_math.WIRE_FIELDS, calc_math.wire_breaker)}
+            "ev-charger-wire-breaker-size": (calc_math.WIRE_FIELDS, calc_math.wire_breaker), "subpanel-feeder-calculator": (calc_math.SUBPANEL_FIELDS, calc_math.subpanel_feeder), "solar-120-percent-rule-calculator": (calc_math.SOLAR_FIELDS, calc_math.solar_120_rule), "hot-tub-breaker-wire-size": (calc_math.HOT_TUB_FIELDS, calc_math.hot_tub_circuit)}
 
 
 def calc_path(slug: str) -> str:
@@ -39,16 +39,19 @@ for _p, _n in [(w2.TOOLS_PATH, "Free Electrical Permit Calculators"), (w2.DOCS_P
 
 # Calculators that fit each job; used for the contextual links on job hubs, audience and city pages.
 JOB_CALCS = {"ev-charger": ("ev-charger-load-calculator", "ev-charger-wire-breaker-size"),
-             "panel-upgrade": ("residential-load-calculator",), "subpanel": ("residential-load-calculator",),
-             "hot-tub-240v": ("residential-load-calculator",)}
+             "panel-upgrade": ("residential-load-calculator", "solar-120-percent-rule-calculator"),
+             "subpanel": ("subpanel-feeder-calculator", "residential-load-calculator"),
+             "hot-tub-240v": ("hot-tub-breaker-wire-size", "residential-load-calculator")}
 JOB_DOCS = ("site-plan", "single-line-diagram", "load-calculation", "panel-schedule", "equipment-cut-sheets")
 
 
 def related_links(job: str = "") -> list[tuple[str, str, str]]:
-    """(url, title, text) for the tools and document guides that match a job. Every target is an indexable page."""
+    """(url, title, text) for the tools, document guides and articles that match a job. Every target is indexable."""
+    from permit_packets.guides import guide_links_for_job
     slugs = JOB_CALCS.get(job) or tuple(w2.CALCS)
-    items = [(calc_path(s), w2.CALCS[s].crumb, w2.CALCS[s].card) for s in slugs]
-    items += [(doc_path(s), w2.DOCS[s].name, w2.DOCS[s].card) for s in JOB_DOCS[:2 if job else 5]]
+    items = [(calc_path(s), w2.CALCS[s].crumb, w2.CALCS[s].card) for s in slugs[:1 if job else 2]]
+    items += [(doc_path(s), w2.DOCS[s].name, w2.DOCS[s].card) for s in JOB_DOCS[:1 if job else 4]]
+    items += guide_links_for_job(job, limit=1 if job else 2)
     return items
 
 

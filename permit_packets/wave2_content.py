@@ -105,6 +105,90 @@ CALCS: dict[str, Calc] = {c.slug: c for c in (
         )),
 )}
 
+from dataclasses import replace as _replace
+CALCS["subpanel-feeder-calculator"] = Calc(
+    slug="subpanel-feeder-calculator", job="subpanel", crumb="Subpanel Feeder Calculator",
+    h1="Subpanel Feeder & Wire Size Calculator",
+    title="Subpanel Feeder & Wire Size Calculator | Permit Packets",
+    description="Size subpanel feeder wire, ground, conduit and voltage drop under NEC 310.16 and 250.122. Free calculator matching our permit packets.",
+    card="Aluminum or copper feeder wire, EGC, conduit and voltage drop for a subpanel.",
+    answer="Pick your subpanel feeder breaker, conductor material, conduit type and one-way run length to size the phase conductors, neutral, equipment ground and conduit. It runs the same NEC 310.16 and 250.122 sizing logic our subpanel permit packet prints on the feeder schedule.",
+    sections=(
+        ("How is a residential subpanel feeder sized?", ("A subpanel feeder carries power from a 2-pole breaker in your main panel to the subpanel using four conductors: two hots, an insulated neutral, and an equipment ground. Under NEC 310.16 at the 75°C terminal column, a 100 A feeder uses #1 AWG aluminum or #3 AWG copper conductors, while a 60 A feeder uses #4 AWG aluminum or #6 AWG copper.",)),
+        ("When does a feeder wire need to be upsized?", ("Long runs to a detached garage, workshop, or ADU lose voltage over distance. If voltage drop exceeds 3% over the one-way run, this calculator steps up the hot and neutral wire gauges and proportionally upsizes the equipment grounding conductor under NEC 250.122(B).",)),
+    ),
+    example_label="Worked example", faqs=(),
+)
+
+_sp = CALCS["subpanel-feeder-calculator"]
+CALCS["subpanel-feeder-calculator"] = _replace(
+    _sp,
+    sections=_sp.sections + (
+        ("What extra rules apply to a detached building?", ("In every subpanel, the neutral bus and ground bus must stay isolated by removing the green bonding screw (NEC 250.24(A)(5)). If the subpanel is in a detached garage or shed, NEC 250.32 also requires a local grounding electrode system (such as two ground rods) and a main disconnect at the detached structure.",)),
+    ),
+    faqs=(
+        ("Should I use aluminum or copper wire for a subpanel feeder?", "Aluminum (such as XHHW-2 or SER) is standard for 60 A to 200 A feeders because panel lugs are rated for both Cu/Al and aluminum costs significantly less. Copper uses smaller conduit."),
+        ("Why does a subpanel need 4 wires instead of 3?", "Under NEC 250.24(A)(5), neutral and ground may only be bonded at the main service disconnect. Downstream subpanels require separate neutral and equipment grounding conductors."),
+        ("What size conduit fits a 100 A subpanel feeder?", "Three #1 AWG aluminum THWN-2 conductors plus a #6 AWG aluminum ground fit inside 1-1/4 inch PVC or EMT at the 40% NEC Chapter 9 fill limit."),
+        ("Does a detached garage subpanel need ground rods?", "Yes. NEC 250.32(A) requires a grounding electrode system at any detached building supplied by a feeder."),
+    ),
+)
+
+CALCS["solar-120-percent-rule-calculator"] = Calc(
+    slug="solar-120-percent-rule-calculator", job="panel-upgrade", crumb="Solar 120% Rule Calculator",
+    h1="Solar 120% Rule Calculator (NEC 705.12)",
+    title="Solar 120% Rule Calculator (NEC 705.12) | Permit Packets",
+    description="Check if your main electrical panel passes the NEC 705.12(B)(3)(2) 120% backfeed rule for solar PV breakers. Instant free calculation.",
+    card="Verify main breaker plus solar PV breaker capacity against your panel busbar.",
+    answer="Enter your panel busbar rating, main breaker amps and solar PV breaker size to check compliance with the NEC 705.12(B)(3)(2) 120% rule. It runs the exact busbar backfeed check included in our residential panel upgrade permit packets.",
+    sections=(
+        ("What is the NEC 120% rule for solar?", ("When solar PV backfeeds into a main breaker panel, current enters from the utility main at one end and the solar breaker at the other. NEC 705.12(B)(3)(2) limits the sum of the main and solar breakers to 120% of the busbar rating when the PV breaker sits at the opposite end of the bus.",)),
+        ("How do you pass if your 200A panel fails the 120% rule?", ("A 200 A panel with a 200 A busbar allows 240 A total (40 A max solar breaker). To fit a larger PV breaker, downsize the main breaker to 175 A or 150 A (if your NEC 220 load calc allows), upgrade to a 225 A bus panel, or use a line-side tap under NEC 705.11.",)),
+    ),
+    example_label="Worked example", faqs=(),
+)
+
+_sol = CALCS["solar-120-percent-rule-calculator"]
+CALCS["solar-120-percent-rule-calculator"] = _replace(
+    _sol,
+    sections=_sol.sections + (
+        ("Where do I find my panel's busbar rating?", ("Open the panel door and read the UL specification label inside the cabinet. Many modern 200 A panels actually have a 225 A rated busbar, which allows up to 270 A total—enough for a 200 A main plus a 70 A solar breaker.",)),
+    ),
+    faqs=(
+        ("How much solar can I put on a 200A panel?", "With a 200 A busbar and 200 A main breaker, the 120% rule allows up to a 40 A solar backfeed breaker (200 + 40 = 240 A). With a 225 A busbar, up to 70 A is allowed."),
+        ("Where must the solar breaker be installed?", "NEC 705.12(B)(3)(2) requires the solar PV backfeed breaker to be positioned at the opposite (far) end of the busbar from the main service breaker."),
+        ("Can I downsize my main breaker to fit more solar?", "Yes, if an NEC Article 220 load calculation shows your home's calculated demand is below the smaller main breaker rating (for example 150 A or 175 A)."),
+        ("What if my panel is a center-fed main breaker panel?", "Center-fed panels cannot use the opposite-end 120% rule and are typically limited to 100% of the busbar rating unless engineered otherwise."),
+    ),
+)
+
+CALCS["hot-tub-breaker-wire-size"] = Calc(
+    slug="hot-tub-breaker-wire-size", job="hot-tub-240v", crumb="Hot Tub Wire & GFCI Calculator",
+    h1="Hot Tub & Sauna Breaker, GFCI & Wire Size Calculator",
+    title="Hot Tub & Sauna Breaker, GFCI & Wire Size Calculator",
+    description="Calculate hot tub or sauna breaker size, copper wire gauge, GFCI protection, conduit and 5 ft disconnect clearance under NEC 680.",
+    card="GFCI breaker, copper conductors, insulated ground and PVC conduit for a spa or sauna.",
+    answer="Select your hot tub or sauna nameplate amps, wire run length and terminal temperature rating to get the GFCI breaker size, copper wire gauge, insulated ground and PVC conduit size. It uses the same NEC Article 680 sizing logic as our 240V appliance circuit permit packets.",
+    sections=(
+        ("How are hot tub and sauna circuits sized?", ("Hot tubs and electric sauna heaters operate as continuous loads (3 hours or more), so the breaker and conductors must be sized at 125% of the nameplate current under NEC 680 and 424.4(B). A 36 A to 40 A spa requires a 50 A, 2-pole GFCI breaker and #6 AWG copper (or #8 AWG THWN-2 at 75°C).",)),
+        ("What GFCI and disconnect rules apply to hot tubs?", ("NEC 680.44 requires Class A GFCI protection for all residential hot tubs and spas. Under NEC 680.13, the maintenance disconnect must be within sight of the spa and at least 5 feet horizontally from the inside wall of the water.",)),
+    ),
+    example_label="Worked example", faqs=(),
+)
+
+_ht = CALCS["hot-tub-breaker-wire-size"]
+CALCS["hot-tub-breaker-wire-size"] = _replace(
+    _ht,
+    sections=_ht.sections + (
+        ("Why does an outdoor hot tub need an insulated ground wire?", ("Unlike indoor branch circuits that allow bare copper grounds, NEC 680.42(A)(1) requires an insulated green copper equipment grounding conductor inside the raceway for outdoor spas to resist corrosion.",)),
+    ),
+    faqs=(
+        ("What size wire and breaker does a 50A hot tub need?", "A 50 A 2-pole GFCI breaker requires #6 AWG copper with NM-B/UF-B or 60°C terminals, or #8 AWG copper THWN-2 in conduit at 75°C."),
+        ("How far must the hot tub disconnect be from the water?", "At least 5 feet horizontally from the inside wall of the spa and within sight, per NEC 680.13."),
+        ("Can I run Romex (NM-B) underground to a hot tub?", "No. Underground runs require Schedule 40/80 PVC conduit (18 in cover per NEC 300.5) with wet-rated THWN-2 conductors."),
+    ),
+)
+
 TOOLS_PATH = "/tools/"
 TOOLS_TITLE = "Free Electrical Permit Calculators | Permit Packets"
 TOOLS_DESCRIPTION = "Free NEC load, EV charger wire and breaker calculators that use the same math as our permit packets."

@@ -17,8 +17,9 @@
 <form class="calc-form" id="calc-form" method="get" action="{{ path }}#result" data-calc="{{ slug }}">
 {%- for f in fields %}
   <label class="field">{{ f.label }}
-  {%- if f.name == "detached" %}<select name="detached">{% for v, text in detached_labels.items() %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ text }}</option>{% endfor %}</select>
-  {%- elif f.choices %}<select name="{{ f.name }}">{% for v in f.choices %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ v }}{% if f.name in ("charger_amps", "service_amps") %} A{% endif %}</option>{% endfor %}</select>
+  {%- if f.choice_labels %}<select name="{{ f.name }}">{% for v in f.choices %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ f.choice_labels[v] }}</option>{% endfor %}</select>
+  {%- elif f.name == "detached" %}<select name="detached">{% for v, text in detached_labels.items() %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ text }}</option>{% endfor %}</select>
+  {%- elif f.choices %}<select name="{{ f.name }}">{% for v in f.choices %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ v }}{% if f.name in ("charger_amps", "service_amps", "breaker_amps", "bus_amps", "main_amps", "pv_breaker_amps", "load_amps") %} A{% endif %}</option>{% endfor %}</select>
   {%- else %}<input type="number" name="{{ f.name }}" value="{{ values[f.name] }}" min="{{ f.min }}" max="{{ f.max }}" step="1" inputmode="numeric">{% endif %}
   {%- if f.hint %}<small class="note-line">{{ f.hint }}</small>{% endif %}</label>
 {%- endfor %}
@@ -38,7 +39,7 @@
 {% endfor %}
 
 <h2>{{ c.example_label }}</h2>
-<p>Using the default inputs:{% for f in example.fields %} {{ f.label|lower }} {% if f.name == "detached" %}{{ detached_labels[example.inputs[f.name]]|lower }}{% else %}{{ "{:,}".format(example.inputs[f.name]) }}{% endif %}{{ ";" if not loop.last else "." }}{% endfor %}</p>
+<p>Using the default inputs:{% for f in example.fields %} {{ f.label|lower }} {% if f.choice_labels %}{{ f.choice_labels[example.inputs[f.name]]|lower }}{% elif f.name == "detached" %}{{ detached_labels[example.inputs[f.name]]|lower }}{% else %}{{ "{:,}".format(example.inputs[f.name]) }}{% endif %}{{ ";" if not loop.last else "." }}{% endfor %}</p>
 {{ result_block(dict(example.result, nec_rows=example_nec)) }}
 
 {{ cta_band(cta_href, "Turn this result into a full permit packet. Preview it free.") }}

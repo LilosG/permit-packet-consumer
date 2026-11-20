@@ -50,7 +50,7 @@ def test_sitemap_index_lists_only_children_with_urls(client):
     body = client.get("/sitemap.xml").text
     assert "<sitemapindex" in body and "<urlset" not in body
     assert "/sitemap-pages.xml</loc>" in body and "/sitemap-locations.xml</loc>" in body
-    assert "sitemap-guides" not in body  # empty: not listed
+    assert "/sitemap-guides.xml</loc>" in body
     pages = client.get("/sitemap-pages.xml").text
     assert "<lastmod>" in pages and "/terms/</loc>" in pages
 
@@ -58,6 +58,7 @@ def test_sitemap_index_lists_only_children_with_urls(client):
 def test_sitemap_index_drops_a_child_when_it_empties(client, monkeypatch):
     from permit_packets import locations
     monkeypatch.setattr(locations, "location_paths", lambda: [])
+    monkeypatch.setattr(seo, "PAGES", {k: v for k, v in seo.PAGES.items() if v.sitemap != "guides"})
     body = client.get("/sitemap.xml").text
     assert "sitemap-locations" not in body and "sitemap-guides" not in body and "sitemap-pages.xml" in body
     monkeypatch.setitem(seo.PAGES, "/guide-x/", seo.PageEntry("/guide-x/", "G", True, "2026-01-02", "guides"))
