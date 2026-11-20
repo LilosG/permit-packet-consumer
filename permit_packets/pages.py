@@ -468,10 +468,11 @@ def permits_job(state: str, city: str, job: str) -> Response:
     view = _job_view(found, job)
     meta = seo.page_meta(
         f"{label} Permit in {found.label} | {seo.SITE_NAME}",
-        f"{label} permit in {found.label}: who may pull it, the {found.nec_edition.split(' (')[0]} edition, what the city asks for. Checked {_date(found.rules_date)}.",
+        f"{label} permit in {found.label}: who may pull it, the {found.nec_edition.split(' (')[0] or 'NEC'} edition, what the city asks for."
+        + (f" Checked {_date(found.rules_date)}." if found.rules_date else ""),
         path, robots="index,follow")
     return render("permits_job.html", meta=meta, jsonld=[seo.faq(view["faqs"])], crumbs=crumbs, final_cta=True,
-                  city=found, h1=h1, verified=_date(found.rules_date),
+                  city=found, h1=h1, verified=_date(found.rules_date) if found.rules_date else "",
                   cta_href=f"/start/?job={job}&city={found.key}", **view)
 
 

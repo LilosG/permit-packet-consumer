@@ -8,8 +8,7 @@ from fastapi.testclient import TestClient
 import app as app_module
 from permit_packets import seo
 
-PLACEHOLDERS = [  # gated city x job pages (hubs render in full, noindex)
-    "/permits/az/chandler/ev-charger/", "/permits/ca/el-cajon/ev-charger/", "/permits/wa/bellevue/hot-tub-240v/",
+PLACEHOLDERS = [  # location pages are never placeholders any more; only /start-style stubs remain
 ]
 
 

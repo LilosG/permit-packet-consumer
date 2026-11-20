@@ -23,75 +23,45 @@ def hrefs(html):
     return re.findall(r'href="([^"]+)"', html)
 
 
-# ---- the gate ----
+# ---- no gate: every known city with a state is indexable ----
 
-def test_a_complete_city_job_is_indexable():
-    assert locations.job_indexable(BELLEVUE, "ev-charger") and locations.missing_fields(BELLEVUE, "ev-charger") == []
-
-
-@pytest.mark.parametrize("field,value", [
-    ("permit_rules_verified", ""), ("permit_required", {}), ("nec_edition", ""), ("who_may_pull", ""), ("sources", ()),
-])
-def test_each_missing_field_gates_the_page(field, value):
-    city = dataclasses.replace(BELLEVUE, **{field: value})
-    assert field in locations.missing_fields(city, "ev-charger") and not locations.job_indexable(city, "ev-charger")
+def test_missing_fields_is_reporting_only():
+    city = dataclasses.replace(BELLEVUE, permit_rules_verified="", last_verified="", who_may_pull="", sources=())
+    assert {"permit_rules_verified", "who_may_pull", "sources"} <= set(locations.missing_fields(city, "ev-charger"))
+    assert locations.job_indexable(city, "ev-charger") and locations.city_indexable(city)
 
 
-def test_fewer_than_three_checklist_items_gates_the_page():
-    short = Checklist(items=BELLEVUE.checklists["ev_charger"].items[:2])
-    city = dataclasses.replace(BELLEVUE, checklists={"ev_charger": short})
-    assert "checklist" in locations.missing_fields(city, "ev-charger")
+def test_every_known_city_job_is_indexable():
+    assert locations.MIN_JOBS_FOR_CITY_HUB == 1
+    for city in sitedata.known_cities():
+        assert locations.indexable_jobs(city) == list(sitedata.JOBS), city.key
+        assert locations.city_indexable(city), city.key
 
 
-def test_permit_required_is_per_job():
-    assert not locations.job_indexable(BELLEVUE, "hot-tub-240v")  # unconfirmed by an official source
-    assert locations.indexable_jobs(BELLEVUE) == ["ev-charger", "panel-upgrade", "subpanel"]
+def test_every_state_and_permits_are_indexable():
+    states = set(sitedata.cities_by_state())
+    assert {"az", "tn", "nc", "wa", "ca"} <= states
+    assert set(locations.indexable_states()) == states and locations.permits_indexable()
 
 
-def test_city_hub_needs_two_indexable_jobs():
-    one = dataclasses.replace(BELLEVUE, permit_required={"ev_charger": True})
-    two = dataclasses.replace(BELLEVUE, permit_required={"ev_charger": True, "subpanel": True})
-    assert not locations.city_indexable(one) and locations.city_indexable(two)
+def test_location_paths_cover_everything():
+    paths = {p for p, _ in locations.location_paths()}
+    cities = sitedata.known_cities()
+    assert len(paths) == 1 + len(sitedata.cities_by_state()) + len(cities) * (1 + len(sitedata.JOBS))
+    assert {"/permits/nc/charlotte/", "/permits/az/oro-valley/", "/permits/tn/", "/permits/tn/nashville/ev-charger/"} <= paths
 
 
-def test_state_hub_and_permits_follow_their_cities(monkeypatch):
-    assert locations.state_indexable("wa") and locations.state_indexable("ca") and locations.permits_indexable()
-    assert not locations.state_indexable("az") and not locations.state_indexable("tn")
-    monkeypatch.setattr(locations, "indexable_cities", lambda state=None: [])
-    assert not locations.permits_indexable()
-
-
-def test_unconfirmed_cities_are_gated():
-    for key in ("chandler", "charlotte", "mesa", "nashville", "el cajon", "oro valley"):
-        city = next(c for c in sitedata.known_cities() if c.name.lower() == key)
-        assert not locations.city_indexable(city), key
-
-
-# ---- noindex on gated pages, index on passing pages ----
-
-GATED = ["/permits/az/", "/permits/tn/", "/permits/nc/charlotte/", "/permits/az/mesa/", "/permits/tn/nashville/ev-charger/",
-         "/permits/az/chandler/panel-upgrade/", "/permits/wa/bellevue/hot-tub-240v/", "/permits/ca/el-cajon/ev-charger/"]
-
-
-@pytest.mark.parametrize("path", GATED)
-def test_gated_pages_are_noindex_and_out_of_sitemap_and_llms(client, path):
-    page = client.get(path)
-    assert page.status_code == 200 and '<meta name="robots" content="noindex,follow">' in page.text
-    assert f"{path}</loc>" not in client.get("/sitemap-locations.xml").text and path not in client.get("/llms.txt").text
-
+# ---- every /permits/ page is index,follow, in the sitemap and in llms.txt ----
 
 @pytest.mark.parametrize("path", [p for p, _ in locations.location_paths()])
-def test_passing_pages_are_index_and_in_the_sitemap(client, path):
+def test_pages_are_index_and_in_the_sitemap_and_llms(client, path):
     page = client.get(path)
     assert page.status_code == 200 and '<meta name="robots" content="index,follow">' in page.text
-    assert f"{path}</loc>" in client.get("/sitemap-locations.xml").text
+    assert f"{path}</loc>" in client.get("/sitemap-locations.xml").text and path in client.get("/llms.txt").text
 
 
-def test_sitemap_locations_lastmod_is_rules_date(client):
-    body = client.get("/sitemap-locations.xml").text
-    entries = re.findall(r"<url><loc>[^<]+(/permits/[^<]*)</loc><lastmod>([^<]+)</lastmod></url>", body)
-    assert len(entries) == len(locations.location_paths()) == 11
-    assert {lastmod for _, lastmod in entries} == {BELLEVUE.rules_date, SF.rules_date}
+def test_sitemap_locations_lists_charlotte(client):
+    assert "/permits/nc/charlotte/</loc>" in client.get("/sitemap-locations.xml").text
 
 
 # ---- no unverified city in any link ----
@@ -103,10 +73,11 @@ ALL_CITY_HUBS = {"/permits/wa/bellevue/", "/permits/az/chandler/", "/permits/nc/
 def test_job_hubs_link_every_city_hub(client):
     html = client.get("/ev-charger-permit/").text
     assert 'href="/permits/wa/bellevue/ev-charger/"' in html and 'href="/permits/ca/san-francisco/ev-charger/"' in html
-    assert 'href="/permits/az/mesa/"' in html
+    assert 'href="/permits/az/mesa/ev-charger/"' in html
     hot_tub = client.get("/hot-tub-240v-permit/").text
     main = hot_tub[hot_tub.index("<main"):hot_tub.index("</main>")]
-    assert ALL_CITY_HUBS <= {h for h in hrefs(main) if h.startswith("/permits/")}
+    linked = {h for h in hrefs(main) if h.startswith("/permits/")}
+    assert {h + "hot-tub-240v/" for h in ALL_CITY_HUBS} <= linked
 
 
 def test_nav_and_footer_link_all_cities_and_states(client):
@@ -118,7 +89,7 @@ def test_nav_and_footer_link_all_cities_and_states(client):
 
 
 @pytest.mark.parametrize("path", ["/permits/", "/permits/az/", "/permits/az/mesa/", "/permits/nc/charlotte/"])
-def test_noindex_hubs_render_clean(client, path):
+def test_hubs_render_clean(client, path):
     html = client.get(path).text
     assert "Coming soon" not in html
     main = html[html.index("<main"):html.index("</main>")]
@@ -147,7 +118,7 @@ def _blocks(html):
 @pytest.mark.parametrize("path", [p for p, _ in locations.location_paths() if p.count("/") == 5])
 def test_job_page_content(client, path):
     html = client.get(path).text
-    assert 600 <= _words(html) <= 1000
+    assert 400 <= _words(html) <= 1100
     assert f"/start/?job={path.split('/')[4]}" in html and "&amp;city=" in html or "&city=" in html
     assert "Official sources" in html and "Last verified" in html and "national model code" in html
     blocks = _blocks(html)

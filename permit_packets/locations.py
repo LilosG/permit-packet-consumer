@@ -1,9 +1,7 @@
-"""Which /permits/ pages may be indexed. One rule set, used by the routes, the sitemap, llms.txt and every link.
+"""Which /permits/ pages are indexed. One rule set, used by the routes, the sitemap, llms.txt and every link.
 
-A city x job page is indexable only when the city module has: permit_rules_verified or last_verified, permit-required confirmed for the
-job, 3 or more checklist items, a code edition, who_may_pull and 1 or more official source. A city hub is
-indexable when 2 or more of its jobs are; a state hub when 1 or more of its cities are; /permits/ when any city
-is. Every other page answers noindex,follow and is left out of the sitemap and out of internal links.
+Every known city with a state is indexable: its hub, its state hub and all of its city x job pages. missing_fields()
+is kept for reporting only (what data a city module still lacks); it does not gate indexing.
 """
 from __future__ import annotations
 
@@ -11,7 +9,7 @@ from permit_packets import sitedata
 from permit_packets.jurisdictions import Jurisdiction
 
 MIN_CHECKLIST_ITEMS = 3
-MIN_JOBS_FOR_CITY_HUB = 2
+MIN_JOBS_FOR_CITY_HUB = 1
 MIN_CITIES_FOR_STATE_HUB = 1
 
 
@@ -35,7 +33,7 @@ def missing_fields(city: Jurisdiction, job_slug: str) -> list[str]:
 
 
 def job_indexable(city: Jurisdiction, job_slug: str) -> bool:
-    return city.known and bool(city.state) and not missing_fields(city, job_slug)
+    return city.known and bool(city.state)
 
 
 def indexable_jobs(city: Jurisdiction) -> list[str]:
@@ -87,10 +85,10 @@ def location_paths() -> list[tuple[str, str]]:
     paths: list[tuple[str, str]] = []
     if not permits_indexable():
         return paths
-    paths.append(("/permits/", max(c.rules_date for c in indexable_cities())))
+    paths.append(("/permits/", max((c.rules_date for c in indexable_cities()), default="")))
     for state in indexable_states():
         cities = indexable_cities(state)
-        paths.append((f"/permits/{state}/", max(c.rules_date for c in cities)))
+        paths.append((f"/permits/{state}/", max((c.rules_date for c in cities), default="")))
         for city in cities:
             paths.append((sitedata.city_path(city), city.rules_date))
             paths.extend((job_path(city, slug), city.rules_date) for slug in indexable_jobs(city))
