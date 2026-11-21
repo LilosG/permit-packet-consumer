@@ -23,7 +23,13 @@
       <div class="order-code" id="code"></div>
       <button type="button" class="quiet" id="copy-code">Copy Order Code</button>
     </div>
-    <h2 style="margin-top:18px">Pay securely with Whop</h2>
+    <div id="preview-box" style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line,#e2e8f0)" hidden>
+      <h2 style="margin:0 0 6px">Your saved watermarked preview</h2>
+      <p class="lead" style="margin:0 0 12px">Review your sheets below or download the watermarked preview PDF. Unlocking removes the PREVIEW watermark and adds city portal fields.</p>
+      <div class="actions" style="margin-bottom:14px"><a class="button quiet" id="preview-pdf" href="#">Download Watermarked Preview (PDF)</a></div>
+      <div id="preview-pages" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px"></div>
+    </div>
+    <h2 style="margin-top:22px">Unlock the clean packet (no watermark)</h2>
     <p class="lead">Your packet will unlock automatically once payment is complete. Keep this page open, or come back to it later.</p>
     <div class="actions">
       <a class="button cta" id="wave" target="_blank" rel="noopener" hidden>Pay securely with Whop</a>
@@ -124,6 +130,23 @@
     if (!order.paid) {
       $('pending').hidden = false; $('paid').hidden = true;
       $('code').textContent = order.order_code;
+      if (order.preview_pdf_url) {
+        $('preview-box').hidden = false;
+        $('preview-pdf').href = order.preview_pdf_url;
+        if (!$('preview-pages').dataset.loaded && order.preview_pages_url) {
+          $('preview-pages').dataset.loaded = '1';
+          fetch(order.preview_pages_url).then((r) => r.ok ? r.json() : null).then((d) => {
+            if (!d) return;
+            $('preview-pages').replaceChildren(...(d.pages || []).map((b64, i) => {
+              const img = document.createElement('img');
+              img.src = `data:image/jpeg;base64,${b64}`;
+              img.alt = `Preview sheet ${i + 1}`;
+              img.style.cssText = 'width:100%;border:1px solid #cbd5e1;border-radius:6px';
+              return img;
+            }));
+          }).catch(() => {});
+        }
+      }
       if (order.whop_checkout_url) { $('wave').href = order.whop_checkout_url; $('wave').hidden = false; $('no-wave').hidden = true; }
       else { $('wave').hidden = true; $('no-wave').hidden = false; }
       if (manual) $('refreshed').textContent = `Still waiting for payment (checked ${new Date().toLocaleTimeString()}).`;

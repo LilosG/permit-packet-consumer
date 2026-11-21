@@ -1,6 +1,8 @@
 """Order emails through Resend's HTTP API. A failed or unconfigured send is logged and never raised."""
 from __future__ import annotations
 
+import base64
+
 import logging
 import os
 from html import escape
@@ -19,19 +21,17 @@ def support_email() -> str:
     return os.environ.get("SUPPORT_EMAIL", "").strip() or DEFAULT_SUPPORT
 
 
-def send(to: str, subject: str, text: str, html: str) -> bool:
+def send(to: str, subject: str, text: str, html: str, attachments: list[dict[str, str]] | None = None) -> bool:
     """Send one email. Returns False, and never raises, when it can't."""
     key = os.environ.get("RESEND_API_KEY", "").strip()
     if not key:
         log.warning("RESEND_API_KEY is not set, so the email %r was not sent", subject)
         return False
+    body: dict[str, Any] = {"from": os.environ.get("EMAIL_FROM", "").strip() or DEFAULT_FROM, "to": [to], "subject": subject, "text": text, "html": html}
+    if attachments:
+        body["attachments"] = attachments
     try:
-        response = httpx.post(
-            RESEND_URL, timeout=8,
-            headers={"Authorization": f"Bearer {key}"},
-            json={"from": os.environ.get("EMAIL_FROM", "").strip() or DEFAULT_FROM, "to": [to],
-                  "subject": subject, "text": text, "html": html},
-        )
+        response = httpx.post(RESEND_URL, timeout=12, headers={"Authorization": f"Bearer {key}"}, json=body)
         response.raise_for_status()
         return True
     except Exception as error:  # any failure: the order flow must go on
@@ -130,5 +130,11 @@ def find_order(email: str, found: list[tuple[dict[str, Any], str]]) -> bool:
         f'<a href="mailto:{escape(support_email())}" style="color:#1d4ed8">{escape(support_email())}</a>.</p></div>')
     return send(email, "Your Permit Packet order links", text, html)
 
-def draft_saved(to_email: str, link: str, address: str, job: str) -> bool:
-    return _send(to_email, f"Your {job} permit packet preview: {address}", [f"We saved your free watermarked preview for {address}.", "Use the link below to return to your packet anytime and unlock the clean PDF."], link, "Open your saved preview")
+def draft_saved(to_email: str, link: str, address: str, job: str, pdf_bytes: bytes | None = None, filename: str = "preview-packet.pdf", summary: str = "") -> bool:
+    paras = [f"We saved your free watermarked preview for {address}."]
+    if summary:
+        paras.append(summary)
+    paras.append("Your watermarked preview PDF is attached, and you can view all sheets or unlock the clean, unwatermarked packet anytime using the link below.")
+    text, html = _compose(paras, link, "View saved preview & unlock clean PDF")
+    atts = [{"filename": filename, "content": base64.b64encode(pdf_bytes).decode()}] if pdf_bytes else None
+    return send(to_email, f"Your {job} permit packet preview: {address}", text, html, attachments=atts)

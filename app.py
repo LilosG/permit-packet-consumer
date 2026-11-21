@@ -486,8 +486,10 @@ def email_preview(request: Request, slug: str, body: dict[str, Any] = Body(...))
     job = _validated(job_type, working)
     city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
     tier = body.get("tier") if body.get("tier") in orders.TIERS else "instant_packet"
+    _, result = _build(job_type.slug, payload, preview=True)
     order = orders.create_order(customer_email=email, tier=tier, job_slug=job_type.slug, address=job.address, jurisdiction_key=city.key, payload=payload)
-    _notify(emails.draft_saved, email, _order_link(request, order), order["address"], job_type.label)
+    status_line = "NEC 220 & engineering check: Ready for submission." if result.body.get("ready") else "NEC 220 & engineering check: Some items need attention."
+    _notify(emails.draft_saved, email, _order_link(request, order), order["address"], job_type.label, result.pdf, f"{order['order_code']}-preview.pdf", status_line)
     return {"order_code": order["order_code"], "order_url": f"/order/{order['access_token']}"}
 
 @app.post("/api/public/orders")
@@ -632,6 +634,9 @@ def order_status(access_token: str) -> JSONResponse:
     }
     if view["in_review"]:
         view["city_name"] = _city_name(order)
+    if not paid and not view["in_review"]:
+        view["preview_pdf_url"] = f"/api/orders/{access_token}/preview-pdf"
+        view["preview_pages_url"] = f"/api/orders/{access_token}/preview-pages"
     if paid:
         job_type = _job_type(order["job_slug"])
         only = _allowed_sheets(order, job_type)
@@ -664,6 +669,20 @@ def _downloaded(order: dict[str, Any]) -> None:
 def _pdf_download(content: bytes, name: str, inline: bool = False) -> Response:
     disposition = "inline" if inline else f'attachment; filename="{name}"'
     return Response(content=content, media_type="application/pdf", headers={"Content-Disposition": disposition, **PRIVATE_DATA})
+
+
+@app.get("/api/orders/{access_token}/preview-pdf")
+def order_preview_pdf(access_token: str) -> Response:
+    order = _order_or_404(access_token)
+    _, result = _build(order["job_slug"], order["payload"], preview=True)
+    return _pdf_download(result.pdf, f'{order["order_code"]}-preview.pdf')
+
+
+@app.get("/api/orders/{access_token}/preview-pages")
+def order_preview_pages(access_token: str) -> JSONResponse:
+    order = _order_or_404(access_token)
+    _, result = _build(order["job_slug"], order["payload"], preview=True)
+    return JSONResponse({"pages": _page_images(result), "ready": bool(result.body.get("ready"))}, headers=PRIVATE_DATA)
 
 
 @app.get("/api/orders/{access_token}/pdf")
