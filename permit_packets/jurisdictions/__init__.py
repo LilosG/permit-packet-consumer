@@ -171,7 +171,18 @@ from permit_packets.jurisdictions.austin_tx import AUSTIN  # noqa: E402
 from permit_packets.jurisdictions.dallas_tx import DALLAS  # noqa: E402
 from permit_packets.jurisdictions.denver_co import DENVER  # noqa: E402
 
-KNOWN = {(j.name.lower(), j.state): j for j in (ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE, SAN_DIEGO, LOS_ANGELES, SAN_JOSE, SEATTLE, PORTLAND, AUSTIN, DALLAS, DENVER)}
+from permit_packets.jurisdictions.phoenix_az import PHOENIX  # noqa: E402
+from permit_packets.jurisdictions.scottsdale_az import SCOTTSDALE  # noqa: E402
+from permit_packets.jurisdictions.sacramento_ca import SACRAMENTO  # noqa: E402
+from permit_packets.jurisdictions.oakland_ca import OAKLAND  # noqa: E402
+from permit_packets.jurisdictions.aurora_co import AURORA  # noqa: E402
+from permit_packets.jurisdictions.tampa_fl import TAMPA  # noqa: E402
+from permit_packets.jurisdictions.raleigh_nc import RALEIGH  # noqa: E402
+from permit_packets.jurisdictions.houston_tx import HOUSTON  # noqa: E402
+from permit_packets.jurisdictions.san_antonio_tx import SAN_ANTONIO  # noqa: E402
+from permit_packets.jurisdictions.tacoma_wa import TACOMA  # noqa: E402
+
+KNOWN = {(j.name.lower(), j.state): j for j in (ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE, SAN_DIEGO, LOS_ANGELES, SAN_JOSE, SEATTLE, PORTLAND, AUSTIN, DALLAS, DENVER, PHOENIX, SCOTTSDALE, SACRAMENTO, OAKLAND, AURORA, TAMPA, RALEIGH, HOUSTON, SAN_ANTONIO, TACOMA)}
 
 
 def jurisdiction_for(city: str | None, state: str | None) -> Jurisdiction:
