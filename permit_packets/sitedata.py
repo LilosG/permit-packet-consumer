@@ -57,7 +57,7 @@ def city_slug(city: Jurisdiction) -> str:
     return city.key[:-len(suffix)] if city.key.endswith(suffix) else city.key
 
 
-STATE_NAMES = {"az": "Arizona", "ca": "California", "nc": "North Carolina", "tn": "Tennessee", "wa": "Washington"}
+STATE_NAMES = {"az": "Arizona", "ca": "California", "nc": "North Carolina", "tn": "Tennessee", "wa": "Washington", "or": "Oregon", "tx": "Texas", "co": "Colorado"}
 
 
 def known_cities() -> list[Jurisdiction]:
