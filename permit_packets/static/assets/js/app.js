@@ -538,6 +538,7 @@
     const type = current;
     const sample = !property;
     $('#to-pay').textContent = sample ? 'Enter your address to order' : 'Unlock the clean packet';
+    if ($('#email-capture-box')) $('#email-capture-box').hidden = sample;
     $('#build-list').innerHTML = '';
     show('building');
     try {
@@ -569,6 +570,21 @@
     show(4);
   });
 
+  if ($('#save-preview-form')) {
+    $('#save-preview-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = $('#draft-email').value.trim(), msg = $('#save-preview-msg'), btn = $('#save-preview-btn');
+      if (!EMAIL.test(email)) { msg.textContent = 'Enter a valid email address.'; msg.hidden = false; return; }
+      btn.disabled = true; btn.textContent = 'Sending…'; msg.hidden = true;
+      try {
+        const res = await api(`/api/public/preview/${lastType.slug}/email`, { customer_email: email, tier: new FormData($('#checkout')).get('tier') || 'instant_packet', payload: lastJob, role: role() });
+        const saved = await res.json();
+        if (!$('#email').value) $('#email').value = email;
+        msg.innerHTML = `Saved! Emailed your link to <b>${esc(email)}</b> (<a href="${esc(saved.order_url)}">open saved link</a>).`;
+        msg.hidden = false; btn.textContent = 'Sent';
+      } catch (err) { msg.textContent = err.message; msg.hidden = false; btn.disabled = false; btn.textContent = 'Email my preview'; }
+    });
+  }
   /* ---- Step 4: package and payment ---- */
   const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
   function payError(message) { $('#pay-error').textContent = message; $('#pay-error').hidden = false; }

@@ -474,6 +474,22 @@ def _checkout_url(tier: str, access_token: str, request: Request) -> str:
     return _whop_link(tier, access_token)
 
 
+@app.post("/api/public/preview/{slug}/email", dependencies=[Depends(rate_limit("preview"))])
+def email_preview(request: Request, slug: str, body: dict[str, Any] = Body(...)) -> dict:
+    email = str(body.get("customer_email") or "").strip()
+    payload = body.get("payload")
+    if not EMAIL.match(email) or len(email) > 200: raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Enter a valid email address")
+    if not isinstance(payload, dict): raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "payload must be the job's inputs")
+    job_type = _job_type(slug)
+    if body.get("role") in sitedata.ROLES: payload = {**payload, "role": body["role"]}
+    working = dict(payload); _contractor_logo(working)
+    job = _validated(job_type, working)
+    city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
+    tier = body.get("tier") if body.get("tier") in orders.TIERS else "instant_packet"
+    order = orders.create_order(customer_email=email, tier=tier, job_slug=job_type.slug, address=job.address, jurisdiction_key=city.key, payload=payload)
+    _notify(emails.draft_saved, email, _order_link(request, order), order["address"], job_type.label)
+    return {"order_code": order["order_code"], "order_url": f"/order/{order['access_token']}"}
+
 @app.post("/api/public/orders")
 def create_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
     """Save a pending_payment order for a job. Body: {job_slug, customer_email, tier, payload}."""

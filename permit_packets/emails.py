@@ -129,3 +129,6 @@ def find_order(email: str, found: list[tuple[dict[str, Any], str]]) -> bool:
         f'<p style="margin:24px 0 0;color:#64748b;font-size:14px">Questions? Email '
         f'<a href="mailto:{escape(support_email())}" style="color:#1d4ed8">{escape(support_email())}</a>.</p></div>')
     return send(email, "Your Permit Packet order links", text, html)
+
+def draft_saved(to_email: str, link: str, address: str, job: str) -> bool:
+    return _send(to_email, f"Your {job} permit packet preview: {address}", [f"We saved your free watermarked preview for {address}.", "Use the link below to return to your packet anytime and unlock the clean PDF."], link, "Open your saved preview")
