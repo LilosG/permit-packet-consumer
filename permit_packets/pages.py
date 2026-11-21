@@ -133,7 +133,7 @@ JOB_TYPE_MAP = {job.slug: job.type_key for job in sitedata.JOBS.values()}
 
 
 @router.api_route("/start/", methods=["GET", "HEAD"])
-def start(job: str = "", city: str = "", address: str = "", role: str = "", tier: str = "") -> Response:
+def start(request: Request, job: str = "", city: str = "", address: str = "", role: str = "", tier: str = "") -> Response:
     """The four-step wizard. job, city, address, role and tier prefill it; the canonical is always the bare /start/."""
     role = role if role in sitedata.ROLES else sitedata.DEFAULT_ROLE
     tier_key = sitedata.recommended_tier(role, tier)
@@ -142,6 +142,8 @@ def start(job: str = "", city: str = "", address: str = "", role: str = "", tier
         job_key=JOB_TYPE_MAP.get(job, ""), role=role, tier=tier_key, tier_key=tier_key,
         tier_explicit=tier in sitedata.TIER_PARAMS, address=address.strip()[:200],
         city_label=known_city.label if known_city else "")
+    for k, v in request.query_params.items():
+        if k.isidentifier() and not hasattr(prefill, k): setattr(prefill, k, v)
     meta = seo.page_meta(
         "Start Your Free Permit Packet Preview | Permit Packets",
         "Enter any US property address to preview a residential electrical permit packet free. Starting at $39.",

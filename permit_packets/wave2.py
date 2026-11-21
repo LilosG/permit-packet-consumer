@@ -112,6 +112,18 @@ def _result_view(result: dict | None) -> dict | None:
     return None if result is None else {**result, "nec_rows": calc_math.nec_rows(result["nec"])}
 
 
+def _start_cta(job: str, slug: str, params) -> str:
+    extra = []
+    for k, v in params.items():
+        if slug == "subpanel-feeder-calculator" and k == "breaker_amps":
+            extra.extend([f"sp_breaker_amps={v}", f"sp_subpanel_amps={v}"])
+        elif slug == "hot-tub-breaker-wire-size" and k == "load_amps":
+            extra.append(f"ac_nameplate_amps={v}")
+        else:
+            extra.append(f"{k}={v}")
+    return f"/start/?job={job}&role=diy" + ("&" + "&".join(extra) if extra else "")
+
+
 def _calculator(slug: str):
     c = w2.CALCS[slug]
     path = calc_path(slug)
@@ -129,7 +141,7 @@ def _calculator(slug: str):
                       c=c, path=path, slug=slug, fields=fields, values=values, errors=errors,
                       result=_result_view(result), used=used, example=example,
                       example_nec=calc_math.nec_rows(example["result"]["nec"]), faqs=faqs, disclaimer=w2.DISCLAIMER,
-                      detached_labels=calc_math.DETACHED_LABELS, cta_href=f"/start/?job={c.job}&role=diy")
+                      detached_labels=calc_math.DETACHED_LABELS, cta_href=_start_cta(c.job, slug, request.query_params))
 
     router.add_api_route(path, handler, methods=["GET", "HEAD"], include_in_schema=False)
 

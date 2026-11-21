@@ -28,7 +28,8 @@
         return;
       }
       box.innerHTML = render(data.result);
-      history.replaceState(null, '', `${location.pathname}?${query}`);
+      document.querySelectorAll('a[href^="/start/"]').forEach((a)=>{const u=new URL(a.getAttribute('href'),location.origin);const s=form.dataset.calc;new FormData(form).forEach((v,k)=>{if(s==='subpanel-feeder-calculator'&&k==='breaker_amps'){u.searchParams.set('sp_breaker_amps',v);u.searchParams.set('sp_subpanel_amps',v);}else if(s==='hot-tub-breaker-wire-size'&&k==='load_amps'){u.searchParams.set('ac_nameplate_amps',v);}else{u.searchParams.set(k,v);}});a.setAttribute('href',u.pathname+u.search);});
+    history.replaceState(null, '', `${location.pathname}?${query}`);
       report();
       box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } catch (error) {

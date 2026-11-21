@@ -85,10 +85,10 @@
       <p class="block-title">Charger</p>
       <div class="grid">
         <fieldset><legend>Charger size</legend><div class="choices">
-          <label class="choice"><input type="radio" name="charger_amps" value="32"><span>32 A</span></label>
-          <label class="choice"><input type="radio" name="charger_amps" value="40"><span>40 A</span></label>
-          <label class="choice"><input type="radio" name="charger_amps" value="48" checked><span>48 A</span></label>
-          <label class="choice"><input type="radio" name="charger_amps" value="80"><span>80 A</span></label>
+          <label class="choice"><input type="radio" name="charger_amps" value="32"{% if prefill.charger_amps == "32" or (not prefill.charger_amps and "") %} checked{% endif %}><span>32 A</span></label>
+          <label class="choice"><input type="radio" name="charger_amps" value="40"{% if prefill.charger_amps == "40" or (not prefill.charger_amps and "") %} checked{% endif %}><span>40 A</span></label>
+          <label class="choice"><input type="radio" name="charger_amps" value="48"{% if prefill.charger_amps == "48" or (not prefill.charger_amps and " checked") %} checked{% endif %}><span>48 A</span></label>
+          <label class="choice"><input type="radio" name="charger_amps" value="80"{% if prefill.charger_amps == "80" or (not prefill.charger_amps and "") %} checked{% endif %}><span>80 A</span></label>
         </div></fieldset>
         <fieldset><legend>Connection</legend><div class="choices">
           <label class="choice"><input type="radio" name="connection" value="hardwired" checked><span>Hardwired</span></label>
@@ -101,9 +101,9 @@
         <label class="choice"><input type="radio" name="location" value="exterior_wall"><span>Outside wall</span></label>
       </div></fieldset>
       <div class="grid three" style="margin-top:14px">
-        <label class="field">Wire run from panel (ft)<input name="run_ft" type="number" min="1" max="500" value="58" required><span class="hint" id="run-hint"></span></label>
+        <label class="field">Wire run from panel (ft)<input name="run_ft" type="number" min="1" max="500" value="{{ prefill.run_ft or '58' }}" required><span class="hint" id="run-hint"></span></label>
         <label class="field">Underground part (ft)<input name="trench_ft" type="number" min="0" max="500" value="0" required></label>
-        <label class="field">Main panel size (A)<input name="service_amps" type="number" min="60" max="800" value="200" required></label>
+        <label class="field">Main panel size (A)<input name="service_amps" type="number" min="60" max="800" value="{{ prefill.service_amps or '200' }}" required></label>
       </div>
       <div class="grid" style="margin-top:14px">
         <label class="field">Does the charger need venting?<select name="charger_venting_required"><option value="">Not answered</option><option value="no">No, sealed-battery vehicles only</option><option value="yes">Yes, a mechanical plan is needed</option></select></label>
@@ -127,11 +127,11 @@
           <label class="choice"><input type="radio" name="existing_service_amps" value="200"><span>200 A</span></label>
         </div></fieldset>
         <fieldset><legend>New service</legend><div class="choices">
-          <label class="choice"><input type="radio" name="new_service_amps" value="100"><span>100 A</span></label>
-          <label class="choice"><input type="radio" name="new_service_amps" value="125"><span>125 A</span></label>
-          <label class="choice"><input type="radio" name="new_service_amps" value="150"><span>150 A</span></label>
-          <label class="choice"><input type="radio" name="new_service_amps" value="200" checked><span>200 A</span></label>
-          <label class="choice"><input type="radio" name="new_service_amps" value="225"><span>225 A</span></label>
+          <label class="choice"><input type="radio" name="new_service_amps" value="100"{% if prefill.new_service_amps == "100" or (not prefill.new_service_amps and "") %} checked{% endif %}><span>100 A</span></label>
+          <label class="choice"><input type="radio" name="new_service_amps" value="125"{% if prefill.new_service_amps == "125" or (not prefill.new_service_amps and "") %} checked{% endif %}><span>125 A</span></label>
+          <label class="choice"><input type="radio" name="new_service_amps" value="150"{% if prefill.new_service_amps == "150" or (not prefill.new_service_amps and "") %} checked{% endif %}><span>150 A</span></label>
+          <label class="choice"><input type="radio" name="new_service_amps" value="200"{% if prefill.new_service_amps == "200" or (not prefill.new_service_amps and " checked") %} checked{% endif %}><span>200 A</span></label>
+          <label class="choice"><input type="radio" name="new_service_amps" value="225"{% if prefill.new_service_amps == "225" or (not prefill.new_service_amps and "") %} checked{% endif %}><span>225 A</span></label>
         </div></fieldset>
       </div>
       <div class="grid" style="margin-top:14px">
@@ -226,21 +226,21 @@
       </div></fieldset>
       <div class="grid" style="margin-top:14px">
         <fieldset><legend>Subpanel size</legend><div class="choices">
-          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="60"><span>60 A</span></label>
-          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="100" checked><span>100 A</span></label>
-          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="125"><span>125 A</span></label>
-          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="150"><span>150 A</span></label>
-          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="200"><span>200 A</span></label>
-          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="225"><span>225 A</span></label>
+          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="60"{% if prefill.sp_subpanel_amps == "60" or (not prefill.sp_subpanel_amps and "") %} checked{% endif %}><span>60 A</span></label>
+          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="100"{% if prefill.sp_subpanel_amps == "100" or (not prefill.sp_subpanel_amps and " checked") %} checked{% endif %}><span>100 A</span></label>
+          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="125"{% if prefill.sp_subpanel_amps == "125" or (not prefill.sp_subpanel_amps and "") %} checked{% endif %}><span>125 A</span></label>
+          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="150"{% if prefill.sp_subpanel_amps == "150" or (not prefill.sp_subpanel_amps and "") %} checked{% endif %}><span>150 A</span></label>
+          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="200"{% if prefill.sp_subpanel_amps == "200" or (not prefill.sp_subpanel_amps and "") %} checked{% endif %}><span>200 A</span></label>
+          <label class="choice"><input type="radio" name="sp_subpanel_amps" value="225"{% if prefill.sp_subpanel_amps == "225" or (not prefill.sp_subpanel_amps and "") %} checked{% endif %}><span>225 A</span></label>
         </div></fieldset>
         <fieldset><legend>Feeder breaker</legend><div class="choices">
-          <label class="choice"><input type="radio" name="sp_breaker_amps" value="60"><span>60 A</span></label>
-          <label class="choice"><input type="radio" name="sp_breaker_amps" value="70"><span>70 A</span></label>
-          <label class="choice"><input type="radio" name="sp_breaker_amps" value="90"><span>90 A</span></label>
-          <label class="choice"><input type="radio" name="sp_breaker_amps" value="100" checked><span>100 A</span></label>
-          <label class="choice"><input type="radio" name="sp_breaker_amps" value="125"><span>125 A</span></label>
-          <label class="choice"><input type="radio" name="sp_breaker_amps" value="150"><span>150 A</span></label>
-          <label class="choice"><input type="radio" name="sp_breaker_amps" value="200"><span>200 A</span></label>
+          <label class="choice"><input type="radio" name="sp_breaker_amps" value="60"{% if prefill.sp_breaker_amps == "60" or (not prefill.sp_breaker_amps and "") %} checked{% endif %}><span>60 A</span></label>
+          <label class="choice"><input type="radio" name="sp_breaker_amps" value="70"{% if prefill.sp_breaker_amps == "70" or (not prefill.sp_breaker_amps and "") %} checked{% endif %}><span>70 A</span></label>
+          <label class="choice"><input type="radio" name="sp_breaker_amps" value="90"{% if prefill.sp_breaker_amps == "90" or (not prefill.sp_breaker_amps and "") %} checked{% endif %}><span>90 A</span></label>
+          <label class="choice"><input type="radio" name="sp_breaker_amps" value="100"{% if prefill.sp_breaker_amps == "100" or (not prefill.sp_breaker_amps and " checked") %} checked{% endif %}><span>100 A</span></label>
+          <label class="choice"><input type="radio" name="sp_breaker_amps" value="125"{% if prefill.sp_breaker_amps == "125" or (not prefill.sp_breaker_amps and "") %} checked{% endif %}><span>125 A</span></label>
+          <label class="choice"><input type="radio" name="sp_breaker_amps" value="150"{% if prefill.sp_breaker_amps == "150" or (not prefill.sp_breaker_amps and "") %} checked{% endif %}><span>150 A</span></label>
+          <label class="choice"><input type="radio" name="sp_breaker_amps" value="200"{% if prefill.sp_breaker_amps == "200" or (not prefill.sp_breaker_amps and "") %} checked{% endif %}><span>200 A</span></label>
         </div></fieldset>
       </div>
       <label class="field" style="margin-top:14px">Subpanel make and model<input name="sp_model" list="panel-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"></label>
@@ -296,7 +296,7 @@
       </div></fieldset>
       <div class="grid" style="margin-top:14px">
         <label class="field">Make and model<input name="ac_model" list="appliance-models" placeholder="Pick a model to attach its data sheet, or type one" maxlength="120" autocomplete="off"><datalist id="appliance-models"><option value="Jacuzzi J-335 hot tub, 240 V, 50 A configuration"></option></datalist></label>
-        <label class="field" data-ac="hot_tub other">Nameplate amps (A)<input name="ac_nameplate_amps" type="number" min="1" max="100" step="any" required></label>
+        <label class="field" data-ac="hot_tub other">Nameplate amps (A)<input name="ac_nameplate_amps" type="number" min="1" max="100" step="any" value="{{ prefill.ac_nameplate_amps or '' }}" required></label>
         <label class="field" data-ac="sauna">Heater size (kW)<input name="ac_heater_kw" type="number" min="1" max="15" step="any" required><span class="hint" id="ac-kw-hint"></span></label>
         <label class="field" data-ac="heat_pump mini_split">MCA, from the nameplate (A)<input name="ac_mca" type="number" min="1" max="100" step="any" required></label>
         <label class="field" data-ac="heat_pump mini_split">Max breaker (MOCP), from the nameplate (A)<input name="ac_mocp" type="number" min="15" max="125" step="1" required></label>
@@ -342,7 +342,7 @@
     <div class="block" data-uses="home_loads">
       <p class="block-title">The home</p>
       <div class="grid three">
-        <label class="field">Square feet<input data-home name="square_feet" type="number" min="1" max="30000" value="3100" required></label>
+        <label class="field">Square feet<input data-home name="square_feet" type="number" min="1" max="30000" value="{{ prefill.square_feet or '3100' }}" required></label>
         <div class="contents" data-job-type="ev_charger"><label class="field">Open breaker spaces<input name="open_breaker_spaces" type="number" min="0" max="60" value="2" required></label></div>
         <div class="contents" data-job-type="ev_charger"><label class="field">Peak demand, kW (optional, 220.87)<input name="peak_demand_kw" type="number" min="0" max="200" step="0.01" placeholder="From the utility"></label><label class="field">Demand data<select name="demand_source"><option value="utility_12_month">Utility, 12 months</option><option value="recorded_30_day">Recorded, 30 days</option></select></label></div>
       </div>
