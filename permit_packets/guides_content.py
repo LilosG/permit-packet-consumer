@@ -541,3 +541,79 @@ _EXTRA_SEC = (
 
 for _s, _g in list(GUIDES.items()):
     GUIDES[_s] = _rep(_g, sections=_g.sections + (_EXTRA_SEC,))
+
+
+# ---- Stage 4: Internal links & comparison rows for all 26 verified cities ----
+
+GUIDES["cities-allowing-owner-builder-ev-charger-permits"] = _rep(
+    GUIDES["cities-allowing-owner-builder-ev-charger-permits"],
+    table_rows=GUIDES["cities-allowing-owner-builder-ev-charger-permits"].table_rows + (
+        ("San Diego, CA", "Yes (occupant homeowner)", "2025 CEC (2023 NEC base)", "OpenDSD online portal + PDF plan set"),
+        ("Los Angeles, CA", "Yes (single-family R-3)", "2026 LA Electrical Code", "LADBS ePlanLA online submittal"),
+        ("Seattle, WA", "Yes (owner-occupant)", "2023 NEC + Seattle amendments", "Seattle Services Portal online PDF"),
+        ("Portland, OR", "Yes (resident homeowner)", "2023 Oregon Electrical Code", "DevelopmentHub PDX online portal"),
+        ("Austin, TX", "Yes (homestead owner)", "2023 NEC + Austin amendments", "Austin Build + Connect (AB+C)"),
+        ("Phoenix, AZ", "Yes (occupant homeowner)", "2023 NEC + Phoenix amendments", "SHAPE PHX combined PDF upload"),
+        ("Denver, CO", "Yes (owner-occupant)", "2023 NEC + Denver amendments", "Denver e-permits online submittal"),
+        ("Raleigh, NC", "Yes (owner-occupant)", "2023 NC Electrical Code", "Raleigh Permit Portal online"),
+    ),
+    sections=GUIDES["cities-allowing-owner-builder-ev-charger-permits"].sections + (
+        ("Expanded 2026 metro coverage: CA, WA, OR, TX, AZ, CO & NC", (
+            'Homeowners and contractors can also generate city-specific EV charger permit packets for <a href="/permits/ca/san-diego/ev-charger/">San Diego</a>, <a href="/permits/ca/los-angeles/ev-charger/">Los Angeles</a>, <a href="/permits/wa/seattle/ev-charger/">Seattle</a>, <a href="/permits/or/portland/ev-charger/">Portland</a>, <a href="/permits/tx/austin/ev-charger/">Austin</a>, <a href="/permits/az/phoenix/ev-charger/">Phoenix</a>, <a href="/permits/co/denver/ev-charger/">Denver</a>, and <a href="/permits/nc/raleigh/ev-charger/">Raleigh</a>—each pre-loaded with local code editions, portal steps, and ASHRAE ambient derating.',
+        )),
+    ),
+)
+
+GUIDES["utility-service-upgrade-rules-pge-srp-aps-duke-pse"] = _rep(
+    GUIDES["utility-service-upgrade-rules-pge-srp-aps-duke-pse"],
+    table_rows=GUIDES["utility-service-upgrade-rules-pge-srp-aps-duke-pse"].table_rows + (
+        ("SDG&E", "San Diego, CA", "EUSERC ringed meter socket; Information Bulletin 501 service rules"),
+        ("LADWP", "Los Angeles, CA", "LADWP Electric Service Requirements; EUSERC meter-main combo"),
+        ("SMUD", "Sacramento, CA", "SMUD service clearance + green-tag release before cutover"),
+        ("Seattle City Light", "Seattle, WA", "SCL service entrance standards; plan review on large upgrades"),
+        ("Austin Energy", "Austin, TX", "Austin Energy Design Criteria; AB+C work-order coordination"),
+        ("Oncor / CenterPoint", "Dallas & Houston, TX", "100-101°F ASHRAE outdoor derating; utility meter-release hold"),
+        ("Xcel Energy", "Denver & Aurora, CO", "Xcel Standard for Electric Installation; NEC 230.85 disconnect"),
+    ),
+    sections=GUIDES["utility-service-upgrade-rules-pge-srp-aps-duke-pse"].sections + (
+        ("Meter-main & disconnect rules in CA, WA, TX & CO metros", (
+            'Check local utility and municipal panel upgrade checklists for <a href="/permits/ca/san-diego/panel-upgrade/">San Diego (SDG&E)</a>, <a href="/permits/ca/los-angeles/panel-upgrade/">Los Angeles (LADWP)</a>, <a href="/permits/ca/sacramento/panel-upgrade/">Sacramento (SMUD)</a>, <a href="/permits/wa/seattle/panel-upgrade/">Seattle (SCL)</a>, <a href="/permits/tx/austin/panel-upgrade/">Austin (Austin Energy)</a>, <a href="/permits/tx/houston/panel-upgrade/">Houston (CenterPoint)</a>, and <a href="/permits/co/denver/panel-upgrade/">Denver (Xcel Energy)</a>.',
+        )),
+    ),
+)
+
+GUIDES["2023-nec-and-california-electrical-code-permit-guide"] = _rep(
+    GUIDES["2023-nec-and-california-electrical-code-permit-guide"],
+    sections=GUIDES["2023-nec-and-california-electrical-code-permit-guide"].sections + (
+        ("State-by-state adoption across our 26 verified cities", (
+            'Whether you are filing under the 2025 California Electrical Code in <a href="/permits/ca/san-jose/">San Jose</a> and <a href="/permits/ca/oakland/">Oakland</a>, the 2023 NEC in <a href="/permits/az/scottsdale/">Scottsdale</a>, <a href="/permits/tx/dallas/">Dallas</a>, <a href="/permits/tx/san-antonio/">San Antonio</a>, <a href="/permits/wa/tacoma/">Tacoma</a>, and <a href="/permits/co/aurora/">Aurora</a>, or the Florida Building Code (2020 NEC base) in <a href="/permits/fl/tampa/">Tampa</a>, Permit Packets applies your jurisdiction code edition automatically.',
+        )),
+    ),
+)
+
+GUIDES["best-48a-hardwired-ev-chargers-for-permits"] = _rep(
+    GUIDES["best-48a-hardwired-ev-chargers-for-permits"],
+    sections=GUIDES["best-48a-hardwired-ev-chargers-for-permits"].sections + (
+        ("Streamlined online EV charger permitting in major metros", (
+            'Jurisdictions such as <a href="/permits/ca/san-diego/ev-charger/">San Diego</a>, <a href="/permits/tx/austin/ev-charger/">Austin</a>, and <a href="/permits/wa/seattle/ev-charger/">Seattle</a> offer streamlined online permitting for UL 2594 hardwired chargers when accompanied by a complete single-line diagram, load calc, and cut sheet.',
+        )),
+    ),
+)
+
+GUIDES["best-200a-meter-main-combo-panels"] = _rep(
+    GUIDES["best-200a-meter-main-combo-panels"],
+    sections=GUIDES["best-200a-meter-main-combo-panels"].sections + (
+        ("Matching meter-main combos to local utility manuals", (
+            'Before ordering hardware for a service upgrade in <a href="/permits/ca/los-angeles/panel-upgrade/">Los Angeles</a>, <a href="/permits/az/phoenix/panel-upgrade/">Phoenix</a>, or <a href="/permits/co/denver/panel-upgrade/">Denver</a>, confirm overhead versus underground feed requirements and ringed versus ringless socket rules on your city permit checklist.',
+        )),
+    ),
+)
+
+GUIDES["owner-builder-permit-vs-licensed-electrician"] = _rep(
+    GUIDES["owner-builder-permit-vs-licensed-electrician"],
+    sections=GUIDES["owner-builder-permit-vs-licensed-electrician"].sections + (
+        ("Homestead & resident-owner rules in OR, NC & FL", (
+            'States like Oregon, North Carolina, and Florida allow resident homeowners to pull electrical permits on single-family homes they occupy—see local rules for <a href="/permits/or/portland/">Portland</a>, <a href="/permits/nc/raleigh/">Raleigh</a>, and <a href="/permits/fl/tampa/">Tampa</a>.',
+        )),
+    ),
+)

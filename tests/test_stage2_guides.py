@@ -101,3 +101,19 @@ def test_new_calculators_match_core_engineering_engine():
     assert tub["wire"] == expected_branch.wire.size
     assert tub["ground"] == expected_branch.egc
     assert branch_conduit(expected_branch, 3, "PVC") in tub["rows"][5][1]
+
+
+def test_guides_link_to_new_stage3_cities(client):
+    guide_html = "".join(client.get(p).text for p in GUIDE_PATHS)
+    for target in (
+        "/permits/ca/san-diego/ev-charger/",
+        "/permits/ca/los-angeles/panel-upgrade/",
+        "/permits/wa/seattle/ev-charger/",
+        "/permits/or/portland/",
+        "/permits/tx/austin/ev-charger/",
+        "/permits/az/phoenix/ev-charger/",
+        "/permits/co/denver/ev-charger/",
+        "/permits/nc/raleigh/",
+        "/permits/fl/tampa/",
+    ):
+        assert f'href="{target}"' in guide_html, f"Missing guide internal link to {target}"
