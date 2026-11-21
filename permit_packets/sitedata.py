@@ -83,9 +83,18 @@ def city_path(city: Jurisdiction) -> str:
     return f"/permits/{city.state.lower()}/{city_slug(city)}/"
 
 
+FLAGSHIP_KEYS = (
+    "bellevue-wa", "san-francisco-ca", "los-angeles-ca", "san-diego-ca",
+    "seattle-wa", "austin-tx", "phoenix-az", "denver-co",
+)
+
+
 def popular_cities(limit: int = 8) -> list[tuple[str, str]]:
-    """(label, url) for the footer, straight from the jurisdiction modules."""
-    return [(city.label, city_path(city)) for city in known_cities()[:limit]]
+    """Flagship city hubs first, then remaining known cities alphabetically."""
+    by_key = {c.key: c for c in known_cities()}
+    ordered = [by_key[k] for k in FLAGSHIP_KEYS if k in by_key]
+    ordered += [c for c in known_cities() if c.key not in FLAGSHIP_KEYS]
+    return [(city.label, city_path(city)) for city in ordered[:limit]]
 
 
 # ---- Header navigation ----

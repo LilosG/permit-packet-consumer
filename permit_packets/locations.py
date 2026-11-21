@@ -66,8 +66,8 @@ def job_path(city: Jurisdiction, job_slug: str) -> str:
 
 
 def popular_cities(limit: int = 8) -> list[tuple[str, str]]:
-    """Every known city hub, for navigation. Indexing is gated separately (sitemap, robots)."""
-    return [(city.label, sitedata.city_path(city)) for city in sitedata.known_cities()[:limit]]
+    """Flagship city hubs for navigation. Indexing is gated separately (sitemap, robots)."""
+    return sitedata.popular_cities(limit)
 
 
 def state_links() -> list[tuple[str, str]]:
