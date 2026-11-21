@@ -312,19 +312,24 @@ def llms_txt() -> str:
 # ---- Conversion tracking ----
 
 def ga_measurement_id() -> str:
-    value = os.environ.get("GA4_MEASUREMENT_ID", "").strip()
+    value = os.environ.get("GA4_MEASUREMENT_ID", "").strip().upper()
     return value if re.fullmatch(r"G-[A-Z0-9]{4,20}", value) else ""
 
 
-def ga_snippet() -> Markup:
+def ga_snippet(redact_path: str | None = None) -> Markup:
     """The gtag loader, when GA4_MEASUREMENT_ID is set. Left out of /admin by simply not being included there."""
     measurement = ga_measurement_id()
     if not measurement:
         return Markup("")
+    config = (
+        f"gtag('config','{measurement}',{{'page_location':location.origin+'{redact_path}'}});"
+        if redact_path
+        else f"gtag('config','{measurement}');"
+    )
     return Markup(
         f'<script async src="https://www.googletagmanager.com/gtag/js?id={measurement}"></script>\n'
         "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
-        f"gtag('js',new Date());gtag('config','{measurement}');</script>")
+        f"gtag('js',new Date());{config}</script>")
 
 
 def dataset(name: str, description: str, path: str, date_modified: str, keywords: list[str],

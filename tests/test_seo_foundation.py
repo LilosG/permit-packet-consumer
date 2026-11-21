@@ -150,6 +150,14 @@ def test_gtag_loads_only_when_configured_and_never_on_admin(client, monkeypatch)
     monkeypatch.setenv("ADMIN_PASSWORD", "x")
     assert "googletagmanager" not in app_module.STATIC.joinpath("admin.html").read_text()
 
+def test_gtag_redacts_secret_order_token_path(client, monkeypatch):
+    monkeypatch.setenv("GA4_MEASUREMENT_ID", "G-TEST1234")
+    monkeypatch.setattr(app_module.orders, "get_by_token", lambda token: {"order_code": "TEST"})
+    html = client.get("/order/secret-token-abc123").text
+    assert "gtag/js?id=G-TEST1234" in html
+    assert "/order/[redacted]" in html
+    assert "secret-token-abc123" not in html
+
 
 def test_google_search_console_verification_file(client):
     response = client.get("/google405b3c22f036058e.html", follow_redirects=False)

@@ -89,12 +89,12 @@ public_base_url = seo.public_base_url  # the site's public address, for canonica
 pages.set_asset_version(ASSET_VERSION)
 
 
-def _fill(html: str) -> str:
+def _fill(html: str, *, redact_path: str | None = None) -> str:
     """Fill the placeholders in the static pages (order, admin, 404): footer, analytics, asset version, base URL."""
     if "{{FOOTER}}" in html:
         html = html.replace("{{FOOTER}}", pages.footer_html())
     return (
-        html.replace("{{GA}}", str(seo.ga_snippet()))
+        html.replace("{{GA}}", str(seo.ga_snippet(redact_path=redact_path)))
         .replace("{{ASSET_VERSION}}", ASSET_VERSION)
         .replace("{{BASE_URL}}", public_base_url())
     )
@@ -105,7 +105,7 @@ app.mount("/assets", StaticFiles(directory=ASSETS), name="assets")
 
 
 def _page(name: str) -> HTMLResponse:
-    return HTMLResponse(_fill((STATIC / name).read_text(encoding="utf-8")), headers=PRIVATE_PAGE)
+    return HTMLResponse(_fill((STATIC / name).read_text(encoding="utf-8"), redact_path="/order/[redacted]" if name == "order.html" else None), headers=PRIVATE_PAGE)
 
 
 def _not_found_page() -> HTMLResponse:
