@@ -330,7 +330,7 @@ def ga_snippet() -> Markup:
 def dataset(name: str, description: str, path: str, date_modified: str, keywords: list[str],
             places: list[str]) -> dict:
     """Dataset JSON-LD for a page whose main content is a table of verified permit facts."""
-    return {"@context": "https://schema.org", "@type": "Dataset", "name": name, "description": description,
+    return {"@context": "https://schema.org", "@type": "Dataset", "license": "https://creativecommons.org/licenses/by/4.0/", "name": name, "description": description,
             "url": absolute(canonical_path(path)), "dateModified": date_modified, "keywords": keywords,
             "isAccessibleForFree": True, "creator": {"@type": "Organization", "name": AUTHOR},
             "spatialCoverage": [{"@type": "Place", "name": place} for place in places]}

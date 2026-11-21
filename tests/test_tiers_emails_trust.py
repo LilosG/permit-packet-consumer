@@ -272,7 +272,7 @@ def test_the_homepage_has_organization_and_faq_json_ld(client):
     html = client.get("/").text
     blocks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
     org = next(b for b in blocks if b["@type"] == "Organization")
-    assert (org["name"], org["url"], org["email"]) == ("Lilos Growth", "https://lilosgrowth.com", "hello@lilosgrowth.com")
+    assert (org["name"], org["email"], org["parentOrganization"]["name"]) == ("Permit Packets", "hello@lilosgrowth.com", "Lilos Growth")
     faq = next(b for b in blocks if b["@type"] == "FAQPage")
     questions = re.findall(r'<button [^>]*class="faq-q"[^>]*>(.*?)<span class="faq-ic"', html)
     assert [q["name"] for q in faq["mainEntity"]] == [q.replace("&amp;", "&") for q in questions] and len(questions) == 10
