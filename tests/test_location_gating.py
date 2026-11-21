@@ -66,8 +66,7 @@ def test_sitemap_locations_lists_charlotte(client):
 
 # ---- no unverified city in any link ----
 
-ALL_CITY_HUBS = {"/permits/wa/bellevue/", "/permits/az/chandler/", "/permits/nc/charlotte/", "/permits/ca/el-cajon/",
-                 "/permits/az/mesa/", "/permits/tn/nashville/", "/permits/az/oro-valley/", "/permits/ca/san-francisco/"}
+ALL_CITY_HUBS = {p for _, p in locations.popular_cities()}
 
 
 def test_job_hubs_link_every_city_hub(client):
