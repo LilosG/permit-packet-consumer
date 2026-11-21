@@ -11,8 +11,8 @@ import httpx
 log = logging.getLogger("permit_packets")
 
 RESEND_URL = "https://api.resend.com/emails"
-DEFAULT_FROM = "Permit Packets <hello@lilosgrowth.com>"
-DEFAULT_SUPPORT = "hello@lilosgrowth.com"
+DEFAULT_FROM = "Permit Packets <hello@myelectricalpermit.com>"
+DEFAULT_SUPPORT = "hello@myelectricalpermit.com"
 
 
 def support_email() -> str:

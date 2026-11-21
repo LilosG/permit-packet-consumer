@@ -136,7 +136,7 @@ def test_faq_covers_every_homepage_question(client):
 
 def test_about_page(client):
     html = client.get("/about/").text
-    assert "https://lilosgrowth.com" in html and "hello@lilosgrowth.com" in html
+    assert "https://lilosgrowth.com" in html and "hello@myelectricalpermit.com" in html
     kinds = {json.loads(b)["@type"] for b in re.findall(r'ld\+json">(.*?)</script>', html, re.S)}
     assert "Organization" in kinds
 

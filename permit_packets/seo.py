@@ -122,7 +122,7 @@ def organization() -> dict:
         "name": SITE_NAME,
         "url": absolute("/"),
         "logo": absolute("/apple-touch-icon.png"),
-        "email": "hello@lilosgrowth.com",
+        "email": "hello@myelectricalpermit.com",
         "parentOrganization": {"@type": "Organization", "name": "Lilos Growth", "url": "https://lilosgrowth.com"},
     }
 

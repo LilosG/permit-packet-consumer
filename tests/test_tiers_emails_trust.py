@@ -172,7 +172,7 @@ def test_order_emails_carry_the_link_and_support_address(client, outbox):
     to, subject, text, html = outbox[0]
     assert to == "buyer@example.com" and subject.startswith("Your Permit Packet order: ")
     link = f"/order/{order['access_token']}"
-    assert link in text and link in html and "hello@lilosgrowth.com" in text and "hello@lilosgrowth.com" in html
+    assert link in text and link in html and "hello@myelectricalpermit.com" in text and "hello@myelectricalpermit.com" in html
     pay(client, order)
     assert outbox[1][1] == "Your packet is ready to download" and link in outbox[1][2]
 
@@ -208,7 +208,7 @@ def test_resend_gets_the_configured_sender(monkeypatch):
     assert emails.send("a@example.com", "Hi", "text", "<p>html</p>")
     url, kw = calls[0]
     assert url == "https://api.resend.com/emails" and kw["headers"] == {"Authorization": "Bearer re_test"}
-    assert kw["json"]["from"] == "Permit Packets <hello@lilosgrowth.com>" and kw["json"]["to"] == ["a@example.com"]
+    assert kw["json"]["from"] == "Permit Packets <hello@myelectricalpermit.com>" and kw["json"]["to"] == ["a@example.com"]
 
 
 # ---- Find my order ----
@@ -246,7 +246,7 @@ def test_find_order_is_limited_to_three_per_email_per_hour(client, outbox):
 def test_every_public_page_has_the_footer(client, path):
     response = client.get(path)
     assert response.status_code == 200 and "text/html" in response.headers["content-type"]
-    for needle in ('href="https://lilosgrowth.com">Lilos Growth</a>', 'href="mailto:hello@lilosgrowth.com"', 'href="/terms/"',
+    for needle in ('href="https://lilosgrowth.com">Lilos Growth</a>', 'href="mailto:hello@myelectricalpermit.com"', 'href="/terms/"',
                    'href="/privacy/"', 'href="/refund/"', 'href="/find-order/"', "© 2026", "not PE-stamped"):
         assert needle in response.text, needle
 
@@ -263,7 +263,7 @@ def test_refund_policy_text_and_sitemap(client):
         text = re.sub(r"<[^>]+>", "", client.get(path).text)
         assert "Full refund if you request it before downloading your clean packet." in text
         assert "24-Hour City-Checked orders can be refunded in full any time before they are released." in text
-        assert "email hello@lilosgrowth.com with your order link." in text
+        assert "email hello@myelectricalpermit.com with your order link." in text
     sitemap = client.get("/sitemap-pages.xml").text
     assert all(f"/{page}/</loc>" in sitemap for page in ("terms", "privacy", "refund"))
 
@@ -272,7 +272,7 @@ def test_the_homepage_has_organization_and_faq_json_ld(client):
     html = client.get("/").text
     blocks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
     org = next(b for b in blocks if b["@type"] == "Organization")
-    assert (org["name"], org["email"], org["parentOrganization"]["name"]) == ("Permit Packets", "hello@lilosgrowth.com", "Lilos Growth")
+    assert (org["name"], org["email"], org["parentOrganization"]["name"]) == ("Permit Packets", "hello@myelectricalpermit.com", "Lilos Growth")
     faq = next(b for b in blocks if b["@type"] == "FAQPage")
     questions = re.findall(r'<button [^>]*class="faq-q"[^>]*>(.*?)<span class="faq-ic"', html)
     assert [q["name"] for q in faq["mainEntity"]] == [q.replace("&amp;", "&") for q in questions] and len(questions) == 10
