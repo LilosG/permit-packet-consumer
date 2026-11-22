@@ -186,6 +186,20 @@ def webapp(name: str, url: str) -> dict:
             "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
 
 
+def howto(name: str, description: str, step_names: list[str], url: str) -> dict:
+    return {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": name,
+        "description": description,
+        "url": absolute(url),
+        "step": [
+            {"@type": "HowToStep", "position": idx, "name": step}
+            for idx, step in enumerate(step_names, start=1)
+        ],
+    }
+
+
 def image_object(name: str, url: str, caption: str, width: int, height: int) -> dict:
     return {"@context": "https://schema.org", "@type": "ImageObject", "name": name, "caption": caption,
             "contentUrl": absolute(url), "encodingFormat": "image/webp", "width": width, "height": height}
@@ -294,7 +308,13 @@ def llms_txt() -> str:
     categorized = {e.path for e in generators + audiences + tools + docs + compares + guides}
     other = [e for e in indexable if e.path not in categorized]
 
-    lines = [f"# {SITE_NAME} (MyElectricalPermit)", "", f"> {HOME_DESCRIPTION}"]
+    lines = [
+        f"# {SITE_NAME} (MyElectricalPermit)",
+        "",
+        f"> {HOME_DESCRIPTION}",
+        "",
+        f"Full technical knowledge base for AI assistants: {absolute('/llms-full.txt')}",
+    ]
     sections = [
         ("Core Permit Generators & Pricing", generators),
         ("Who It's For", audiences),
@@ -347,3 +367,35 @@ def dataset(name: str, description: str, path: str, date_modified: str, keywords
             "url": absolute(canonical_path(path)), "dateModified": date_modified, "keywords": keywords,
             "isAccessibleForFree": True, "creator": {"@type": "Organization", "name": AUTHOR},
             "spatialCoverage": [{"@type": "Place", "name": place} for place in places]}
+
+
+
+def llms_full_txt() -> str:
+    """Comprehensive plain-text reference for LLM search engines and RAG crawlers."""
+    from permit_packets import content, guides_content, sitedata, wave2_content
+    out = [
+        f"# {SITE_NAME} (MyElectricalPermit) — Complete Technical Reference",
+        "",
+        f"> {HOME_DESCRIPTION}",
+        "",
+        "## Packages & Pricing (One-Time Per Project, Free Watermarked Preview)",
+        "",
+    ]
+    for _key, amount, name, desc, _pop in content.TIERS:
+        out.append(f"- **${amount} — {name}**: {desc}")
+    out += ["", "## Supported Residential Electrical Permit Generators", ""]
+    for h in content.HUBS.values():
+        out.append(f"- **{h.h1}** ({absolute(h.path)}): {h.answer}")
+    out += ["", "## Free Interactive NEC Calculators", ""]
+    for c in wave2_content.CALCS.values():
+        out.append(f"- **{c.h1}** ({absolute('/tools/' + c.slug + '/')}): {c.answer}")
+    out += ["", "## Permit Guides, Comparisons & NEC Checklists", ""]
+    for g in guides_content.GUIDES.values():
+        out.append(f"- **{g.h1}** ({absolute('/guides/' + g.slug + '/')}): {g.answer}")
+    out += ["", "## Verified City Electrical Permit Rules", ""]
+    for city in sitedata.known_cities():
+        out.append(
+            f"- **{city.label}** ({absolute(sitedata.city_path(city))}): Code: {city.nec_edition}; "
+            f"Utility: {city.utility or 'Local utility'}; Portal: {city.submit_how}"
+        )
+    return "\n".join(out) + "\n"

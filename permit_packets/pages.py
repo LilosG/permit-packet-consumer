@@ -362,9 +362,15 @@ def permits_index() -> Response:
                        "Per city: the jobs covered, the NEC edition enforced and the date the facts were last checked against official sources.",
                        "/permits/", latest, ["electrical permit", "NEC", "EV charger", "panel upgrade"],
                        [c.label for c in cities])
+    featured_guides = [
+        ("/guides/cities-allowing-owner-builder-ev-charger-permits/", "Owner-Builder EV Permit Cities", "Which cities allow homeowners to pull their own EV charger permit vs. licensed contractor rules."),
+        ("/guides/utility-service-upgrade-rules-pge-srp-aps-duke-pse/", "Utility Panel Upgrade Rules", "Meter-main socket approvals and service cutover rules across major electric utilities."),
+        ("/guides/electrical-permit-cost-and-timeline-by-city/", "Permit Cost & Timeline by City", "Compare residential electrical permit fees, online portals and plan-check timelines."),
+        ("/guides/2023-nec-and-california-electrical-code-permit-guide/", "2023 NEC & 2025 CEC Guide", "Key code rules for surge protection, outdoor disconnects and GFCI circuits."),
+    ]
     return render("permits_index.html", meta=meta, jsonld=[data] if locations.permits_indexable() else [], crumbs=crumbs,
                   final_cta=True, rows=rows, states=locations.state_links(),
-                  latest=_date(latest) if latest else "")
+                  latest=_date(latest) if latest else "", featured_guides=featured_guides)
 
 
 @router.api_route("/permits/{state}/", methods=["GET", "HEAD"], include_in_schema=False)
@@ -386,8 +392,13 @@ def permits_state(state: str) -> Response:
     data = seo.dataset(f"Residential electrical permit rules in {name}",
                        f"Per {name} city: the jobs covered, the NEC edition enforced and the date last checked.",
                        path, latest, ["electrical permit", name], [c.label for c in cities])
+    featured_guides = [
+        ("/guides/cities-allowing-owner-builder-ev-charger-permits/", "Owner-Builder EV Permit Cities", "Which cities allow homeowners to pull their own EV charger permit vs. licensed contractor rules."),
+        ("/guides/utility-service-upgrade-rules-pge-srp-aps-duke-pse/", "Utility Panel Upgrade Rules", "Meter-main socket approvals and service cutover rules across major electric utilities."),
+        ("/guides/2023-nec-and-california-electrical-code-permit-guide/", "2023 NEC & 2025 CEC Guide", "Key code rules for surge protection, outdoor disconnects and GFCI circuits."),
+    ]
     return render("permits_index.html", meta=meta, jsonld=[data] if ok else [], crumbs=crumbs, final_cta=True, rows=rows,
-                  h1=h1, states=[], latest=_date(latest) if latest else "")
+                  h1=h1, states=[], latest=_date(latest) if latest else "", featured_guides=featured_guides)
 
 
 @router.api_route("/permits/{state}/{city}/", methods=["GET", "HEAD"], include_in_schema=False)
@@ -422,8 +433,22 @@ def permits_city(state: str, city: str) -> Response:
         city_facts.append(("Outdoor design temp (NEC 310.15)", f"{found.design_ambient_f}°F ({found.design_ambient_label})"))
     if found.service_raceways:
         city_facts.append(("Service raceway rules", ", ".join(found.service_raceways)))
-    return render("permits_city.html", meta=meta, jsonld=[data] if ok else [], crumbs=crumbs, final_cta=True, rows=rows,
-                  city=found, h1=h1, verified=verified, who_lead=who_lead, who_bullets=who_bullets, city_facts=city_facts)
+    city_faqs = [
+        (f"Can a homeowner pull an electrical permit in {found.name}?",
+         _first_sentence(found.who_may_pull) or f"Confirm owner-builder and contractor licensing rules with {found.department or found.name}."),
+        (f"How do I submit an electrical permit application in {found.name}?",
+         f"{found.submit_how}" + (f" Reviewing department: {found.department}." if found.department else "")),
+        (f"Which electrical code edition does {found.name} enforce?",
+         f"{found.name} enforces the {found.nec_edition} alongside local municipal amendments."),
+        (f"Which residential electrical jobs require plans in {found.name}?",
+         f"{found.label} requires electrical permits and supporting plans (site plan, single-line diagram, load calculation and cut sheets) for {', '.join(r['job'].lower() for r in rows)}."),
+    ]
+    if found.fee_note:
+        city_faqs.append((f"How are electrical permit fees calculated in {found.name}?", found.fee_note))
+    city_jsonld = [data, seo.faq(city_faqs)] if ok else []
+    return render("permits_city.html", meta=meta, jsonld=city_jsonld, crumbs=crumbs, final_cta=True, rows=rows,
+                  city=found, h1=h1, verified=verified, who_lead=who_lead, who_bullets=who_bullets,
+                  city_facts=city_facts, city_faqs=city_faqs)
 
 
 NOTE_WORDS = 170
@@ -596,3 +621,8 @@ def sitemap_guides() -> Response:
 @router.api_route("/llms.txt", methods=["GET", "HEAD"], include_in_schema=False)
 def llms() -> Response:
     return PlainTextResponse(seo.llms_txt(), headers={"Cache-Control": "public, max-age=3600"})
+
+
+@router.api_route("/llms-full.txt", methods=["GET", "HEAD"], include_in_schema=False)
+def llms_full() -> Response:
+    return PlainTextResponse(seo.llms_full_txt(), headers={"Cache-Control": "public, max-age=3600"})

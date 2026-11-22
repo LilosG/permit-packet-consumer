@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import cta %}
+{% from "partials/ui.html" import cta, faq_details %}
 {% block main %}
 <main class="page-main content">
 <h1>{{ h1 }}</h1>
@@ -22,6 +22,8 @@
 {%- for k, v in city_facts %}<tr><th scope="row">{{ k }}</th><td>{{ v }}</td></tr>{% endfor %}
 </tbody></table></div>{% endif %}
 {% if city.fee_note %}<h2>Fees</h2><p>{{ city.fee_note }}</p>{% endif %}
+{% if city_faqs %}<h2 id="faq">Electrical permit questions in {{ city.name }}</h2>
+{{ faq_details(city_faqs) }}{% endif %}
 {% set related_job = "" %}{% include "partials/related.html" %}
 {% if city.sources %}<h2>Official sources</h2>
 <ul class="sources">{% for url in city.sources %}<li><a href="{{ url }}" rel="noopener">{{ url }}</a></li>{% endfor %}</ul>{% endif %}

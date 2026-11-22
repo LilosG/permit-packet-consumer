@@ -136,7 +136,8 @@ def _calculator(slug: str):
         example = _example(slug)
         faqs = list(c.faqs) + [("Is this an engineering calculation?", w2.DISCLAIMER)]
         meta = seo.page_meta(c.title, c.description, path, robots=seo.robots_for(path))
-        return render("calculator.html", meta=meta, jsonld=[seo.webapp(c.h1, path), seo.faq(_qas(faqs))],
+        steps = [f"Enter {f.label.lower()}" for f in fields] + ["Review NEC code compliance, wire/breaker sizing, and export results into your permit packet"]
+        return render("calculator.html", meta=meta, jsonld=[seo.webapp(c.h1, path), seo.howto(f"How to Use the {c.crumb}", c.description, steps, path), seo.faq(_qas(faqs))],
                       crumbs=[("Home", "/"), ("Tools", w2.TOOLS_PATH), (c.crumb, path)], final_cta=True,
                       c=c, path=path, slug=slug, fields=fields, values=values, errors=errors,
                       result=_result_view(result), used=used, example=example,
@@ -164,6 +165,30 @@ def calc_json(slug: str, request: Request) -> Response:
 
 # ---- Document guides ----
 
+DOC_RESOURCES: dict[str, tuple[tuple[str, str, str], ...]] = {
+    "site-plan": (
+        ("/tools/conduit-fill-trench-depth-calculator/", "Conduit Fill & Trench Depth Calculator", "Verify PVC/RMC conduit sizing and NEC Table 300.5 trench burial depth for your site plan."),
+        ("/guides/ev-charger-trench-depth-conduit-rules-nec-300-5/", "Detached Garage Trench & Conduit Guide", "NEC Table 300.5 burial depths, 811 utility locates and trench cross-section details."),
+    ),
+    "single-line-diagram": (
+        ("/tools/ev-charger-wire-breaker-size/", "EV Charger Wire & Breaker Calculator", "Size continuous-duty 125% breakers, THWN-2 conductors, EGC and voltage drop."),
+        ("/guides/hardwired-vs-plug-in-ev-charger-permit/", "Hardwired vs. Plug-In EV Charger Guide", "Compare single-line diagram requirements for 48A hardwired vs. 40A NEMA 14-50 circuits."),
+    ),
+    "load-calculation": (
+        ("/tools/ev-charger-load-calculator/", "EV Charger Load Calculator (NEC 220.82)", "Test whether your 100A or 200A main service can carry an EV charger."),
+        ("/guides/nec-220-82-vs-220-87-load-calculation/", "NEC 220.82 vs. 220.87 Load Calc Guide", "How 12-month utility demand data can qualify an EV charger without a panel upgrade."),
+    ),
+    "panel-schedule": (
+        ("/tools/residential-load-calculator/", "Residential Load Calculator (NEC 220.82)", "Calculate total dwelling demand and spare panel ampacity."),
+        ("/guides/how-to-read-electrical-panel-label-aic-bus-rating/", "How to Read Your Panel Label", "Decode busbar amps, 10kA/22kA AIC ratings and tandem breaker rules."),
+    ),
+    "equipment-cut-sheets": (
+        ("/guides/what-is-an-appliance-cut-sheet-for-electrical-permit/", "What Is an Equipment Cut Sheet?", "What city plan reviewers verify on UL 2594 and UL 67 manufacturer cut sheets."),
+        ("/guides/best-48a-hardwired-ev-chargers-for-permits/", "Best 48A Hardwired EV Chargers (2026)", "Compare top UL-listed chargers whose manufacturer cut sheets are pre-loaded in our tool."),
+    ),
+}
+
+
 def _doc(slug: str):
     d = w2.DOCS[slug]
     path = doc_path(slug)
@@ -174,6 +199,7 @@ def _doc(slug: str):
         return render("doc.html", meta=meta, jsonld=[seo.article(d.h1, WAVE2_DATE, WAVE2_DATE, path=path), seo.faq(_qas(d.faqs))],
                       crumbs=[("Home", "/"), ("Permit Documents", w2.DOCS_PATH), (d.name, path)], final_cta=True,
                       d=d, calc=(calc_path(calc), w2.CALCS[calc].crumb) if calc else None,
+                      resources=list(DOC_RESOURCES.get(slug, ())),
                       others=[(doc_path(s), x.name, x.card) for s, x in w2.DOCS.items() if s != slug],
                       cta_href="/start/?job=ev-charger&role=diy")
 

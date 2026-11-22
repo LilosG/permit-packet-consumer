@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import cta %}
+{% from "partials/ui.html" import cta, link_cards %}
 {% block main %}
 <main class="page-main content">
 <h1>{{ h1 or "Electrical Permits by City" }}</h1>
@@ -13,5 +13,7 @@
 </tbody></table></div>
 <p>Any other U.S. address works with a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>
 <p class="cta-row">{{ cta("/start/") }}</p>
+{% if featured_guides %}<h2>Electrical permit guides &amp; checklists</h2>
+{{ link_cards(featured_guides) }}{% endif %}
 </main>
 {% endblock %}

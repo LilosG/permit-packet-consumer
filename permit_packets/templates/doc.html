@@ -15,6 +15,8 @@
 <ul class="check-list">{% for item in d.contains %}<li>{{ item }}</li>{% endfor %}</ul>
 <p>See one in the <a href="/sample-packet/">sample packet</a>.{% if calc %} Try the free <a href="{{ calc[0] }}">{{ calc[1]|lower }}</a>.{% endif %}</p>
 {{ cta_band(cta_href, "Preview every sheet of your packet free.") }}
+{% if resources %}<h2>Related calculators &amp; step-by-step guides</h2>
+{{ link_cards(resources) }}{% endif %}
 <h2>Other permit documents</h2>
 {{ link_cards(others) }}
 <h2 id="faq">{{ d.name }} questions</h2>

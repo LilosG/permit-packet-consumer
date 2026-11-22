@@ -193,7 +193,12 @@ from permit_packets.jurisdictions.naperville_il import NAPERVILLE  # noqa: E402
 from permit_packets.jurisdictions.atlanta_ga import ATLANTA  # noqa: E402
 from permit_packets.jurisdictions.savannah_ga import SAVANNAH  # noqa: E402
 
-KNOWN = {(j.name.lower(), j.state): j for j in (ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE, SAN_DIEGO, LOS_ANGELES, SAN_JOSE, SEATTLE, PORTLAND, AUSTIN, DALLAS, DENVER, PHOENIX, SCOTTSDALE, SACRAMENTO, OAKLAND, AURORA, TAMPA, RALEIGH, HOUSTON, SAN_ANTONIO, TACOMA, BOSTON, CAMBRIDGE, NEWARK, JERSEY_CITY, NEW_YORK, BUFFALO, CHICAGO, NAPERVILLE, ATLANTA, SAVANNAH)}
+from permit_packets.jurisdictions.miami_fl import MIAMI  # noqa: E402
+from permit_packets.jurisdictions.minneapolis_mn import MINNEAPOLIS  # noqa: E402
+from permit_packets.jurisdictions.columbus_oh import COLUMBUS  # noqa: E402
+from permit_packets.jurisdictions.salt_lake_city_ut import SALT_LAKE_CITY  # noqa: E402
+
+KNOWN = {(j.name.lower(), j.state): j for j in (MIAMI, MINNEAPOLIS, COLUMBUS, SALT_LAKE_CITY, ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE, SAN_DIEGO, LOS_ANGELES, SAN_JOSE, SEATTLE, PORTLAND, AUSTIN, DALLAS, DENVER, PHOENIX, SCOTTSDALE, SACRAMENTO, OAKLAND, AURORA, TAMPA, RALEIGH, HOUSTON, SAN_ANTONIO, TACOMA, BOSTON, CAMBRIDGE, NEWARK, JERSEY_CITY, NEW_YORK, BUFFALO, CHICAGO, NAPERVILLE, ATLANTA, SAVANNAH)}
 
 
 def jurisdiction_for(city: str | None, state: str | None) -> Jurisdiction:
