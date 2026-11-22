@@ -17,6 +17,10 @@
 {%- for r in rows %}<tr><td class="c-title"><a href="{{ r.url }}">{{ r.job }}</a></td><td data-label="Permit required"{% if not r.permit %} class="empty"{% endif %}>{{ r.permit }}</td><td data-label="Code edition"{% if not r.edition %} class="empty"{% endif %}>{{ r.edition }}</td><td data-label="Verified"{% if not r.verified %} class="empty"{% endif %}><span class="verified">{{ r.verified }}</span></td></tr>{% endfor %}
 </tbody></table></div>
 <p class="cta-row">{{ cta("/start/?city=" ~ city.key) }}</p>
+{% if city_facts %}<h2>Local utility &amp; code summary</h2>
+<div class="table-wrap"><table class="compare"><tbody>
+{%- for k, v in city_facts %}<tr><th scope="row">{{ k }}</th><td>{{ v }}</td></tr>{% endfor %}
+</tbody></table></div>{% endif %}
 {% if city.fee_note %}<h2>Fees</h2><p>{{ city.fee_note }}</p>{% endif %}
 {% set related_job = "" %}{% include "partials/related.html" %}
 {% if city.sources %}<h2>Official sources</h2>

@@ -29,10 +29,10 @@ JOB_GUIDES: dict[str, tuple[str, ...]] = {
                    "wallbox-pulsar-plus-cut-sheet-permit"),
     "panel-upgrade": ("subpanel-vs-200a-panel-upgrade", "best-200a-meter-main-combo-panels",
                       "utility-service-upgrade-rules-pge-srp-aps-duke-pse", "2023-nec-and-california-electrical-code-permit-guide"),
-    "subpanel": ("subpanel-vs-200a-panel-upgrade", "ev-charger-trench-depth-conduit-rules-nec-300-5",
-                 "how-to-read-electrical-panel-label-aic-bus-rating", "7-reasons-electrical-permits-fail-plan-check"),
-    "hot-tub-240v": ("7-reasons-electrical-permits-fail-plan-check", "ev-charger-trench-depth-conduit-rules-nec-300-5",
-                     "2023-nec-and-california-electrical-code-permit-guide", "owner-builder-permit-vs-licensed-electrician"),
+    "subpanel": ("best-subpanel-sizes-detached-garage-workshop-adu", "subpanel-vs-200a-panel-upgrade",
+                 "ev-charger-trench-depth-conduit-rules-nec-300-5", "how-to-read-electrical-panel-label-aic-bus-rating"),
+    "hot-tub-240v": ("hot-tub-gfci-disconnect-wire-size-permit-guide", "heat-pump-mini-split-electrical-permit-mca-mocp",
+                     "ev-charger-trench-depth-conduit-rules-nec-300-5", "2023-nec-and-california-electrical-code-permit-guide"),
 }
 
 
@@ -88,8 +88,8 @@ def guide_detail(slug: str) -> Response:
     if g is None:
         raise HTTPException(404)
     path = guide_path(slug)
-    meta = seo.page_meta(g.title, g.description, path, robots=seo.robots_for(path))
-    blocks: list[dict] = [seo.article(g.h1, GUIDES_DATE, GUIDES_DATE), seo.faq(_qas(g.faqs))]
+    meta = seo.page_meta(g.title, g.description, path, robots=seo.robots_for(path), og_type="article")
+    blocks: list[dict] = [seo.article(g.h1, GUIDES_DATE, GUIDES_DATE, path=path), seo.faq(_qas(g.faqs))]
     if g.listicle_items:
         blocks.append(_item_list_schema(g.h1, g.listicle_items))
     related_cards: list[tuple[str, str, str]] = []

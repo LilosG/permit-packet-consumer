@@ -11,7 +11,7 @@
 <p>{{ hub.sheets_intro }}</p>
 <ol class="sheet-list">
 {%- for sheet in hub.sheets %}
-  <li>{% if sheet.thumb %}<a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ sheet.thumb }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ sheet.title }} sheet from the El Cajon packet"></a>{% endif %}<div><h3>{{ sheet.title }}</h3><p>{{ sheet.text }}</p></div></li>
+  <li>{% if sheet.thumb %}<a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ sheet.thumb }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ sheet.title }} sheet from the El Cajon packet"></a>{% endif %}<div><h3>{{ sheet.title }}</h3><p>{{ sheet.text|safe }}</p></div></li>
 {%- endfor %}
 </ol>
 {% if hub.slug == "ev-charger" %}<p class="note-line">Thumbnails are from the <a href="/sample-packet/">El Cajon sample packet</a>.</p>{% endif %}

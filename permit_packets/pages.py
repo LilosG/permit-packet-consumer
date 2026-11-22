@@ -226,7 +226,7 @@ def sample_packet() -> Response:
         "See a finished EV charger permit packet sheet by sheet: site plan, single-line diagram, load calculation and data sheet. El Cajon, CA.",
         SAMPLE_PATH, robots=seo.robots_for(SAMPLE_PATH))
     return render("sample.html", meta=meta, jsonld=images, crumbs=[("Home", "/"), ("Sample Packet", SAMPLE_PATH)],
-                  final_cta=True, sheets=sheets, hubs=list(content.HUBS.values()))
+                  final_cta=True, sheets=sheets, hubs=list(content.HUBS.values()), job_links=job_links())
 
 
 PRICING_PATH = "/pricing/"
@@ -411,8 +411,19 @@ def permits_city(state: str, city: str) -> Response:
                        f"Permit requirement, who may pull it and the NEC edition for each job in {found.label}.",
                        path, found.rules_date, ["electrical permit", found.label], [found.label])
     who_lead, who_bullets = split_who(found.who_may_pull)
+    city_facts: list[tuple[str, str]] = []
+    if found.department:
+        city_facts.append(("Reviewing department", found.department))
+    if found.utility:
+        city_facts.append(("Electric utility", found.utility))
+    if found.nec_edition:
+        city_facts.append(("Adopted code edition", found.nec_edition))
+    if found.design_ambient_f is not None:
+        city_facts.append(("Outdoor design temp (NEC 310.15)", f"{found.design_ambient_f}°F ({found.design_ambient_label})"))
+    if found.service_raceways:
+        city_facts.append(("Service raceway rules", ", ".join(found.service_raceways)))
     return render("permits_city.html", meta=meta, jsonld=[data] if ok else [], crumbs=crumbs, final_cta=True, rows=rows,
-                  city=found, h1=h1, verified=verified, who_lead=who_lead, who_bullets=who_bullets)
+                  city=found, h1=h1, verified=verified, who_lead=who_lead, who_bullets=who_bullets, city_facts=city_facts)
 
 
 NOTE_WORDS = 170

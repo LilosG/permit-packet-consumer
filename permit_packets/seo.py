@@ -59,7 +59,7 @@ def canonical_path(path: str) -> str:
 # ---- Head tags ----
 
 def page_meta(title: str, description: str, path: str, robots: str = "index,follow",
-              og_image: str = DEFAULT_OG_IMAGE) -> Markup:
+              og_image: str = DEFAULT_OG_IMAGE, og_type: str = "website") -> Markup:
     """Every head tag a page needs: title, description, canonical, robots, Open Graph and Twitter.
 
     The canonical is PUBLIC_BASE_URL plus the path with a trailing slash. A title over 60 characters or a
@@ -78,7 +78,7 @@ def page_meta(title: str, description: str, path: str, robots: str = "index,foll
         f'<meta name="robots" content="{q(robots)}">',
         f'<meta property="og:title" content="{q(title)}">',
         f'<meta property="og:description" content="{q(description)}">',
-        '<meta property="og:type" content="website">',
+        f'<meta property="og:type" content="{q(og_type)}">',
         f'<meta property="og:url" content="{q(canonical)}">',
         f'<meta property="og:site_name" content="{SITE_NAME}">',
         f'<meta property="og:image" content="{q(image)}">',
@@ -166,11 +166,18 @@ def service(name: str, area_name: str, offers: list[dict] | None = None) -> dict
     return data
 
 
-def article(headline: str, date_published: str, date_modified: str, author: str = AUTHOR) -> dict:
-    return {"@context": "https://schema.org", "@type": "Article", "headline": headline,
-            "datePublished": date_published, "dateModified": date_modified,
-            "author": {"@type": "Organization", "name": author},
-            "publisher": {"@type": "Organization", "name": "Lilos Growth", "url": "https://lilosgrowth.com"}}
+def article(headline: str, date_published: str, date_modified: str, author: str = AUTHOR,
+            path: str = "", image: str = DEFAULT_OG_IMAGE) -> dict:
+    data: dict = {
+        "@context": "https://schema.org", "@type": "Article", "headline": headline,
+        "datePublished": date_published, "dateModified": date_modified,
+        "image": [absolute(image)],
+        "author": {"@type": "Organization", "name": author},
+        "publisher": {"@type": "Organization", "name": "Lilos Growth", "url": "https://lilosgrowth.com"},
+    }
+    if path:
+        data["mainEntityOfPage"] = {"@type": "WebPage", "@id": absolute(canonical_path(path))}
+    return data
 
 
 def webapp(name: str, url: str) -> dict:

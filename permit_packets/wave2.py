@@ -170,8 +170,8 @@ def _doc(slug: str):
     calc = "residential-load-calculator" if slug in ("load-calculation", "panel-schedule") else ""
 
     def handler() -> Response:
-        meta = seo.page_meta(d.title, d.description, path, robots=seo.robots_for(path))
-        return render("doc.html", meta=meta, jsonld=[seo.article(d.h1, WAVE2_DATE, WAVE2_DATE), seo.faq(_qas(d.faqs))],
+        meta = seo.page_meta(d.title, d.description, path, robots=seo.robots_for(path), og_type="article")
+        return render("doc.html", meta=meta, jsonld=[seo.article(d.h1, WAVE2_DATE, WAVE2_DATE, path=path), seo.faq(_qas(d.faqs))],
                       crumbs=[("Home", "/"), ("Permit Documents", w2.DOCS_PATH), (d.name, path)], final_cta=True,
                       d=d, calc=(calc_path(calc), w2.CALCS[calc].crumb) if calc else None,
                       others=[(doc_path(s), x.name, x.card) for s, x in w2.DOCS.items() if s != slug],
@@ -192,8 +192,8 @@ def _compare(slug: str):
 
     def handler() -> Response:
         checked = datetime.date.fromisoformat(c.checked).strftime("%B %-d, %Y")
-        meta = seo.page_meta(c.title, c.description, path, robots=seo.robots_for(path))
-        return render("compare.html", meta=meta, jsonld=[seo.article(c.h1, c.checked, c.checked), seo.faq(_qas(c.faqs))],
+        meta = seo.page_meta(c.title, c.description, path, robots=seo.robots_for(path), og_type="article")
+        return render("compare.html", meta=meta, jsonld=[seo.article(c.h1, c.checked, c.checked, path=path), seo.faq(_qas(c.faqs))],
                       crumbs=[("Home", "/"), ("Comparisons", COMPARE_PATH), (c.h1, path)], final_cta=True, c=c, checked=checked,
                       cta_href="/start/?job=ev-charger&role=diy",
                       others=[(compare_path(s), x.h1, x.card) for s, x in w2.COMPARES.items() if s != slug])

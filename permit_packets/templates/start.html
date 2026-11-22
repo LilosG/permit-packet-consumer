@@ -468,7 +468,18 @@
 {% endblock %}
 {% block scripts %}
 <script>window.PermitJobTypes = { modules: {}, register(key, module) { this.modules[key] = module; } };</script>
-<script src="/assets/js/job-types/electrical.js?v={{ asset_version }}"></script>
+<script>
+(() => {
+  const q = new URLSearchParams(location.search), f = document.getElementById('job');
+  if (!f || !q.toString()) return;
+  for (const [k, v] of q.entries()) {
+    const el = f.elements[k];
+    if (!el || !v) continue;
+    if (el instanceof RadioNodeList) { [...el].forEach((r) => { r.checked = r.value === v; }); }
+    else if (el.tagName === 'SELECT' || el.tagName === 'INPUT') { el.value = v; }
+  }
+})();
+</script><script src="/assets/js/job-types/electrical.js?v={{ asset_version }}"></script>
 <script src="/assets/js/job-types/ev-charger.js?v={{ asset_version }}"></script>
 <script src="/assets/js/job-types/service-upgrade.js?v={{ asset_version }}"></script>
 <script src="/assets/js/job-types/subpanel.js?v={{ asset_version }}"></script>
