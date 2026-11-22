@@ -82,10 +82,12 @@ def page_meta(title: str, description: str, path: str, robots: str = "index,foll
         f'<meta property="og:url" content="{q(canonical)}">',
         f'<meta property="og:site_name" content="{SITE_NAME}">',
         f'<meta property="og:image" content="{q(image)}">',
+        f'<meta property="og:image:alt" content="{q(title)}">',
         '<meta name="twitter:card" content="summary_large_image">',
         f'<meta name="twitter:title" content="{q(title)}">',
         f'<meta name="twitter:description" content="{q(description)}">',
         f'<meta name="twitter:image" content="{q(image)}">',
+        f'<meta name="twitter:image:alt" content="{q(title)}">',
     ]
     return Markup("\n".join(tags))
 
@@ -243,14 +245,19 @@ def robots_for(path: str) -> str:
 
 # ---- Sitemaps and llms.txt ----
 
-def _url_entry(path: str, lastmod: str = "") -> str:
+def _url_entry(path: str, lastmod: str = "", images: list[tuple[str, str]] | None = None) -> str:
     stamp = f"<lastmod>{escape(lastmod)}</lastmod>" if lastmod else ""
-    return f"  <url><loc>{escape(absolute(path))}</loc>{stamp}</url>\n"
+    img_xml = "".join(
+        f"<image:image><image:loc>{escape(absolute(img_url))}</image:loc><image:title>{escape(img_title)}</image:title></image:image>"
+        for img_url, img_title in (images or [])
+    )
+    return f"  <url><loc>{escape(absolute(path))}</loc>{stamp}{img_xml}</url>\n"
 
 
-def _urlset(entries: list[str]) -> str:
+def _urlset(entries: list[str], *, with_images: bool = False) -> str:
+    ns = ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"' if with_images else ""
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(entries) + "</urlset>\n")
+            f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"{ns}>\n' + "".join(entries) + "</urlset>\n")
 
 
 def sitemap_index() -> str:
@@ -268,7 +275,16 @@ def _registered(kind: str) -> list[PageEntry]:
 
 
 def sitemap_pages() -> str:
-    return _urlset([_url_entry(entry.path, entry.lastmod) for entry in _registered("pages")])
+    from permit_packets import content
+    sample_images = [
+        (f"/assets/samples/{stem}-2000.webp", f"Sample EV Charger Permit Packet — {title}")
+        for stem, _num, title, _sz, _notes in content.SAMPLE_SHEETS
+    ]
+    entries = [
+        _url_entry(entry.path, entry.lastmod, sample_images if entry.path == "/sample-packet/" else None)
+        for entry in _registered("pages")
+    ]
+    return _urlset(entries, with_images=True)
 
 
 def sitemap_guides() -> str:

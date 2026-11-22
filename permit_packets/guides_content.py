@@ -1114,3 +1114,179 @@ GUIDES["heat-pump-mini-split-electrical-permit-mca-mocp"] = _rep(
     GUIDES["heat-pump-mini-split-electrical-permit-mca-mocp"],
     related_slugs=("sauna-electrical-permit-wire-breaker-gfci-rules", "hot-tub-gfci-disconnect-wire-size-permit-guide"),
 )
+
+
+GUIDES["200a-panel-upgrade-cost-and-permit-checklist"] = Guide(
+    slug="200a-panel-upgrade-cost-and-permit-checklist",
+    category="diy-tips", job="panel-upgrade", role="hiring",
+    crumb="200A Panel Upgrade Checklist",
+    h1="200A Panel Upgrade Permit Checklist and Cost Guide (2026)",
+    title="200A Panel Upgrade Permit Checklist and Cost Guide (2026)",
+    description="Complete 200A service upgrade permit checklist: riser diagram, NEC 220 load calculation, utility meter-main approval, NEC 230.67 SPD and typical costs.",
+    answer=(
+        "Upgrading a residential electrical service to 200A requires a municipal electrical permit, utility meter-release coordination, and a complete plan set showing a riser diagram, NEC Article 220 load calculation, #2/0 copper or #4/0 aluminum service conductors, an outdoor emergency disconnect (NEC 230.85), and Type 1 or 2 surge protection (NEC 230.67)."
+    ),
+    card="Step-by-step 200A service upgrade submittal checklist: riser diagram, NEC 310.12 wires, SPD and utility rules.",
+    table_caption="200A Residential Service Upgrade Specification & Permit Checklist",
+    table_headers=("Component", "NEC / Utility Requirement", "Standard 200A Specification"),
+    table_rows=(
+        ("Service entrance conductors", "NEC 310.12 (83% dwelling rule)", "#2/0 AWG Copper or #4/0 AWG Aluminum THWN-2 / XHHW-2"),
+        ("Grounding electrode conductor", "NEC Table 250.66", "#4 AWG Copper to ground rods, Ufer electrode & water pipe"),
+        ("Outdoor emergency disconnect", "NEC 230.85", "Labeled exterior service disconnect or NEMA 3R meter-main"),
+        ("Surge protective device (SPD)", "NEC 230.67", "Listed Type 1 or Type 2 SPD installed at the service equipment"),
+        ("Meter socket / combo enclosure", "Local Electric Utility", "Utility-approved EUSERC / Form 7517 meter-main catalog model"),
+    ),
+    sections=(
+        ("What city plan reviewers and electric utilities check first", (
+            "A 200A service upgrade requires approval from both your city building department and your electric utility. Plan reviewers check that your <a href=\"/permit-documents/load-calculation/\">NEC 220.82 load calculation</a> stays under 200A, your riser diagram shows NEC 230.67 surge protection and NEC 230.85 outdoor emergency disconnects, and your meter-main matches utility rules.",
+            "Before collecting electrician quotes, run your home through our <a href=\"/tools/residential-load-calculator/\">free residential load calculator</a> or generate a complete <a href=\"/panel-upgrade-permit/\">200A panel upgrade permit packet</a>.",
+        )),
+        ("Typical 200A panel upgrade costs: permits, plans & labor", (
+            "Municipal permit fees for a 200A service swap typically run $125 to $350, automated permit drawings cost $89 to $169 (versus $350 to $600+ from a CAD drafter), and licensed electrical contractor installation typically ranges from $3,200 to $6,000+ depending on overhead versus underground service lateral work.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("residential-load-calculator", "solar-120-percent-rule-calculator"),
+    doc_links=("single-line-diagram", "load-calculation"),
+    related_slugs=("generator-interlock-transfer-switch-permit-guide", "best-200a-meter-main-combo-panels"),
+    faqs=(
+        ("How long does a 200A panel upgrade take?", "Plan review typically takes 1 to 10 business days depending on the city, and the physical panel swap takes one day with utility disconnect in the morning and green-tag reconnect in the afternoon."),
+        ("Can I keep my existing indoor panel as a subpanel?", "Yes. Many homeowners install a new exterior 200A meter-main combo and re-feed the existing indoor panel as a 100A or 125A subpanel, separating neutral and ground buses per NEC 250.24(A)(5)."),
+        ("Do I need to upgrade my grounding system during a 200A upgrade?", "Yes. NEC 250.50 requires bonding all available grounding electrodes with a continuous #4 AWG copper grounding electrode conductor."),
+    ),
+)
+
+GUIDES["nema-14-50-outlet-permit-vs-hardwired-ev-charger"] = Guide(
+    slug="nema-14-50-outlet-permit-vs-hardwired-ev-charger",
+    category="diy-tips", job="ev-charger", role="diy",
+    crumb="NEMA 14-50 Outlet Permit Rules",
+    h1="NEMA 14-50 Outlet Permit Requirements: GFCI & Wire Rules",
+    title="NEMA 14-50 Outlet Permit Requirements: GFCI & Wire Rules",
+    description="Required specs for a 50A NEMA 14-50 EV outlet permit: NEC 625.54 GFCI breaker rules, #6 AWG 4-wire copper, EV-rated receptacle and load calc.",
+    answer=(
+        "A residential NEMA 14-50 outlet permit requires a dedicated 50A 2-pole GFCI circuit breaker (NEC 625.54), four conductors including an insulated neutral (#6 AWG copper), an industrial EV-rated receptacle, and an NEC Article 220 load calculation confirming your service can support 40A continuous charging (9,600 VA)."
+    ),
+    card="NEC 625.54 GFCI breaker rules, 4-wire conductor sizing and EV-rated outlet specs for NEMA 14-50 permits.",
+    table_caption="NEMA 14-50 EV Receptacle Circuit Requirements (2020 & 2023 NEC)",
+    table_headers=("Circuit Element", "Required Specification", "Code Reference"),
+    table_rows=(
+        ("Overcurrent & GFCI device", "50 A, 2-pole Class A GFCI circuit breaker", "NEC 625.54 & NEC 210.21(B)"),
+        ("Maximum EV charger draw", "40 A continuous (9.6 kW at 240 V)", "NEC 625.41 (80% of 50A circuit)"),
+        ("Copper conductors (4 wires)", "2 x #6 AWG Hots + 1 x #6 AWG Neutral + 1 x #10 AWG Ground", "NEC 310.16 & NEC 250.122"),
+        ("Receptacle grade", "Heavy-duty industrial / EV-listed NEMA 14-50R (75°C terminals)", "NEC 110.3(B) & 110.14(C)"),
+        ("Outdoor enclosure", "Weatherproof in-use (extra-duty) cover if outdoors", "NEC 406.9(B)(1)"),
+    ),
+    sections=(
+        ("Why NEMA 14-50 permits require a GFCI breaker and 4 wires", (
+            "Unlike a hardwired charger that uses two hot wires and a ground, a NEMA 14-50 receptacle requires a full-size insulated neutral conductor so both 120V and 240V pins are properly wired. In addition, NEC 625.54 requires GFCI protection for every receptacle installed for electric vehicle charging.",
+            "Check wire gauge, conduit size, and voltage drop for your run length using our <a href=\"/tools/ev-charger-wire-breaker-size/\">EV charger wire and breaker calculator</a>, or compare against <a href=\"/guides/hardwired-vs-plug-in-ev-charger-permit/\">hardwired EV charger rules</a>.",
+        )),
+        ("Avoiding receptacle overheating with EV-rated outlets", (
+            "Standard builder-grade dryer/range receptacles are not designed for 8-hour continuous EV charging cycles. Specify a commercial/EV-rated NEMA 14-50R receptacle (such as Hubbell HBL9450A or Bryant 9450FR) rated for 75°C copper terminations on your <a href=\"/ev-charger-permit/\">EV charger permit packet</a>.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("ev-charger-wire-breaker-size", "ev-charger-load-calculator"),
+    doc_links=("single-line-diagram", "load-calculation"),
+    related_slugs=("hardwired-vs-plug-in-ev-charger-permit", "ev-charger-permit-packet-checklist-for-homeowners"),
+    faqs=(
+        ("Can I use #6/3 Romex (NM-B) for a NEMA 14-50 outlet?", "Yes, indoors in dry locations: #6/3 NM-B copper is rated 55 A at the 60°C column (NEC 334.80), which covers a 50 A breaker. Outdoors or in conduit, use individual THWN-2 copper conductors."),
+        ("Why does my charger trip the 50A GFCI breaker?", "Many wall-mounted EV chargers contain internal ground-fault monitoring that conflicts with an upstream GFCI breaker. Hardwiring the charger eliminates the receptacle and avoids series GFCI nuisance trips."),
+        ("Can I plug a 48A charger into a NEMA 14-50 outlet?", "No. A 48 A continuous load requires a 60 A circuit, and NEMA 14-50 outlets are capped at 50 A (40 A max charging)."),
+    ),
+)
+
+
+GUIDES["garage-subpanel-wiring-diagram-and-permit-guide"] = Guide(
+    slug="garage-subpanel-wiring-diagram-and-permit-guide",
+    category="diy-tips", job="subpanel", role="diy",
+    crumb="Garage Subpanel Wiring & Permit",
+    h1="Garage Subpanel Wiring Diagram and Permit Checklist (2026)",
+    title="Garage Subpanel Wiring Diagram and Permit Checklist (2026)",
+    description="How to prepare a garage subpanel permit: single-line wiring diagram, feeder schedule, isolated neutral/ground bars (NEC 250.24) and ground rod rules.",
+    answer=(
+        "A garage subpanel permit requires a single-line wiring diagram, feeder schedule, site plan, and NEC Article 220 load calculation. Inspectors verify four-wire feeder conductors, isolated neutral and ground buses with the bonding screw removed (NEC 250.24(A)(5)), and two ground rods if the garage is detached (NEC 250.32)."
+    ),
+    card="Attached vs. detached garage subpanel wiring diagrams, feeder schedules and NEC 250.32 grounding rules.",
+    table_caption="Attached vs. Detached Garage Subpanel Permit Requirements",
+    table_headers=("Requirement", "Attached Garage Subpanel", "Detached Garage Subpanel"),
+    table_rows=(
+        ("Feeder conductors", "4-wire (2 hots, insulated neutral, EGC)", "4-wire (2 hots, insulated neutral, EGC)"),
+        ("Neutral & ground isolation", "Mandatory — remove green bonding screw (NEC 250.24)", "Mandatory — remove green bonding screw (NEC 250.24)"),
+        ("Ground rods at garage", "Not required (same building structure)", "Required — two 8-ft rods >= 6 ft apart (NEC 250.32)"),
+        ("Main disconnect at subpanel", "Main-lug subpanel permitted", "Main-breaker subpanel or <= 6-throw disconnect (NEC 225.31)"),
+        ("Underground trench cover", "N/A (interior wall/attic run)", "18 in PVC cover / 6 in RMC cover (NEC Table 300.5)"),
+    ),
+    sections=(
+        ("What every subpanel single-line diagram must show", (
+            "City plan examiners review your <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a> to trace power from the main service breaker through the new 2-pole feeder breaker, feeder conductor gauge, conduit trade size, and subpanel bus rating.",
+            "Run your feeder length and amperage in our <a href=\"/tools/subpanel-feeder-calculator/\">free subpanel feeder calculator</a> to size aluminum or copper conductors with automatic 3% voltage-drop correction.",
+        )),
+        ("Generating a complete subpanel permit packet in minutes", (
+            "Our <a href=\"/subpanel-permit/\">subpanel permit generator</a> automatically produces the scaled parcel site plan, single-line diagram, dedicated Feeder Schedule sheet, NEC 220.82 load calculation, and subpanel circuit directory—and flags ground rods and disconnects whenever you select a detached garage.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("subpanel-feeder-calculator", "conduit-fill-trench-depth-calculator"),
+    doc_links=("single-line-diagram", "site-plan"),
+    related_slugs=("best-subpanel-sizes-detached-garage-workshop-adu", "ev-charger-trench-depth-conduit-rules-nec-300-5"),
+    faqs=(
+        ("Do I need to bond neutral and ground in a garage subpanel?", "Never. Neutral and ground are bonded only at the main service disconnect. In every subpanel, remove the bonding screw and install a separate ground bar bonded to the metal enclosure."),
+        ("How many ground rods does a detached garage subpanel need?", "NEC 250.32(A) and 250.53(A)(2) require a grounding electrode system—typically two 8-foot copper-clad ground rods driven at least 6 feet apart and connected with #6 AWG copper wire."),
+        ("Can I feed a subpanel with SER cable indoors?", "Yes. Inside walls or attics of an attached garage, 4-conductor aluminum SER cable (such as #1-#1-#1-#3 Al for 100A) is permitted under NEC 338.10."),
+    ),
+)
+
+GUIDES["generator-interlock-transfer-switch-permit-guide"] = Guide(
+    slug="generator-interlock-transfer-switch-permit-guide",
+    category="comparisons", job="panel-upgrade", role="hiring",
+    crumb="Generator Interlock & Transfer Switch",
+    h1="Generator Interlock and Transfer Switch Permit Guide (NEC)",
+    title="Generator Interlock and Transfer Switch Permit Guide (NEC)",
+    description="Compare manual transfer switches vs main-breaker generator interlock kits for residential permits: NEC 702.5 rules, inlet box wiring and single-line plans.",
+    answer=(
+        "Installing a standby generator transfer switch or main-breaker interlock kit requires an electrical permit verifying mechanical interlocking so utility and generator power cannot backfeed simultaneously (NEC 702.5). Plans must show the generator inlet box, feeder conductors, and main panel breaker compatibility."
+    ),
+    card="Compare UL-listed panel interlock kits against manual transfer switches under NEC Article 702.",
+    table_caption="Main-Breaker Interlock Kit vs. Manual Transfer Switch",
+    table_headers=("Feature", "Main-Breaker Interlock Kit", "Dedicated Manual Transfer Switch"),
+    table_rows=(
+        ("How it works", "Sliding metal plate blocks main + generator breakers from both being ON", "Subpanel isolates 6–10 selected circuits with double-throw switches"),
+        ("Circuits powered", "Any circuit in the main panel (managed manually by owner)", "Only pre-wired circuits landed inside the transfer switch"),
+        ("NEC code compliance", "NEC 702.5 (must be UL-listed for the exact panel model)", "NEC 702.5 (UL 1008 listed transfer equipment)"),
+        ("Power inlet box", "Exterior 30A (L14-30) or 50A (CS6375) flanged inlet + #10/#6 Cu", "Exterior 30A or 50A flanged inlet wired to transfer switch"),
+        ("Works with meter-main combos?", "Only if a UL-listed interlock exists for that combo model", "Yes — works with virtually any main panel or meter-main"),
+    ),
+    sections=(
+        ("Why plan reviewers verify UL listing on generator interlock kits", (
+            "Under NEC 702.5 and NEC 110.3(B), a generator interlock bracket cannot be homemade—it must be UL-listed specifically for your main panel brand and model number so it is physically impossible to close the generator backfeed breaker while the utility main breaker is closed.",
+            "Plan reviewers also check the exterior generator inlet box rating (typically 30A NEMA L14-30P or 50A NEMA SS2-50P), conductor sizing (#10 AWG copper for 30A or #6 AWG copper for 50A), and required NEC 702.7 warning signage at the service.",
+        )),
+        ("Pairing backup power readiness with a 200A panel upgrade", (
+            "If your existing panel has no UL-listed interlock available or lacks open breaker slots, upgrading to a modern <a href=\"/panel-upgrade-permit/\">200A panel</a> with a dedicated generator backfeed space makes adding backup power straightforward. Review our <a href=\"/guides/200a-panel-upgrade-cost-and-permit-checklist/\">200A panel upgrade checklist</a> to plan your service layout.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("residential-load-calculator", "conduit-fill-trench-depth-calculator"),
+    doc_links=("single-line-diagram", "equipment-cut-sheets"),
+    related_slugs=("200a-panel-upgrade-cost-and-permit-checklist", "utility-service-upgrade-rules-pge-srp-aps-duke-pse"),
+    faqs=(
+        ("Is a generator interlock kit legal under the NEC?", "Yes, provided the interlock kit is UL-listed for your exact electrical panel model and prevents simultaneous closure of the utility main and generator breakers per NEC 702.5."),
+        ("Do I need a switched-neutral transfer switch for a portable generator?", "If your portable generator has a bonded neutral, a standard 2-pole interlock requires lifting the generator's neutral-ground bond (floating neutral) per NEC 250.30, whereas a 3-pole switched-neutral transfer switch isolates the neutral automatically."),
+        ("Where must the generator power inlet box be mounted?", "Outdoors on an exterior wall away from windows, doors, and fresh-air intakes so portable generator exhaust cannot enter the home."),
+    ),
+)
+
+
+GUIDES["hardwired-vs-plug-in-ev-charger-permit"] = _rep(
+    GUIDES["hardwired-vs-plug-in-ev-charger-permit"],
+    related_slugs=("nema-14-50-outlet-permit-vs-hardwired-ev-charger", "best-48a-hardwired-ev-chargers-for-permits"),
+)
+GUIDES["best-subpanel-sizes-detached-garage-workshop-adu"] = _rep(
+    GUIDES["best-subpanel-sizes-detached-garage-workshop-adu"],
+    related_slugs=("garage-subpanel-wiring-diagram-and-permit-guide", "electrical-permit-cost-and-timeline-by-city"),
+)
+GUIDES["utility-service-upgrade-rules-pge-srp-aps-duke-pse"] = _rep(
+    GUIDES["utility-service-upgrade-rules-pge-srp-aps-duke-pse"],
+    related_slugs=("generator-interlock-transfer-switch-permit-guide", "200a-panel-upgrade-cost-and-permit-checklist"),
+)

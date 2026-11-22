@@ -35,6 +35,7 @@
   function showSample(tab) {
     sampleTabs.forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
     const image = $('#sample-img');
+    image.srcset = `/assets/samples/${tab.dataset.sample}-300.webp 300w, /assets/samples/${tab.dataset.sample}-1000.webp 1000w`;
     image.src = `/assets/samples/${tab.dataset.sample}-1000.webp`;
     image.dataset.full = `/assets/samples/${tab.dataset.sample}-2000.webp`;
     image.alt = `Sample packet sheet: ${tab.dataset.label}`;

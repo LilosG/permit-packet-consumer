@@ -9,7 +9,7 @@
 {% for sheet in sheets %}
 <section class="sample-sheet">
 <h2>{{ sheet.label }}</h2>
-<button type="button" class="sample-open" data-full="/assets/samples/{{ sheet.stem }}-2000.webp" data-alt="Sample packet sheet: {{ sheet.title }}" aria-label="Zoom {{ sheet.title }}"><img src="/assets/samples/{{ sheet.stem }}-1000.webp" width="1000" height="1294" {% if not loop.first %}loading="lazy" {% endif %}decoding="async" alt="Sample packet sheet: {{ sheet.title }}"></button>
+<button type="button" class="sample-open" data-full="/assets/samples/{{ sheet.stem }}-2000.webp" data-alt="Sample packet sheet: {{ sheet.title }}" aria-label="Zoom {{ sheet.title }}"><img src="/assets/samples/{{ sheet.stem }}-1000.webp" srcset="/assets/samples/{{ sheet.stem }}-300.webp 300w, /assets/samples/{{ sheet.stem }}-1000.webp 1000w, /assets/samples/{{ sheet.stem }}-2000.webp 2000w" sizes="(max-width: 760px) 100vw, 760px" width="1000" height="1294" {% if loop.first %}fetchpriority="high" {% else %}loading="lazy" {% endif %}decoding="async" alt="Sample packet sheet: {{ sheet.title }}"></button>
 <ul>{% for note in sheet.notes %}<li>{{ note }}</li>{% endfor %}</ul>
 </section>
 {% if loop.index == 2 %}{{ cta_band("/start/?job=ev-charger", "Preview your own packet free.") }}{% endif %}

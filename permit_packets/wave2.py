@@ -67,8 +67,15 @@ def _qas(pairs):
 def _hub(path, title, description, h1, intro, items, crumb):
     def handler() -> Response:
         meta = seo.page_meta(title, description, path, robots=seo.robots_for(path))
-        return render("card_hub.html", meta=meta, crumbs=[("Home", "/"), (crumb, path)], final_cta=True,
-                      h1=h1, intro=intro, items=items)
+        item_list = {
+            "@context": "https://schema.org", "@type": "ItemList", "name": h1,
+            "itemListElement": [
+                {"@type": "ListItem", "position": idx, "name": item_title, "url": seo.absolute(item_url)}
+                for idx, (item_url, item_title, _card) in enumerate(items, start=1)
+            ],
+        }
+        return render("card_hub.html", meta=meta, jsonld=[item_list], crumbs=[("Home", "/"), (crumb, path)],
+                      final_cta=True, h1=h1, intro=intro, items=items)
     router.add_api_route(path, handler, methods=["GET", "HEAD"], include_in_schema=False)
 
 

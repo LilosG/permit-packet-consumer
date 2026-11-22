@@ -5,10 +5,11 @@
 <h1>{{ h1 }}</h1>
 {{ byline() }}
 <p class="answer">{{ intro }}</p>
+<div style="margin:18px 0 0"><label class="sr" for="guide-search">Search electrical permit guides</label><input type="search" id="guide-search" placeholder="Search guides (e.g., 200A, NEMA 14-50, subpanel, NEC 300.5, PE stamp)..." autocomplete="off" style="width:100%;max-width:520px;padding:10px 14px;border:1px solid var(--line-strong,#cbd5e1);border-radius:8px;font:inherit"></div>
 <nav class="faq-jump" id="guide-filters" aria-label="Guide categories">
   <a href="/guides/" data-filter="all"{% if not active_cat %} aria-current="page"{% endif %}>All ({{ grouped|map(attribute='guides')|map('length')|sum }})</a>
-  {%- for cat_key, (cat_label, _cat_desc) in categories.items() %}
-  <a href="#cat-{{ cat_key }}" data-filter="{{ cat_key }}"{% if active_cat == cat_key %} aria-current="page"{% endif %}>{{ cat_label }}</a>
+  {%- for group in grouped %}
+  <a href="#cat-{{ group.key }}" data-filter="{{ group.key }}"{% if active_cat == group.key %} aria-current="page"{% endif %}>{{ group.label }} ({{ group.guides|length }})</a>
   {%- endfor %}
 </nav>
 {%- for group in grouped %}
@@ -17,11 +18,12 @@
   <p>{{ group.desc }}</p>
   <ul class="link-cards">
   {%- for url, title, text, _slug in group.guides %}
-    <li><a href="{{ url }}"><b>{{ title }}</b><span>{{ text }}</span></a></li>
+    <li data-search="{{ (title ~ ' ' ~ text)|lower }}"><a href="{{ url }}"><b>{{ title }}</b><span>{{ text }}</span></a></li>
   {%- endfor %}
   </ul>
 </section>
 {%- endfor %}
+<p class="note" id="guide-empty" hidden>No guides matched your search. Clear the filter to see all guides.</p>
 <p class="cta-row">{{ cta("/start/") }}<a class="link" href="/tools/">Explore free NEC calculators</a></p>
 </main>
 {% endblock %}
@@ -29,19 +31,39 @@
 <script>
 (() => {
   const nav = document.getElementById('guide-filters');
+  const search = document.getElementById('guide-search');
+  const empty = document.getElementById('guide-empty');
   const groups = [...document.querySelectorAll('.guide-group')];
   if (!nav || !groups.length) return;
+  let activeCat = 'all';
+  function applyFilters() {
+    const q = (search ? search.value : '').trim().toLowerCase();
+    let visibleTotal = 0;
+    groups.forEach((sec) => {
+      const catMatch = activeCat === 'all' || sec.dataset.cat === activeCat;
+      let secVisible = 0;
+      sec.querySelectorAll('li[data-search]').forEach((li) => {
+        const show = catMatch && (!q || li.dataset.search.includes(q));
+        li.hidden = !show;
+        if (show) secVisible += 1;
+      });
+      sec.hidden = secVisible === 0;
+      visibleTotal += secVisible;
+    });
+    if (empty) empty.hidden = visibleTotal > 0;
+  }
   nav.addEventListener('click', (e) => {
     const link = e.target.closest('a[data-filter]');
     if (!link) return;
     e.preventDefault();
-    const key = link.dataset.filter;
+    activeCat = link.dataset.filter;
     nav.querySelectorAll('a[data-filter]').forEach((a) => {
       if (a === link) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
     });
-    groups.forEach((sec) => { sec.hidden = key !== 'all' && sec.dataset.cat !== key; });
+    applyFilters();
   });
+  if (search) search.addEventListener('input', applyFilters);
 })();
 </script>
 {% endblock %}
