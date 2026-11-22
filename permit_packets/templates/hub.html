@@ -11,7 +11,7 @@
 <p>{{ hub.sheets_intro }}</p>
 <ol class="sheet-list">
 {%- for sheet in hub.sheets %}
-  <li>{% if sheet.thumb %}<a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ sheet.thumb }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ sheet.title }} sheet from the El Cajon packet"></a>{% endif %}<div><h3>{{ sheet.title }}</h3><p>{{ sheet.text|safe }}</p></div></li>
+  <li>{% if sheet.thumb %}<a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ sheet.thumb }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ sheet.title }} sheet from the El Cajon packet"></a>{% endif %}<div><span class="sheet-num">Sheet {{ "%02d"|format(loop.index) }}</span><h3>{{ sheet.title }}</h3><p>{{ sheet.text|safe }}</p></div></li>
 {%- endfor %}
 </ol>
 {% if hub.slug == "ev-charger" %}<p class="note-line">Thumbnails are from the <a href="/sample-packet/">El Cajon sample packet</a>.</p>{% endif %}
@@ -37,7 +37,7 @@
 {{ link_cards(who_cards) }}
 
 <h2>Which cities have built-in checklists for this job?</h2>
-{% if cities %}<p>{% for label, url in cities %}{% if url %}<a href="{{ url }}">{{ label }}</a>{% else %}{{ label }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+{% if cities %}<ul class="city-chips">{% for label, url in cities %}<li>{% if url %}<a href="{{ url }}">{{ label }}</a>{% else %}<span>{{ label }}</span>{% endif %}</li>{% endfor %}</ul>
 <p>Any other U.S. address works too. It uses a general NEC checklist, and the packet says so. Confirm local requirements with your building department.</p>
 {% else %}<p>No city has its own checklist for this job yet. Any U.S. address works and uses a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>{% endif %}
 

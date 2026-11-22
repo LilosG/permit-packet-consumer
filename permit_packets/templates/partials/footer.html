@@ -32,7 +32,7 @@
       <ul>{% for label, url in popular_cities %}
         <li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}
       </ul>
-      {% if state_links %}<ul class="foot-states">{% for label, url in state_links %}
+      {% if state_links %}<p class="foot-subhead">By state</p><ul class="foot-states">{% for label, url in state_links %}
         <li><a href="{{ url }}">{{ label }} permits</a></li>{% endfor %}
       </ul>{% endif %}
     </nav>{% endif %}

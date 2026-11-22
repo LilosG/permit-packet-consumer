@@ -175,7 +175,7 @@
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && !mobileMenu.hidden) { closeMenu(); menuToggle.focus(); }
     });
-    matchMedia('(min-width: 961px)').addEventListener('change', (query) => { if (query.matches) closeMenu(); });
+    matchMedia('(min-width: 1081px)').addEventListener('change', (query) => { if (query.matches) closeMenu(); });
   }
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeDropdowns(); });
 })();

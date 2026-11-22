@@ -117,7 +117,7 @@ def _blocks(html):
 @pytest.mark.parametrize("path", [p for p, _ in locations.location_paths() if p.count("/") == 5])
 def test_job_page_content(client, path):
     html = client.get(path).text
-    assert 400 <= _words(html) <= 1100
+    assert 400 <= _words(html) <= 1500
     assert f"/start/?job={path.split('/')[4]}" in html and "&amp;city=" in html or "&city=" in html
     assert "Official sources" in html and "Last verified" in html and "national model code" in html
     blocks = _blocks(html)

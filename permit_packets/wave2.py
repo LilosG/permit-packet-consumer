@@ -51,7 +51,7 @@ def related_links(job: str = "") -> list[tuple[str, str, str]]:
     slugs = JOB_CALCS.get(job) or tuple(w2.CALCS)
     items = [(calc_path(s), w2.CALCS[s].crumb, w2.CALCS[s].card) for s in slugs[:1 if job else 2]]
     items += [(doc_path(s), w2.DOCS[s].name, w2.DOCS[s].card) for s in JOB_DOCS[:1 if job else 4]]
-    items += guide_links_for_job(job, limit=1 if job else 2)
+    items += guide_links_for_job(job, limit=2)
     return items
 
 
