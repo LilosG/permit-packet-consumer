@@ -642,11 +642,89 @@ GUIDES["what-is-an-appliance-cut-sheet-for-electrical-permit"] = Guide(
     ),
     tool_links=("ev-charger-wire-breaker-size",),
     doc_links=("equipment-cut-sheets", "single-line-diagram"),
-    related_slugs=("best-48a-hardwired-ev-chargers-for-permits", "hardwired-vs-plug-in-ev-charger-permit"),
+    related_slugs=("tesla-wall-connector-gen-3-cut-sheet-permit", "emporia-classic-ev-charger-cut-sheet-permit"),
     faqs=(
         ("What is an appliance cut sheet?", "An appliance cut sheet is the manufacturer's specification sheet for a device. It gives the model number, electrical ratings and safety listings that a plan reviewer uses to verify your permit plans."),
         ("Do I need an equipment cut sheet for an electrical permit?", "Most cities that publish an electrical checklist ask for the manufacturer's specification sheet for major equipment such as an EV charger. Confirm with your building department."),
         ("Where do I find the cut sheet for my charger or appliance?", "Look on the manufacturer's product page under downloads, specifications or documents, or search the model number plus 'spec sheet'. Use the sheet for your exact model."),
         ("Is a cut sheet the same as a UL listing?", "No. The UL or CSA listing is a safety certification. The cut sheet is the document that shows the listing along with the ratings, and the reviewer reads both from it."),
+    ),
+)
+
+GUIDES["tesla-wall-connector-gen-3-cut-sheet-permit"] = Guide(
+    slug="tesla-wall-connector-gen-3-cut-sheet-permit", category="concepts", job="ev-charger", role="diy",
+    crumb="Tesla Wall Connector Gen 3 Cut Sheet", h1="Tesla Wall Connector Gen 3 Cut Sheet & Specs for Permits",
+    title="Tesla Wall Connector Gen 3 Cut Sheet & Specs for Permits",
+    description="Tesla Wall Connector Gen 3 cut sheet specs for an electrical permit: 48A on a 60A breaker, 11.5 kW, cULus E351001, and #6 AWG copper wire.",
+    answer="The Tesla Wall Connector Gen 3 delivers up to 48A (11.5 kW at 240V) on a 60A double-pole breaker. Its cut sheet lists cULus listing E351001, an integrated CCID20 ground-fault interrupter, copper-only terminals and a Type 3R enclosure, the data a plan reviewer checks against your permit plans.",
+    card="Verified electrical specs from the Tesla Gen 3 Wall Connector cut sheet and what plan reviewers check.",
+    table_caption="Tesla Wall Connector Gen 3 Specs for Permit Plans",
+    table_headers=("Spec", "Value on the cut sheet"),
+    table_rows=(
+        ("Max output / breaker", "48 A on a 60 A double-pole breaker (11.5 kW at 240 V)"),
+        ("Voltage / current range", "Nominal 200-240 V AC single-phase, 12-48 A"),
+        ("Listing", "cULus, file E351001"),
+        ("Conductors at max power", "Min. #6 AWG copper, 90°C THWN-2, on a 75°C-rated breaker (#4 AWG on a 60°C breaker)"),
+        ("Terminals", "12-4 AWG, copper only"),
+        ("Enclosure / GFCI", "Type 3R (IP54); integrated CCID20"),
+        ("Disconnect", "External branch circuit breaker; no separate disconnect required"),
+    ),
+    sections=(
+        ("What plan reviewers verify on the Gen 3 cut sheet", (
+            "Reviewers match three things to your plans. The 48 A maximum output must agree with your <a href=\"/permit-documents/load-calculation/\">load calculation</a>, where an EV charger is a continuous load sized at 125%, giving the 60 A breaker. The cULus E351001 listing satisfies the listed-equipment requirement. The wire size on your <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a> must fit the cut sheet: #6 AWG copper at 90°C THWN-2 when the breaker is 75°C-rated, with copper-only terminals.",
+        )),
+        ("Lower breaker settings", (
+            "The Gen 3 can be set to a lower output during commissioning. A 50 A breaker gives 40 A output (9.6 kW), 40 A gives 32 A (7.6 kW), and so on down to 15 A for 12 A output. If your panel cannot support 60 A, draw the lower breaker and the matching output on your plans so the load calculation and the cut sheet agree.",
+        )),
+        ("Where the cut sheet fits in your packet", (
+            "New to the document? Read <a href=\"/guides/what-is-an-appliance-cut-sheet-for-electrical-permit/\">what an appliance cut sheet is for an electrical permit</a>. When you generate an EV charger permit with Permit Packets and pick this charger, the Tesla Gen 3 manufacturer PDF is bundled behind your Equipment Data sheet automatically. <a href=\"/start/?job=ev-charger&role=diy\">Start your EV charger permit packet</a> and preview it free.",
+        )),
+    ),
+    tool_links=("ev-charger-wire-breaker-size", "ev-charger-load-calculator"),
+    doc_links=("equipment-cut-sheets", "single-line-diagram"),
+    related_slugs=("what-is-an-appliance-cut-sheet-for-electrical-permit", "emporia-classic-ev-charger-cut-sheet-permit"),
+    faqs=(
+        ("What breaker does the Tesla Wall Connector Gen 3 need?", "For maximum 48 A output it needs a standard double-pole 60 A breaker. Lower breaker sizes reduce the output proportionally."),
+        ("Is the Tesla Wall Connector Gen 3 UL listed?", "The cut sheet lists cULus approval under file E351001 and an integrated CCID20 ground-fault interrupter."),
+        ("What wire size does a Tesla Wall Connector Gen 3 need?", "At full power on a 75°C-rated breaker the cut sheet calls for minimum #6 AWG, 90°C THWN-2 copper. On a 60°C-rated breaker it calls for #4 AWG. Terminals accept copper only."),
+    ),
+)
+
+GUIDES["emporia-classic-ev-charger-cut-sheet-permit"] = Guide(
+    slug="emporia-classic-ev-charger-cut-sheet-permit", category="concepts", job="ev-charger", role="diy",
+    crumb="Emporia Classic Cut Sheet", h1="Emporia Classic EV Charger Cut Sheet & Specs for Permits",
+    title="Emporia Classic EV Charger Cut Sheet & Specs for Permits",
+    description="Emporia Classic EV charger cut sheet specs for an electrical permit: 48A hardwired on a 60A breaker, 11.5 kW, UL 2594 listing E528156.",
+    answer="The Emporia Classic EV charger (model EMEVSE1) delivers 11.5 kW at 240V and 48A when hardwired, requiring a dedicated 60A-or-larger double-pole breaker. Its cut sheet lists UL 2594 certification (E528156), a Type 4 watertight enclosure and an internal GFCI, the details plan reviewers verify.",
+    card="Verified electrical specs from the Emporia Classic cut sheet and what plan reviewers check.",
+    table_caption="Emporia Classic EV Charger Specs for Permit Plans",
+    table_headers=("Spec", "Value on the cut sheet"),
+    table_rows=(
+        ("Model number", "EMEVSE1 (white) / EMEVSE1-B (black)"),
+        ("Input voltage", "208/240 VAC, 50/60 Hz"),
+        ("Charge power", "11.5 kW (240 V / 48 A) or 9.6 kW (240 V / 40 A)"),
+        ("Required breaker", "Dedicated 60 A+ double-pole for 48 A; 50 A+ for 40 A"),
+        ("Install methods", "Hardwired up to 48 A; NEMA 14-50 plug up to 40 A"),
+        ("Listing", "UL 2594, file E528156"),
+        ("Enclosure / GFCI", "Watertight NEMA Type 4; internal GFCI (15-20 mA)"),
+    ),
+    sections=(
+        ("What plan reviewers verify on the Emporia cut sheet", (
+            "Reviewers check that the model number on the cut sheet matches your plans and that the install method matches the amperage: 48 A requires the hardwired setup on a 60 A double-pole breaker, while a NEMA 14-50 plug is limited to 40 A on a 50 A breaker. They confirm the UL 2594 listing (E528156) and compare the charge power to your <a href=\"/permit-documents/load-calculation/\">load calculation</a>. This cut sheet does not state terminal wire sizes, so size conductors from your <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a> and NEC ampacity tables.",
+        )),
+        ("GFCI note for plug-in installs", (
+            "The charger has its own internal GFCI, and Emporia recommends a non-GFCI panel breaker to avoid nuisance trips. If your local code requires a GFCI breaker for a NEMA 14-50 circuit, the cut sheet recommends the hardwired version. See <a href=\"/guides/hardwired-vs-plug-in-ev-charger-permit/\">hardwired vs plug-in EV chargers</a>.",
+        )),
+        ("Where the cut sheet fits in your packet", (
+            "New to the document? Read <a href=\"/guides/what-is-an-appliance-cut-sheet-for-electrical-permit/\">what an appliance cut sheet is for an electrical permit</a>. When you generate an EV charger permit with Permit Packets and pick this charger, the Emporia Classic manufacturer PDF is bundled behind your Equipment Data sheet automatically. <a href=\"/start/?job=ev-charger&role=diy\">Start your EV charger permit packet</a> and preview it free.",
+        )),
+    ),
+    tool_links=("ev-charger-wire-breaker-size", "ev-charger-load-calculator"),
+    doc_links=("equipment-cut-sheets", "single-line-diagram"),
+    related_slugs=("what-is-an-appliance-cut-sheet-for-electrical-permit", "tesla-wall-connector-gen-3-cut-sheet-permit"),
+    faqs=(
+        ("What breaker does the Emporia Classic EV charger need?", "The cut sheet requires a dedicated double-pole breaker of 60 A or more for 48 A charging, or 50 A or more for 40 A."),
+        ("Is the Emporia Classic EV charger UL listed?", "The cut sheet lists UL 2594 certification under file E528156, plus FCC, ISED and Energy Star."),
+        ("Can the Emporia Classic be hardwired or plugged in?", "Both. Hardwired supports up to 48 A; a NEMA 14-50 plug supports up to 40 A."),
     ),
 )
