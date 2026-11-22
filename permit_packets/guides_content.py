@@ -1290,3 +1290,163 @@ GUIDES["utility-service-upgrade-rules-pge-srp-aps-duke-pse"] = _rep(
     GUIDES["utility-service-upgrade-rules-pge-srp-aps-duke-pse"],
     related_slugs=("generator-interlock-transfer-switch-permit-guide", "200a-panel-upgrade-cost-and-permit-checklist"),
 )
+
+
+GUIDES["chargepoint-home-flex-cut-sheet-permit"] = Guide(
+    slug="chargepoint-home-flex-cut-sheet-permit",
+    category="concepts", job="ev-charger", role="diy",
+    crumb="ChargePoint Home Flex Cut Sheet",
+    h1="ChargePoint Home Flex (CPH50) Cut Sheet for Permits",
+    title="ChargePoint Home Flex (CPH50) Cut Sheet for Permits",
+    description="Verified UL 2594 specs from the ChargePoint Home Flex (CPH50) cut sheet for electrical permits: 16A-50A output, breaker sizing and NEMA 3R rating.",
+    answer=(
+        "The ChargePoint Home Flex (CPH50) is a UL and cUL listed Level 2 EV charger (UL 2594, UL 2231) configurable from 16A to 50A on 20A to 70A breakers. When you select ChargePoint Home Flex in Permit Packets, the manufacturer's official specification sheet is attached automatically behind your Equipment Data page."
+    ),
+    card="Verified UL 2594 specs, 16A-50A breaker table and NEMA 3R ratings from the ChargePoint Home Flex cut sheet.",
+    table_caption="ChargePoint Home Flex (CPH50) Permit Specifications",
+    table_headers=("Specification", "Cut Sheet Value & NEC Application"),
+    table_rows=(
+        ("Model", "ChargePoint Home Flex (CPH50), J1772 or NACS"),
+        ("Selectable Output Current", "16 A, 24 A, 32 A, 40 A, 48 A, or 50 A (hardwired)"),
+        ("Circuit Breaker (NEC 625.41 125%)", "20 A, 30 A, 40 A, 50 A, 60 A, or 70 A 2-pole"),
+        ("Plug-In Limit (NEMA 14-50 / 6-50)", "40 A max output on a 50 A GFCI circuit (NEC 210.21(B))"),
+        ("Safety Listings", "UL & cUL listed, UL 2594, UL 2231-1, UL 2231-2"),
+        ("Enclosure Rating", "NEMA Type 3R indoor/outdoor weatherproof"),
+    ),
+    sections=(
+        ("Matching ChargePoint Home Flex amperage to your panel capacity", (
+            "One major advantage of the ChargePoint Home Flex (CPH50) is software-locked amperage selection from 16 A up to 50 A. If your <a href=\"/tools/ev-charger-load-calculator/\">NEC 220.82 load calculation</a> shows your 100A or 150A panel cannot carry a 48 A charger (11,520 VA), you can commission the CPH50 at 32 A (7,680 VA) on a 40 A breaker and #8 AWG copper wire.",
+            "Remember that 48 A and 50 A settings must be hardwired—use our <a href=\"/tools/ev-charger-wire-breaker-size/\">EV charger wire and breaker calculator</a> to check conductor and conduit sizing for your chosen output.",
+        )),
+        ("Automatic UL cut-sheet bundling in your permit packet", (
+            "City plan reviewers require the manufacturer's <a href=\"/permit-documents/equipment-cut-sheets/\">equipment cut sheet</a> showing UL 2594 and UL 2231 compliance. Selecting ChargePoint Home Flex in our <a href=\"/ev-charger-permit/\">EV charger permit generator</a> automatically appends the official ChargePoint specification PDF to your packet.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("ev-charger-wire-breaker-size", "ev-charger-load-calculator"),
+    doc_links=("equipment-cut-sheets", "single-line-diagram"),
+    related_slugs=("tesla-universal-wall-connector-cut-sheet-permit", "best-48a-hardwired-ev-chargers-for-permits"),
+    faqs=(
+        ("Can I install ChargePoint Home Flex on a 70A breaker for 50A charging?", "Yes, when hardwired with #4 AWG copper THWN-2 conductors (or #6 AWG copper rated at 75°C where permitted) and a 70 A 2-pole breaker. Note that circuits over 60 A trigger a local disconnect requirement under NEC 625.43."),
+        ("Is ChargePoint Home Flex rated for outdoor installation?", "Yes. The CPH50 enclosure carries a NEMA Type 3R outdoor rating when installed with listed watertight conduit fittings."),
+        ("Does ChargePoint Home Flex include built-in GFCI protection?", "Yes, it is listed to UL 2231-1 and UL 2231-2 for personal protection; a separate GFCI breaker is still required if wired to a NEMA 14-50 receptacle under NEC 625.54."),
+    ),
+)
+
+GUIDES["tesla-universal-wall-connector-cut-sheet-permit"] = Guide(
+    slug="tesla-universal-wall-connector-cut-sheet-permit",
+    category="concepts", job="ev-charger", role="diy",
+    crumb="Tesla Universal Wall Connector Cut Sheet",
+    h1="Tesla Universal Wall Connector Cut Sheet for Permits",
+    title="Tesla Universal Wall Connector Cut Sheet for Permits",
+    description="Verified cULus E351001 and UL 2594 specs from the Tesla Universal Wall Connector cut sheet: 48A hardwired output, 60A breaker and integrated J1772 adapter.",
+    answer=(
+        "The Tesla Universal Wall Connector (cULus File E351001, UL 2594, UL 2231) delivers up to 48A continuous output on a 60A hardwired circuit and includes an integrated J1772 adapter for non-Tesla EVs. Selecting it in Permit Packets automatically bundles the official Tesla specification sheet into your permit packet."
+    ),
+    card="Verified cULus E351001 ratings, breaker chart and terminal specs for the Tesla Universal Wall Connector.",
+    table_caption="Tesla Universal Wall Connector Permit Specifications",
+    table_headers=("Specification", "Cut Sheet Value & NEC Application"),
+    table_rows=(
+        ("Model & Connector", "Tesla Universal Wall Connector (NACS + Integrated J1772)"),
+        ("Max Output & Breaker", "48 A continuous (11.5 kW) on a 60 A 2-pole breaker"),
+        ("Configurable Breaker Sizes", "60 A (48 A), 50 A (40 A), 40 A (32 A), 30 A (24 A), 20 A (16 A)"),
+        ("Safety & NRTL Listings", "cULus File E351001, UL 2594, UL 2231-1, UL 2231-2"),
+        ("Enclosure & Terminals", "NEMA Type 3R indoor/outdoor; 75°C-rated wire terminals up to #4 AWG"),
+    ),
+    sections=(
+        ("Why the Tesla Universal Wall Connector simplifies multi-EV permits", (
+            "Instead of pulling two separate 240V circuits for a Tesla and a J1772 vehicle, the Tesla Universal Wall Connector houses an integrated J1772 adapter inside a single hardwired 48 A unit—counting as one 11,520 VA load in your <a href=\"/permit-documents/load-calculation/\">NEC 220.82 load calculation</a>.",
+            "Check your panel spare capacity with our <a href=\"/tools/ev-charger-load-calculator/\">free EV charger load calculator</a> before selecting your commissioning amperage.",
+        )),
+        ("What plan reviewers check on the Tesla Universal cut sheet", (
+            "Plan examiners verify cULus File E351001, hardwired-only installation (no cord-and-plug option), and matching breaker/wire sizing (#6 AWG copper THWN-2 on a 60 A breaker). Generate your <a href=\"/ev-charger-permit/\">EV charger permit packet</a> with the Tesla Universal cut sheet attached automatically.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("ev-charger-wire-breaker-size", "ev-charger-load-calculator"),
+    doc_links=("equipment-cut-sheets", "single-line-diagram"),
+    related_slugs=("chargepoint-home-flex-cut-sheet-permit", "tesla-wall-connector-gen-3-cut-sheet-permit"),
+    faqs=(
+        ("How does the Tesla Universal Wall Connector differ from Gen 3 for permits?", "Electrical ratings (48 A max, 60 A breaker, cULus E351001, NEMA 3R) are identical to the Gen 3 Wall Connector, with an integrated J1772 dock listed under the same UL file."),
+        ("Can the Tesla Universal Wall Connector be wired with a NEMA 14-50 plug?", "No. Like the Gen 3 Wall Connector, it is listed for hardwired installation only."),
+        ("Does it require a neutral conductor?", "No. It wires with two 240V hot conductors (#6 AWG Cu for 60 A) and one equipment grounding conductor (#10 AWG Cu)."),
+    ),
+)
+
+
+GUIDES["square-d-homeline-200a-panel-cut-sheet-permit"] = Guide(
+    slug="square-d-homeline-200a-panel-cut-sheet-permit",
+    category="concepts", job="panel-upgrade", role="electrician",
+    crumb="Square D Homeline 200A Cut Sheet",
+    h1="Square D Homeline 200A Panel Cut Sheet for Permits",
+    title="Square D Homeline 200A Panel Cut Sheet for Permits",
+    description="Verified UL E-6294 specs for Square D Homeline HOM3060M200PC (225A bus) and SC816D200C ringed meter-main combo for 200A panel upgrade permits.",
+    answer=(
+        "Square D Homeline 200A panels carry UL File E-6294 (UL 67) listings required for residential service upgrade permits, including the HOM3060M200PC indoor load center (225A solar-ready bus) and SC816D200C NEMA 3R ringed meter-main combo. Permit Packets bundles the exact Square D cut sheet automatically when selected."
+    ),
+    card="UL File E-6294 specs, 225A solar-ready bus ratings and PSE approval details for Square D Homeline panels.",
+    table_caption="Square D Homeline 200A Panels in Our Permit Cut-Sheet Library",
+    table_headers=("Model Number", "Bus / Main Rating", "Spaces / Circuits", "Enclosure & Approvals"),
+    table_rows=(
+        ("HOM3060M200PC", "225 A Bus / 200 A Main Breaker", "30 spaces / 60 circuits", "NEMA 1 indoor; UL File E-6294 (UL 67); 22 kA AIR"),
+        ("SC816D200C", "200 A Bus / 200 A Main Breaker", "8 spaces / 16 circuits + feed-thru", "NEMA 3R outdoor ringed meter-main; PSE Form 7517 approved"),
+        ("HOM3060L225PGC", "225 A Bus / Main Lugs (Subpanel)", "30 spaces / 60 circuits", "NEMA 1 indoor; UL File E-6294 (UL 67)"),
+    ),
+    sections=(
+        ("Why the 225A busbar on HOM3060M200PC helps with solar permits", (
+            "Although the Square D HOM3060M200PC ships with a 200 A main breaker, its internal copper/aluminum busbar is UL-listed for 225 A. Under our <a href=\"/tools/solar-120-percent-rule-calculator/\">NEC 705.12(B)(3)(2) solar 120% rule calculator</a>, a 225 A bus allows 270 A combined—giving homeowners room for up to a 70 A solar backfeed breaker without derating the 200 A main.",
+        )),
+        ("Ringed meter-main compliance with SC816D200C", (
+            "Utilities such as Puget Sound Energy (Form 7517) and California EUSERC utilities require ringed meter sockets and an exterior service disconnect (NEC 230.85). Selecting the Square D SC816D200C or HOM3060M200PC in our <a href=\"/panel-upgrade-permit/\">200A panel upgrade generator</a> bundles the manufacturer PDF cut sheet automatically.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("residential-load-calculator", "solar-120-percent-rule-calculator"),
+    doc_links=("equipment-cut-sheets", "single-line-diagram"),
+    related_slugs=("milbank-u5168-xtl-200-meter-main-cut-sheet-permit", "best-200a-meter-main-combo-panels"),
+    faqs=(
+        ("What is the short-circuit interrupting rating (AIC) on Square D Homeline 200A panels?", "Standard Homeline 200A main-breaker load centers carry a 22,000 A (22 kA) short-circuit current rating, covering residential utility fault currents up to 22 kA under NEC 110.9."),
+        ("Can Square D Homeline panels accept tandem breakers?", "Yes. The 30/60 designation on HOM3060M200PC indicates 30 full-size slots UL-listed to accept HOMT tandem breakers for up to 60 circuits."),
+        ("Does Square D make a plug-on neutral surge protector for NEC 230.67?", "Yes—the Square D HOM2175SB plug-on neutral Type 2 Surge Protective Device snaps directly onto the Homeline busbar to satisfy NEC 230.67."),
+    ),
+)
+
+GUIDES["milbank-u5168-xtl-200-meter-main-cut-sheet-permit"] = Guide(
+    slug="milbank-u5168-xtl-200-meter-main-cut-sheet-permit",
+    category="concepts", job="panel-upgrade", role="electrician",
+    crumb="Milbank U5168-XTL-200 Cut Sheet",
+    h1="Milbank U5168-XTL-200 Meter-Main Cut Sheet for Permits",
+    title="Milbank U5168-XTL-200 Meter-Main Cut Sheet for Permits",
+    description="Verified UL Type 3R specs from the Milbank U5168-XTL-200 200A meter-main combo cut sheet: 8 branch spaces, feed-through lugs and NEC 230.85 disconnect.",
+    answer=(
+        "The Milbank U5168-XTL-200 is a UL-listed NEMA Type 3R outdoor 200A meter-main combo featuring an integrated 200A main breaker, 8 branch circuit spaces, and feed-through lugs for an indoor subpanel. Selecting it in Permit Packets automatically attaches the official Milbank specification cut sheet to your service upgrade plans."
+    ),
+    card="UL Type 3R specs, feed-through lug ratings and NEC 230.85 compliance for the Milbank U5168-XTL-200.",
+    table_caption="Milbank U5168-XTL-200 Meter-Main Combo Specifications",
+    table_headers=("Specification", "Cut Sheet Value & NEC Application"),
+    table_rows=(
+        ("Catalog Number", "Milbank U5168-XTL-200 (200 A Continuous Rated)"),
+        ("Service & Main Breaker", "120/240 V single-phase, 200 A factory-installed main breaker"),
+        ("Branch & Feed-Through", "8 branch breaker spaces + bottom feed-through lugs for indoor panel"),
+        ("Enclosure & Service Entry", "NEMA Type 3R outdoor; overhead or underground (OH/UG) feed"),
+        ("Safety Listing", "UL listed meter socket & service equipment"),
+    ),
+    sections=(
+        ("How the Milbank U5168-XTL-200 streamlines 200A service upgrades", (
+            "Replacing an outdated exterior meter socket and indoor main panel with a Milbank U5168-XTL-200 satisfies NEC 230.85's exterior emergency disconnect rule while providing 8 outdoor spaces for a Type 2 surge protector (NEC 230.67), AC condenser, or EV charger, plus feed-through lugs to re-feed your existing indoor panel.",
+            "Verify your dwelling demand first with our <a href=\"/tools/residential-load-calculator/\">free residential load calculator</a>.",
+        )),
+        ("Attaching the Milbank cut sheet to your riser diagram packet", (
+            "When you pick Milbank U5168-XTL-200 in our <a href=\"/panel-upgrade-permit/\">panel upgrade permit generator</a>, your riser diagram, Equipment Data table, and bundled manufacturer PDF cut sheet align automatically.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("residential-load-calculator", "subpanel-feeder-calculator"),
+    doc_links=("equipment-cut-sheets", "single-line-diagram"),
+    related_slugs=("square-d-homeline-200a-panel-cut-sheet-permit", "200a-panel-upgrade-cost-and-permit-checklist"),
+    faqs=(
+        ("Is the Milbank U5168-XTL-200 suitable for both overhead and underground service?", "Yes. The U5168-XTL-200 enclosure includes top hub provisions for overhead service masts and bottom knockouts for underground service laterals—confirm ringless vs. ringed socket rules with your utility first."),
+        ("What wire size connects the Milbank feed-through lugs to an indoor subpanel?", "For a full 200 A feeder to an indoor panel, run #2/0 AWG copper or #4/0 AWG aluminum 4-wire conductors (two hots, isolated neutral, and equipment ground) per NEC 310.12."),
+        ("Does it meet NEC 230.85 outdoor emergency disconnect rules?", "Yes. Mounting the U5168-XTL-200 outdoors provides a readily accessible 200 A exterior service disconnect."),
+    ),
+)
