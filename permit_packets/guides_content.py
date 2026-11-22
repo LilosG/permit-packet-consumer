@@ -770,3 +770,168 @@ GUIDES["wallbox-pulsar-plus-cut-sheet-permit"] = Guide(
         ("Does the Wallbox Pulsar Plus have built-in GFCI?", "Yes. The cut sheet lists an integrated CCID20 (20 mA) plus ground monitoring per UL 2231. Confirm with your city whether a GFCI breaker is also required."),
     ),
 )
+
+
+GUIDES["hot-tub-gfci-disconnect-wire-size-permit-guide"] = Guide(
+    slug="hot-tub-gfci-disconnect-wire-size-permit-guide",
+    category="diy-tips", job="hot-tub-240v", role="diy",
+    crumb="Hot Tub GFCI & Wire Size Guide",
+    h1="Hot Tub Electrical Permit Guide: GFCI, Wire Size & 5-Ft Rule",
+    title="Hot Tub Electrical Permit Guide: GFCI, Wire & 5-Ft Rule",
+    description="NEC Article 680 checklist for hot tub permits: 50A GFCI spa panel, #6 AWG copper wire, insulated green ground and 5-ft disconnect clearance.",
+    answer=(
+        "A residential hot tub electrical permit requires a dedicated 240V circuit sized at 125% of nameplate current, Class A GFCI protection (NEC 680.44), an insulated copper ground wire outdoors (NEC 680.42), and a maintenance disconnect installed at least 5 feet horizontally from the water (NEC 680.13)."
+    ),
+    card="NEC Article 680 wiring, 50A GFCI spa panel placement, insulated ground and trench rules.",
+    table_caption="NEC Article 680 Hot Tub & Spa Permit Requirements",
+    table_headers=("Requirement", "NEC Rule", "Standard 50A Spa Specification"),
+    table_rows=(
+        ("Overcurrent & GFCI protection", "NEC 680.44", "50 A 2-pole GFCI breaker inside listed outdoor spa panel"),
+        ("Circuit conductors (75°C / 60°C)", "NEC 310.16 / 110.14(C)", "#6 AWG Cu (60°C / NM-B) or #8 AWG Cu THWN-2 (75°C conduit)"),
+        ("Equipment grounding conductor", "NEC 680.42(A)(1)", "#10 AWG insulated green copper (bare ground prohibited outdoors)"),
+        ("Maintenance disconnect location", "NEC 680.13", "Within sight of spa and >= 5 ft horizontally from inside water wall"),
+        ("Underground PVC burial cover", "NEC Table 300.5", "18 inches minimum soil cover above Schedule 40/80 PVC"),
+    ),
+    sections=(
+        ("Why outdoor hot tubs require an insulated copper ground wire", (
+            "Inside a house, standard Romex (NM-B) uses a bare copper ground wire. For outdoor hot tubs and spas, NEC 680.42(A)(1) prohibits bare ground wires in the branch circuit—you must pull an insulated green copper equipment grounding conductor inside the raceway from the main panel to the spa disconnect and tub.",
+            "Size your exact spa circuit and PVC conduit in seconds with our <a href=\"/tools/hot-tub-breaker-wire-size/\">hot tub breaker and wire size calculator</a>.",
+        )),
+        ("Placement rules for the 50A GFCI spa disconnect (NEC 680.13)", (
+            "Plan reviewers reject many <a href=\"/hot-tub-240v-permit/\">hot tub permit packets</a> because the disconnect is drawn too close to the water or around a blind corner. Under NEC 680.13, the disconnect must be readily accessible, within sight of the spa, and at least 5 feet horizontally from the inside wall of the tub.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("hot-tub-breaker-wire-size", "residential-load-calculator"),
+    doc_links=("site-plan", "single-line-diagram"),
+    related_slugs=("heat-pump-mini-split-electrical-permit-mca-mocp", "ev-charger-trench-depth-conduit-rules-nec-300-5"),
+    faqs=(
+        ("Can I run Romex (NM-B) to an outdoor hot tub?", "NM-B cable may only be used indoors in dry locations up to the exterior wall transition; outdoors and underground you must transition to Schedule 40/80 PVC or liquidtight conduit with wet-rated THWN-2 conductors."),
+        ("Does a hot tub need a neutral wire?", "Most 240V/120V spas with ozonators, stereos, or 120V control boards require a 4-wire feeder (two hots, one insulated neutral, and one insulated green ground). Pure 240V heaters may only need 3 wires—check the spa wiring diagram."),
+        ("How is a hot tub counted in the home load calculation?", "The spa's nameplate VA (amps x 240 V) is added to your <a href=\"/permit-documents/load-calculation/\">NEC 220.82 dwelling load calculation</a> to verify your main service has spare capacity."),
+    ),
+)
+
+GUIDES["heat-pump-mini-split-electrical-permit-mca-mocp"] = Guide(
+    slug="heat-pump-mini-split-electrical-permit-mca-mocp",
+    category="concepts", job="hot-tub-240v", role="diy",
+    crumb="Heat Pump & Mini-Split MCA/MOCP",
+    h1="Heat Pump & Mini-Split Electrical Permits: MCA vs. MOCP",
+    title="Heat Pump & Mini-Split Electrical Permits: MCA vs MOCP",
+    description="How to read MCA (Minimum Circuit Ampacity) and MOCP (Maximum Overcurrent Protection) on a heat pump or mini-split nameplate for NEC 440 permits.",
+    answer=(
+        "Under NEC Article 440, heat pump and mini-split circuits are sized from two numbers on the outdoor condenser nameplate rather than standard 125% continuous load math: Minimum Circuit Ampacity (MCA) sets the minimum wire ampacity, and Maximum Overcurrent Protection (MOCP) sets the maximum 2-pole breaker size."
+    ),
+    card="Size wire from MCA and pick the breaker from MOCP under NEC 440.22 for heat pumps and mini-splits.",
+    table_caption="Reading Heat Pump & Mini-Split Nameplate Ratings (NEC Article 440)",
+    table_headers=("Nameplate Rating", "What It Governs", "NEC Code Rule"),
+    table_rows=(
+        ("MCA (Minimum Circuit Ampacity)", "Minimum copper wire gauge (e.g., 19 A MCA -> #12 AWG Cu)", "NEC 440.32 (compressor + fan motor loads)"),
+        ("MOCP / Max Fuse / Max Breaker", "Maximum 2-pole breaker size (e.g., 30 A MOCP -> 25 A or 30 A breaker)", "NEC 440.22 (allows motor starting inrush)"),
+        ("Service disconnect", "Weatherproof pull-out or toggle disconnect within sight of condenser", "NEC 440.14 (within sight and readily accessible)"),
+        ("Outdoor GFCI receptacle", "2023 NEC 210.8(F) requires GFCI on outdoor HVAC outlets in adopting cities", "NEC 210.8(F) (check local city amendments)"),
+    ),
+    sections=(
+        ("Why a 30A breaker on #12 AWG wire is legal for a mini-split", (
+            "On standard branch circuits, NEC 240.4(D) limits #12 AWG copper wire to a 20 A breaker. However, hermetic refrigerant motor-compressors governed by NEC Article 440 are an explicit exception in NEC 240.4(G): if a mini-split nameplate lists 18 A MCA and 30 A MOCP, #12 AWG copper wire paired with a 30 A 2-pole breaker is completely code-compliant.",
+            "When you enter your heat pump or mini-split in our <a href=\"/hot-tub-240v-permit/\">240V appliance circuit permit generator</a>, the tool checks your breaker directly against the nameplate MCA and MOCP.",
+        )),
+        ("Disconnect and whip requirements at the outdoor unit", (
+            "NEC 440.14 requires a disconnecting means within sight of and readily accessible from the outdoor heat pump or mini-split condenser, typically connected with a 6-foot nonmetallic liquidtight flexible conduit (LFNC) whip.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("residential-load-calculator", "hot-tub-breaker-wire-size"),
+    doc_links=("single-line-diagram", "equipment-cut-sheets"),
+    related_slugs=("hot-tub-gfci-disconnect-wire-size-permit-guide", "2023-nec-and-california-electrical-code-permit-guide"),
+    faqs=(
+        ("Do I need to attach the mini-split spec sheet to my permit?", "Yes. Plan reviewers verify MCA, MOCP, and voltage directly against the manufacturer's <a href=\"/permit-documents/equipment-cut-sheets/\">equipment cut sheet</a>."),
+        ("Does replacing a gas furnace with a heat pump require a panel upgrade?", "Not always. Run your home's existing loads plus the heat pump nameplate VA in our <a href=\"/tools/residential-load-calculator/\">NEC 220.82 load calculator</a> to see if your current 100A or 200A panel passes."),
+        ("Where does the outdoor disconnect need to be mounted?", "Within sight of the condenser (visible and within 50 feet) and never mounted on the removable access panel of the equipment itself."),
+    ),
+)
+
+
+GUIDES["best-subpanel-sizes-detached-garage-workshop-adu"] = Guide(
+    slug="best-subpanel-sizes-detached-garage-workshop-adu",
+    category="best-of", job="subpanel", role="diy",
+    crumb="Best Subpanel Sizes (60A vs 100A)",
+    h1="Best Subpanel Sizes for a Detached Garage, Workshop or ADU",
+    title="Best Subpanel Sizes for a Detached Garage, Workshop or ADU",
+    description="Compare 60A, 100A and 125A subpanels for detached garages, workshops and ADUs: feeder wire sizes, conduit, ground rods and NEC 250.32 rules.",
+    answer=(
+        "A 60A subpanel (fed with #4 AWG aluminum or #6 AWG copper) covers a single 48A EV charger plus garage lights and outlets, while a 100A subpanel (#1 AWG aluminum or #3 AWG copper) is the best all-around choice for a detached garage, woodworking shop, or ADU running multiple 240V loads simultaneously."
+    ),
+    card="Compare 60A, 100A and 125A subpanels with feeder wire, conduit and ground rod checklists.",
+    table_caption="60A vs. 100A vs. 125A Subpanel Feeder Comparison (75°C THWN-2)",
+    table_headers=("Subpanel Size", "Aluminum Feeder Wire", "Copper Feeder Wire", "PVC Conduit (4-Wire)", "Best Use Case"),
+    table_rows=(
+        ("60 A Subpanel", "#4 AWG Al (3) + #8 Al EGC", "#6 AWG Cu (3) + #10 Cu EGC", "1 inch PVC", "Garage EV charger + 120V lighting & receptacles"),
+        ("100 A Subpanel", "#1 AWG Al (3) + #6 Al EGC", "#3 AWG Cu (3) + #8 Cu EGC", "1-1/4 inch PVC", "Detached garage with EV charger + mini-split + tools"),
+        ("125 A Subpanel", "#2/0 AWG Al (3) + #6 Al EGC", "#1 AWG Cu (3) + #6 Cu EGC", "1-1/2 inch PVC", "Full studio ADU with electric range, dryer & heat pump"),
+    ),
+    listicle_items=(
+        "60 A 12-Space / 24-Circuit Subpanel — Compact feeder for a single EV charger and garage outlets",
+        "100 A 20-Space / 40-Circuit Subpanel — Most versatile size for detached garages and workshops",
+        "125 A 24-Space / 48-Circuit Subpanel — High-capacity feeder for ADUs and multi-circuit additions",
+    ),
+    sections=(
+        ("Why 100A aluminum is the sweet spot for detached garages", (
+            "Because trenching labor is the biggest cost of feeding a detached garage, upsizing from a 60 A feeder to a 100 A feeder using #1 AWG aluminum THWN-2 conductors in 1-1/4 in PVC adds very little material cost while doubling your future circuit headroom.",
+            "Test your exact run length and voltage drop in our <a href=\"/tools/subpanel-feeder-calculator/\">free subpanel feeder calculator</a> before ordering wire.",
+        )),
+        ("Three mandatory NEC checks on every detached subpanel permit", (
+            "When reviewing a <a href=\"/subpanel-permit/\">subpanel permit packet</a> for a detached building, inspectors always verify three rules: isolated neutral and ground buses with the bonding screw removed (NEC 250.24(A)(5)), a local disconnecting means at the building (NEC 225.31), and two 8-foot ground rods spaced at least 6 feet apart bonded to the subpanel ground bar (NEC 250.32 & 250.53).",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("subpanel-feeder-calculator", "residential-load-calculator"),
+    doc_links=("single-line-diagram", "site-plan"),
+    related_slugs=("electrical-permit-cost-and-timeline-by-city", "subpanel-vs-200a-panel-upgrade"),
+    faqs=(
+        ("Can I put a 100A subpanel on a 100A main service?", "Code allows a 100 A feeder breaker on a 100 A main panel if your <a href=\"/permit-documents/load-calculation/\">NEC 220.82 dwelling load calculation</a> proves the combined house and garage demand stays under 100 A."),
+        ("Do I need a main breaker inside the detached garage subpanel?", "If the subpanel has more than 6 breakers (or serves as the building disconnect under NEC 225.31), installing a main-breaker subpanel (e.g., 100 A main breaker) provides a single-throw disconnect at the detached structure."),
+        ("Can I reuse an existing 3-wire feeder to a detached garage?", "No. New subpanel feeders must be 4-wire (two hots, insulated neutral, and separate equipment grounding conductor) under NEC 250.32(B)."),
+    ),
+)
+
+GUIDES["electrical-permit-cost-and-timeline-by-city"] = Guide(
+    slug="electrical-permit-cost-and-timeline-by-city",
+    category="local-guides", job="ev-charger", role="diy",
+    crumb="Permit Cost & Timeline by City",
+    h1="Residential Electrical Permit Cost & Timeline by City (2026)",
+    title="Residential Electrical Permit Cost and Timeline by City",
+    description="Compare residential electrical permit fees, online portals and plan-check timelines in Bellevue, San Francisco, Los Angeles, San Diego and Austin.",
+    answer=(
+        "Residential electrical permit fees typically range from $75 to $350 depending on circuit count and valuation, with online over-the-counter or express review taking 1 to 5 business days in cities like Los Angeles, Bellevue, and Austin when complete plans are uploaded to the city portal."
+    ),
+    card="Compare city permit portals, review workflows and fee structures across major US cities.",
+    table_caption="Permit Portal & Review Workflow Across Major US Cities",
+    table_headers=("City & Department", "Online Portal", "Notable Submittal Rule"),
+    table_rows=(
+        ("Los Angeles, CA (LADBS)", "ePlanLA", "Express permits available for standard residential EV chargers"),
+        ("San Diego, CA (DSD)", "OpenDSD", "Fees based on scope per Information Bulletin 501; SDG&E coordination for upgrades"),
+        ("San Francisco, CA (DBI)", "DBI Online Submittal", "Licensed C-10 contractor required; Form E-02 + PG&E EUSERC rules"),
+        ("Bellevue, WA (Development Services)", "MyBuildingPermit.com", "PSE Form 7517 meter-main check for service upgrades"),
+        ("Austin, TX (Austin DSD)", "Austin Build + Connect (AB+C)", "Austin Energy coordination required for service upgrades"),
+        ("Mesa & Chandler, AZ", "DIMES / City Online Portal", "109°F outdoor ambient conductor derating; single combined PDF in Chandler"),
+    ),
+    sections=(
+        ("What drives residential electrical permit fees?", (
+            "Most municipal building departments calculate electrical permit fees using either a flat residential trade fee (common for single EV charger circuits) or a circuit-and-valuation schedule that adds small line-item fees for each new breaker, subpanel, or service ampere rating.",
+            "Browse your city in our <a href=\"/permits/\">electrical permits by city directory</a>—including <a href=\"/permits/ca/los-angeles/ev-charger/\">Los Angeles</a>, <a href=\"/permits/ca/san-diego/ev-charger/\">San Diego</a>, <a href=\"/permits/tx/austin/ev-charger/\">Austin</a>, and <a href=\"/permits/wa/bellevue/ev-charger/\">Bellevue</a>—to view direct portal links and fee notes.",
+        )),
+        ("How to avoid multi-week plan-check delays", (
+            "The biggest source of delay is not the city's initial queue—it is receiving a correction notice for a missing <a href=\"/permit-documents/load-calculation/\">NEC 220 load calculation</a>, unscaled <a href=\"/permit-documents/site-plan/\">site plan</a>, or missing UL cut sheet, which resets your review clock. Generating a complete <a href=\"/ev-charger-permit/\">permit packet</a> before applying keeps submittals clean on the first pass.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("ev-charger-load-calculator", "residential-load-calculator"),
+    doc_links=("site-plan", "load-calculation"),
+    related_slugs=("best-subpanel-sizes-detached-garage-workshop-adu", "cities-allowing-owner-builder-ev-charger-permits"),
+    faqs=(
+        ("Does Permit Packets include the city's permit filing fee?", "No. Permit Packets ($39, $89, or $169) drafts your permit plans and calculations. You pay your city's permit fee directly to the building department when you file."),
+        ("Can I submit my permit packet online?", "Yes. Most cities accept PDF uploads through portals such as OpenDSD, ePlanLA, MyBuildingPermit.com, AB+C, or Accela Citizen Access. Your order page includes both one combined PDF and a split-file ZIP."),
+        ("How many inspections are required after the permit is issued?", "Typically one final electrical inspection for an indoor EV charger or panel swap, or two inspections (underground trench rough-in + final) when trenching conduit to a detached garage or hot tub."),
+    ),
+)
