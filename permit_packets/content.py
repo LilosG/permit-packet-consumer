@@ -82,7 +82,7 @@ _hub(Hub(
         Sheet("Single-Line Diagram", "Meter, main panel, disconnect and charger with conductor sizes, conduit and breaker, plus a conduit schedule and trench detail.", "03-single-line"),
         Sheet("Load Calculation", "The NEC Article 220 optional dwelling method with the charger added at 100% of nameplate, compared against your service.", "04-load-calc"),
         Sheet("Panel Schedule", "A circuit directory with the new breaker marked, ready to field verify and fill in (NEC 408.4)."),
-        Sheet("Equipment Data", "Charger, breaker, disconnect and conduit with their listings, followed by the manufacturer's data sheet.", "05-spec-sheet"),
+        Sheet("Equipment Data", "Charger, breaker, disconnect and conduit with their listings. <strong>Manufacturer UL cut sheets attached:</strong> skip the manual search. For charger models in our library, the manufacturer's <a href=\"/guides/what-is-an-appliance-cut-sheet-for-electrical-permit/\">cut sheet</a> and UL spec sheet follow this sheet in your packet automatically.", "05-spec-sheet"),
         Sheet("Pre-Submittal Review", "A final checklist: existing loads, trench route, open panel spaces, HOA approval and the code edition."),
     ),
     checks_intro="These are the checks the generator runs on your job and the notes it prints on the sheets.",

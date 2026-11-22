@@ -11,6 +11,7 @@ CATEGORIES: dict[str, tuple[str, str]] = {
     "comparisons": ("A vs B Comparisons", "Side-by-side NEC, cost and permit comparisons to help you pick the right electrical setup."),
     "best-of": ("Best Equipment & Hardware", "UL-listed EV chargers, meter-main combo panels and load management hardware with verified specs."),
     "local-guides": ("City & Utility Guides", "Owner-builder eligibility, utility meter-main lists and adopted NEC code editions by area."),
+    "concepts": ("Permit Concepts Explained", "Plain-English explanations of the documents and code terms plan reviewers ask for."),
     "diy-tips": ("DIY Tips & Checklists", "Step-by-step panel audits, trench depth tables and plan-check checklists to pass inspection."),
 }
 
@@ -189,7 +190,7 @@ GUIDES["best-48a-hardwired-ev-chargers-for-permits"] = Guide(
     ),
     tool_links=("ev-charger-wire-breaker-size", "ev-charger-load-calculator"),
     doc_links=("equipment-cut-sheets", "single-line-diagram"),
-    related_slugs=("hardwired-vs-plug-in-ev-charger-permit", "best-ev-load-management-devices-100a-panel"),
+    related_slugs=("hardwired-vs-plug-in-ev-charger-permit", "what-is-an-appliance-cut-sheet-for-electrical-permit"),
     faqs=(
         ("What wire size is required for a 48A EV charger?", "A 48 A continuous charger requires a 60 A 2-pole breaker and #6 AWG copper THWN-2 conductors with a #10 AWG copper ground."),
         ("Can I derate a 48A charger to 32A if my panel is near capacity?", "Yes. All five listed chargers can be commissioned at 32 A (40 A breaker) or 40 A (50 A breaker)."),
@@ -615,5 +616,37 @@ GUIDES["owner-builder-permit-vs-licensed-electrician"] = _rep(
         ("Homestead & resident-owner rules in OR, NC & FL", (
             'States like Oregon, North Carolina, and Florida allow resident homeowners to pull electrical permits on single-family homes they occupy—see local rules for <a href="/permits/or/portland/">Portland</a>, <a href="/permits/nc/raleigh/">Raleigh</a>, and <a href="/permits/fl/tampa/">Tampa</a>.',
         )),
+    ),
+)
+
+GUIDES["what-is-an-appliance-cut-sheet-for-electrical-permit"] = Guide(
+    slug="what-is-an-appliance-cut-sheet-for-electrical-permit", category="concepts", job="ev-charger", role="diy",
+    crumb="Appliance Cut Sheets", h1="What is an Equipment Cut Sheet for an Electrical Permit?",
+    title="Appliance & Equipment Cut Sheets for Electrical Permits",
+    description="What an appliance or equipment cut sheet is, why building departments require it for electrical permits, and what plan reviewers check on it.",
+    answer="An appliance cut sheet is the manufacturer's specification sheet for a charger, panel or appliance, listing its model number, electrical ratings and safety listings. City building departments require it for an electrical permit to verify NEC 220 load calculations, UL or CSA safety listings, and ampacity ratings against your plans.",
+    card="What a cut sheet is, why cities require one, and what plan reviewers look for on it.",
+    sections=(
+        ("What a cut sheet shows", (
+            "A cut sheet, also called a spec sheet or data sheet, is a one- or two-page document published by the manufacturer. It lists the model number, input voltage, amperage, wattage, wire terminal ratings, enclosure type and the testing-lab listing (such as UL 2594 for EV chargers). It is the evidence that the equipment on your plans is the equipment you will install.",
+        )),
+        ("What plan reviewers check on an equipment cut sheet for an electrical permit", (
+            "Reviewers compare the cut sheet to your <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a> and load calculation. They look for three things: the model number matches the plans; the continuous load (amps and volts) matches the load calculation and the breaker size at 125% of continuous load; and the terminal temperature rating (commonly 75°C) supports the conductor ampacity you drew.",
+        )),
+        ("Why cities ask for it", (
+            "The NEC Article 220 load calculation only works if the nameplate numbers are right. The cut sheet lets the reviewer confirm those numbers and the UL or CSA listing without a field visit, so a missing or mismatched sheet is a common reason for a correction notice. See the <a href=\"/guides/7-reasons-electrical-permits-fail-plan-check/\">common plan-check failures</a>.",
+        )),
+        ("How Permit Packets handles cut sheets", (
+            "When your charger model is in our library, the manufacturer's cut sheet and UL spec sheet follow the Equipment Data sheet in your packet automatically. For other models, the sheet tells you to attach the manufacturer's data sheet behind it. Read more on the <a href=\"/permit-documents/equipment-cut-sheets/\">equipment cut sheets</a> page, or <a href=\"/ev-charger-permit/\">build your EV charger permit packet</a> and preview it free.",
+        )),
+    ),
+    tool_links=("ev-charger-wire-breaker-size",),
+    doc_links=("equipment-cut-sheets", "single-line-diagram"),
+    related_slugs=("best-48a-hardwired-ev-chargers-for-permits", "hardwired-vs-plug-in-ev-charger-permit"),
+    faqs=(
+        ("What is an appliance cut sheet?", "An appliance cut sheet is the manufacturer's specification sheet for a device. It gives the model number, electrical ratings and safety listings that a plan reviewer uses to verify your permit plans."),
+        ("Do I need an equipment cut sheet for an electrical permit?", "Most cities that publish an electrical checklist ask for the manufacturer's specification sheet for major equipment such as an EV charger. Confirm with your building department."),
+        ("Where do I find the cut sheet for my charger or appliance?", "Look on the manufacturer's product page under downloads, specifications or documents, or search the model number plus 'spec sheet'. Use the sheet for your exact model."),
+        ("Is a cut sheet the same as a UL listing?", "No. The UL or CSA listing is a safety certification. The cut sheet is the document that shows the listing along with the ratings, and the reviewer reads both from it."),
     ),
 )

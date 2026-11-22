@@ -23,7 +23,8 @@ for _slug, _guide in gc.GUIDES.items():
 
 JOB_GUIDES: dict[str, tuple[str, ...]] = {
     "ev-charger": ("hardwired-vs-plug-in-ev-charger-permit", "best-48a-hardwired-ev-chargers-for-permits",
-                   "how-to-check-if-panel-can-handle-ev-charger", "nec-220-82-vs-220-87-load-calculation"),
+                   "how-to-check-if-panel-can-handle-ev-charger", "nec-220-82-vs-220-87-load-calculation",
+                   "what-is-an-appliance-cut-sheet-for-electrical-permit"),
     "panel-upgrade": ("subpanel-vs-200a-panel-upgrade", "best-200a-meter-main-combo-panels",
                       "utility-service-upgrade-rules-pge-srp-aps-duke-pse", "2023-nec-and-california-electrical-code-permit-guide"),
     "subpanel": ("subpanel-vs-200a-panel-upgrade", "ev-charger-trench-depth-conduit-rules-nec-300-5",
