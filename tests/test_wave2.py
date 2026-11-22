@@ -29,7 +29,7 @@ def blocks(html):
 
 
 def test_new_pages_count():
-    assert len(CALC_PATHS) == 6 and len(DOC_PATHS) == 5 and len(CMP_PATHS) == 3
+    assert len(CALC_PATHS) == 7 and len(DOC_PATHS) == 5 and len(CMP_PATHS) == 3
 
 
 @pytest.mark.parametrize("path", NEW)

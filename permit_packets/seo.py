@@ -182,7 +182,8 @@ def article(headline: str, date_published: str, date_modified: str, author: str 
 
 def webapp(name: str, url: str) -> dict:
     return {"@context": "https://schema.org", "@type": "WebApplication", "name": name, "url": absolute(url),
-            "applicationCategory": "BusinessApplication", "operatingSystem": "Any"}
+            "applicationCategory": "BusinessApplication", "operatingSystem": "Any",
+            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
 
 
 def image_object(name: str, url: str, caption: str, width: int, height: int) -> dict:

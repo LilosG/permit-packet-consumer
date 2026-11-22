@@ -302,6 +302,33 @@ DOCS: dict[str, Doc] = {d.slug: d for d in (
               ("Do I attach the full manual?", "No. One or two pages that show the ratings and listing are enough."),
               ("What if the model is not in the library?", "The packet flags it so you can attach the data sheet yourself."))),
 )}
+CALCS["conduit-fill-trench-depth-calculator"] = Calc(
+    slug="conduit-fill-trench-depth-calculator", job="subpanel", crumb="Conduit Fill & Trench Depth",
+    h1="Electrical Conduit Fill & Trench Depth Calculator (NEC 300.5)",
+    title="Conduit Fill & Trench Depth Calculator (NEC 300.5)",
+    description="Calculate NEC Chapter 9 40% conduit fill for PVC, EMT and RMC plus NEC Table 300.5 underground burial depth for residential circuits.",
+    card="Minimum PVC, EMT or RMC conduit size (40% fill) and NEC Table 300.5 trench burial depth.",
+    answer=("Select your wire gauge, conductor count, ground wire, conduit type and installation location to find the minimum NEC Chapter 9 trade size at 40% fill and required NEC Table 300.5 trench burial cover. "
+            "It uses the exact THWN-2 wire areas and raceway fill tables built into our permit packet generator."),
+    sections=(
+        ("How is the 40% NEC conduit fill limit calculated?", (
+            "Under NEC Chapter 9 Table 1, any raceway containing three or more conductors is limited to 40% of its internal cross-sectional area so wires can be pulled without damaging insulation and heat can dissipate safely. "
+            "Each THWN-2 conductor area is summed from NEC Chapter 9 Table 5—including the equipment grounding conductor—and matched against Table 4.",)),
+        ("What are the NEC Table 300.5 underground burial depths?", (
+            "For residential 240V EV charger, subpanel, and hot tub runs to a detached garage or yard, NEC Table 300.5 requires 18 inches of soil cover above Schedule 40 or 80 PVC conduit, 6 inches above Rigid Metal Conduit (RMC), and 24 inches above direct-burial UF-B cable. "
+            "Cover is measured from finished grade to the top of the pipe, so dig trenches 20 to 21 inches deep for PVC.",)),
+        ("When do cities restrict PVC or outdoor cable?", (
+            "While the national NEC permits Schedule 80 PVC for above-grade protection, cities such as San Francisco amend NEC 352.10 to allow PVC only underground or in concrete, requiring metallic raceway (RMC, IMC, or EMT) above grade.",)),
+    ),
+    example_label="Worked example",
+    faqs=(
+        ("What size conduit do I need for #6 AWG EV charger wires?", "Two #6 AWG THWN-2 hots plus one #10 AWG ground total 0.1225 sq in, which fits inside 3/4-inch PVC (0.203 sq in max) or 3/4-inch EMT (0.213 sq in max) at 40% fill."),
+        ("How deep must PVC electrical conduit be buried?", "18 inches of cover from finished grade to the top of the PVC pipe under NEC Table 300.5."),
+        ("Can I put Romex (NM-B) inside underground PVC conduit?", "No. The interior of underground conduit is a wet location under NEC 300.5(B), requiring wet-rated THWN-2 or XHHW-2 individual conductors."),
+        ("Does the ground wire count toward conduit fill?", "Yes. Every conductor inside the raceway—including the equipment grounding conductor—counts toward the 40% NEC Chapter 9 fill limit."),
+    ),
+)
+
 DOCS_PATH = "/permit-documents/"
 DOCS_TITLE = "Electrical Permit Documents Explained | Permit Packets"
 DOCS_DESCRIPTION = "What each document in an electrical permit set is, when cities ask for it and what a good one contains."

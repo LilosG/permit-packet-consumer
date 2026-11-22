@@ -33,7 +33,7 @@ def test_guides_emit_article_og_type_and_main_entity_of_page(client):
     assert '<meta property="og:type" content="article">' in html
     art = next(b for b in _blocks(html) if b["@type"] == "Article")
     assert art["mainEntityOfPage"]["@id"].endswith("/guides/hot-tub-gfci-disconnect-wire-size-permit-guide/")
-    assert len(gc.GUIDES) == 22
+    assert len(gc.GUIDES) == 26
 
 
 def test_city_hub_renders_local_utility_and_code_summary(client):

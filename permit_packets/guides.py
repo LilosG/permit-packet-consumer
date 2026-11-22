@@ -26,13 +26,13 @@ JOB_GUIDES: dict[str, tuple[str, ...]] = {
                    "how-to-check-if-panel-can-handle-ev-charger", "nec-220-82-vs-220-87-load-calculation",
                    "what-is-an-appliance-cut-sheet-for-electrical-permit",
                    "tesla-wall-connector-gen-3-cut-sheet-permit", "emporia-classic-ev-charger-cut-sheet-permit",
-                   "wallbox-pulsar-plus-cut-sheet-permit"),
+                   "wallbox-pulsar-plus-cut-sheet-permit", "ev-charger-permit-packet-checklist-for-homeowners", "how-much-does-an-electrical-permit-cost"),
     "panel-upgrade": ("subpanel-vs-200a-panel-upgrade", "best-200a-meter-main-combo-panels",
-                      "utility-service-upgrade-rules-pge-srp-aps-duke-pse", "2023-nec-and-california-electrical-code-permit-guide"),
+                      "utility-service-upgrade-rules-pge-srp-aps-duke-pse", "2023-nec-and-california-electrical-code-permit-guide", "do-you-need-an-engineer-stamp-for-residential-electrical-permit"),
     "subpanel": ("best-subpanel-sizes-detached-garage-workshop-adu", "subpanel-vs-200a-panel-upgrade",
                  "ev-charger-trench-depth-conduit-rules-nec-300-5", "how-to-read-electrical-panel-label-aic-bus-rating"),
     "hot-tub-240v": ("hot-tub-gfci-disconnect-wire-size-permit-guide", "heat-pump-mini-split-electrical-permit-mca-mocp",
-                     "ev-charger-trench-depth-conduit-rules-nec-300-5", "2023-nec-and-california-electrical-code-permit-guide"),
+                     "ev-charger-trench-depth-conduit-rules-nec-300-5", "2023-nec-and-california-electrical-code-permit-guide", "do-you-need-an-engineer-stamp-for-residential-electrical-permit"),
 }
 
 

@@ -935,3 +935,182 @@ GUIDES["electrical-permit-cost-and-timeline-by-city"] = Guide(
         ("How many inspections are required after the permit is issued?", "Typically one final electrical inspection for an indoor EV charger or panel swap, or two inspections (underground trench rough-in + final) when trenching conduit to a detached garage or hot tub."),
     ),
 )
+
+
+GUIDES["how-much-does-an-electrical-permit-cost"] = Guide(
+    slug="how-much-does-an-electrical-permit-cost",
+    category="local-guides", job="ev-charger", role="diy",
+    crumb="How Much Does a Permit Cost?",
+    h1="How Much Does a Residential Electrical Permit Cost? (2026)",
+    title="How Much Does a Residential Electrical Permit Cost? (2026)",
+    description="Residential electrical permit fees range from $50 to $350 by city and project type. See typical city filing fees, plan-check costs and drafting options.",
+    answer=(
+        "A residential electrical permit typically costs $50 to $350 in municipal filing fees depending on whether you are adding a single 240V EV charger circuit or upgrading to a 200A service. When plans are required, automated permit drafting starts at $39 to $169 compared with $300 to $500+ for traditional CAD drafters."
+    ),
+    card="Breakdown of city electrical permit fees, plan-review charges and drafting costs by project type.",
+    table_caption="Typical Residential Electrical Permit & Plan Preparation Costs",
+    table_headers=("Project Type", "Typical City Filing Fee", "Plan Drafting Cost (Permit Packets)", "Traditional CAD Drafter"),
+    table_rows=(
+        ("Level 2 EV Charger (240V Circuit)", "$75 - $225", "$89 Instant ($169 City-Checked)", "$300 - $500+"),
+        ("200A Panel / Service Upgrade", "$125 - $350", "$89 Instant ($169 City-Checked)", "$350 - $600+"),
+        ("Detached Garage / ADU Subpanel", "$100 - $275", "$89 Instant ($169 City-Checked)", "$300 - $500+"),
+        ("Hot Tub, Sauna or Heat Pump Circuit", "$75 - $200", "$89 Instant ($169 City-Checked)", "$300 - $450+"),
+        ("Load Calc & Panel Capacity Audit Only", "N/A (pre-quote check)", "$39 Load Calc & Panel Audit", "$150 - $250"),
+    ),
+    sections=(
+        ("How building departments calculate electrical permit fees", (
+            "Municipal building departments use two common fee models: a flat residential trade permit fee (often $75 to $175 for an express EV charger or 240V circuit) or a line-item circuit and service ampere schedule that adds small fees per breaker, subpanel, or 200A service switch.",
+            "Some cities also charge a separate plan-review fee (typically 25% to 65% of the permit fee) when drawings are required. Check your city's fee notes in our <a href=\"/permits/\">electrical permits by city directory</a>.",
+        )),
+        ("How to avoid paying twice for plans or service upgrades", (
+            "Before collecting contractor quotes for a new EV charger or heat pump, run your home through our <a href=\"/tools/ev-charger-load-calculator/\">free EV charger load calculator</a> or order the $39 Load Calc & Panel Audit. Knowing your NEC 220 spare capacity up front prevents unnecessary $3,500+ service upgrades and keeps <a href=\"/ev-charger-permit/\">permit plan preparation</a> predictable.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("ev-charger-load-calculator", "residential-load-calculator"),
+    doc_links=("load-calculation", "site-plan"),
+    related_slugs=("do-you-need-an-engineer-stamp-for-residential-electrical-permit", "electrical-permit-cost-and-timeline-by-city"),
+    faqs=(
+        ("Does Permit Packets include the city's permit fee?", "No. You pay Permit Packets ($39, $89, or $169) for your permit plans and calculations, and pay the municipal filing fee directly to your city when submitting."),
+        ("Are there any hidden subscription fees?", "No. Every package is a one-time purchase per project, and you can generate a full watermarked preview free before paying."),
+        ("What if my city rejects my permit application?", "You can edit your inputs and regenerate your packet at any time, and orders can be refunded in full before you download the clean packet."),
+    ),
+)
+
+GUIDES["do-you-need-an-engineer-stamp-for-residential-electrical-permit"] = Guide(
+    slug="do-you-need-an-engineer-stamp-for-residential-electrical-permit",
+    category="comparisons", job="panel-upgrade", role="hiring",
+    crumb="Do You Need a PE Stamp?",
+    h1="Do You Need an Engineer Stamp for a Residential Permit?",
+    title="Do You Need an Engineer Stamp for a Residential Permit?",
+    description="Find out when a city building department requires a PE stamp vs standard NEC load calculations, single-line diagrams and parcel site plans for homes.",
+    answer=(
+        "Most single-family residential electrical permits—including Level 2 EV chargers, 200A panel upgrades, subpanels, and hot tubs—do not require a Professional Engineer (PE) stamp. City plan reviewers instead check an NEC Article 220 load calculation, single-line diagram, scaled parcel site plan, and UL equipment cut sheets."
+    ),
+    card="When standard NEC plans pass plan check vs. when a licensed Electrical Engineer stamp is required.",
+    table_caption="Standard NEC Plans vs. PE-Stamped Engineering Drawings",
+    table_headers=("Project Scope", "PE Stamp Required?", "What the Building Department Reviews"),
+    table_rows=(
+        ("Single-Family Level 2 EV Charger (up to 48A–80A)", "Rarely (standard plans accepted)", "Parcel site plan, 1-line diagram, NEC 220 load calc, UL cut sheet"),
+        ("200A Residential Service / Panel Upgrade", "Rarely (400A+ services may trigger PE)", "Riser diagram, NEC 220 load calc, grounding, NEC 230.67 SPD"),
+        ("Detached Garage or ADU Subpanel (60A–125A)", "No (standard residential plans)", "Feeder schedule, voltage drop, site plan, NEC 250.32 grounding"),
+        ("Hot Tub, Sauna or Heat Pump 240V Circuit", "No (standard residential plans)", "1-line diagram, GFCI / disconnect clearance, load calc"),
+        ("Commercial EV Charging / Multi-Family / 400A+ Service", "Yes (typically requires EE stamp)", "Fault current study, coordination, stamped electrical sheets"),
+    ),
+    sections=(
+        ("Why single-family electrical permits rarely need a PE stamp", (
+            "State engineering acts exempt standard one- and two-family residential electrical installations from mandatory Professional Engineer (PE) stamping because conductor sizing, overcurrent protection, and dwelling demand factors are prescriptive under the National Electrical Code.",
+            "Plan examiners simply need clear, legible documentation showing that the installation complies with the NEC—specifically an <a href=\"/permit-documents/load-calculation/\">NEC 220 load calculation</a>, a <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a>, and a scaled <a href=\"/permit-documents/site-plan/\">site plan</a>.",
+        )),
+        ("When you should hire a licensed Professional Engineer", (
+            "If you are upgrading a residential service to 400 A or 600 A, installing commercial Level 2 or DC fast chargers, wiring a multi-family condo building, or responding to a city correction that explicitly requests a California or state PE seal, hire a local licensed Electrical Engineer.",
+            "For standard 100 A to 225 A single-family projects, <a href=\"/panel-upgrade-permit/\">Permit Packets</a> generates complete, code-referenced drawings in minutes without paying $500+ for stamped commercial engineering.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("residential-load-calculator", "solar-120-percent-rule-calculator"),
+    doc_links=("single-line-diagram", "load-calculation"),
+    related_slugs=("how-much-does-an-electrical-permit-cost", "owner-builder-permit-vs-licensed-electrician"),
+    faqs=(
+        ("Is Permit Packets PE-stamped?", "No. Permit Packets is an automated drafting and NEC calculation tool, and every sheet clearly states that it is not PE-stamped."),
+        ("How do I check if my city requires a PE stamp before buying?", "Check your city's checklist in our <a href=\"/permits/\">city electrical permit guides</a> or preview your packet free—Sheet E-1 displays your city's published checklist items before you pay."),
+        ("Can a licensed electrician submit non-stamped plans?", "Yes. On residential projects, licensed electrical contractors routinely submit non-stamped single-line diagrams, load calculations, and site plans."),
+    ),
+)
+
+
+GUIDES["ev-charger-permit-packet-checklist-for-homeowners"] = Guide(
+    slug="ev-charger-permit-packet-checklist-for-homeowners",
+    category="diy-tips", job="ev-charger", role="diy",
+    crumb="EV Charger Permit Checklist",
+    h1="EV Charger Permit Packet Checklist for Homeowners (2026)",
+    title="EV Charger Permit Packet Checklist for Homeowners (2026)",
+    description="Use this complete homeowner checklist to prepare an EV charger permit packet: GIS site plan, single-line diagram, NEC 220 load calc and UL cut sheet.",
+    answer=(
+        "A complete residential EV charger permit packet includes five core items: a filled city permit application, a scaled parcel site plan showing the panel and charger, a single-line diagram with wire and conduit sizes, an NEC Article 220 load calculation, and the charger manufacturer's UL 2594 specification sheet."
+    ),
+    card="Step-by-step homeowner submittal checklist covering all 5 required EV charger permit documents.",
+    listicle_items=(
+        "1. Completed City Electrical Permit Application & Owner-Builder Declaration",
+        "2. Scaled Parcel Site Plan Showing Main Panel, Charger Location & Wire Route",
+        "3. Single-Line Diagram with 125% Continuous Breaker, Wire Gauge & Conduit Schedule",
+        "4. NEC Article 220 Dwelling Load Calculation Proving Service Capacity",
+        "5. Manufacturer UL 2594 / NRTL Specification Cut Sheet",
+    ),
+    sections=(
+        ("1. Gather your panel and charger details before opening the wizard", (
+            "Before starting your <a href=\"/ev-charger-permit/\">EV charger permit packet</a>, snap a photo of the UL label inside your main electrical panel door to confirm your main breaker rating (100 A, 150 A, or 200 A) and verify two adjacent open breaker slots.",
+            "Next, confirm your charger's maximum charging current (32 A, 40 A, or 48 A) and run your home's square footage and electric appliances through our <a href=\"/tools/ev-charger-load-calculator/\">free EV charger load calculator</a>.",
+        )),
+        ("2. Verify the five core sheets in your packet", (
+            "City plan examiners check that your <a href=\"/permit-documents/site-plan/\">site plan</a>, <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a>, <a href=\"/permit-documents/load-calculation/\">load calculation</a>, and <a href=\"/permit-documents/equipment-cut-sheets/\">UL cut sheet</a> match each other—for example, a 48 A charger must show a 60 A 2-pole breaker and #6 AWG copper wire across every sheet.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("ev-charger-load-calculator", "ev-charger-wire-breaker-size"),
+    doc_links=("site-plan", "equipment-cut-sheets"),
+    related_slugs=("hardwired-vs-plug-in-ev-charger-permit", "7-reasons-electrical-permits-fail-plan-check"),
+    faqs=(
+        ("How long does it take to build the EV charger packet?", "Most homeowners enter their address, mark the panel and charger pins on the aerial map, and generate their free watermarked preview in under 5 minutes."),
+        ("What if my city wants each sheet uploaded as a separate PDF?", "Every paid order includes both one combined PDF and a split-file ZIP with each sheet saved as an individually named PDF."),
+        ("Where do I sign as an owner-builder?", "When you select 'I'm a homeowner doing the work myself', every drawing sheet prints an Owner-Builder signature and date line in the title block."),
+    ),
+)
+
+GUIDES["sauna-electrical-permit-wire-breaker-gfci-rules"] = Guide(
+    slug="sauna-electrical-permit-wire-breaker-gfci-rules",
+    category="diy-tips", job="hot-tub-240v", role="diy",
+    crumb="Sauna Electrical Permit Guide",
+    h1="Sauna Electrical Permit Guide: Wire, Breaker & GFCI Rules",
+    title="Sauna Electrical Permit Guide: Wire, Breaker and GFCI Rules",
+    description="Size wire, breakers and conduit for an electric sauna heater under NEC 424.4: 240V continuous load math, copper wire temperature ratings and GFCI rules.",
+    answer=(
+        "An electric sauna heater requires a dedicated 240V circuit sized at 125% of its nameplate amperage under NEC 424.4(B), high-temperature copper conductors matching the heater terminal rating, and a local disconnecting means. Unlike hot tubs, most sauna heater manufacturers prohibit GFCI breakers—follow the UL listing manual."
+    ),
+    card="Wire gauge, breaker sizing, 90°C heater whip rules and GFCI guidance for electric sauna permits.",
+    table_caption="Typical 240V Electric Sauna Heater Circuit Sizing (NEC 424.4)",
+    table_headers=("Sauna Heater Output", "Nameplate Amps (240V)", "Breaker Size (125%)", "Copper Wire (75°C)"),
+    table_rows=(
+        ("6.0 kW Heater", "25.0 A", "35 A or 40 A 2-pole", "#8 AWG Cu THWN-2"),
+        ("8.0 kW Heater", "33.3 A", "45 A or 50 A 2-pole", "#8 AWG Cu (75°C) or #6 AWG Cu"),
+        ("9.0 kW Heater", "37.5 A", "50 A 2-pole", "#8 AWG Cu (75°C) or #6 AWG Cu"),
+    ),
+    sections=(
+        ("Why sauna heaters have strict wire temperature and GFCI rules", (
+            "Electric sauna heaters operate in high ambient heat and are classified as continuous fixed electric space-heating equipment under NEC 424.4(B), requiring 125% circuit sizing. Many UL 875 sauna heaters require 90°C-rated copper conductors inside the sauna wall cavity and explicitly prohibit GFCI breakers in their installation manual because moisture sensors and heating elements can cause nuisance trips.",
+            "Verify your breaker and wire size with our <a href=\"/tools/hot-tub-breaker-wire-size/\">240V spa and sauna circuit calculator</a> and always attach the heater's UL specification sheet.",
+        )),
+        ("No receptacles inside the sauna room and disconnect placement", (
+            "Under NEC 680 / UL 875 installation rules, standard 120V receptacles are prohibited inside a sauna room, and a disconnecting means must be accessible outside the sauna or at the panel. Generate a complete <a href=\"/hot-tub-240v-permit/\">240V appliance circuit permit packet</a> with your sauna's kW rating pre-filled.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("hot-tub-breaker-wire-size", "conduit-fill-trench-depth-calculator"),
+    doc_links=("single-line-diagram", "equipment-cut-sheets"),
+    related_slugs=("hot-tub-gfci-disconnect-wire-size-permit-guide", "ev-charger-trench-depth-conduit-rules-nec-300-5"),
+    faqs=(
+        ("Should I put a GFCI breaker on a hardwired electric sauna?", "Only if the sauna manufacturer's UL installation instructions permit or require it—most traditional Finnish sauna heaters (such as Harvia and Finlandia) instruct installers not to use GFCI breakers on hardwired units."),
+        ("Can I use aluminum wire to feed a sauna heater?", "No. Sauna heater terminals are rated for copper conductors only; run copper wire from the breaker or junction box to the heater."),
+        ("Does an outdoor barrel sauna need a trench permit?", "If you run underground PVC conduit from the house to an outdoor sauna, your city will inspect the 18-inch trench depth (NEC Table 300.5) before backfilling."),
+    ),
+)
+
+
+GUIDES["how-to-check-if-panel-can-handle-ev-charger"] = _rep(
+    GUIDES["how-to-check-if-panel-can-handle-ev-charger"],
+    related_slugs=("ev-charger-permit-packet-checklist-for-homeowners", "how-to-read-electrical-panel-label-aic-bus-rating"),
+)
+GUIDES["7-reasons-electrical-permits-fail-plan-check"] = _rep(
+    GUIDES["7-reasons-electrical-permits-fail-plan-check"],
+    related_slugs=("ev-charger-permit-packet-checklist-for-homeowners", "how-to-check-if-panel-can-handle-ev-charger"),
+)
+
+
+GUIDES["hot-tub-gfci-disconnect-wire-size-permit-guide"] = _rep(
+    GUIDES["hot-tub-gfci-disconnect-wire-size-permit-guide"],
+    related_slugs=("sauna-electrical-permit-wire-breaker-gfci-rules", "heat-pump-mini-split-electrical-permit-mca-mocp"),
+)
+GUIDES["heat-pump-mini-split-electrical-permit-mca-mocp"] = _rep(
+    GUIDES["heat-pump-mini-split-electrical-permit-mca-mocp"],
+    related_slugs=("sauna-electrical-permit-wire-breaker-gfci-rules", "hot-tub-gfci-disconnect-wire-size-permit-guide"),
+)

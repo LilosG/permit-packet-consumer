@@ -16,7 +16,7 @@ WAVE2_DATE = "2026-11-17"
 
 CALC_RUN = {"ev-charger-load-calculator": (calc_math.EV_FIELDS, calc_math.ev_load),
             "residential-load-calculator": (calc_math.LOAD_FIELDS, calc_math.residential_load),
-            "ev-charger-wire-breaker-size": (calc_math.WIRE_FIELDS, calc_math.wire_breaker), "subpanel-feeder-calculator": (calc_math.SUBPANEL_FIELDS, calc_math.subpanel_feeder), "solar-120-percent-rule-calculator": (calc_math.SOLAR_FIELDS, calc_math.solar_120_rule), "hot-tub-breaker-wire-size": (calc_math.HOT_TUB_FIELDS, calc_math.hot_tub_circuit)}
+            "ev-charger-wire-breaker-size": (calc_math.WIRE_FIELDS, calc_math.wire_breaker), "subpanel-feeder-calculator": (calc_math.SUBPANEL_FIELDS, calc_math.subpanel_feeder), "solar-120-percent-rule-calculator": (calc_math.SOLAR_FIELDS, calc_math.solar_120_rule), "hot-tub-breaker-wire-size": (calc_math.HOT_TUB_FIELDS, calc_math.hot_tub_circuit), "conduit-fill-trench-depth-calculator": (calc_math.CONDUIT_FIELDS, calc_math.conduit_fill_trench)}
 
 
 def calc_path(slug: str) -> str:

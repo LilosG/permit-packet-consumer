@@ -277,5 +277,54 @@ NEC_TEXT.update({
     "680.13": "Maintenance disconnect must be accessible, within sight, and at least 5 ft from the spa.",
 })
 
+CONDUIT_WIRE_CHOICES = (12, 10, 8, 6, 4, 3, 2, 1, 101, 201, 301, 401)
+CONDUIT_WIRE_LABELS = {
+    12: "#12 AWG THWN-2", 10: "#10 AWG THWN-2", 8: "#8 AWG THWN-2", 6: "#6 AWG THWN-2",
+    4: "#4 AWG THWN-2", 3: "#3 AWG THWN-2", 2: "#2 AWG THWN-2", 1: "#1 AWG THWN-2",
+    101: "#1/0 AWG THWN-2", 201: "#2/0 AWG THWN-2", 301: "#3/0 AWG THWN-2", 401: "#4/0 AWG THWN-2",
+}
+_WIRE_CODE_TO_SIZE = {101: "1/0", 201: "2/0", 301: "3/0", 401: "4/0"}
+CONDUIT_FIELDS = (
+    Field("wire_size", "Current-carrying conductor gauge", 6, choices=CONDUIT_WIRE_CHOICES, choice_labels=CONDUIT_WIRE_LABELS),
+    Field("conductor_count", "Number of current-carrying wires (hots + neutral)", 2, 1, 12),
+    Field("ground_size", "Equipment ground wire gauge", 10, choices=(12, 10, 8, 6, 4), choice_labels={k: f"#{k} AWG" for k in (12, 10, 8, 6, 4)}),
+    Field("conduit_type", "Conduit material", 0, choices=(0, 1, 2), choice_labels={0: "Schedule 40/80 PVC", 1: "EMT (Electrical Metallic Tubing)", 2: "RMC (Rigid Metal Conduit)"}),
+    Field("underground", "Installation location", 1, choices=(0, 1), choice_labels={0: "Indoor or above-ground wall", 1: "Underground trench (NEC Table 300.5)"}),
+)
+
+
+def conduit_fill_trench(v: dict[str, int]) -> dict:
+    from permit_packets.core.circuits import WIRES
+    from permit_packets.core.conductors import COPPER_75C, SERVICE_CONDUIT_FILL_SQ_IN
+    area_map = {w.size: w.area_sq_in for w in WIRES}
+    area_map.update({c.size: c.area_sq_in for c in COPPER_75C})
+    w_size = _WIRE_CODE_TO_SIZE.get(v["wire_size"], str(v["wire_size"]))
+    g_size = str(v["ground_size"])
+    n_wires = v["conductor_count"]
+    ctype = {0: "PVC", 1: "EMT", 2: "RMC"}[v["conduit_type"]]
+    underground = v["underground"] == 1
+    total_area = n_wires * area_map[w_size] + area_map[g_size]
+    table = SERVICE_CONDUIT_FILL_SQ_IN[ctype]
+    chosen = next(((sz, cap) for sz, cap in table if total_area <= cap), None)
+    cover = {"PVC": "18 inches minimum soil cover", "EMT": "Not rated for direct earth burial (use PVC or RMC)", "RMC": "6 inches minimum soil cover"}[ctype] if underground else "Above grade (secure within 3 ft of boxes)"
+    rows = [
+        ["Conductors in raceway", f"{n_wires} x #{w_size} AWG + 1 x #{g_size} AWG ground ({n_wires + 1} wires)"],
+        ["Total conductor cross-section", f"{total_area:.4f} sq in (NEC Chapter 9 Table 5)"],
+        [f"Minimum {ctype} trade size (40% fill)", f"{chosen[0]} {ctype} (max 40% fill: {chosen[1]:.3f} sq in)" if chosen else f"Exceeds 3\" {ctype} capacity"],
+        ["NEC Table 300.5 burial / mounting rule", cover],
+    ]
+    notes = ["NEC Chapter 9 Table 1 limits conduit fill to 40% when pulling 3 or more conductors."]
+    if underground and ctype == "PVC":
+        notes.append("Dig trench at least 20-21 in deep so 18 in of soil sits above the top of the PVC pipe (NEC Table 300.5).")
+    if underground and ctype == "EMT":
+        notes.append("Standard steel EMT corrodes in soil; switch to Schedule 40/80 PVC (18 in cover) or RMC (6 in cover) underground.")
+    return {
+        "status": "ok" if (chosen and not (underground and ctype == "EMT")) else "over",
+        "headline": f"{chosen[0]} {ctype} conduit ({total_area:.3f} sq in of {chosen[1]:.3f} sq in 40% fill limit)." if chosen else "Wire bundle exceeds 3-inch conduit capacity.",
+        "rows": rows, "conduit": chosen[0] if chosen else "", "total_area": round(total_area, 4),
+        "nec": ["300.5", "310.16", "250.122"], "notes": notes,
+    }
+
+
 def nec_rows(refs: list[str]) -> list[tuple[str, str]]:
     return [(f"NEC {ref}", NEC_TEXT[ref]) for ref in refs if ref in NEC_TEXT]
