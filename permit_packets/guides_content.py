@@ -642,7 +642,7 @@ GUIDES["what-is-an-appliance-cut-sheet-for-electrical-permit"] = Guide(
     ),
     tool_links=("ev-charger-wire-breaker-size",),
     doc_links=("equipment-cut-sheets", "single-line-diagram"),
-    related_slugs=("tesla-wall-connector-gen-3-cut-sheet-permit", "emporia-classic-ev-charger-cut-sheet-permit"),
+    related_slugs=("tesla-wall-connector-gen-3-cut-sheet-permit", "emporia-classic-ev-charger-cut-sheet-permit", "wallbox-pulsar-plus-cut-sheet-permit"),
     faqs=(
         ("What is an appliance cut sheet?", "An appliance cut sheet is the manufacturer's specification sheet for a device. It gives the model number, electrical ratings and safety listings that a plan reviewer uses to verify your permit plans."),
         ("Do I need an equipment cut sheet for an electrical permit?", "Most cities that publish an electrical checklist ask for the manufacturer's specification sheet for major equipment such as an EV charger. Confirm with your building department."),
@@ -721,10 +721,52 @@ GUIDES["emporia-classic-ev-charger-cut-sheet-permit"] = Guide(
     ),
     tool_links=("ev-charger-wire-breaker-size", "ev-charger-load-calculator"),
     doc_links=("equipment-cut-sheets", "single-line-diagram"),
-    related_slugs=("what-is-an-appliance-cut-sheet-for-electrical-permit", "tesla-wall-connector-gen-3-cut-sheet-permit"),
+    related_slugs=("what-is-an-appliance-cut-sheet-for-electrical-permit", "wallbox-pulsar-plus-cut-sheet-permit"),
     faqs=(
         ("What breaker does the Emporia Classic EV charger need?", "The cut sheet requires a dedicated double-pole breaker of 60 A or more for 48 A charging, or 50 A or more for 40 A."),
         ("Is the Emporia Classic EV charger UL listed?", "The cut sheet lists UL 2594 certification under file E528156, plus FCC, ISED and Energy Star."),
         ("Can the Emporia Classic be hardwired or plugged in?", "Both. Hardwired supports up to 48 A; a NEMA 14-50 plug supports up to 40 A."),
+    ),
+)
+
+GUIDES["wallbox-pulsar-plus-cut-sheet-permit"] = Guide(
+    slug="wallbox-pulsar-plus-cut-sheet-permit", category="concepts", job="ev-charger", role="diy",
+    crumb="Wallbox Pulsar Plus Cut Sheet", h1="Wallbox Pulsar Plus Cut Sheet & Specs for Electrical Permits",
+    title="Wallbox Pulsar Plus Cut Sheet & Specs for Permits",
+    description="Wallbox Pulsar Plus cut sheet specs for an electrical permit: 48A hardwired or 40A, 11.5 kW, UL 2594 and UL 2231, integrated CCID20, NEMA Type 4.",
+    answer="The Wallbox Pulsar Plus delivers 11.5 kW at 48A (hardwired) or 9.6 kW at 40A (NEMA 14-50 or hardwired) on 240V. Its cut sheet lists UL 2594 and UL 2231 certification, an integrated CCID20 ground-fault device and a NEMA Type 4 enclosure, which plan reviewers check against your load calculation and diagram.",
+    card="Verified electrical specs from the Wallbox Pulsar Plus cut sheet and what plan reviewers check.",
+    table_caption="Wallbox Pulsar Plus Specs for Permit Plans",
+    table_headers=("Spec", "Value on the cut sheet"),
+    table_rows=(
+        ("Model", "Pulsar Plus PUP2, 25 ft cable, SAE J1772 or NACS"),
+        ("48 A model", "11.5 kW, 48 A rated current, hardwired only"),
+        ("40 A model", "9.6 kW, 40 A rated current, NEMA 14-50 or hardwired"),
+        ("Voltage", "208/240 V (Level 2), 60 Hz"),
+        ("Listing", "UL 2594 and UL 2231 (NRTL)"),
+        ("Ground-fault protection", "Integrated CCID20 (20 mA) plus ground monitoring, per UL 2231"),
+        ("Enclosure", "NEMA Type 4 per UL 50E, indoor and outdoor"),
+    ),
+    sections=(
+        ("Max power and breaker size for the Pulsar Plus", (
+            "The cut sheet gives two ratings: 48 A (11.5 kW) and 40 A (9.6 kW) at 240 V single-phase. The charger is a continuous load, so NEC 625.41 sizes the circuit at 125% of rated current: a 48 A charger needs a 60 A breaker and a 40 A charger needs a 50 A breaker. The cut sheet itself lists ratings, not breaker sizes, so these come from the NEC. For the load calculation, 48 A at 240 V is 11,520 VA and 40 A is 9,600 VA. Check sizes with the <a href=\"/tools/ev-charger-wire-breaker-size/\">EV charger wire calculator</a>.",
+        )),
+        ("What plan reviewers verify on the Wallbox cut sheet", (
+            "Reviewers check three things. First, the continuous load math: the rated current on the sheet must match the breaker and the <a href=\"/permit-documents/load-calculation/\">load calculation</a>. Second, conductor sizing: for the 48 A hardwired setting, a 60 A circuit is commonly drawn with #6 AWG copper at the 75°C column on your <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a>. This datasheet does not state terminal wire range or temperature rating, so confirm those in the installation manual. Third, the UL 2594 and UL 2231 listings, which satisfy the listed-equipment requirement.",
+        )),
+        ("GFCI, enclosure and local rules", (
+            "The Pulsar Plus has an integrated CCID20 charge current interruption device plus ground monitoring, per UL 2231. Whether a separate GFCI breaker is also required depends on the NEC edition and your city's amendments, so confirm with your building department. The NEMA Type 4 rating per UL 50E covers indoor and outdoor mounting. See <a href=\"/guides/hardwired-vs-plug-in-ev-charger-permit/\">hardwired vs plug-in EV chargers</a>.",
+        )),
+        ("Where the cut sheet fits in your packet", (
+            "New to the document? Read <a href=\"/guides/what-is-an-appliance-cut-sheet-for-electrical-permit/\">what an appliance cut sheet is for an electrical permit</a>. When you generate an EV charger permit with Permit Packets and pick this charger, the Wallbox Pulsar Plus manufacturer PDF is bundled behind your Equipment Data sheet automatically. <a href=\"/start/?job=ev-charger&role=diy\">Start your packet</a> or see the <a href=\"/ev-charger-permit/\">EV charger permit page</a>; the preview is free.",
+        )),
+    ),
+    tool_links=("ev-charger-wire-breaker-size", "ev-charger-load-calculator"),
+    doc_links=("equipment-cut-sheets", "single-line-diagram"),
+    related_slugs=("what-is-an-appliance-cut-sheet-for-electrical-permit", "tesla-wall-connector-gen-3-cut-sheet-permit"),
+    faqs=(
+        ("Is the Wallbox Pulsar Plus UL listed?", "The cut sheet lists UL 2594 and UL 2231 certification by an NRTL, plus FCC Part 15 Class B and Energy Star."),
+        ("Can the Wallbox Pulsar Plus be plugged into a NEMA 14-50?", "The 40 A model can use NEMA 14-50 or be hardwired. The 48 A model is hardwired only."),
+        ("Does the Wallbox Pulsar Plus have built-in GFCI?", "Yes. The cut sheet lists an integrated CCID20 (20 mA) plus ground monitoring per UL 2231. Confirm with your city whether a GFCI breaker is also required."),
     ),
 )
