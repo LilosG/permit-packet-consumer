@@ -72,7 +72,7 @@ def test_sitemap_guides_and_llms_txt_include_all_guides(client):
 
 
 def test_no_orphaned_guides_and_bidirectional_linking(client):
-    sources = ["/guides/", "/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/", "/hot-tub-240v-permit/"] + GUIDE_PATHS
+    sources = ["/guides/", "/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/", "/hot-tub-240v-permit/", "/generator-permit/", "/solar-battery-permit/"] + GUIDE_PATHS
     incoming: dict[str, int] = {p: 0 for p in GUIDE_PATHS}
     for src in sources:
         hrefs = set(re.findall(r'href="(/[^"#?]*)"', client.get(src).text))

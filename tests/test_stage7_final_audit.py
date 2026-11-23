@@ -36,7 +36,7 @@ def test_no_internal_links_trigger_trailing_slash_301(client):
 
 
 def test_all_34_guides_include_complete_ul_cut_sheet_coverage():
-    assert len(gc.GUIDES) == 34
+    assert len(gc.GUIDES) == 36
     for slug in (
         "tesla-wall-connector-gen-3-cut-sheet-permit",
         "tesla-universal-wall-connector-cut-sheet-permit",

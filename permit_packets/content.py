@@ -341,6 +341,112 @@ _hub(Hub(
 ))
 
 
+
+_hub(Hub(
+    slug="solar-battery", type_key="solar_storage", path="/solar-battery-permit/",
+    h1="Solar PV & Battery Storage Permit Plans", crumb="Solar & Battery", job_name="solar PV and battery",
+    title="Solar PV & Battery Storage Permit Plans & Load Calc",
+    description="Single-line diagram, site plan, NEC 705.12 120% rule check and load calc for residential solar PV and battery storage permits. Free preview.",
+    answer=("A solar PV and battery storage permit packet provides the electrical drawings and code calculations a building "
+            "department requires for grid-tied solar and home energy storage systems: a parcel site plan, three-line or "
+            "single-line diagram, NEC 705.12 120% busbar calculation, NEC 220 load calc and equipment data. Permit Packets "
+            "builds yours from one address."),
+    sheets_intro=("The solar PV and battery storage packet is eight sheets covering DC-coupled hybrid systems, AC-coupled "
+                  "battery retrofits (such as Powerwall 3 or Enphase IQ Battery 5P), and grid-tied solar PV under NEC Articles 690, 705, and 706."),
+    sheets=(
+        Sheet("Checklist and Checks", "Your city's checklist item by item with NEC 705.12 120% busbar, NEC 690.12 rapid shutdown and NEC 706.15 ESS disconnect checks."),
+        Sheet("Permit Application Data", "The fields for the city's permit form, written scope of work and required rough/final inspections."),
+        Sheet("Site Plan", "Your parcel on aerial imagery with the main panel, inverter and battery ESS marked and the output run measured."),
+        Sheet("Single-Line Diagram", "Bidirectional utility meter, main panel busbar interconnection, PV/ESS backfeed breakers, conductors and disconnects."),
+        Sheet("Load Calculation", "The NEC Article 220 dwelling load calculation paired with the NEC 705.12(B)(3)(2) 120% busbar backfeed audit."),
+        Sheet("Panel Schedule", "A circuit directory with the new PV and battery backfeed breakers marked at the opposite end of the busbar."),
+        Sheet("Equipment Data", "Inverter, battery ESS, breakers and conductors with UL 1741 and UL 9540 listing notes and NEC 690.56(C) signage."),
+        Sheet("Pre-Submittal Review", "A final checklist confirming opposite-end breaker placement, rapid shutdown, ESS spacing and utility PTO steps."),
+    ),
+    checks_intro="These are the NEC Articles 690, 705, and 706 checks the generator runs on your system.",
+    checks=(
+        "Busbar 120% rule (NEC 705.12(B)(3)(2)): verifies main breaker plus PV and AC-coupled battery backfeed breakers stay within 120% of busbar rating.",
+        "Service load capacity (NEC 220.82): checks dwelling demand against your existing or derated main breaker rating.",
+        "Panel spaces: confirms open adjacent 2-pole breaker spaces at the opposite end of the busbar from the main breaker.",
+        "Rapid shutdown compliance (NEC 690.12): verifies array-boundary rapid shutdown initiation at the service disconnect.",
+        "Energy storage disconnect (NEC 706.15): verifies lockable, readily accessible disconnecting means for UL 9540 battery storage.",
+        "Conductors, voltage drop & conduit fill: sizes THWN-2 copper conductors at 75°C with NEC 310.15(B)(1) outdoor heat derating.",
+        "Interrupting rating (NEC 110.9) and permanent solar/ESS warning placards (NEC 690.56(C) & 705.10).",
+    ),
+    steps=STEPS_COMMON,
+    faqs=(
+        ("Do I need an electrical permit for solar panels and home battery storage?",
+         "Yes. Every grid-tied solar PV installation and home battery energy storage system (ESS) requires an electrical permit and utility interconnection approval before operation.",
+         "Yes, for both municipal inspection and utility PTO."),
+        ("How does the NEC 705.12 120% rule apply to solar plus a battery?",
+         "Under NEC 705.12(B)(3)(2), the sum of your main breaker and all backfeed breakers (solar PV plus any AC-coupled battery inverter) cannot exceed 120% of your panel's busbar amp rating.",
+         "Main breaker + PV + AC battery breakers <= 120% of bus rating."),
+        ("What is the difference between AC-coupled and DC-coupled battery permits?",
+         "A DC-coupled hybrid inverter shares one AC backfeed breaker between solar and battery, whereas an AC-coupled battery adds a second dedicated backfeed breaker that counts toward your busbar limit.",
+         "DC-coupled shares one AC breaker; AC-coupled adds a second backfeed breaker."),
+        ("What UL listings do building departments require for solar and batteries?",
+         "Plan reviewers verify UL 1741 / UL 1741 SB for grid-support inverters and UL 9540 (plus UL 9540A thermal runaway test data where required) for battery energy storage systems.",
+         "UL 1741 SB for inverters and UL 9540 for battery storage."),
+        ("What if my 200A panel fails the 120% rule with solar and a battery?",
+         "Common solutions include derating the main breaker from 200 A to 175 A or 150 A (when your NEC 220 load calculation allows), using a supply-side tap (NEC 705.11), or upgrading to a 225 A bus panel.",
+         "Derate the main breaker, use a supply-side tap, or upgrade to a 225 A bus."),
+    ),
+))
+
+
+
+_hub(Hub(
+    slug="solar-battery", type_key="solar_storage", path="/solar-battery-permit/",
+    h1="Solar PV & Battery Storage Permit Plans", crumb="Solar & Battery", job_name="solar PV and battery",
+    title="Solar PV & Battery Storage Permit Plans & Load Calc",
+    description="Single-line diagram, site plan, NEC 705.12 120% rule check and load calc for residential solar PV and battery storage permits. Free preview.",
+    answer=("A solar PV and battery storage permit packet provides the electrical drawings and code calculations a building "
+            "department requires for grid-tied solar and home energy storage systems: a parcel site plan, three-line or "
+            "single-line diagram, NEC 705.12 120% busbar calculation, NEC 220 load calc and equipment data. Permit Packets "
+            "builds yours from one address."),
+    sheets_intro=("The solar PV and battery storage packet is eight sheets covering DC-coupled hybrid systems, AC-coupled "
+                  "battery retrofits (such as Powerwall 3 or Enphase IQ Battery 5P), and grid-tied solar PV under NEC Articles 690, 705, and 706."),
+    sheets=(
+        Sheet("Checklist and Checks", "Your city's checklist item by item with NEC 705.12 120% busbar, NEC 690.12 rapid shutdown and NEC 706.15 ESS disconnect checks."),
+        Sheet("Permit Application Data", "The fields for the city's permit form, written scope of work and required rough/final inspections."),
+        Sheet("Site Plan", "Your parcel on aerial imagery with the main panel, inverter and battery ESS marked and the output run measured."),
+        Sheet("Single-Line Diagram", "Bidirectional utility meter, main panel busbar interconnection, PV/ESS backfeed breakers, conductors and disconnects."),
+        Sheet("Load Calculation", "The NEC Article 220 dwelling load calculation paired with the NEC 705.12(B)(3)(2) 120% busbar backfeed audit."),
+        Sheet("Panel Schedule", "A circuit directory with the new PV and battery backfeed breakers marked at the opposite end of the busbar."),
+        Sheet("Equipment Data", "Inverter, battery ESS, breakers and conductors with UL 1741 and UL 9540 listing notes and NEC 690.56(C) signage."),
+        Sheet("Pre-Submittal Review", "A final checklist confirming opposite-end breaker placement, rapid shutdown, ESS spacing and utility PTO steps."),
+    ),
+    checks_intro="These are the NEC Articles 690, 705, and 706 checks the generator runs on your system.",
+    checks=(
+        "Busbar 120% rule (NEC 705.12(B)(3)(2)): verifies main breaker plus PV and AC-coupled battery backfeed breakers stay within 120% of busbar rating.",
+        "Service load capacity (NEC 220.82): checks dwelling demand against your existing or derated main breaker rating.",
+        "Panel spaces: confirms open adjacent 2-pole breaker spaces at the opposite end of the busbar from the main breaker.",
+        "Rapid shutdown compliance (NEC 690.12): verifies array-boundary rapid shutdown initiation at the service disconnect.",
+        "Energy storage disconnect (NEC 706.15): verifies lockable, readily accessible disconnecting means for UL 9540 battery storage.",
+        "Conductors, voltage drop & conduit fill: sizes THWN-2 copper conductors at 75°C with NEC 310.15(B)(1) outdoor heat derating.",
+        "Interrupting rating (NEC 110.9) and permanent solar/ESS warning placards (NEC 690.56(C) & 705.10).",
+    ),
+    steps=STEPS_COMMON,
+    faqs=(
+        ("Do I need an electrical permit for solar panels and home battery storage?",
+         "Yes. Every grid-tied solar PV installation and home battery energy storage system (ESS) requires an electrical permit and utility interconnection approval before operation.",
+         "Yes, for both municipal inspection and utility PTO."),
+        ("How does the NEC 705.12 120% rule apply to solar plus a battery?",
+         "Under NEC 705.12(B)(3)(2), the sum of your main breaker and all backfeed breakers (solar PV plus any AC-coupled battery inverter) cannot exceed 120% of your panel's busbar amp rating.",
+         "Main breaker + PV + AC battery breakers <= 120% of bus rating."),
+        ("What is the difference between AC-coupled and DC-coupled battery permits?",
+         "A DC-coupled hybrid inverter shares one AC backfeed breaker between solar and battery, whereas an AC-coupled battery adds a second dedicated backfeed breaker that counts toward your busbar limit.",
+         "DC-coupled shares one AC breaker; AC-coupled adds a second backfeed breaker."),
+        ("What UL listings do building departments require for solar and batteries?",
+         "Plan reviewers verify UL 1741 / UL 1741 SB for grid-support inverters and UL 9540 (plus UL 9540A thermal runaway test data where required) for battery energy storage systems.",
+         "UL 1741 SB for inverters and UL 9540 for battery storage."),
+        ("What if my 200A panel fails the 120% rule with solar and a battery?",
+         "Common solutions include derating the main breaker from 200 A to 175 A or 150 A (when your NEC 220 load calculation allows), using a supply-side tap (NEC 705.11), or upgrading to a 225 A bus panel.",
+         "Derate the main breaker, use a supply-side tap, or upgrade to a 225 A bus."),
+    ),
+))
+
+
 # ---- Audience pages ----
 
 @dataclass(frozen=True)

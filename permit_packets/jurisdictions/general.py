@@ -47,6 +47,15 @@ GENERAL_CHECKLISTS: dict[str, Checklist] = {
     ), notes=(
         Note("always", "NEC 702.7: install a permanent plaque at the service entrance and meter indicating standby generator power."),
     )),
+    "solar_storage": Checklist(items=(
+        Requirement("Permit application", "application"),
+        Requirement("Site plan showing the main panel, inverter/ESS and output route", "site_plan"),
+        Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
+        Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
+        Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
+    ), notes=(
+        Note("always", "NEC 690.56(C) & 705.10: install permanent rapid-shutdown and dual-power directory placards at the service."),
+    )),
 }
 
 # What a state adds to every permit in it, on top of a city's own checklist or the general one. A city

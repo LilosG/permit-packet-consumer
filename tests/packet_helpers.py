@@ -14,7 +14,7 @@ from tests.test_ev_golden import GOLDEN, to_current_request
 SAMPLES = Path(__file__).parent / "samples"
 SAMPLE_FILES = {
     "ev_charger": "oro_valley_attached_no_plan", "service_upgrade": "service_upgrade", "subpanel": "subpanel",
-    "appliance_circuit": "appliance_circuit", "generator": "generator",
+    "appliance_circuit": "appliance_circuit", "generator": "generator", "solar_storage": "solar_storage",
 }
 
 
@@ -62,6 +62,7 @@ def plan_for(key: str, scale: int = 30, parcel: str = "482-110-22-00") -> dict:
         "subpanel": {"panel": [400, 500], "subpanel": [700, 300]},
         "appliance_circuit": {"panel": [400, 500], "appliance": [700, 300]},
         "generator": {"panel": [400, 500], "inlet": [700, 300]},
+        "solar_storage": {"panel": [400, 500], "inverter": [700, 300]},
     }[key]
     return {
         "scale_ft_per_in": scale, "markers": markers, "route": [[550, 500]],

@@ -6,6 +6,8 @@ until their entry in seo.PAGES is flipped to indexable=True.
 """
 from __future__ import annotations
 
+import html
+
 import datetime
 import json
 import logging
@@ -115,6 +117,7 @@ JOB_CARDS = {
     "subpanel": "Feeder schedule, voltage drop and load calc for a new subpanel",
     "hot-tub-240v": "Plans for a hot tub, sauna, heat pump or mini-split circuit",
     "generator": "Single-line diagram, site plan and load calc for a generator interlock or transfer switch",
+    "solar-battery": "Single-line diagram, NEC 705.12 120% busbar calc and site plan for solar PV & battery storage",
 }
 
 
@@ -314,7 +317,7 @@ def _state_name(state: str) -> str:
 
 def _location_title(base: str) -> str:
     branded = f"{base} | {seo.SITE_NAME}"
-    return branded if len(branded) <= seo.TITLE_MAX else base
+    return branded if len(html.escape(branded)) <= seo.TITLE_MAX else base
 
 
 def _soon(title: str, h1: str, path: str, crumbs: list[tuple[str, str]]) -> Response:

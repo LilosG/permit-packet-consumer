@@ -41,7 +41,7 @@ for _p, _n in [(w2.TOOLS_PATH, "Free Electrical Permit Calculators"), (w2.DOCS_P
 JOB_CALCS = {"ev-charger": ("ev-charger-load-calculator", "ev-charger-wire-breaker-size"),
              "panel-upgrade": ("residential-load-calculator", "solar-120-percent-rule-calculator"),
              "subpanel": ("subpanel-feeder-calculator", "residential-load-calculator"),
-             "hot-tub-240v": ("hot-tub-breaker-wire-size", "residential-load-calculator"), "generator": ("generator-interlock-wire-calculator", "residential-load-calculator")}
+             "hot-tub-240v": ("hot-tub-breaker-wire-size", "residential-load-calculator"), "generator": ("generator-interlock-wire-calculator", "residential-load-calculator"), "solar-battery": ("solar-120-percent-rule-calculator", "residential-load-calculator")}
 JOB_DOCS = ("site-plan", "single-line-diagram", "load-calculation", "panel-schedule", "equipment-cut-sheets")
 
 

@@ -1,0 +1,30 @@
+{
+  "customer": "Sample Homeowner",
+  "address": "123 Sample St, Las Vegas, NV",
+  "contractor": "Sample Electric, LLC",
+  "license_number": "C-2 0012345",
+  "home": {
+    "square_feet": 2400,
+    "range_va": 12000,
+    "dryer_va": 5000,
+    "water_heater_va": 0,
+    "heating_va": 0,
+    "cooling_va": 7200
+  },
+  "service_amps": 200,
+  "bus_amps": 200,
+  "open_breaker_spaces": 4,
+  "coupling": "dc_coupled",
+  "pv_kw_dc": 8.4,
+  "pv_breaker_amps": 40,
+  "battery_kwh": 13.5,
+  "battery_breaker_amps": 0,
+  "interconnection": "load_side_120",
+  "location": "exterior_wall",
+  "wiring": "EMT",
+  "run_ft": 30,
+  "trench_ft": 0,
+  "rapid_shutdown": true,
+  "ess_disconnect": true,
+  "terminals_75c": true
+}

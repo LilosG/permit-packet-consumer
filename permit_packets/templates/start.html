@@ -374,6 +374,49 @@
       <label class="flag" style="margin-top:10px"><input type="checkbox" name="gen_75c" checked><span>Equipment terminals rated 75&deg;C</span></label>
     </div>
     </div>
+    <div data-job-type="solar_storage">
+    <div class="block">
+      <p class="block-title">Solar PV &amp; battery system</p>
+      <fieldset><legend>System coupling</legend><div class="choices">
+        <label class="choice"><input type="radio" name="sb_coupling" value="dc_coupled" checked><span>DC-coupled solar + battery</span></label>
+        <label class="choice"><input type="radio" name="sb_coupling" value="ac_coupled"><span>AC-coupled solar + battery</span></label>
+        <label class="choice"><input type="radio" name="sb_coupling" value="solar_only"><span>Solar PV only</span></label>
+      </div></fieldset>
+      <div class="grid" style="margin-top:14px">
+        <label class="field">Solar array size (kW DC)<input name="sb_pv_kw" type="number" min="0.5" max="40" step="0.1" value="8.4" required></label>
+        <label class="field">PV backfeed breaker (A)<input name="sb_pv_breaker" type="number" min="15" max="125" step="5" value="40" required></label>
+        <div class="contents" id="sb-bat-fields">
+          <label class="field">Battery capacity (kWh)<input name="sb_bat_kwh" type="number" min="0" max="80" step="0.5" value="13.5"></label>
+          <div class="contents" id="sb-bat-breaker-wrap" hidden><label class="field">Battery backfeed breaker (A)<input name="sb_bat_breaker" type="number" min="0" max="125" step="5" value="30"></label></div>
+        </div>
+        <label class="field">Inverter / ESS model (optional)<input name="sb_model" maxlength="120" placeholder="e.g. Tesla Powerwall 3 / Enphase IQ8 + 5P"></label>
+        <label class="field">Interconnection method<select name="sb_interconnection"><option value="load_side_120" selected>Load-side breaker (120% rule)</option><option value="main_breaker_derate">Main breaker derate + 120% rule</option><option value="supply_side_tap">Supply-side service tap (NEC 705.11)</option></select></label>
+        <div class="contents" id="sb-derate-wrap" hidden><label class="field">Derated main breaker (A)<input name="sb_derated_main" type="number" min="60" max="400" step="5" value="175"></label></div>
+      </div>
+    </div>
+    <div class="block">
+      <p class="block-title">Main panel &amp; output run</p>
+      <div class="grid">
+        <label class="field">Panel busbar rating (A)<input name="sb_bus_amps" type="number" min="60" max="400" value="200" required></label>
+        <label class="field">Main breaker rating (A)<input name="sb_service_amps" type="number" min="60" max="400" value="200" required></label>
+        <label class="field">Open breaker spaces<input name="sb_spaces" type="number" min="0" max="60" value="4" required></label>
+        <fieldset><legend>Equipment location</legend><div class="choices">
+          <label class="choice"><input type="radio" name="sb_location" value="exterior_wall" checked><span>Exterior wall</span></label>
+          <label class="choice"><input type="radio" name="sb_location" value="garage"><span>Attached garage</span></label>
+        </div></fieldset>
+        <fieldset><legend>Wiring</legend><div class="choices">
+          <label class="choice"><input type="radio" name="sb_wiring" value="EMT" checked><span>EMT</span></label>
+          <label class="choice"><input type="radio" name="sb_wiring" value="PVC"><span>PVC</span></label>
+          <label class="choice"><input type="radio" name="sb_wiring" value="RMC"><span>RMC</span></label>
+        </div></fieldset>
+        <label class="field">Output run (ft)<input name="sb_run_ft" type="number" min="1" max="500" value="30" required><span class="hint" id="sb-run-hint"></span></label>
+        <label class="field">Underground part (ft)<input name="sb_trench_ft" type="number" min="0" max="500" value="0" required></label>
+      </div>
+      <label class="flag" style="margin-top:10px"><input type="checkbox" name="sb_rapid_shutdown" checked><span>NEC 690.12 rapid shutdown included</span></label>
+      <label class="flag" style="margin-top:0"><input type="checkbox" name="sb_ess_disconnect" checked><span>NEC 706.15 lockable ESS disconnect included</span></label>
+      <label class="flag" style="margin-top:0"><input type="checkbox" name="sb_75c" checked><span>Equipment terminals rated 75&deg;C</span></label>
+    </div>
+    </div>
     <div class="block" data-uses="home_loads">
       <p class="block-title">The home</p>
       <div class="grid three">
@@ -520,5 +563,6 @@
 <script src="/assets/js/job-types/subpanel.js?v={{ asset_version }}"></script>
 <script src="/assets/js/job-types/appliance-circuit.js?v={{ asset_version }}"></script>
 <script src="/assets/js/job-types/generator.js?v={{ asset_version }}"></script>
+<script src="/assets/js/job-types/solar-battery.js?v={{ asset_version }}"></script>
 <script src="/assets/js/app.js?v={{ asset_version }}"></script>
 {% endblock %}

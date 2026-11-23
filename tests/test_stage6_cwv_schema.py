@@ -45,4 +45,4 @@ def test_directory_hubs_emit_itemlist_jsonld(client):
 def test_guides_hub_has_search_and_category_counts(client):
     html = client.get("/guides/").text
     assert 'id="guide-search"' in html
-    assert "All (34)" in html
+    assert "All (36)" in html

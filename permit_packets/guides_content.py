@@ -1450,3 +1450,83 @@ GUIDES["milbank-u5168-xtl-200-meter-main-cut-sheet-permit"] = Guide(
         ("Does it meet NEC 230.85 outdoor emergency disconnect rules?", "Yes. Mounting the U5168-XTL-200 outdoors provides a readily accessible 200 A exterior service disconnect."),
     ),
 )
+
+
+GUIDES["solar-pv-and-battery-storage-electrical-permit-guide"] = Guide(
+    slug="solar-pv-and-battery-storage-electrical-permit-guide",
+    category="diy-tips", job="solar-battery", role="diy",
+    crumb="Solar PV & Battery Permit Guide",
+    h1="Solar PV and Battery Storage Permit Guide (NEC 690 / 706)",
+    title="Solar PV and Battery Storage Permit Guide (NEC 690 / 706)",
+    description="Complete residential solar PV and battery storage (ESS) permit guide: NEC 705.12 120% busbar rule, rapid shutdown and NEC 706 disconnects.",
+    answer=(
+        "A residential solar PV and battery storage permit requires a parcel site plan, single-line diagram, NEC 705.12(B)(3)(2) 120% busbar backfeed calculation, NEC Article 220 dwelling load calc, and UL 1741 / UL 9540 equipment cut sheets. Plan reviewers also verify NEC 690.12 rapid shutdown and NEC 706.15 energy storage disconnects."
+    ),
+    card="NEC Articles 690, 705 and 706 rules for rooftop solar PV and UL 9540 home battery permits.",
+    table_caption="Key NEC Requirements for Residential Solar PV & Battery Storage Permits",
+    table_headers=("Code Section", "Requirement", "What Plan Reviewers Check"),
+    table_rows=(
+        ("NEC 705.12(B)(3)(2)", "120% busbar backfeed limit", "Main breaker + PV + AC battery breakers <= 120% of busbar rating"),
+        ("NEC 690.12", "Rapid shutdown of PV systems on buildings", "Controlled conductors reduced to <= 80 V within 30 seconds of initiation"),
+        ("NEC 706.15", "Energy storage system (ESS) disconnecting means", "Lockable, readily accessible disconnect within sight of battery"),
+        ("NEC 690.56(C) & 705.10", "Permanent safety & directory placards", "Reflective rapid-shutdown placard and dual-source directory at service"),
+        ("IRC R328 / UL 9540", "Residential ESS listing & garage spacing", "UL 9540 listing, >= 3 ft unit separation and heat detector in garage"),
+    ),
+    sections=(
+        ("How to size solar and battery backfeed on your main panel", (
+            "Before submitting a <a href=\"/solar-battery-permit/\">solar PV and battery permit packet</a>, check the UL label inside your main panel to verify its busbar rating (200 A vs. 225 A) and test your breaker combination in our <a href=\"/tools/solar-120-percent-rule-calculator/\">free solar 120% rule calculator</a>.",
+            "If your combined main breaker and backfeed breakers exceed 120% of the busbar rating, you can often derate the main breaker (e.g., 200 A to 175 A or 150 A) provided your <a href=\"/tools/residential-load-calculator/\">NEC 220.82 load calculation</a> stays below the derated breaker.",
+        )),
+        ("Essential drawings and UL cut sheets for first-pass approval", (
+            "Include a scaled parcel <a href=\"/permit-documents/site-plan/\">site plan</a> showing the main panel and inverter/battery wall locations, a <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a> showing rapid-shutdown initiation and ESS disconnects, and UL 1741 / UL 9540 cut sheets.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("solar-120-percent-rule-calculator", "residential-load-calculator"),
+    doc_links=("single-line-diagram", "site-plan"),
+    related_slugs=("ac-coupled-vs-dc-coupled-home-battery-storage-permit", "best-200a-meter-main-combo-panels"),
+    faqs=(
+        ("Can I install a home battery in an attached garage?", "Yes, under IRC R328 and NEC Article 706, provided the battery is UL 9540 listed, spaced at least 3 feet from doors/windows/other ESS units, protected from vehicle impact where required, and paired with a listed heat detector."),
+        ("Where must the solar and battery breakers be placed in the main panel?", "NEC 705.12(B)(3)(2) requires backfeed breakers using the 120% rule to be positioned at the opposite end of the busbar from the main service breaker."),
+        ("Does a supply-side tap bypass the 120% busbar rule?", "Yes. Connecting solar/ESS ahead of the main service disconnect under NEC 705.11 avoids busbar backfeed limits on 100 A or 200 A main panels."),
+    ),
+)
+
+GUIDES["ac-coupled-vs-dc-coupled-home-battery-storage-permit"] = Guide(
+    slug="ac-coupled-vs-dc-coupled-home-battery-storage-permit",
+    category="comparisons", job="solar-battery", role="diy",
+    crumb="AC-Coupled vs DC-Coupled Battery",
+    h1="AC-Coupled vs. DC-Coupled Home Battery Permit Rules (NEC)",
+    title="AC-Coupled vs DC-Coupled Home Battery Permit Rules (NEC)",
+    description="Compare AC-coupled (Powerwall 3 / Enphase 5P) vs DC-coupled home battery storage for permits: NEC 705.12 busbar backfeed math and load taps.",
+    answer=(
+        "AC-coupled battery systems add a dedicated inverter backfeed breaker to your main or backup load center, counting toward the NEC 705.12 120% busbar limit alongside solar PV. DC-coupled systems share the hybrid solar inverter's AC output rating, often avoiding a main panel upgrade on 200A services."
+    ),
+    card="Compare AC-coupled vs. DC-coupled home battery architectures for NEC 705.12 busbar math and permits.",
+    table_caption="AC-Coupled vs. DC-Coupled Battery Storage Permit Comparison",
+    table_headers=("Attribute", "DC-Coupled Hybrid System", "AC-Coupled Battery System"),
+    table_rows=(
+        ("Inverter architecture", "Single hybrid inverter handles solar DC + battery DC", "Separate solar inverter + battery inverter(s)"),
+        ("Main panel backfeed breakers", "One 2-pole breaker sized to hybrid inverter AC output", "Two 2-pole breakers (PV breaker + ESS breaker)"),
+        ("NEC 705.12 120% busbar impact", "Lower — only hybrid inverter AC amps count on bus", "Higher — PV + ESS breakers sum together on bus"),
+        ("Best use case", "New solar + storage installs on 200A panels", "Adding battery storage to an existing solar PV system"),
+    ),
+    sections=(
+        ("How coupling architecture changes your NEC 705.12 busbar math", (
+            "On a standard 200 A panel with a 200 A busbar, the 120% rule allows 240 A total (leaving 40 A for backfeed). A DC-coupled hybrid inverter with a 40 A AC breaker fits on that 200 A busbar without modifying the main breaker—test your exact numbers in our <a href=\"/tools/solar-120-percent-rule-calculator/\">solar 120% rule calculator</a>.",
+            "By contrast, adding a 30 A or 40 A AC-coupled battery on top of an existing 40 A solar breaker totals 70 A–80 A of backfeed, requiring a main breaker derate, a 225 A busbar panel, or a backup gateway / supply-side tap in your <a href=\"/solar-battery-permit/\">solar and battery permit packet</a>.",
+        )),
+        ("Whole-home backup vs. essential-loads subpanel", (
+            "When pairing battery storage with an automatic microgrid interconnect device (MID / backup gateway), your <a href=\"/permit-documents/single-line-diagram/\">single-line diagram</a> must clearly show whether the entire 200 A service or a relocated essential-loads <a href=\"/subpanel-permit/\">subpanel</a> is backed up during a utility outage.",
+        )),
+        _EXTRA_SEC,
+    ),
+    tool_links=("solar-120-percent-rule-calculator", "residential-load-calculator"),
+    doc_links=("single-line-diagram", "load-calculation"),
+    related_slugs=("solar-pv-and-battery-storage-electrical-permit-guide", "subpanel-vs-200a-panel-upgrade"),
+    faqs=(
+        ("Can I add an AC-coupled battery to an existing permitted solar system?", "Yes, as a separate electrical permit showing the new ESS inverter, NEC 706.15 disconnect, updated NEC 705.12 busbar calculation, and UL 9540 cut sheet."),
+        ("Does a home battery increase my NEC 220 dwelling load calculation?", "No—battery energy storage systems are power sources/storage rather than continuous dwelling loads, though backup subpanels must be sized to carry the backed-up circuits."),
+        ("Do I need a separate disconnect for an outdoor battery?", "NEC 706.15 requires a readily accessible, lockable disconnecting means for the ESS; some batteries include an integrated listed disconnect while others use an adjacent AC disconnect switch."),
+    ),
+)

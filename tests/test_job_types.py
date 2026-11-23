@@ -20,7 +20,7 @@ from tests.api_helpers import with_pdf
 # load from tests/samples, already in the current request shape.
 SAMPLE_CASES = {
     "ev_charger": "oro_valley_attached_no_plan", "service_upgrade": "service_upgrade", "subpanel": "subpanel",
-    "appliance_circuit": "appliance_circuit", "generator": "generator",
+    "appliance_circuit": "appliance_circuit", "generator": "generator", "solar_storage": "solar_storage",
 }
 SAMPLES = Path(__file__).parent / "samples"
 
@@ -39,7 +39,7 @@ def _sample(key: str) -> dict:
 
 def test_job_types_lists_every_type_publicly(client):
     body = client.get("/api/job-types").json()["job_types"]
-    assert [job_type["key"] for job_type in body] == ["ev_charger", "service_upgrade", "subpanel", "appliance_circuit", "generator"]
+    assert [job_type["key"] for job_type in body] == ["ev_charger", "service_upgrade", "subpanel", "appliance_circuit", "generator", "solar_storage"]
     ev = body[0]
     assert (ev["slug"], ev["short_label"], ev["icon"], ev["feature_page"]) == ("ev-charger", "EV", "ev", 2)
     assert ev["route_between"] == ["panel", "charger"]
@@ -112,7 +112,7 @@ def test_over_capacity_summary_names_the_overage(client):
     assert body["summary"][1]["value"].endswith(" A")
 
 
-@pytest.mark.parametrize("path, count", [("/", 3), ("/start/", 9)])
+@pytest.mark.parametrize("path, count", [("/", 3), ("/start/", 10)])
 def test_the_page_loads_its_assets_with_a_version(client, path, count):
     response = client.get(path)
     assert response.status_code == 200
