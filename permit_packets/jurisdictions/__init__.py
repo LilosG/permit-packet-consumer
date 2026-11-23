@@ -198,7 +198,18 @@ from permit_packets.jurisdictions.minneapolis_mn import MINNEAPOLIS  # noqa: E40
 from permit_packets.jurisdictions.columbus_oh import COLUMBUS  # noqa: E402
 from permit_packets.jurisdictions.salt_lake_city_ut import SALT_LAKE_CITY  # noqa: E402
 
-KNOWN = {(j.name.lower(), j.state): j for j in (MIAMI, MINNEAPOLIS, COLUMBUS, SALT_LAKE_CITY, ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE, SAN_DIEGO, LOS_ANGELES, SAN_JOSE, SEATTLE, PORTLAND, AUSTIN, DALLAS, DENVER, PHOENIX, SCOTTSDALE, SACRAMENTO, OAKLAND, AURORA, TAMPA, RALEIGH, HOUSTON, SAN_ANTONIO, TACOMA, BOSTON, CAMBRIDGE, NEWARK, JERSEY_CITY, NEW_YORK, BUFFALO, CHICAGO, NAPERVILLE, ATLANTA, SAVANNAH)}
+from permit_packets.jurisdictions.fort_worth_tx import FORT_WORTH  # noqa: E402
+from permit_packets.jurisdictions.plano_tx import PLANO  # noqa: E402
+from permit_packets.jurisdictions.frisco_tx import FRISCO  # noqa: E402
+from permit_packets.jurisdictions.orlando_fl import ORLANDO  # noqa: E402
+from permit_packets.jurisdictions.jacksonville_fl import JACKSONVILLE  # noqa: E402
+from permit_packets.jurisdictions.irvine_ca import IRVINE  # noqa: E402
+from permit_packets.jurisdictions.fresno_ca import FRESNO  # noqa: E402
+from permit_packets.jurisdictions.durham_nc import DURHAM  # noqa: E402
+from permit_packets.jurisdictions.henderson_nv import HENDERSON  # noqa: E402
+from permit_packets.jurisdictions.colorado_springs_co import COLORADO_SPRINGS  # noqa: E402
+
+KNOWN = {(j.name.lower(), j.state): j for j in (FORT_WORTH, PLANO, FRISCO, ORLANDO, JACKSONVILLE, IRVINE, FRESNO, DURHAM, HENDERSON, COLORADO_SPRINGS, MIAMI, MINNEAPOLIS, COLUMBUS, SALT_LAKE_CITY, ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE, SAN_DIEGO, LOS_ANGELES, SAN_JOSE, SEATTLE, PORTLAND, AUSTIN, DALLAS, DENVER, PHOENIX, SCOTTSDALE, SACRAMENTO, OAKLAND, AURORA, TAMPA, RALEIGH, HOUSTON, SAN_ANTONIO, TACOMA, BOSTON, CAMBRIDGE, NEWARK, JERSEY_CITY, NEW_YORK, BUFFALO, CHICAGO, NAPERVILLE, ATLANTA, SAVANNAH)}
 
 
 def jurisdiction_for(city: str | None, state: str | None) -> Jurisdiction:

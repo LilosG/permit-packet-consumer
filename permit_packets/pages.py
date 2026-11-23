@@ -293,7 +293,7 @@ def about() -> Response:
 # ---- Placeholders: an H1 and "Coming soon", noindex until their content prompt ships ----
 
 def _placeholder(path: str, h1: str, crumb: str, parents: list[tuple[str, str]] | None = None) -> None:
-    title = f"{h1} | {seo.SITE_NAME}"
+    title = _location_title(h1)
     seo.register(path, h1)
 
     def handler() -> Response:
@@ -309,6 +309,11 @@ STATE_NAMES = sitedata.STATE_NAMES
 
 def _state_name(state: str) -> str:
     return STATE_NAMES.get(state, state.upper())
+
+
+def _location_title(base: str) -> str:
+    branded = f"{base} | {seo.SITE_NAME}"
+    return branded if len(branded) <= seo.TITLE_MAX else base
 
 
 def _soon(title: str, h1: str, path: str, crumbs: list[tuple[str, str]]) -> Response:
@@ -386,7 +391,7 @@ def permits_state(state: str) -> Response:
     latest = max((c.rules_date for c in cities if c.rules_date), default="")
     ok = locations.state_indexable(state)
     meta = seo.page_meta(
-        f"{h1} | {seo.SITE_NAME}",
+        _location_title(h1),
         f"Residential electrical permit rules for {', '.join(c.name for c in cities)} in {name}: code edition, who may pull, sources.",
         path, robots=_robots(ok))
     data = seo.dataset(f"Residential electrical permit rules in {name}",
@@ -414,7 +419,7 @@ def permits_city(state: str, city: str) -> Response:
     verified = _date(found.rules_date) if found.rules_date else ""
     ok = locations.city_indexable(found)
     meta = seo.page_meta(
-        f"{h1} | {seo.SITE_NAME}",
+        _location_title(h1),
         f"{found.label} electrical permits: {', '.join(r['job'].lower() for r in rows)}. Who may pull, code edition, sources."
         + (f" Checked {verified}." if verified else ""),
         path, robots=_robots(ok))
@@ -538,7 +543,7 @@ def permits_job(state: str, city: str, job: str) -> Response:
         return _soon(f"{label} Permit: {found.label} | {seo.SITE_NAME}", h1, path, crumbs)
     view = _job_view(found, job)
     meta = seo.page_meta(
-        f"{label} Permit in {found.label} | {seo.SITE_NAME}",
+        _location_title(f"{label} Permit in {found.label}"),
         f"{label} permit in {found.label}: who may pull it, the {found.nec_edition.split(' (')[0] or 'NEC'} edition, what the city asks for."
         + (f" Checked {_date(found.rules_date)}." if found.rules_date else ""),
         path, robots="index,follow")
