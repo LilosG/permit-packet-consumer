@@ -16,7 +16,7 @@ WAVE2_DATE = "2026-11-17"
 
 CALC_RUN = {"ev-charger-load-calculator": (calc_math.EV_FIELDS, calc_math.ev_load),
             "residential-load-calculator": (calc_math.LOAD_FIELDS, calc_math.residential_load),
-            "ev-charger-wire-breaker-size": (calc_math.WIRE_FIELDS, calc_math.wire_breaker), "subpanel-feeder-calculator": (calc_math.SUBPANEL_FIELDS, calc_math.subpanel_feeder), "solar-120-percent-rule-calculator": (calc_math.SOLAR_FIELDS, calc_math.solar_120_rule), "hot-tub-breaker-wire-size": (calc_math.HOT_TUB_FIELDS, calc_math.hot_tub_circuit), "conduit-fill-trench-depth-calculator": (calc_math.CONDUIT_FIELDS, calc_math.conduit_fill_trench)}
+            "ev-charger-wire-breaker-size": (calc_math.WIRE_FIELDS, calc_math.wire_breaker), "subpanel-feeder-calculator": (calc_math.SUBPANEL_FIELDS, calc_math.subpanel_feeder), "solar-120-percent-rule-calculator": (calc_math.SOLAR_FIELDS, calc_math.solar_120_rule), "hot-tub-breaker-wire-size": (calc_math.HOT_TUB_FIELDS, calc_math.hot_tub_circuit), "conduit-fill-trench-depth-calculator": (calc_math.CONDUIT_FIELDS, calc_math.conduit_fill_trench), "generator-interlock-wire-calculator": (calc_math.GEN_FIELDS, calc_math.generator_feeder)}
 
 
 def calc_path(slug: str) -> str:
@@ -41,7 +41,7 @@ for _p, _n in [(w2.TOOLS_PATH, "Free Electrical Permit Calculators"), (w2.DOCS_P
 JOB_CALCS = {"ev-charger": ("ev-charger-load-calculator", "ev-charger-wire-breaker-size"),
              "panel-upgrade": ("residential-load-calculator", "solar-120-percent-rule-calculator"),
              "subpanel": ("subpanel-feeder-calculator", "residential-load-calculator"),
-             "hot-tub-240v": ("hot-tub-breaker-wire-size", "residential-load-calculator")}
+             "hot-tub-240v": ("hot-tub-breaker-wire-size", "residential-load-calculator"), "generator": ("generator-interlock-wire-calculator", "residential-load-calculator")}
 JOB_DOCS = ("site-plan", "single-line-diagram", "load-calculation", "panel-schedule", "equipment-cut-sheets")
 
 

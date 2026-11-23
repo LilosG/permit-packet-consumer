@@ -339,6 +339,41 @@
       </div>
     </div>
     </div>
+    <div data-job-type="generator">
+    <div class="block">
+      <p class="block-title">Transfer equipment &amp; generator</p>
+      <fieldset><legend>Transfer method</legend><div class="choices">
+        <label class="choice"><input type="radio" name="gen_transfer_type" value="interlock" checked><span>Main-breaker interlock kit</span></label>
+        <label class="choice"><input type="radio" name="gen_transfer_type" value="manual_transfer_switch"><span>Manual transfer switch</span></label>
+        <label class="choice"><input type="radio" name="gen_transfer_type" value="automatic_transfer_switch"><span>Automatic transfer switch (ATS)</span></label>
+      </div></fieldset>
+      <div class="grid" style="margin-top:14px">
+        <label class="field">Generator output (kW)<input name="gen_kw" type="number" min="1" max="50" step="0.5" value="9.5" required></label>
+        <label class="field">Inlet / transfer breaker (A)<select name="gen_inlet_amps"><option value="30">30 A (NEMA L14-30)</option><option value="50" selected>50 A (NEMA SS2-50)</option><option value="100">100 A Transfer</option><option value="150">150 A Transfer</option><option value="200">200 A Whole-Home ATS</option></select></label>
+        <label class="field">Generator or interlock model (optional)<input name="gen_model" maxlength="120" placeholder="e.g. Reliance KGB1 / Square D HOMCGK2C"></label>
+        <label class="field">Generator neutral configuration<select name="gen_neutral"><option value="floating" selected>Floating neutral (unbonded)</option><option value="bonded">Bonded neutral</option></select></label>
+      </div>
+    </div>
+    <div class="block">
+      <p class="block-title">Feeder &amp; main panel</p>
+      <div class="grid">
+        <fieldset><legend>Location</legend><div class="choices">
+          <label class="choice"><input type="radio" name="gen_location" value="exterior_wall" checked><span>Exterior wall inlet</span></label>
+          <label class="choice"><input type="radio" name="gen_location" value="detached_pad"><span>Exterior pad</span></label>
+        </div></fieldset>
+        <fieldset><legend>Wiring</legend><div class="choices">
+          <label class="choice"><input type="radio" name="gen_wiring" value="PVC" checked><span>PVC</span></label>
+          <label class="choice"><input type="radio" name="gen_wiring" value="EMT"><span>EMT</span></label>
+          <label class="choice"><input type="radio" name="gen_wiring" value="cable"><span>Cable</span></label>
+        </div></fieldset>
+        <label class="field">Feeder run (ft)<input name="gen_run_ft" type="number" min="1" max="500" value="25" required><span class="hint" id="gen-run-hint"></span></label>
+        <label class="field">Underground part (ft)<input name="gen_trench_ft" type="number" min="0" max="500" value="0" required></label>
+        <label class="field">Main panel size (A)<input name="gen_service_amps" type="number" min="60" max="400" value="200" required></label>
+        <label class="field">Open breaker spaces<input name="gen_spaces" type="number" min="0" max="60" value="4" required></label>
+      </div>
+      <label class="flag" style="margin-top:10px"><input type="checkbox" name="gen_75c" checked><span>Equipment terminals rated 75&deg;C</span></label>
+    </div>
+    </div>
     <div class="block" data-uses="home_loads">
       <p class="block-title">The home</p>
       <div class="grid three">
@@ -484,5 +519,6 @@
 <script src="/assets/js/job-types/service-upgrade.js?v={{ asset_version }}"></script>
 <script src="/assets/js/job-types/subpanel.js?v={{ asset_version }}"></script>
 <script src="/assets/js/job-types/appliance-circuit.js?v={{ asset_version }}"></script>
+<script src="/assets/js/job-types/generator.js?v={{ asset_version }}"></script>
 <script src="/assets/js/app.js?v={{ asset_version }}"></script>
 {% endblock %}

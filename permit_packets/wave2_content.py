@@ -329,6 +329,33 @@ CALCS["conduit-fill-trench-depth-calculator"] = Calc(
     ),
 )
 
+CALCS["generator-interlock-wire-calculator"] = Calc(
+    slug="generator-interlock-wire-calculator", job="generator", crumb="Generator Wire & Inlet Calculator",
+    h1="Generator Interlock & Inlet Wire Size Calculator (NEC 702)",
+    title="Generator Interlock & Inlet Wire Size Calculator (NEC 702)",
+    description="Calculate generator interlock breaker, 4-wire copper gauge, PVC/EMT conduit and neutral bonding rules for 30A and 50A inlets under NEC 702.",
+    card="Wire gauge, 4-wire conduit size and floating-neutral rules for 30A or 50A generator inlets.",
+    answer=("Select your generator inlet amperage, transfer equipment type, feeder length and conduit type to size the 4-wire copper conductors, ground, conduit and neutral configuration under NEC Article 702. "
+            "It uses the same sizing rules as our standby generator permit packet generator."),
+    sections=(
+        ("What wire size does a 30A or 50A generator inlet need?", (
+            "A 30 A generator inlet (NEMA L14-30P, up to 7.2 kW) requires 4-wire #10 AWG copper conductors (two hots, one insulated neutral, and one equipment ground) in 3/4-inch PVC or EMT conduit. "
+            "A 50 A generator inlet (NEMA SS2-50P, up to 12 kW) requires 4-wire #6 AWG copper conductors (or #8 AWG THWN-2 when all terminals are rated 75°C) with a #10 AWG ground.",)),
+        ("Floating neutral vs. bonded neutral on portable generators", (
+            "When feeding a main panel through a 2-pole main-breaker interlock kit, the neutral conductor remains solidly connected to your home's main neutral-ground bond. "
+            "Under NEC 250.30, a portable generator connected to a 2-pole interlock must have a floating neutral (bonding jumper lifted) so return current does not flow on the equipment grounding conductor.",)),
+        ("Mandatory NEC 702.5 interlock listing and NEC 702.7 signage", (
+            "Every generator interlock bracket must be UL-listed for the exact main panel model (NEC 702.5), and a permanent weatherproof plaque must be installed at the service entrance and meter alerting utility workers to the standby power source (NEC 702.7).",)),
+    ),
+    example_label="Worked example",
+    faqs=(
+        ("What size wire do I need for a 50 amp generator inlet?", "A 50 A circuit uses #6 AWG copper (or #8 AWG copper THWN-2 at 75°C) with two hots, one insulated neutral, and a #10 AWG copper ground."),
+        ("Where should the generator power inlet box be installed?", "Outdoors on an exterior wall at least 5 to 10 feet away from windows, doors, and fresh-air intake vents so generator exhaust cannot enter the house."),
+        ("Does a generator interlock kit require a 4-wire cord?", "Yes. Both 30 A (L14-30) and 50 A (SS2-50 / CS6375) residential generator inlets use 4-prong cords carrying L1, L2, Neutral, and Ground."),
+        ("Can I use aluminum SER cable for a generator feeder?", "Indoor feeder segments may use 4-conductor SER cable where permitted, while exterior and underground runs require wet-rated THWN-2 conductors in PVC or EMT conduit."),
+    ),
+)
+
 DOCS_PATH = "/permit-documents/"
 DOCS_TITLE = "Electrical Permit Documents Explained | Permit Packets"
 DOCS_DESCRIPTION = "What each document in an electrical permit set is, when cities ask for it and what a good one contains."

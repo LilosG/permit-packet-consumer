@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 import app as app_module
 from permit_packets import content, locations, seo
 
-HUB_PATHS = ["/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/", "/hot-tub-240v-permit/"]
+HUB_PATHS = ["/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/", "/hot-tub-240v-permit/", "/generator-permit/"]
 AUDIENCE_PATHS = ["/for/diy-homeowners/", "/for/homeowners-hiring-an-electrician/", "/for/electricians/",
                   "/for/contractors/"]
 OTHER_PATHS = ["/", "/sample-packet/", "/pricing/", "/faq/", "/about/"]

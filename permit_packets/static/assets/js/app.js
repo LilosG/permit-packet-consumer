@@ -16,6 +16,7 @@
     service_upgrade: ['200A Service Upgrade', 'A new or larger main panel and service'],
     subpanel: ['Subpanel', 'A feeder and a new subpanel'],
     appliance_circuit: ['Hot Tub / 240V Circuit', 'Spa, sauna, heat pump or mini-split'],
+    generator: ['Generator / Interlock', 'Standby transfer switch or panel interlock'],
   };
   const ICON_ATTRS = 'viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
   const ICONS = {
@@ -23,6 +24,7 @@
     panel: `<svg ${ICON_ATTRS}><rect x="5" y="3" width="18" height="22" rx="2"/><path d="M9 8h4M15 8h4M9 13h4M15 13h4M9 18h4M15 18h4"/></svg>`,
     subpanel: `<svg ${ICON_ATTRS}><rect x="3" y="3" width="13" height="16" rx="2"/><path d="M6 8h2M11 8h2M6 12h2M11 12h2"/><path d="M16 14h3v4"/><rect x="17" y="18" width="8" height="8" rx="1.5"/></svg>`,
     circuit: `<svg ${ICON_ATTRS}><path d="M10 3v6M18 3v6"/><path d="M7 9h14v4a7 7 0 0 1-14 0z"/><path d="M14 20v3a3 3 0 0 0 3 3h5"/></svg>`,
+    generator: `<svg ${ICON_ATTRS}><rect x="3" y="6" width="22" height="16" rx="2.5"/><path d="M14 10l-3 4h4l-3 4"/><path d="M7 6V4M21 6V4"/></svg>`,
   };
   const FALLBACK_ICON = `<svg ${ICON_ATTRS}><rect x="5" y="5" width="18" height="18" rx="2"/></svg>`;
 

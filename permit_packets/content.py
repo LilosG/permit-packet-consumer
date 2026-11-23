@@ -288,6 +288,59 @@ _hub(Hub(
 ))
 
 
+
+_hub(Hub(
+    slug="generator", type_key="generator", path="/generator-permit/",
+    h1="Generator Interlock & Transfer Switch Permit Plans", crumb="Generator", job_name="generator",
+    title="Generator Interlock & Transfer Switch Permit Plans",
+    description="Single-line diagram, site plan and NEC 220 load calc for a standby generator interlock kit or transfer switch permit. Free preview.",
+    answer=("A generator permit packet provides the electrical drawings and calculations a building department requires "
+            "to install a standby generator transfer switch or main-breaker interlock kit: a parcel site plan, single-line "
+            "diagram, NEC Article 220 load calculation, panel schedule and equipment data. Permit Packets generates yours "
+            "from one address with a free watermarked preview."),
+    sheets_intro=("The generator permit packet is eight sheets covering both main-breaker interlock kits (30A or 50A inlet boxes) "
+                  "and manual or automatic transfer switches under NEC Article 702."),
+    sheets=(
+        Sheet("Checklist and Checks", "Your city's checklist item by item with a status, NEC 702.5 interlock and NEC 250.30 neutral checks, and items flagged for review."),
+        Sheet("Permit Application Data", "The fields for the city's permit form, written scope of work and required rough/final inspections."),
+        Sheet("Site Plan", "Your parcel on aerial imagery with the main panel and exterior generator inlet box marked and the feeder run measured."),
+        Sheet("Single-Line Diagram", "Utility meter, main panel with interlock or transfer switch, generator feeder conductors, conduit and power inlet box."),
+        Sheet("Load Calculation", "The NEC Article 220 dwelling load calculation against your existing service and standby generator rating."),
+        Sheet("Panel Schedule", "A circuit directory with the new generator backfeed breaker marked, ready to field verify and fill in."),
+        Sheet("Equipment Data", "Transfer equipment, inlet box, breaker and conductors with their UL listings and NEC 702.7 warning plaque notes."),
+        Sheet("Pre-Submittal Review", "A final checklist confirming UL panel compatibility, neutral switching and exterior inlet clearances."),
+    ),
+    checks_intro="These are the NEC Article 702 checks the generator runs on your job and prints on the sheets.",
+    checks=(
+        "Transfer & interlock compliance (NEC 702.5): verifies UL-listed mechanical interlocking so utility and generator power cannot backfeed simultaneously.",
+        "Neutral & grounding check (NEC 250.30): confirms floating-neutral generator configuration for 2-pole interlocks or switched-neutral transfer equipment.",
+        "Panel spaces: two open adjacent breaker spaces in the main panel when installing a 2-pole interlock backfeed breaker.",
+        "Feeder conductors & conduit fill: sizes copper hots, neutral and equipment ground at 75°C or 60°C with 40% conduit fill.",
+        "Voltage drop over the measured feeder run, flagged when it exceeds 3%.",
+        "Ambient temperature correction (NEC 310.15(B)(1)) for exterior and sun-exposed raceways.",
+        "Interrupting rating (NEC 110.9 and 110.10) and backup-power warning signage (NEC 702.7).",
+    ),
+    steps=STEPS_COMMON,
+    faqs=(
+        ("Do I need an electrical permit to install a generator interlock kit?",
+         "Yes. Almost every city requires an electrical permit for a main-breaker interlock kit or transfer switch so an inspector can verify UL panel compatibility (NEC 702.5), neutral bonding (NEC 250.30) and warning plaques.",
+         "Yes, to verify UL interlock listing and neutral bonding."),
+        ("What is the difference between a generator interlock and a transfer switch?",
+         "An interlock kit is a UL-listed sliding bracket mounted on your main panel that prevents the main breaker and generator backfeed breaker from closing at the same time. A transfer switch is a separate subpanel that isolates specific circuits.",
+         "Interlock blocks main + generator breakers; transfer switch isolates circuits."),
+        ("Does a portable generator need a floating neutral with an interlock kit?",
+         "Yes. Because a standard 2-pole interlock breaker switches only the two hot legs and leaves the neutral connected to the main panel bond, the portable generator must have a floating neutral per NEC 250.30.",
+         "Yes, for 2-pole main-panel interlock installations."),
+        ("What size inlet box and wire do I need for a portable generator?",
+         "A 30 A inlet (NEMA L14-30P, up to 7.2 kW) uses #10 AWG copper 4-wire conductors, while a 50 A inlet (NEMA SS2-50P, up to 12 kW) uses #6 AWG copper 4-wire conductors.",
+         "30 A uses #10 Cu; 50 A uses #6 Cu (4-wire)."),
+        ("Can a homeowner pull a generator interlock permit?",
+         "Many cities allow homeowner owner-builder permits on single-family homes they occupy; confirm local rules on your city's page in {permits}.",
+         "Often yes for owner-occupied single-family homes."),
+    ),
+))
+
+
 # ---- Audience pages ----
 
 @dataclass(frozen=True)

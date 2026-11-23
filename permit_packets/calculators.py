@@ -326,5 +326,42 @@ def conduit_fill_trench(v: dict[str, int]) -> dict:
     }
 
 
+GEN_INLET_CHOICES = (30, 50, 100, 150, 200)
+GEN_FIELDS = (
+    Field("inlet_amps", "Generator inlet / transfer breaker (amps)", 50, choices=GEN_INLET_CHOICES, hint="30A (L14-30) covers up to 7.2 kW; 50A (SS2-50) covers up to 12 kW."),
+    Field("transfer_type", "Transfer equipment type", 0, choices=(0, 1), choice_labels={0: "Main-breaker interlock kit (2-pole)", 1: "Manual or automatic transfer switch"}),
+    Field("run_ft", "One-way feeder length, panel to inlet (ft)", 30, 1, 300),
+    Field("conduit_type", "Conduit type", 0, choices=(0, 1), choice_labels={0: "Schedule 40/80 PVC", 1: "EMT (Metal)"}),
+)
+
+
+def generator_feeder(v: dict[str, int]) -> dict:
+    amps, run = v["inlet_amps"], v["run_ft"]
+    interlock = v["transfer_type"] == 0
+    ctype = "EMT" if v["conduit_type"] == 1 else "PVC"
+    branch = size_branch(breaker=amps, load_amps=amps * 0.8, run_ft=run, terminals_75c=True)
+    raceway = branch_conduit(branch, 3, ctype)
+    inlet_plug = "NEMA L14-30P flanged inlet" if amps == 30 else ("NEMA SS2-50P flanged inlet" if amps == 50 else f"{amps} A transfer feeder")
+    rows = [
+        ["Maximum 240V generator output", f"{amps * 240 / 1000:.1f} kW ({amps} A at 240 V)"],
+        ["Breaker / inlet specification", f"{amps} A, 2-pole — {inlet_plug}"],
+        ["Copper conductors (4 wires, 75°C)", f"3 x #{branch.wire.size} AWG (2 hots + neutral) + 1 x #{branch.egc} AWG ground"],
+        ["Voltage drop (at 80% continuous)", f"{branch.vd_volts:.1f} V, {branch.vd_percent:.1f}% over {run} ft"],
+        [f"{ctype} conduit (4 wires, 40% fill)", f"{raceway} {ctype}"],
+        ["Generator neutral requirement", "Floating neutral required (NEC 250.30)" if interlock else "Switched-neutral or floating neutral per transfer switch"],
+    ]
+    notes = [
+        "Install a permanent backup-power warning plaque at the service entrance and meter (NEC 702.7).",
+    ]
+    if interlock:
+        notes.append("Interlock kit must be UL-listed specifically for your main panel brand and model (NEC 702.5).")
+    return {
+        "status": "ok" if branch.vd_percent <= 3 else "over",
+        "headline": f"{amps} A breaker, #{branch.wire.size} AWG 4-wire copper, #{branch.egc} AWG ground in {raceway} {ctype}.",
+        "rows": rows, "breaker": amps, "wire": branch.wire.size, "ground": branch.egc,
+        "nec": ["310.16", "250.122", "300.5"], "notes": notes,
+    }
+
+
 def nec_rows(refs: list[str]) -> list[tuple[str, str]]:
     return [(f"NEC {ref}", NEC_TEXT[ref]) for ref in refs if ref in NEC_TEXT]

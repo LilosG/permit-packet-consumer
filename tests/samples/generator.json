@@ -1,0 +1,25 @@
+{
+  "customer": "Sample Homeowner",
+  "address": "123 Sample St, Las Vegas, NV",
+  "contractor": "Sample Electric, LLC",
+  "license_number": "C-2 0012345",
+  "home": {
+    "square_feet": 2400,
+    "range_va": 12000,
+    "dryer_va": 5000,
+    "water_heater_va": 0,
+    "heating_va": 0,
+    "cooling_va": 7200
+  },
+  "service_amps": 200,
+  "open_breaker_spaces": 4,
+  "transfer_type": "interlock",
+  "generator_kw": 9.5,
+  "inlet_amps": 50,
+  "neutral_type": "floating",
+  "location": "exterior_wall",
+  "wiring": "PVC",
+  "run_ft": 25,
+  "trench_ft": 0,
+  "terminals_75c": true
+}

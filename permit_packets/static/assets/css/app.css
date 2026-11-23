@@ -82,6 +82,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .jt-pills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
 .jt-pill { padding: 10px 12px; border: 1px solid var(--line-strong); background: #fff; color: var(--ink); font: 600 13.5px var(--display); white-space: nowrap; text-align: center; }
 .jt-pill:hover:not(:disabled) { background: var(--blue-soft); border-color: var(--blue-tint); }
+.jt-pill:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .jt-pill[aria-checked="true"] { border-color: var(--blue); background: var(--blue); color: #fff; box-shadow: 0 6px 14px -6px rgba(29, 78, 216, .6); }
 .hero-form { display: grid; gap: 12px; }
 .hero-form input { width: 100%; padding: 15px 18px; border: 1px solid var(--line-strong); border-radius: 14px; background: #fff; color: var(--ink); font: 500 16px var(--text); }

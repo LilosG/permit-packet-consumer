@@ -20,6 +20,7 @@ JOBS: dict[str, Job] = {job.slug: job for job in (
     Job("panel-upgrade", "Panel Upgrade", "/panel-upgrade-permit/", "service_upgrade", "service-upgrade"),
     Job("subpanel", "Subpanel", "/subpanel-permit/", "subpanel", "subpanel"),
     Job("hot-tub-240v", "Hot Tub / 240V", "/hot-tub-240v-permit/", "appliance_circuit", "appliance-circuit"),
+    Job("generator", "Generator", "/generator-permit/", "generator", "generator"),
 )}
 
 
@@ -110,6 +111,7 @@ NAV_PERMITS = [
     ("Panel Upgrade", "/panel-upgrade-permit/"),
     ("Subpanel", "/subpanel-permit/"),
     ("Hot Tub / 240V", "/hot-tub-240v-permit/"),
+    ("Generator / Interlock", "/generator-permit/"),
     ("All cities", "/permits/"),
 ]
 NAV_LINKS = [("Tools", "/tools/"), ("Guides", "/guides/"), ("Permit Documents", "/permit-documents/"), ("Sample Packet", "/sample-packet/"), ("Pricing", "/pricing/"), ("FAQ", "/faq/")]

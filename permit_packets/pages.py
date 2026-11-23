@@ -114,6 +114,7 @@ JOB_CARDS = {
     "panel-upgrade": "Riser diagram and load calculation for a service or panel upgrade",
     "subpanel": "Feeder schedule, voltage drop and load calc for a new subpanel",
     "hot-tub-240v": "Plans for a hot tub, sauna, heat pump or mini-split circuit",
+    "generator": "Single-line diagram, site plan and load calc for a generator interlock or transfer switch",
 }
 
 

@@ -38,6 +38,15 @@ GENERAL_CHECKLISTS: dict[str, Checklist] = {
         Requirement("Load calculation", "load"),
         Requirement("Manufacturer specifications and listing", "equipment"),
     )),
+    "generator": Checklist(items=(
+        Requirement("Permit application", "application"),
+        Requirement("Site plan showing the main panel, generator inlet and feeder route", "site_plan"),
+        Requirement("One-line diagram showing interlock or transfer switch (NEC 702.5)", "one_line"),
+        Requirement("Load calculation (NEC 220)", "load"),
+        Requirement("Interlock kit / transfer switch UL listing and cut sheets", "equipment"),
+    ), notes=(
+        Note("always", "NEC 702.7: install a permanent plaque at the service entrance and meter indicating standby generator power."),
+    )),
 }
 
 # What a state adds to every permit in it, on top of a city's own checklist or the general one. A city
