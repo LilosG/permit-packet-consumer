@@ -109,7 +109,7 @@ GUIDES["nec-220-82-vs-220-87-load-calculation"] = Guide(
             'NEC 220.82 sums 3 VA per square foot of living space, two 1,500 VA small-appliance circuits, one 1,500 VA laundry circuit, and fixed electric appliances—counting the first 10,000 VA at 100% and the rest at 40%, plus the larger of heating or cooling. Test your home right now with our <a href="/tools/ev-charger-load-calculator/">EV charger load calculator</a> to see your exact computed amps.',
         )),
         ("How NEC 220.87 saves 100A homeowners thousands of dollars", (
-            'In real homes, you never run your range, dryer, water heater, and air conditioner at full nameplate simultaneously. On a 100 A service, NEC 220.82 nameplate math frequently exceeds capacity. NEC 220.87 lets you pull 12 months of 15-minute peak kW demand from your electric utility, multiply that peak by 125%, and add your new charger. Generate an NEC 220.87 <a href="/permit-documents/load-calculation/">load calculation sheet</a> inside your <a href="/ev-charger-permit/">EV charger permit packet</a>.',
+            'In real homes, you never run your range, dryer, water heater, and air conditioner at full nameplate simultaneously. On a 100 A service, NEC 220.82 nameplate math frequently exceeds capacity. NEC 220.87 lets you pull 12 months of 15-minute peak kW demand from your electric utility, multiply that peak by 125%, and add your new charger. Generate an NEC 220.87 <a href="/permit-documents/load-calculation/">electrical load calculation form</a> inside your <a href="/ev-charger-permit/">EV charger permit packet</a>.',
         )),
     ),
     tool_links=("ev-charger-load-calculator", "residential-load-calculator"),

@@ -193,8 +193,8 @@ CALCS["hot-tub-breaker-wire-size"] = _replace(
 TOOLS_PATH = "/tools/"
 TOOLS_TITLE = "Free Electrical Permit Calculators | Permit Packets"
 TOOLS_DESCRIPTION = "Free NEC load, EV charger wire and breaker calculators that use the same math as our permit packets."
-TOOLS_INTRO = ("Three free calculators for residential electrical permits. Each runs the same functions the Permit Packets generator uses "
-               "to build a packet, so the numbers match what a packet prints.")
+TOOLS_INTRO = ("Eight free NEC calculators for residential electrical permits—covering dwelling load calculations, EV charger wire and breaker sizing, subpanel feeders, solar 120% busbar checks, hot tubs, conduit fill, and generator interlocks. "
+               "Each runs the exact engineering functions our permit packet generator uses, so your numbers match what a packet prints.")
 
 
 @dataclass(frozen=True)
@@ -253,7 +253,7 @@ DOCS: dict[str, Doc] = {d.slug: d for d in (
         slug="load-calculation", name="Load Calculation", h1="Electrical Load Calculation Form & Letter for Permits",
         title="Electrical Load Calculation Form & Letter | Permit Packets",
         description="What an NEC 220 electrical load calculation form or utility load letter requires, when cities ask for one, and how to generate a printable PDF sheet.",
-        sample="04-load-calc", card="Proof the service can carry the new load.",
+        sample="04-load-calc", card="NEC 220 electrical load calculation form, utility load letter, and sample sheet.",
         what=("An electrical load calculation form (also requested by utilities and building departments as an electrical load letter) adds up the demand of a home under NEC Article 220 and compares total computed amps against the main service rating. It answers one question: can the existing service safely carry the home plus the new load.",
               "For residential dwellings, most city plan reviewers accept the optional dwelling method in NEC 220.82, with continuous loads such as EV chargers calculated at 125% per NEC 625.41."),
         when=("Building departments and electric utilities ask for a load calculation form or load letter with 200A panel and service upgrades, detached garage subpanels, Level 2 EV chargers, hot tubs, heat pumps, and standby generators.",
@@ -290,7 +290,7 @@ DOCS: dict[str, Doc] = {d.slug: d for d in (
         slug="equipment-cut-sheets", name="Equipment Cut Sheets", h1="Equipment & Appliance Cut Sheets for Electrical Permits",
         title="Equipment & Appliance Cut Sheets | Permit Packets",
         description="What an appliance or equipment cut sheet (UL spec sheet) is, when building departments require one for permits, and which sheets we attach automatically.",
-        sample="05-spec-sheet", card="Manufacturer data for the charger, panel or breaker.",
+        sample="05-spec-sheet", card="Manufacturer UL spec & appliance cut sheets for chargers, panels, and breakers.",
         what=("An appliance or equipment cut sheet (also called a manufacturer data sheet or technical spec sheet) is the 1-to-2 page specification document showing electrical ratings, enclosure type, and Nationally Recognized Testing Laboratory (NRTL) certification such as a UL or ETL listing.",
               "Plan reviewers cross-check the cut sheet against your single-line diagram and load calculation to confirm the breaker size, wire temperature rating, and outdoor NEMA enclosure match listed manufacturer specs."),
         when=("Building departments require cut sheets for Level 2 EV chargers (UL 2594), main service panels and subpanels (UL 67), meter-main combos, transfer switches (UL 1008), solar inverters (UL 1741), batteries (UL 9540), and 240 V appliances such as hot tubs, saunas, and heat pumps.",
