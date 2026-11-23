@@ -25,6 +25,7 @@
       <h2 class="foot-head">Permits by job</h2>
       <ul>{% for job in jobs %}
         <li><a href="{{ job.url }}">{{ job.label }}</a></li>{% endfor %}
+        <li class="foot-more"><a href="/permits/">All 50 cities &rarr;</a></li>
       </ul>
     </nav>
     {% if popular_cities %}<nav class="foot-col" aria-label="Popular cities">
@@ -32,26 +33,30 @@
       <ul>{% for label, url in popular_cities %}
         <li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}
       </ul>
-      {% if state_links %}<p class="foot-subhead">By state</p><ul class="foot-states">{% for label, url in state_links %}
-        <li><a href="{{ url }}">{{ label }} permits</a></li>{% endfor %}
-      </ul>{% endif %}
     </nav>{% endif %}
-    <nav class="foot-col" aria-label="Support">
-      <h2 class="foot-head">Support</h2>
-      <ul>
-        <li><a href="mailto:hello@myelectricalpermit.com">hello@myelectricalpermit.com</a></li>
-        <li><a href="/find-order/">Find my order</a></li>
-        <li><a href="/refund/">Refund Policy</a></li>
+    {% if state_links %}<nav class="foot-col" aria-label="Permits by state">
+      <h2 class="foot-head">By state</h2>
+      <ul class="foot-states">{% for label, url in state_links %}
+        <li><a href="{{ url }}" aria-label="{{ label }} electrical permits">{{ label }}</a></li>{% endfor %}
       </ul>
-    </nav>
-    <nav class="foot-col" aria-label="Legal">
-      <h2 class="foot-head">Legal</h2>
-      <ul>
-        <li><a href="/terms/">Terms</a></li>
-        <li><a href="/privacy/">Privacy</a></li>
-        <li><a href="/refund/">Refund Policy</a></li>
-      </ul>
-    </nav>
+    </nav>{% endif %}
+    <div class="foot-col foot-stack">
+      <nav aria-label="Support">
+        <h2 class="foot-head">Support</h2>
+        <ul>
+          <li><a class="foot-email" href="mailto:hello@myelectricalpermit.com">hello@myelectricalpermit.com</a></li>
+          <li><a href="/find-order/">Find my order</a></li>
+        </ul>
+      </nav>
+      <nav class="foot-legal" aria-label="Legal">
+        <h2 class="foot-head">Legal</h2>
+        <ul>
+          <li><a href="/terms/">Terms</a></li>
+          <li><a href="/privacy/">Privacy</a></li>
+          <li><a href="/refund/">Refund Policy</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
   <div class="foot-bar"><span>© 2026 Permit Packets by Lilos Growth</span><span>Not PE-stamped · Not legal or engineering advice</span></div>
 </div></footer>

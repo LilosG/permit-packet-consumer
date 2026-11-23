@@ -20,7 +20,7 @@ def test_job_hubs_render_sheet_badges_city_chips_and_four_related_cards(client):
 
 def test_footer_has_by_state_subhead_and_preserves_all_links(client):
     footer = client.get("/").text.split("<footer", 1)[1]
-    assert '<p class="foot-subhead">By state</p>' in footer
+    assert '<h2 class="foot-head">By state</h2>' in footer and 'class="foot-col foot-stack"' in footer
     assert 'href="/permits/ca/san-diego/"' in footer
     assert 'href="/permits/ca/"' in footer
 
