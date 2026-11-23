@@ -80,15 +80,15 @@ CALCS: dict[str, Calc] = {c.slug: c for c in (
         )),
     Calc(
         slug="ev-charger-wire-breaker-size", job="ev-charger", crumb="EV Charger Wire & Breaker Size",
-        h1="EV Charger Wire and Breaker Size Calculator",
+        h1="EV Charger Wire & Breaker Size Calculator (48A, 60A, 32A)",
         title="EV Charger Wire & Breaker Size Calculator | Permit Packets",
-        description="Find the breaker, copper wire size, ground and conduit for a Level 2 EV charger, with voltage drop. Same sizing as our packets.",
+        description="Calculate exact copper wire size, breaker (e.g., 48 amp EV charger wire size requires 60A breaker), conduit fill, and voltage drop for Level 2 EV circuits.",
         card="Breaker, wire, ground, conduit and voltage drop for a Level 2 charger.",
-        answer=("Pick the charger amps and the one-way wire run to get the breaker, copper wire gauge, ground, conduit size and voltage drop. "
-                "It uses the same circuit sizing our EV charger permit packet prints on the single-line diagram."),
+        answer=("Select your EV charger amps (e.g., 48 amp, 40 amp, 32 amp) and one-way wire run to calculate the exact NEC required breaker, copper wire size, ground, EMT conduit size, and voltage drop. "
+                "This uses the same NEC 625 continuous-load math our EV charger permit packet prints on the single-line diagram."),
         sections=(
             ("How is an EV charger circuit sized?", (
-                "EV charging is a continuous load, so the circuit must carry 125% of the charger's current (NEC 625.41 and 210.19(A)(1)). A 48 A charger needs 60 A of capacity, which means a 60 A breaker. "
+                "EV charging is a continuous load, so the circuit must carry 125% of the charger's current (NEC 625.41 and 210.19(A)(1)). For example, a 48 amp EV charger wire size must carry 60 A of capacity, which means a 60 A breaker. "
                 "The breaker comes from the next standard size at or above that value, and the wire must be rated for the breaker at its terminal temperature.",)),
             ("How is the wire size chosen?", (
                 "The tool picks the smallest listed copper conductor whose 75°C ampacity (NEC 310.16) covers the breaker, then checks voltage drop over your run. If drop is above 3%, it steps up the wire size. "
@@ -99,7 +99,7 @@ CALCS: dict[str, Calc] = {c.slug: c for c in (
         ),
         example_label="Worked example",
         faqs=(
-            ("What breaker does a 48 A charger need?", "A 60 A, 2-pole breaker: 48 A x 125% = 60 A."),
+            ("What wire size does a 48 amp EV charger require?", "A 48 amp EV charger requires a 60 A breaker and is typically wired with #6 AWG THWN-2 copper wire (or #4 AWG if Romex NM-B is used, though THWN-2 in conduit is standard for commercial and exterior runs)."),
             ("Can I use aluminum wire?", "This calculator sizes copper at the 75°C column. Aluminum needs larger sizes and its own check."),
             ("Why did the wire size go up with a long run?", "Voltage drop grows with distance. The tool upsizes the wire to hold drop to 3% or less, as our packets do."),
             ("Does a plug-in charger change the answer?", "A receptacle adds rules, such as GFCI protection and a 50 A receptacle limit. Larger chargers are hardwired. The packet checks this when you pick the connection type."),

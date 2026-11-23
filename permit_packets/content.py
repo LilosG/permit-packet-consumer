@@ -71,8 +71,8 @@ _hub(Hub(
     description="Site plan, single-line diagram and load calc for a Level 2 EV charger permit, built from your address. Free watermarked preview.",
     answer=("An EV charger permit packet is the set of plans and calculations a building department reviews before "
             "you install a Level 2 charger: a site plan, single-line diagram, load calculation, panel schedule and "
-            "equipment data. Permit Packets builds yours from one address, typically in under 5 minutes, with a free "
-            "watermarked preview."),
+            "equipment data. Permit Packets builds yours from one address for California, Texas, Washington State, "
+            "and more in under 5 minutes."),
     sheets_intro=("The EV charger packet is eight sheets. Each sheet we draw carries a title block with the project address, "
                   "parcel number and sheet number, and the manufacturer's data sheet follows when your charger model is in our library."),
     sheets=(
@@ -117,6 +117,9 @@ _hub(Hub(
         ("Can I see a finished EV charger packet?",
          'Yes. The <a href="/sample-packet/">sample packet</a> is a 48 A charger on a 200 A panel in El Cajon, CA, with every sheet shown full size. It uses a placeholder owner name.',
          "Yes, the sample packet shows a 48 A charger in El Cajon."),
+        ("What are the EV charger permit rules for Washington State?",
+         'In Washington State, jurisdictions like Seattle (SDCI), Bellevue, and Tacoma enforce the 2023 NEC with state amendments. You typically need an <a href="/permit-documents/load-calculation/">NEC 220 load calculation</a> proving service capacity, a single-line diagram, and a site plan. Check our <a href="/permits/wa/">Washington city hubs</a> for local guidelines.',
+         "Washington State cities generally enforce the 2023 NEC with state amendments. You need a load calc, single-line, and site plan."),
     ),
 ))
 
