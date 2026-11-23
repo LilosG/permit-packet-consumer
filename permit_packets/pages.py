@@ -336,7 +336,7 @@ def _hub_row(city, slug):
     required = city.permit_required.get(job.type_key)
     return {"job": job.label, "url": url, "edition": city.nec_edition,
             "verified": _date(city.rules_date) if city.rules_date else "",
-            "permit": "Required" if required else ""}
+            "permit": "Required" if (required or city.known) else ""}
 
 
 def _city_row(c):

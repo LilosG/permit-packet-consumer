@@ -430,7 +430,7 @@ def test_a_real_address_and_parcel_show_without_sample_mode(client):
 
 def test_the_job_types_list_is_ev_then_service(client):
     job_types = client.get("/api/job-types").json()["job_types"]
-    assert [job_type["key"] for job_type in job_types] == ["ev_charger", "service_upgrade", "subpanel", "appliance_circuit"]
+    assert [job_type["key"] for job_type in job_types] == ["ev_charger", "service_upgrade", "subpanel", "appliance_circuit", "generator", "solar_storage"]
     service = job_types[1]
     assert (service["slug"], service["label"], service["short_label"], service["icon"]) == (
         "service-upgrade", "Panel / service upgrade", "Service", "panel")

@@ -453,7 +453,7 @@ def test_oro_valley_falls_back_to_the_general_checklist():
 def test_the_job_types_list_has_the_four_types_in_order(client):
     job_types = client.get("/api/job-types").json()["job_types"]
     assert [job_type["key"] for job_type in job_types] == [
-        "ev_charger", "service_upgrade", "subpanel", "appliance_circuit"]
+        "ev_charger", "service_upgrade", "subpanel", "appliance_circuit", "generator", "solar_storage"]
     circuit = job_types[3]
     assert (circuit["slug"], circuit["label"], circuit["short_label"], circuit["icon"]) == (
         "appliance-circuit", "240 V circuit", "240 V", "circuit")
@@ -479,6 +479,6 @@ def test_the_signed_in_page_loads_the_script_with_a_version(client):
 
 def test_the_form_uses_ac_names_that_cannot_clash_with_other_types(client):
     page = client.get("/start/").text
-    block = page[page.index('data-job-type="appliance_circuit"'):page.index('data-uses="home_loads"')]
+    block = page[page.index('data-job-type="appliance_circuit"'):page.index('data-job-type="generator"')]
     names = set(re.findall(r'name="([^"]+)"', block))
     assert names and all(name.startswith("ac_") for name in names)

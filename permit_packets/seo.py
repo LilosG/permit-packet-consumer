@@ -314,7 +314,7 @@ def llms_txt() -> str:
     indexable = [entry for entry in PAGES.values() if entry.indexable]
     generators = [e for e in indexable if e.path in (
         "/", "/ev-charger-permit/", "/panel-upgrade-permit/", "/subpanel-permit/", "/hot-tub-240v-permit/",
-        "/sample-packet/", "/pricing/"
+        "/generator-permit/", "/solar-battery-permit/", "/sample-packet/", "/pricing/"
     )]
     audiences = [e for e in indexable if e.path.startswith("/for/")]
     tools = [e for e in indexable if e.path.startswith("/tools/")]

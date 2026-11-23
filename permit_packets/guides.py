@@ -33,6 +33,10 @@ JOB_GUIDES: dict[str, tuple[str, ...]] = {
                  "ev-charger-trench-depth-conduit-rules-nec-300-5", "how-to-read-electrical-panel-label-aic-bus-rating", "garage-subpanel-wiring-diagram-and-permit-guide"),
     "hot-tub-240v": ("hot-tub-gfci-disconnect-wire-size-permit-guide", "heat-pump-mini-split-electrical-permit-mca-mocp",
                      "ev-charger-trench-depth-conduit-rules-nec-300-5", "2023-nec-and-california-electrical-code-permit-guide", "do-you-need-an-engineer-stamp-for-residential-electrical-permit", "200a-panel-upgrade-cost-and-permit-checklist", "generator-interlock-transfer-switch-permit-guide"),
+    "generator": ("generator-interlock-transfer-switch-permit-guide", "200a-panel-upgrade-cost-and-permit-checklist",
+                  "do-you-need-an-engineer-stamp-for-residential-electrical-permit", "2023-nec-and-california-electrical-code-permit-guide"),
+    "solar-battery": ("utility-service-upgrade-rules-pge-srp-aps-duke-pse", "best-200a-meter-main-combo-panels",
+                      "2023-nec-and-california-electrical-code-permit-guide", "do-you-need-an-engineer-stamp-for-residential-electrical-permit"),
 }
 
 
