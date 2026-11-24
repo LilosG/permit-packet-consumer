@@ -2,10 +2,13 @@
 {% from "partials/ui.html" import cta, byline, cta_band, tier_cards, faq_details %}
 {% block main %}
 <main class="page-main content">
-<h1>Permit Packet Pricing</h1>
-{{ byline() }}
-<p class="answer">Permit Packets costs $39 for a load calculation and panel audit, $89 for the complete permit packet, or $169 for the complete packet checked against your city's published requirements within 24 hours. The preview is always free and watermarked, and you pay only to download.</p>
-<p class="cta-row">{{ cta("/start/") }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+<header class="sub-hero">
+  <p class="eyebrow-pill">Transparent Pricing <i>•</i> Free Preview First</p>
+  <h1>Permit Packet Pricing</h1>
+  {{ byline() }}
+  <p class="answer">Permit Packets costs $39 for a load calculation and panel audit, $89 for the complete permit packet, or $169 for the complete packet checked against your city's published requirements within 24 hours. The preview is always free and watermarked, and you pay only to download.</p>
+  <p class="cta-row">{{ cta("/start/") }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
+</header>
 
 <h2>How much does a permit packet cost?</h2>
 {{ tier_cards() }}
@@ -25,8 +28,10 @@
 </tbody></table></div>
 {{ cta_band("/start/", "Not sure which one? Preview first. It costs nothing.") }}
 
-<h2>What is the refund policy?</h2>
-<p>You get a full refund if you ask before downloading your clean packet. Once it has been downloaded, the sale is final because it is a digital file. A 24-Hour City-Checked order can be refunded in full any time before it is released. Email <a href="mailto:hello@myelectricalpermit.com">hello@myelectricalpermit.com</a> with your order link. The full text is on the <a href="/refund/">Refund Policy</a> page.</p>
+<section class="section-card" style="margin-top:28px">
+  <h2>What is the refund policy?</h2>
+  <p>You get a full refund if you ask before downloading your clean packet. Once it has been downloaded, the sale is final because it is a digital file. A 24-Hour City-Checked order can be refunded in full any time before it is released. Email <a href="mailto:hello@myelectricalpermit.com">hello@myelectricalpermit.com</a> with your order link. The full text is on the <a href="/refund/">Refund Policy</a> page.</p>
+</section>
 
 <h2>Pricing questions</h2>
 {{ faq_details(faqs) }}

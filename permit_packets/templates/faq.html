@@ -1,12 +1,15 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import cta, byline, cta_band %}
+{% from "partials/ui.html" import cta, byline, cta_band, packet_strip %}
 {% block main %}
 <main class="page-main content">
-<h1>Permit Packets FAQ</h1>
-{{ byline() }}
-<p class="answer">Answers about Permit Packets, an automated tool that drafts residential electrical permit plans from an address: what a packet includes, pricing and refunds, each job type and who it is for. Where an answer is longer, the entry links to the page with the detail.</p>
-<p class="cta-row">{{ cta("/start/") }}</p>
-<nav class="faq-jump" aria-label="FAQ sections">{% for heading, anchor, items in groups %}<a href="#{{ anchor }}">{{ heading }}</a>{% endfor %}</nav>
+<header class="sub-hero">
+  <p class="eyebrow-pill">Help Center <i>•</i> Frequently Asked Questions</p>
+  <h1>Permit Packets FAQ</h1>
+  {{ byline() }}
+  <p class="answer">Answers about Permit Packets, an automated tool that drafts residential electrical permit plans from an address: what a packet includes, pricing and refunds, each job type and who it is for. Where an answer is longer, the entry links to the page with the detail.</p>
+  <p class="cta-row">{{ cta("/start/") }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
+  <nav class="faq-jump filter-pills" aria-label="FAQ sections">{% for heading, anchor, items in groups %}<a href="#{{ anchor }}">{{ heading }}</a>{% endfor %}</nav>
+</header>
 {% for heading, anchor, items in groups %}
 <h2 id="{{ anchor }}">{{ heading }}</h2>
 <div class="qa-list">
@@ -16,6 +19,6 @@
 </div>
 {% if loop.index == 2 %}{{ cta_band("/start/", "Ready to see your packet? Preview it free.") }}{% endif %}
 {% endfor %}
-<p>Still stuck? Email <a href="mailto:hello@myelectricalpermit.com">hello@myelectricalpermit.com</a>.</p>
+<p class="muted-note">Still stuck? Email <a href="mailto:hello@myelectricalpermit.com">hello@myelectricalpermit.com</a>.</p>
 </main>
 {% endblock %}

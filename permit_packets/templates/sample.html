@@ -2,12 +2,15 @@
 {% from "partials/ui.html" import cta, byline, cta_band, link_cards %}
 {% block main %}
 <main class="page-main content wide-content">
-<h1>Sample EV Charger Permit Packet (El Cajon, CA)</h1>
-{{ byline() }}
-<p class="answer">This is a finished EV charger permit packet for a 48 A charger on a 200 A panel at a house in El Cajon, CA. Each sheet is shown full size below with notes on what is on it. The sample uses a placeholder owner name, "Sample Homeowner".</p>
-<p class="cta-row">{{ cta("/start/?job=ev-charger") }}<a class="link" href="/ev-charger-permit/">About EV charger permit packets</a></p>
+<header class="sub-hero">
+  <p class="eyebrow-pill">Real Output <i>•</i> Full-Resolution Engineering Sheets</p>
+  <h1>Sample EV Charger Permit Packet (El Cajon, CA)</h1>
+  {{ byline() }}
+  <p class="answer">This is a finished EV charger permit packet for a 48 A charger on a 200 A panel at a house in El Cajon, CA. Each sheet is shown full size below with notes on what is on it. The sample uses a placeholder owner name, "Sample Homeowner".</p>
+  <p class="cta-row">{{ cta("/start/?job=ev-charger") }}<a class="btn-secondary" href="/ev-charger-permit/">About EV charger permit packets</a></p>
+</header>
 {% for sheet in sheets %}
-<section class="sample-sheet">
+<section class="sample-sheet section-card">
 <h2>{{ sheet.label }}</h2>
 <button type="button" class="sample-open" data-full="/assets/samples/{{ sheet.stem }}-2000.webp" data-alt="Sample packet sheet: {{ sheet.title }}" aria-label="Zoom {{ sheet.title }}"><img src="/assets/samples/{{ sheet.stem }}-1000.webp" srcset="/assets/samples/{{ sheet.stem }}-300.webp 300w, /assets/samples/{{ sheet.stem }}-1000.webp 1000w, /assets/samples/{{ sheet.stem }}-2000.webp 2000w" sizes="(max-width: 760px) 100vw, 760px" width="1000" height="1294" {% if loop.first %}fetchpriority="high" {% else %}loading="lazy" {% endif %}decoding="async" alt="Sample packet sheet: {{ sheet.title }}"></button>
 <ul>{% for note in sheet.notes %}<li>{{ note }}</li>{% endfor %}</ul>
@@ -17,7 +20,7 @@
 
 <h2>What does a packet look like for other jobs?</h2>
 <p>The sheets change with the job. Each job page lists its own.</p>
-{{ link_cards(job_links) }}
+{{ link_cards(job_links, "job-grid-compact", ["i-route", "i-panel", "i-diagram", "i-thermo", "i-gauge", "i-calc"]) }}
 </main>
 {% endblock %}
 {% block after_footer %}

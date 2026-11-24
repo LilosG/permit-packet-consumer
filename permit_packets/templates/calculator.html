@@ -11,10 +11,15 @@
 {%- endmacro %}
 {% block main %}
 <main class="page-main content">
-<h1>{{ c.h1 }}</h1>
-{{ byline() }}
-<p class="answer">{{ c.answer }}</p>
-<form class="calc-form" id="calc-form" method="get" action="{{ path }}#result" data-calc="{{ slug }}">
+<header class="sub-hero">
+  <p class="eyebrow-pill">Free NEC Calculator <i>•</i> Instant Engineering Check</p>
+  <h1>{{ c.h1 }}</h1>
+  {{ byline() }}
+  <p class="answer">{{ c.answer }}</p>
+</header>
+
+<section class="section-card">
+<form class="calc-form" id="calc-form" method="get" action="{{ path }}#result" data-calc="{{ slug }}" style="margin-top:0">
 {%- for f in fields %}
   <label class="field">{{ f.label }}
   {%- if f.choice_labels %}<select name="{{ f.name }}">{% for v in f.choices %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ f.choice_labels[v] }}</option>{% endfor %}</select>
@@ -31,16 +36,23 @@
 </section>
 <p class="note-line calc-disclaimer">{{ disclaimer }}</p>
 <p class="cta-row">{{ cta(cta_href, "Build the permit packet") }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+</section>
 
+<div class="section-stack" style="margin-top:24px">
 {% for heading, paragraphs in c.sections %}
-<h2>{{ heading }}</h2>
-{% for paragraph in paragraphs %}<p>{{ paragraph }}</p>
-{% endfor %}
+<section class="section-card">
+  <h2>{{ heading }}</h2>
+  {% for paragraph in paragraphs %}<p>{{ paragraph }}</p>
+  {% endfor %}
+</section>
 {% endfor %}
 
-<h2>{{ c.example_label }}</h2>
-<p>Using the default inputs:{% for f in example.fields %} {{ f.label|lower }} {% if f.choice_labels %}{{ f.choice_labels[example.inputs[f.name]]|lower }}{% elif f.name == "detached" %}{{ detached_labels[example.inputs[f.name]]|lower }}{% else %}{{ "{:,}".format(example.inputs[f.name]) }}{% endif %}{{ ";" if not loop.last else "." }}{% endfor %}</p>
-{{ result_block(dict(example.result, nec_rows=example_nec)) }}
+<section class="section-card">
+  <h2>{{ c.example_label }}</h2>
+  <p>Using the default inputs:{% for f in example.fields %} {{ f.label|lower }} {% if f.choice_labels %}{{ f.choice_labels[example.inputs[f.name]]|lower }}{% elif f.name == "detached" %}{{ detached_labels[example.inputs[f.name]]|lower }}{% else %}{{ "{:,}".format(example.inputs[f.name]) }}{% endif %}{{ ";" if not loop.last else "." }}{% endfor %}</p>
+  {{ result_block(dict(example.result, nec_rows=example_nec)) }}
+</section>
+</div>
 
 {{ cta_band(cta_href, "Turn this result into a full permit packet. Preview it free.") }}
 

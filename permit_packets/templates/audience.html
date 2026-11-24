@@ -1,33 +1,55 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import cta, byline, cta_band, faq_details, steps, link_cards %}
+{% from "partials/ui.html" import cta, byline, cta_band, faq_details, steps, link_cards, packet_widget %}
 {% block main %}
-<main class="page-main content">
-<h1>{{ aud.h1 }}</h1>
-{{ byline() }}
-<p class="answer">{{ aud.answer }}</p>
-<p class="cta-row">{{ cta("/start/" ~ aud.cta_params) }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
-{% for heading, paragraphs in aud.sections %}
-<h2>{{ heading }}</h2>
-{% for paragraph in paragraphs %}<p>{{ paragraph|fill }}</p>
-{% endfor %}
-{%- if loop.index == 3 %}{{ cta_band("/start/" ~ aud.cta_params, "Preview your packet free before you pay.") }}{% endif %}
-{% endfor %}
+<main class="landing-main">
+<section class="sub-hero-band"><div class="wrap sub-hero-split">
+  <div class="sub-hero-copy">
+    <p class="eyebrow-pill">{{ aud.crumb }}</p>
+    <h1>{{ aud.h1 }}</h1>
+    {{ byline() }}
+    <p class="answer">{{ aud.answer }}</p>
+    <p class="cta-row">{{ cta("/start/" ~ aud.cta_params) }}<a class="btn-secondary" href="/sample-packet/">Sample packet</a></p>
+  </div>
+  {{ packet_widget("/start/" ~ aud.cta_params, "role", aud.role, "123 Main St, City, ST", "Free Preview") }}
+</div></section>
 
-<h2>How it works for you</h2>
-{{ steps(aud.steps) }}
+<section class="band alt"><div class="wrap">
+  <p class="kicker">How it fits your job</p>
+  <h2 class="band-title">Everything you need to know before you file</h2>
+  <div class="knowledge-grid">
+  {% for heading, paragraphs in aud.sections %}
+    <article class="k-card">
+      <span class="k-idx">0{{ loop.index }}</span>
+      <h2>{{ heading }}</h2>
+      {% for paragraph in paragraphs %}<p>{{ paragraph|fill }}</p>
+      {% endfor %}
+    </article>
+  {% endfor %}
+  </div>
+  {{ cta_band("/start/" ~ aud.cta_params, "Preview your packet free before you pay.") }}
+</div></section>
 
-<h2>Which package do we recommend?</h2>
-<div class="price-one">
-  <article class="card price popular"><i class="badge">Recommended</i><h3>{{ tier[2] }}</h3><p class="amount">${{ tier[1] }}</p><p>{{ aud.tier_why }}</p><a class="btn-primary full" href="/start/{{ aud.cta_params }}{{ '&amp;' if '?' in aud.cta_params else '?' }}tier={{ tier[1] }}">Start Free Preview</a></article>
-</div>
-<p>All three packages are on the <a href="/pricing/">pricing page</a>.</p>
+<section class="band dark blueprint-band"><div class="wrap">
+  <h2 class="band-title">How it works for you</h2>
+  {{ steps(aud.steps) }}
+</div></section>
 
-<h2>Which permit are you planning?</h2>
-{{ link_cards(job_links) }}
+<section class="band"><div class="wrap narrow-band">
+  <h2 class="band-title">Which package do we recommend?</h2>
+  <div class="price-one">
+    <article class="card price popular"><i class="badge">Recommended</i><h3>{{ tier[2] }}</h3><p class="amount">${{ tier[1] }}</p><p>{{ aud.tier_why }}</p><a class="btn-primary full" href="/start/{{ aud.cta_params }}{{ '&amp;' if '?' in aud.cta_params else '?' }}tier={{ tier[1] }}">Start Free Preview</a></article>
+  </div>
+</div></section>
 
-{% set related_job = "" %}{% include "partials/related.html" %}
+<section class="band alt"><div class="wrap">
+  <h2 class="band-title">Which permit are you planning?</h2>
+  {{ link_cards(job_links, "job-grid", ["i-route", "i-panel", "i-diagram", "i-thermo", "i-gauge", "i-calc"], None, "") }}
+</div></section>
 
-<h2 id="faq">Questions from {{ aud.crumb|lower }}</h2>
-{{ faq_details(aud.faqs) }}
+<section class="band"><div class="wrap narrow-band">
+  {% set related_job = "" %}{% include "partials/related.html" %}
+  <h2 id="faq" class="band-title" style="margin-top:44px">Questions from {{ aud.crumb|lower }}</h2>
+  {{ faq_details(aud.faqs) }}
+</div></section>
 </main>
 {% endblock %}

@@ -14,6 +14,7 @@
     <ul class="trust-items"><li><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg>Guided 2-minute form</li><li><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg>Real GIS parcel data</li><li><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>24-hr city-check option</li></ul>
   </div>
   <div class="action-card" id="hero-card">
+    <div class="card-step-pill"><span class="live-dot"></span><span>Step 1 of 3 · Takes ~2 minutes</span></div>
     <h2>Start Your Permit Packet</h2>
     <p class="action-sub">Enter any US property address to preview free • Starting at $39</p>
     <form id="hero-form" class="hero-form" action="/start/" method="get">
@@ -44,25 +45,29 @@
   </div>
 </div></section>
 
-<section class="band alt" id="how"><div class="wrap">
+<section class="band dark blueprint-band" id="how"><div class="wrap">
+  <p class="kicker">3-step automated drafting</p>
   <h2 class="band-title">How it works</h2>
-  <ol class="how-steps">
-    <li><span class="num">1</span><b>Enter your address</b><span>Pick the job, drop the panel and equipment pins on the aerial map, and answer a few questions.</span></li>
-    <li><span class="num">2</span><b>Preview it free</b><span>See the live NEC 220 check and every sheet of your packet, watermarked.</span></li>
-    <li><span class="num">3</span><b>Pay and download</b><span>Unlock the clean PDF and individual files, plus the copy-paste fields for your city's portal.</span></li>
+  <p class="band-sub">From property address to submission-ready engineering sheets in under five minutes.</p>
+  <ol class="how-steps dark-steps">
+    <li><span class="num">01</span><b>Enter your address</b><span>Pick the job, drop the panel and equipment pins on the aerial map, and answer a few questions.</span></li>
+    <li><span class="num">02</span><b>Preview it free</b><span>See the live NEC 220 check and every sheet of your packet, watermarked.</span></li>
+    <li><span class="num">03</span><b>Pay and download</b><span>Unlock the clean PDF and individual files, plus the copy-paste fields for your city's portal.</span></li>
   </ol>
 </div></section>
 
 <section class="band" id="who"><div class="wrap">
+  <p class="kicker">Built for your workflow</p>
   <h2 class="band-title">Who it's for</h2>
   <p class="band-sub">Pick the page that matches how you're doing the job.</p>
-  {{ link_cards(who_cards) }}
+  {{ link_cards(who_cards, "who-grid", ["i-shield", "i-check", "i-diagram", "i-panel"], ["OWNER-BUILDER", "PRE-QUOTE AUDIT", "C-10 / LICENSED", "MULTI-TRADE"], "See workflow") }}
 </div></section>
 
 <section class="band alt" id="jobs"><div class="wrap">
+  <p class="kicker">6 residential scopes</p>
   <h2 class="band-title">Permits by job</h2>
   <p class="band-sub">Each job has its own sheets and its own checks.</p>
-  {{ link_cards(job_links) }}
+  {{ link_cards(job_links, "job-grid", ["i-route", "i-panel", "i-diagram", "i-thermo", "i-gauge", "i-calc"], ["NEC 625", "NEC 220.82", "NEC 215", "NEC 680 / 440", "NEC 702", "NEC 705.12"], "View packet specs") }}
 </div></section>
 
 <section class="band" id="sample"><div class="wrap">
@@ -162,9 +167,42 @@
   <h2 class="band-title">Simple pricing</h2>
   <p class="band-sub">Preview everything free. Pay only when you're ready to download.</p>
   <div class="price-grid">
-    <article class="card price"><h3>Load Calc &amp; Panel Audit</h3><p class="amount">$39</p><p>NEC 220 load calculation and a panel capacity audit.</p><a class="btn-secondary full" href="/start/?tier=39">Start Free Preview</a></article>
-    <article class="card price popular"><i class="badge">Most popular</i><h3>Instant Permit Packet</h3><p class="amount">$89</p><p>The complete clean packet and individual files. Download as soon as payment clears.</p><a class="btn-primary full" href="/start/?tier=89">Start Free Preview</a></article>
-    <article class="card price"><h3>24-Hour City-Checked Packet</h3><p class="amount">$169</p><p>The complete packet, checked against your city's published requirements within 24 hours.</p><a class="btn-secondary full" href="/start/?tier=169">Start Free Preview</a></article>
+    <article class="card price">
+      <h3>Load Calc &amp; Panel Audit</h3>
+      <p class="amount">$39</p>
+      <p>NEC 220 load calculation and a panel capacity audit.</p>
+      <ul class="tier-list">
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Free watermarked preview first</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>NEC Article 220 load calculation PDF</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Panel schedule &amp; capacity audit</span></li>
+      </ul>
+      <a class="btn-secondary full" href="/start/?tier=39">Start Free Preview</a>
+    </article>
+    <article class="card price popular">
+      <i class="badge">Most popular</i>
+      <h3>Instant Permit Packet</h3>
+      <p class="amount">$89</p>
+      <p>The complete clean packet and individual files. Download as soon as payment clears.</p>
+      <ul class="tier-list">
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Load Calc &amp; Audit</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>GIS aerial site plan &amp; measured run</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Single-line riser diagram &amp; UL cut sheets</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Combined PDF + split-file portal ZIP</span></li>
+      </ul>
+      <a class="btn-primary full" href="/start/?tier=89">Start Free Preview</a>
+    </article>
+    <article class="card price">
+      <h3>24-Hour City-Checked Packet</h3>
+      <p class="amount">$169</p>
+      <p>The complete packet, checked against your city's published requirements within 24 hours.</p>
+      <ul class="tier-list">
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Instant Permit Packet</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Checked vs. city published checklist</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Code &amp; utility parameter verification</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Delivered within 24 hours</span></li>
+      </ul>
+      <a class="btn-secondary full" href="/start/?tier=169">Start Free Preview</a>
+    </article>
   </div>
   <p class="center"><a class="link" href="/pricing/">Compare the packages</a></p>
 </div></section>

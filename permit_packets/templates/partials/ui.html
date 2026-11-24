@@ -6,14 +6,82 @@
 <p class="byline">{{ author }} · Last reviewed: {{ last_reviewed }}</p>
 {%- endmacro %}
 
-{% macro cta_band(href, text) -%}
-<aside class="inline-cta"><p>{{ text }}</p>{{ cta(href) }}</aside>
+{% macro packet_strip() -%}
+<div class="packet-strip" aria-label="Included in every permit packet">
+  <span><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg>Site Plan</span>
+  <span><svg class="ic" aria-hidden="true"><use href="#i-diagram"/></svg>Single-Line</span>
+  <span><svg class="ic" aria-hidden="true"><use href="#i-calc"/></svg>Load Calc</span>
+  <span><svg class="ic" aria-hidden="true"><use href="#i-panel"/></svg>Panel Schedule</span>
+  <span><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>UL Sheets</span>
+</div>
 {%- endmacro %}
 
-{% macro tier_cards(job="") -%}
+{% macro packet_widget(action_href="/start/", hidden_name="", hidden_val="", placeholder="123 Main St, City, ST", title="Preview Your Packet Free") -%}
+<div class="hero-widget">
+  <div class="hw-bar">
+    <span class="live-dot" aria-hidden="true"></span>
+    <b>PACKET ENGINE</b>
+    <span class="hw-badge">NEC 220</span>
+  </div>
+  <div class="hw-body">
+    <p class="hw-title">{{ title }}</p>
+    <form class="hw-form" action="/start/" method="get">
+      {% if hidden_name and hidden_val %}<input type="hidden" name="{{ hidden_name }}" value="{{ hidden_val }}">{% endif %}
+      <label class="sr" for="sub-hero-addr">Property address</label>
+      <input id="sub-hero-addr" name="address" type="text" placeholder="{{ placeholder }}" maxlength="200" required>
+      <button type="submit" class="btn-primary full">Generate Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    </form>
+    <div class="hw-sheets" aria-label="Included packet sheets">
+      <div><span class="hw-num">01</span><b>Site Plan &amp; Riser</b><em>Parcel + NEC 220</em></div>
+      <div><span class="hw-num">02</span><b>Load Calc &amp; UL Sheets</b><em>Ready to file</em></div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro cta_band(href, text) -%}
+<aside class="inline-cta">
+  <div class="inline-cta-copy">
+    <span class="inline-cta-kicker">Free watermarked preview · No credit card required</span>
+    <p>{{ text }}</p>
+  </div>
+  {{ cta(href) }}
+</aside>
+{%- endmacro %}
+
+{% set TIER_BULLETS = {
+  "load_calc": [
+    "Free watermarked preview first",
+    "NEC Article 220 load calculation PDF",
+    "Panel schedule & capacity audit"
+  ],
+  "instant_packet": [
+    "Everything in Load Calc & Audit",
+    "GIS aerial site plan & measured run",
+    "Single-line riser diagram & UL cut sheets",
+    "Combined PDF + split-file portal ZIP"
+  ],
+  "city_checked_24h": [
+    "Everything in Instant Permit Packet",
+    "Checked vs. city published checklist",
+    "Code & utility parameter verification",
+    "Delivered within 24 hours"
+  ]
+} %}
+
+{% macro tier_cards(job="", bullets=True) -%}
 <div class="price-grid">
 {%- for key, amount, name, text, popular in tiers %}
-  <article class="card price{% if popular %} popular{% endif %}">{% if popular %}<i class="badge">Most popular</i>{% endif %}<h3>{{ name }}</h3><p class="amount">${{ amount }}</p><p>{{ text }}</p><a class="{{ 'btn-primary' if popular else 'btn-secondary' }} full" href="/start/?{% if job %}job={{ job }}&amp;{% endif %}tier={{ amount }}">Start Free Preview</a></article>
+  <article class="card price{% if popular %} popular{% endif %}">
+    {% if popular %}<i class="badge">Most popular</i>{% endif %}
+    <div class="price-head">
+      <h3>{{ name }}</h3>
+      <p class="amount">${{ amount }}<span>/packet</span></p>
+    </div>
+    <p class="price-desc">{{ text }}</p>
+    {% if bullets and TIER_BULLETS.get(key) %}<ul class="tier-list">{% for b in TIER_BULLETS[key] %}<li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>{{ b }}</span></li>{% endfor %}</ul>{% endif %}
+    <a class="{{ 'btn-primary' if popular else 'btn-secondary' }} full" href="/start/?{% if job %}job={{ job }}&amp;{% endif %}tier={{ amount }}">Start Free Preview</a>
+  </article>
 {%- endfor %}
 </div>
 {%- endmacro %}
@@ -29,15 +97,23 @@
 {% macro steps(items) -%}
 <ol class="how-steps">
 {%- for title, text in items %}
-  <li><span class="num">{{ loop.index }}</span><b>{{ title }}</b><span>{{ text }}</span></li>
+  <li><span class="num">0{{ loop.index }}</span><b>{{ title }}</b><span>{{ text }}</span></li>
 {%- endfor %}
 </ol>
 {%- endmacro %}
 
-{% macro link_cards(items) -%}
-<ul class="link-cards">
+{% macro link_cards(items, variant="", icons=None, tags=None, action="Explore") -%}
+<ul class="link-cards{% if variant %} {{ variant }}{% endif %}">
 {%- for url, title, text in items %}
-  <li><a href="{{ url }}"><b>{{ title }}</b><span>{{ text }}</span></a></li>
+  <li><a href="{{ url }}">
+    {% if (icons and loop.index0 < icons|length) or (tags and loop.index0 < tags|length) %}<div class="lc-top">
+      {% if icons and loop.index0 < icons|length %}<span class="lc-ic" aria-hidden="true"><svg class="ic"><use href="#{{ icons[loop.index0] }}"/></svg></span>{% endif %}
+      {% if tags and loop.index0 < tags|length %}<span class="lc-tag">{{ tags[loop.index0] }}</span>{% endif %}
+    </div>{% endif %}
+    <b>{{ title }}</b>
+    <span>{{ text }}</span>
+    {% if action %}<em class="lc-foot">{{ action }} <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></em>{% endif %}
+  </a></li>
 {%- endfor %}
 </ul>
 {%- endmacro %}

@@ -1,10 +1,16 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import cta, faq_details %}
+{% from "partials/ui.html" import cta, faq_details, packet_strip %}
 {% block main %}
 <main class="page-main content">
-<h1>{{ h1 }}</h1>
-<p class="byline">{{ author }}{% if verified %} · <span class="verified">Last verified: {{ verified }}</span>{% endif %}</p>
-<p class="answer">{{ city.label }} has {{ rows|length }} residential electrical job{{ "s" if rows|length != 1 }} on file.{% if city.nec_edition %} {{ city.name }} enforces the {{ city.nec_edition }}.{% endif %}</p>
+<header class="sub-hero">
+  <p class="eyebrow-pill">Local Jurisdiction Rules <i>•</i> {{ city.nec_edition or "NEC" }}</p>
+  <h1>{{ h1 }}</h1>
+  <p class="byline">{{ author }}{% if verified %} · <span class="verified">Last verified: {{ verified }}</span>{% endif %}</p>
+  <p class="answer">{{ city.label }} has {{ rows|length }} residential electrical job{{ "s" if rows|length != 1 }} on file.{% if city.nec_edition %} {{ city.name }} enforces the {{ city.nec_edition }}.{% endif %}</p>
+  <p class="cta-row">{{ cta("/start/?city=" ~ city.key) }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
+  {{ packet_strip() }}
+</header>
+
 {% if who_lead %}<section class="who-box" aria-labelledby="who-h">
 <h2 id="who-h">Who may pull the permit</h2>
 <p>{{ who_lead }}</p>
@@ -16,16 +22,16 @@
 <tbody>
 {%- for r in rows %}<tr><td class="c-title"><a href="{{ r.url }}">{{ r.job }}</a></td><td data-label="Permit required"{% if not r.permit %} class="empty"{% endif %}>{{ r.permit }}</td><td data-label="Code edition"{% if not r.edition %} class="empty"{% endif %}>{{ r.edition }}</td><td data-label="Verified"{% if not r.verified %} class="empty"{% endif %}><span class="verified">{{ r.verified }}</span></td></tr>{% endfor %}
 </tbody></table></div>
-<p class="cta-row">{{ cta("/start/?city=" ~ city.key) }}</p>
+
 {% if city_facts %}<h2>Local utility &amp; code summary</h2>
 <div class="table-wrap"><table class="compare"><tbody>
 {%- for k, v in city_facts %}<tr><th scope="row">{{ k }}</th><td>{{ v }}</td></tr>{% endfor %}
 </tbody></table></div>{% endif %}
-{% if city.fee_note %}<h2>Fees</h2><p>{{ city.fee_note }}</p>{% endif %}
+{% if city.fee_note %}<section class="section-card" style="margin-top:24px"><h2>Fees</h2><p>{{ city.fee_note }}</p></section>{% endif %}
 {% if city_faqs %}<h2 id="faq">Electrical permit questions in {{ city.name }}</h2>
 {{ faq_details(city_faqs) }}{% endif %}
 {% set related_job = "" %}{% include "partials/related.html" %}
-{% if city.sources %}<h2>Official sources</h2>
-<ul class="sources">{% for url in city.sources %}<li><a href="{{ url }}" rel="noopener">{{ url }}</a></li>{% endfor %}</ul>{% endif %}
+{% if city.sources %}<section class="section-card" style="margin-top:28px"><h2>Official sources</h2>
+<ul class="sources">{% for url in city.sources %}<li><a href="{{ url }}" rel="noopener">{{ url }}</a></li>{% endfor %}</ul></section>{% endif %}
 </main>
 {% endblock %}

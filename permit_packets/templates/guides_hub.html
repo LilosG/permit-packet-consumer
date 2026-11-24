@@ -2,16 +2,19 @@
 {% from "partials/ui.html" import cta, byline %}
 {% block main %}
 <main class="page-main content">
-<h1>{{ h1 }}</h1>
-{{ byline() }}
-<p class="answer">{{ intro }}</p>
-<div style="margin:18px 0 0"><label class="sr" for="guide-search">Search electrical permit guides</label><input type="search" id="guide-search" placeholder="Search guides (e.g., 200A, NEMA 14-50, subpanel, NEC 300.5, PE stamp)..." autocomplete="off" style="width:100%;max-width:520px;padding:10px 14px;border:1px solid var(--line-strong,#cbd5e1);border-radius:8px;font:inherit"></div>
-<nav class="faq-jump" id="guide-filters" aria-label="Guide categories">
-  <a href="/guides/" data-filter="all"{% if not active_cat %} aria-current="page"{% endif %}>All ({{ grouped|map(attribute='guides')|map('length')|sum }})</a>
-  {%- for group in grouped %}
-  <a href="#cat-{{ group.key }}" data-filter="{{ group.key }}"{% if active_cat == group.key %} aria-current="page"{% endif %}>{{ group.label }} ({{ group.guides|length }})</a>
-  {%- endfor %}
-</nav>
+<header class="sub-hero">
+  <p class="eyebrow-pill">Knowledge Base <i>•</i> NEC Code &amp; Cut-Sheet Guides</p>
+  <h1>{{ h1 }}</h1>
+  {{ byline() }}
+  <p class="answer">{{ intro }}</p>
+  <div class="hub-search-row"><label class="sr" for="guide-search">Search electrical permit guides</label><input type="search" id="guide-search" placeholder="Search guides (e.g., 200A, NEMA 14-50, subpanel, NEC 300.5, PE stamp)..." autocomplete="off"></div>
+  <nav class="faq-jump filter-pills" id="guide-filters" aria-label="Guide categories">
+    <a href="/guides/" data-filter="all"{% if not active_cat %} aria-current="page"{% endif %}>All ({{ grouped|map(attribute='guides')|map('length')|sum }})</a>
+    {%- for group in grouped %}
+    <a href="#cat-{{ group.key }}" data-filter="{{ group.key }}"{% if active_cat == group.key %} aria-current="page"{% endif %}>{{ group.label }} ({{ group.guides|length }})</a>
+    {%- endfor %}
+  </nav>
+</header>
 {%- for group in grouped %}
 <section class="guide-group" id="cat-{{ group.key }}" data-cat="{{ group.key }}"{% if active_cat and active_cat != group.key %} hidden{% endif %}>
   <h2>{{ group.label }}</h2>

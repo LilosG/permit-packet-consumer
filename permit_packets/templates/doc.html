@@ -2,18 +2,33 @@
 {% from "partials/ui.html" import cta, byline, cta_band, faq_details, link_cards %}
 {% block main %}
 <main class="page-main content">
-<h1>{{ d.h1 }}</h1>
-{{ byline() }}
-<p class="answer">{{ d.what[0] }}</p>
-<p class="cta-row">{{ cta(cta_href) }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
-<h2>What is a {{ d.name|lower }}?</h2>
-{% for p in d.what[1:] %}<p>{{ p }}</p>{% endfor %}
-<p class="sheet-thumb-row"><a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ d.sample }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ d.name|lower }} sheet from the El Cajon packet"></a></p>
-<h2>When does a building department ask for a {{ d.name|lower }}?</h2>
-{% for p in d.when %}<p>{{ p }}</p>{% endfor %}
-<h2>What does a good {{ d.name|lower }} contain?</h2>
-<ul class="check-list">{% for item in d.contains %}<li>{{ item }}</li>{% endfor %}</ul>
-<p>See one in the <a href="/sample-packet/">sample packet</a>.{% if calc %} Try the free <a href="{{ calc[0] }}">{{ calc[1]|lower }}</a>.{% endif %}</p>
+<header class="sub-hero">
+  <p class="eyebrow-pill">Permit Document Guide <i>•</i> Plan-Check Reference</p>
+  <h1>{{ d.h1 }}</h1>
+  {{ byline() }}
+  <p class="answer">{{ d.what[0] }}</p>
+  <p class="cta-row">{{ cta(cta_href) }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
+</header>
+
+<div class="section-stack">
+<section class="section-card">
+  <h2>What is a {{ d.name|lower }}?</h2>
+  {% for p in d.what[1:] %}<p>{{ p }}</p>{% endfor %}
+  <p class="sheet-thumb-row"><a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ d.sample }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ d.name|lower }} sheet from the El Cajon packet"></a></p>
+</section>
+
+<section class="section-card">
+  <h2>When does a building department ask for a {{ d.name|lower }}?</h2>
+  {% for p in d.when %}<p>{{ p }}</p>{% endfor %}
+</section>
+
+<section class="section-card">
+  <h2>What does a good {{ d.name|lower }} contain?</h2>
+  <ul class="check-list">{% for item in d.contains %}<li>{{ item }}</li>{% endfor %}</ul>
+  <p class="muted-note">See one in the <a href="/sample-packet/">sample packet</a>.{% if calc %} Try the free <a href="{{ calc[0] }}">{{ calc[1]|lower }}</a>.{% endif %}</p>
+</section>
+</div>
+
 {{ cta_band(cta_href, "Preview every sheet of your packet free.") }}
 {% if resources %}<h2>Related calculators &amp; step-by-step guides</h2>
 {{ link_cards(resources) }}{% endif %}

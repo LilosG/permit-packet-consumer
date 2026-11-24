@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline, cta_band, faq_details, link_cards %}
+{% block main %}
+<main class="page-main content">
+<h1>{{ ll.H1 }}</h1>
+{{ byline() }}
+<p class="answer">{{ ll.ANSWER }}</p>
+
+<form class="calc-form letter-form no-print" id="letter-form" method="get" action="{{ path }}#letter">
+{%- for f in ll.FIELDS %}
+  <label class="field">{{ f.label }}
+  {%- if f.kind == "select" %}<select name="{{ f.name }}">{% for v, text in f.options %}<option value="{{ v }}"{% if values[f.name]|string == v %} selected{% endif %}>{{ text }}</option>{% endfor %}</select>
+  {%- elif f.kind == "number" %}<input type="number" name="{{ f.name }}" value="{{ values[f.name] }}" min="{{ f.min }}" max="{{ f.max }}" step="{{ f.step }}" inputmode="decimal">
+  {%- elif f.kind == "date" %}<input type="date" name="{{ f.name }}" value="{{ values[f.name] }}">
+  {%- else %}<input type="text" name="{{ f.name }}" value="{{ values[f.name] }}" maxlength="{{ ll.TEXT_MAX }}" autocomplete="off">{% endif %}
+  {%- if f.hint %}<small class="note-line">{{ f.hint }}</small>{% endif %}</label>
+{%- endfor %}
+  <button class="btn-primary" type="submit">Build letter</button>
+</form>
+
+<section class="letter-block" id="letter" aria-labelledby="letter-heading">
+<h2 id="letter-heading" class="no-print">{{ "Your letter" if used else "Sample letter" }}</h2>
+<div id="letter-errors" class="no-print" aria-live="polite">{% if errors %}<ul class="check-list calc-error">{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+<pre class="letter-preview" id="letter-preview" tabindex="0">{{ letter.text }}</pre>
+<p class="letter-actions no-print">
+<button class="btn-secondary" type="button" id="letter-copy" hidden>Copy letter</button>
+<button class="btn-secondary" type="button" id="letter-print" hidden>Print letter</button>
+<span class="note-line" id="letter-status" role="status" aria-live="polite"></span></p>
+</section>
+<p class="note-line calc-disclaimer">{{ ll.DISCLAIMER }}</p>
+
+{% for heading, paragraphs in ll.SECTIONS[:2] %}
+<h2>{{ heading }}</h2>
+{% for paragraph in paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
+{% endfor %}
+<p>The calculation behind a letter is explained in our <a href="/permit-documents/load-calculation/">load calculation guide</a>. To get the existing demand in amps, try the <a href="/tools/residential-load-calculator/">residential load calculator</a>, and see the <a href="/permit-documents/">full list of permit documents</a>.</p>
+
+<h2>Electrical Load Letter vs. Electrical Load Calculation</h2>
+<div class="table-wrap"><table class="compare">
+<thead><tr><th scope="col"></th><th scope="col">Electrical load letter</th><th scope="col">Electrical load calculation</th></tr></thead>
+<tbody>
+{%- for label, letter_text, calc_text in ll.COMPARISON %}<tr><th scope="row">{{ label }}</th><td>{{ letter_text }}</td><td>{{ calc_text }}</td></tr>{% endfor %}
+</tbody></table></div>
+
+{% for heading, paragraphs in ll.SECTIONS[2:] %}
+<h2>{{ heading }}</h2>
+{% for paragraph in paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
+{% endfor %}
+<p>For an EV charger, size the circuit first with the <a href="/tools/ev-charger-wire-breaker-size/">EV charger wire and breaker calculator</a> so the amps in your letter match the circuit.</p>
+
+<h2>Utility and AHJ verification checklist</h2>
+<ol class="check-list">{% for title, text in ll.CHECKLIST %}<li><b>{{ title }}.</b> {{ text }}</li>{% endfor %}</ol>
+<p>Keep the manufacturer's data sheets with the letter; see how to prepare <a href="/permit-documents/equipment-cut-sheets/">equipment cut sheets</a> for plan review.</p>
+
+{{ cta_band(cta_href, "Need the whole permit set? Preview every sheet free.") }}
+
+<h2>Other permit documents</h2>
+{{ link_cards(others) }}
+
+<h2 id="faq">Electrical load letter questions</h2>
+{{ faq_details(faqs) }}
+</main>
+{% endblock %}
+{% block scripts %}<script src="/assets/js/load-letter.js?v={{ asset_version }}"></script>{% endblock %}

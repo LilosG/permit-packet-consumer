@@ -1,18 +1,22 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import cta, link_cards %}
+{% from "partials/ui.html" import cta, link_cards, packet_strip %}
 {% block main %}
 <main class="page-main content">
-<h1>{{ h1 or "Electrical Permits by City" }}</h1>
-<p class="byline">{{ author }}{% if latest %} · <span class="verified">Last verified: {{ latest }}</span>{% endif %}</p>
-<p class="answer">Residential electrical permit rules, checked against each city's own pages. Each city page lists the jobs on file, the code edition and the official sources.</p>
-{% if states %}<p>By state: {% for name, url in states %}<a href="{{ url }}">{{ name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.</p>{% endif %}
+<header class="sub-hero">
+  <p class="eyebrow-pill">50-City Jurisdiction Directory <i>•</i> Verified Checklists</p>
+  <h1>{{ h1 or "Electrical Permits by City" }}</h1>
+  <p class="byline">{{ author }}{% if latest %} · <span class="verified">Last verified: {{ latest }}</span>{% endif %}</p>
+  <p class="answer">Residential electrical permit rules, checked against each city's own pages. Each city page lists the jobs on file, the code edition and the official sources.</p>
+  <p class="cta-row">{{ cta("/start/") }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
+  {{ packet_strip() }}
+</header>
+{% if states %}<p class="state-bar"><b>Browse by state:</b> {% for name, url in states %}<a href="{{ url }}">{{ name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.</p>{% endif %}
 <div class="table-wrap"><table class="data-table">
 <thead><tr><th>City</th><th>Jobs covered</th><th>Code edition</th><th>Verified</th></tr></thead>
 <tbody>
 {%- for r in rows %}<tr><td class="c-title"><a href="{{ r.url }}">{{ r.city }}</a></td><td data-label="Jobs covered"{% if not r.jobs %} class="empty"{% endif %}>{{ r.jobs }}</td><td data-label="Code edition"{% if not r.edition %} class="empty"{% endif %}>{{ r.edition }}</td><td data-label="Verified"{% if not r.verified %} class="empty"{% endif %}><span class="verified">{{ r.verified }}</span></td></tr>{% endfor %}
 </tbody></table></div>
-<p>Any other U.S. address works with a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>
-<p class="cta-row">{{ cta("/start/") }}</p>
+<p class="muted-note">Any other U.S. address works with a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>
 {% if featured_guides %}<h2>Electrical permit guides &amp; checklists</h2>
 {{ link_cards(featured_guides) }}{% endif %}
 </main>

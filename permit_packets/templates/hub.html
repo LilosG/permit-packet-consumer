@@ -1,47 +1,70 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import cta, byline, cta_band, tier_cards, faq_details, steps, link_cards %}
+{% from "partials/ui.html" import cta, byline, cta_band, tier_cards, faq_details, steps, link_cards, packet_widget %}
 {% block main %}
-<main class="page-main content">
-<h1>{{ hub.h1 }}</h1>
-{{ byline() }}
-<p class="answer">{{ hub.answer }}</p>
-<p class="cta-row">{{ cta("/start/?job=" ~ hub.slug) }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+<main class="landing-main">
+<section class="sub-hero-band"><div class="wrap sub-hero-split">
+  <div class="sub-hero-copy">
+    <p class="eyebrow-pill">{{ hub.crumb }} Permit</p>
+    <h1>{{ hub.h1 }}</h1>
+    {{ byline() }}
+    <p class="answer">{{ hub.answer }}</p>
+    <p class="cta-row">{{ cta("/start/?job=" ~ hub.slug) }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
+  </div>
+  {{ packet_widget("/start/?job=" ~ hub.slug, "job", hub.slug, "123 Main St, City, ST", "Preview " ~ hub.crumb ~ " Packet") }}
+</div></section>
 
-<h2>What's in your {{ hub.job_name }} permit packet?</h2>
-<p>{{ hub.sheets_intro }}</p>
-<ol class="sheet-list">
-{%- for sheet in hub.sheets %}
-  <li>{% if sheet.thumb %}<a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ sheet.thumb }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ sheet.title }} sheet from the El Cajon packet"></a>{% endif %}<div><span class="sheet-num">Sheet {{ "%02d"|format(loop.index) }}</span><h3>{{ sheet.title }}</h3><p>{{ sheet.text|safe }}</p></div></li>
-{%- endfor %}
-</ol>
-{% if hub.slug == "ev-charger" %}<p class="note-line">Thumbnails are from the <a href="/sample-packet/">El Cajon sample packet</a>.</p>{% endif %}
-{{ cta_band("/start/?job=" ~ hub.slug, "Preview your " ~ hub.job_name ~ " packet free, sheet by sheet.") }}
+<section class="band"><div class="wrap">
+  <p class="kicker">Complete deliverable breakdown</p>
+  <h2 class="band-title">What's in your {{ hub.job_name }} permit packet?</h2>
+  <p class="band-sub">{{ hub.sheets_intro }}</p>
+  <ol class="sheet-list sheet-grid">
+  {%- for sheet in hub.sheets %}
+    <li>{% if sheet.thumb %}<a class="sheet-thumb" href="/sample-packet/"><img src="/assets/samples/{{ sheet.thumb }}-300.webp" width="300" height="388" loading="lazy" decoding="async" alt="Sample {{ sheet.title }} sheet from the El Cajon packet"></a>{% endif %}<div><span class="sheet-num">Sheet {{ "%02d"|format(loop.index) }}</span><h3>{{ sheet.title }}</h3><p>{{ sheet.text|safe }}</p></div></li>
+  {%- endfor %}
+  </ol>
+  {% if hub.slug == "ev-charger" %}<p class="center note-line">Thumbnails are from the <a href="/sample-packet/">El Cajon sample packet</a>.</p>{% endif %}
+  {{ cta_band("/start/?job=" ~ hub.slug, "Preview your " ~ hub.job_name ~ " packet free, sheet by sheet.") }}
+</div></section>
 
-<h2>What do city plan reviewers check on a {{ hub.job_name }} permit?</h2>
-<p>{{ hub.checks_intro }}</p>
-<ul class="check-list">
-{%- for item in hub.checks %}<li>{{ item }}</li>{% endfor %}
-</ul>
-<p>A packet cannot promise a permit will be approved. Your building department decides, and some cities or jobs need a stamp or a licensed electrician's review.</p>
+<section class="band alt"><div class="wrap narrow-band">
+  <div class="section-card">
+    <h2>What do city plan reviewers check on a {{ hub.job_name }} permit?</h2>
+    <p>{{ hub.checks_intro }}</p>
+    <ul class="check-list">
+    {%- for item in hub.checks %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    <p class="muted-note">A packet cannot promise a permit will be approved. Your building department decides, and some cities or jobs need a stamp or a licensed electrician's review.</p>
+  </div>
+</div></section>
 
-<h2>How does it work?</h2>
-{{ steps(hub.steps) }}
+<section class="band dark blueprint-band"><div class="wrap">
+  <p class="kicker">Fast turnaround</p>
+  <h2 class="band-title">How does it work?</h2>
+  {{ steps(hub.steps) }}
+</div></section>
 
-<h2>How much does a {{ hub.job_name }} permit packet cost?</h2>
-<p>Three packages, each with a free watermarked preview first. Compare them on the <a href="/pricing/">pricing page</a>.</p>
-{{ tier_cards(hub.slug) }}
+<section class="band"><div class="wrap">
+  <p class="kicker">Simple pricing</p>
+  <h2 class="band-title">How much does a {{ hub.job_name }} permit packet cost?</h2>
+  <p class="band-sub">Three packages, each with a free watermarked preview first. Compare them on the <a href="/pricing/">pricing page</a>.</p>
+  {{ tier_cards(hub.slug, bullets=False) }}
+</div></section>
 
-{% set related_job = hub.slug %}{% include "partials/related.html" %}
+<section class="band alt"><div class="wrap">
+  {% set related_job = hub.slug %}{% include "partials/related.html" %}
+  <h2 class="band-title" style="margin-top:48px">Who uses a {{ hub.job_name }} permit packet?</h2>
+  {{ link_cards(who_cards, "who-grid", ["i-shield", "i-check", "i-diagram", "i-panel"], None, "") }}
+</div></section>
 
-<h2>Who uses a {{ hub.job_name }} permit packet?</h2>
-{{ link_cards(who_cards) }}
-
-<h2>Which cities have built-in checklists for this job?</h2>
-{% if cities %}<ul class="city-chips">{% for label, url in cities %}<li>{% if url %}<a href="{{ url }}">{{ label }}</a>{% else %}<span>{{ label }}</span>{% endif %}</li>{% endfor %}</ul>
-<p>Any other U.S. address works too. It uses a general NEC checklist, and the packet says so. Confirm local requirements with your building department.</p>
-{% else %}<p>No city has its own checklist for this job yet. Any U.S. address works and uses a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>{% endif %}
-
-<h2 id="faq">{{ hub.crumb }} permit questions</h2>
-{{ faq_details(hub.faqs) }}
+<section class="band"><div class="wrap narrow-band">
+  <div class="section-card">
+    <h2>Which cities have built-in checklists for this job?</h2>
+    {% if cities %}<ul class="city-chips">{% for label, url in cities %}<li>{% if url %}<a href="{{ url }}">{{ label }}</a>{% else %}<span>{{ label }}</span>{% endif %}</li>{% endfor %}</ul>
+    <p class="muted-note">Any other U.S. address works too. It uses a general NEC checklist, and the packet says so. Confirm local requirements with your building department.</p>
+    {% else %}<p>No city has its own checklist for this job yet. Any U.S. address works and uses a general NEC checklist, which the packet labels. Confirm local requirements with your building department.</p>{% endif %}
+  </div>
+  <h2 id="faq" class="band-title" style="margin-top:48px">{{ hub.crumb }} permit questions</h2>
+  {{ faq_details(hub.faqs) }}
+</div></section>
 </main>
 {% endblock %}

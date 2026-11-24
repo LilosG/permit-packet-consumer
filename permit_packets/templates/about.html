@@ -2,18 +2,23 @@
 {% from "partials/ui.html" import cta, byline, cta_band, steps %}
 {% block main %}
 <main class="page-main content">
-<h1>About Permit Packets</h1>
-{{ byline() }}
-<p class="answer">Permit Packets is an automated drafting and NEC calculation tool by <a href="https://lilosgrowth.com">Lilos Growth</a>. It turns one property address into the plans a residential electrical permit asks for: a site plan, single-line diagram, load calculation and panel schedule. It is not PE-stamped, and your city decides on approval.</p>
-<p class="cta-row">{{ cta("/start/") }}<a class="link" href="/sample-packet/">See a sample packet</a></p>
+<header class="sub-hero">
+  <p class="eyebrow-pill">About Permit Packets <i>•</i> Lilos Growth</p>
+  <h1>About Permit Packets</h1>
+  {{ byline() }}
+  <p class="answer">Permit Packets is an automated drafting and NEC calculation tool by <a href="https://lilosgrowth.com">Lilos Growth</a>. It turns one property address into the plans a residential electrical permit asks for: a site plan, single-line diagram, load calculation and panel schedule. It is not PE-stamped, and your city decides on approval.</p>
+  <p class="cta-row">{{ cta("/start/") }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
+</header>
 
-<h2>What is Permit Packets?</h2>
-<p>Permit Packets is a product of <a href="https://lilosgrowth.com">Lilos Growth</a>. You enter an address and a job, and the tool drafts the permit documents for four residential jobs: an <a href="/ev-charger-permit/">EV charger</a>, a <a href="/panel-upgrade-permit/">panel upgrade</a>, a <a href="/subpanel-permit/">subpanel</a> and a <a href="/hot-tub-240v-permit/">hot tub or 240V circuit</a>.</p>
-<p>It is built for homeowners and for electricians and contractors who would rather not draft the paperwork by hand.</p>
+<section class="section-card">
+  <h2>What is Permit Packets?</h2>
+  <p>Permit Packets is a product of <a href="https://lilosgrowth.com">Lilos Growth</a>. You enter an address and a job, and the tool drafts the permit documents for four residential jobs: an <a href="/ev-charger-permit/">EV charger</a>, a <a href="/panel-upgrade-permit/">panel upgrade</a>, a <a href="/subpanel-permit/">subpanel</a> and a <a href="/hot-tub-240v-permit/">hot tub or 240V circuit</a>.</p>
+  <p>It is built for homeowners and for electricians and contractors who would rather not draft the paperwork by hand.</p>
+</section>
 
 <h2>How are permit packets built?</h2>
 {{ steps(build_steps) }}
-<p>The preview is free and watermarked. Once you pay, you download the clean packet and submit it to your city yourself.</p>
+<p class="muted-note">The preview is free and watermarked. Once you pay, you download the clean packet and submit it to your city yourself.</p>
 
 <h2>How are city checklists verified?</h2>
 <p>Each city we have set up is a jurisdiction module built from the city's own published checklist and checked against its official sources. Each module carries a last-verified date and a link to the city's page. A job a city has no checklist for uses a general NEC checklist, and the packet says so.</p>
@@ -25,16 +30,22 @@
 {%- endfor %}
 </tbody></table></div>
 
-<h2>What is Permit Packets not?</h2>
-<ul>
-<li>It is not PE-stamped. Some cities or jobs need a stamp or a licensed electrician's review.</li>
-<li>It is not legal or engineering advice.</li>
-<li>It does not guarantee approval. The building department decides.</li>
-<li>It does not submit anything for you. You confirm your city's requirements and submit your own application.</li>
-</ul>
-<p>The <a href="/terms/">Terms</a> and the <a href="/refund/">Refund Policy</a> cover the rest.</p>
+<div class="section-stack" style="margin-top:24px">
+<section class="section-card">
+  <h2>What is Permit Packets not?</h2>
+  <ul class="check-list">
+  <li>It is not PE-stamped. Some cities or jobs need a stamp or a licensed electrician's review.</li>
+  <li>It is not legal or engineering advice.</li>
+  <li>It does not guarantee approval. The building department decides.</li>
+  <li>It does not submit anything for you. You confirm your city's requirements and submit your own application.</li>
+  </ul>
+  <p class="muted-note">The <a href="/terms/">Terms</a> and the <a href="/refund/">Refund Policy</a> cover the rest.</p>
+</section>
 
-<h2>How do I contact Permit Packets?</h2>
-<p>Email <a href="mailto:hello@myelectricalpermit.com">hello@myelectricalpermit.com</a>. To find an order link you have lost, use <a href="/find-order/">Find my order</a>.</p>
+<section class="section-card">
+  <h2>How do I contact Permit Packets?</h2>
+  <p>Email <a href="mailto:hello@myelectricalpermit.com">hello@myelectricalpermit.com</a>. To find an order link you have lost, use <a href="/find-order/">Find my order</a>.</p>
+</section>
+</div>
 </main>
 {% endblock %}
