@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="/assets/css/app.css?v={{ASSET_VERSION}}">
+{{PP_PRICES}}
 </head>
 <body>
 <header class="site-header"><div class="bar"><a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a><span></span><a class="pill-cta" href="/admin">Orders</a></div></header>
@@ -31,7 +32,7 @@
 <script>
 (() => {
   const rows = document.getElementById('rows'), msg = document.getElementById('msg');
-  const TIERS = { load_calc: '$39 Load Calc', instant_packet: '$89 Instant', city_checked_24h: '$169 City-Checked' };
+  const TIERS = Object.fromEntries(Object.entries((window.PP_PRICES || {}).tiers || {}).map(([key, tier]) => [key, tier.name]));
   const LABELS = { pending_payment: 'Pending payment', in_review: 'In review', paid: 'Paid', delivered: 'Delivered' };
   const reviewRows = document.getElementById('review-rows');
   const cell = (text) => { const td = document.createElement('td'); td.textContent = text; return td; };

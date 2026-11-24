@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="/assets/css/app.css?v={{ASSET_VERSION}}">
 {{GA}}
+{{PP_PRICES}}
 </head>
 <body>
 <header class="site-header"><div class="bar"><a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a><span></span><a class="pill-cta" href="/">New packet</a></div></header>
@@ -159,7 +160,7 @@
     const body = `Here is the permit packet for ${order.address}:\n${location.href}`;
     $('send-electrician').href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     $('send-electrician').hidden = false;
-    const sheetsOnly = Array.isArray(order.files);  // the $39 package: its two sheets, no city submission pages
+    const sheetsOnly = Array.isArray(order.files);  // the Panel Capacity Report: its two sheets, no city submission pages
     document.querySelectorAll('[data-packet-only]').forEach((panel) => { panel.hidden = sheetsOnly; });
     $('files').hidden = !sheetsOnly;
     $('files').replaceChildren(...(order.files || []).map((file) => {
@@ -172,7 +173,7 @@
     if (order.documents_url) $('zip').href = order.documents_url;
     $('one-pdf').hidden = Boolean(order.documents_url) || sheetsOnly;
     if (sheetsOnly) {
-      $('paid').querySelector('.check-card strong').textContent = 'Your load calc & panel audit are unlocked';
+      $('paid').querySelector('.check-card strong').textContent = `Your ${((window.PP_PRICES || {}).tiers || {}).load_calc?.name || 'Panel Capacity Report'} is unlocked`;
       return;
     }
     const city = order.jurisdiction || {};

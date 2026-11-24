@@ -178,4 +178,18 @@
     matchMedia('(min-width: 1081px)').addEventListener('change', (query) => { if (query.matches) closeMenu(); });
   }
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeDropdowns(); });
+
+  /* ---- Launch pricing banner: dismissible, and the dismissal is remembered (storage can be blocked) ---- */
+  const banner = $('#launch-banner');
+  if (banner) {
+    const KEY = 'pp-launch-banner-dismissed';
+    let dismissed = false;
+    try { dismissed = localStorage.getItem(KEY) === '1'; } catch (error) { /* storage blocked: show it every visit */ }
+    if (dismissed) banner.hidden = true;
+    const close = $('#launch-banner-close');
+    if (close) close.addEventListener('click', () => {
+      banner.hidden = true;
+      try { localStorage.setItem(KEY, '1'); } catch (error) { /* not remembered */ }
+    });
+  }
 })();

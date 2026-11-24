@@ -8,7 +8,7 @@ import pypdfium2
 from fastapi.testclient import TestClient
 
 from app import app
-from permit_packets import orders
+from permit_packets import orders, pricing
 from tests.test_ev_golden import GOLDEN, to_current_request
 
 SAMPLES = Path(__file__).parent / "samples"
@@ -309,7 +309,7 @@ def test_the_role_is_stored_on_the_order_and_reported_for_analytics(client):
         "payload": ev_payload(), "role": "hiring"})
     assert response.status_code == 200
     view = client.get(f"/api/orders/{response.json()['access_token']}").json()
-    assert (view["role"], view["job"], view["price"]) == ("hiring", "ev-charger", 39)
+    assert (view["role"], view["job"], view["price"]) == ("hiring", "ev-charger", pricing.price("load_calc"))
     bogus = client.post("/api/public/orders", json={
         "job_slug": "ev-charger", "customer_email": "buyer@example.com", "tier": "instant_packet",
         "payload": ev_payload(), "role": "wizard"}).json()

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import cta, byline, cta_band, faq_details, steps, link_cards, packet_widget %}
+{% from "partials/ui.html" import cta, byline, cta_band, faq_details, steps, link_cards, packet_widget, price_tag %}
 {% block main %}
 <main class="landing-main">
 <section class="sub-hero-band"><div class="wrap sub-hero-split">
@@ -37,7 +37,7 @@
 <section class="band"><div class="wrap narrow-band">
   <h2 class="band-title">Which package do we recommend?</h2>
   <div class="price-one">
-    <article class="card price popular"><i class="badge">Recommended</i><h3>{{ tier[2] }}</h3><p class="amount">${{ tier[1] }}</p><p>{{ aud.tier_why }}</p><a class="btn-primary full" href="/start/{{ aud.cta_params }}{{ '&amp;' if '?' in aud.cta_params else '?' }}tier={{ tier[1] }}">Start Free Preview</a></article>
+    <article class="card price popular"><i class="badge">Recommended</i><h3>{{ tier[1] }}</h3>{{ price_tag(tier[0]) }}<p>{{ aud.tier_why }}</p><a class="btn-primary full" href="/start/{{ aud.cta_params }}{{ '&amp;' if '?' in aud.cta_params else '?' }}tier={{ tier[0] }}">Start Free Preview</a></article>
   </div>
 </div></section>
 

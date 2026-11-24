@@ -22,6 +22,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from starlette.requests import Request
 
 from permit_packets import content, locations, seo, sitedata
+from permit_packets import pricing as price_book  # the route function below is also called pricing
 from permit_packets import faq as faq_data
 from permit_packets.jurisdictions import KNOWN
 
@@ -45,13 +46,23 @@ def permits_live() -> bool:
 
 
 def fill(text: str) -> Markup:
-    """Replace {permits}: a link to the city guides once they are live, plain words until then."""
+    """Replace {permits} (a link to the city guides once they are live, plain words until then) and the price
+    tokens {price:TIER}, {regular:TIER} and {launch_end}."""
     link = '<a href="/permits/">our city permit guides</a>' if permits_live() else "your city's building department"
-    return Markup(text.replace("{permits}", link))
+    return Markup(price_book.resolve(text.replace("{permits}", link)))
+
+
+def prices_script() -> str:
+    """The <script> that hands the current prices to JS and the static pages as window.PP_PRICES."""
+    data = json.dumps(price_book.prices_json()).replace("<", "\\u003c")
+    return f"<script>window.PP_PRICES = {data};</script>"
 
 
 env.filters["fill"] = fill
-env.globals.update(last_reviewed=LAST_REVIEWED, author=seo.AUTHOR, tiers=content.TIERS)
+env.globals["prices_script"] = lambda: Markup(prices_script())
+env.globals.update(last_reviewed=LAST_REVIEWED, author=seo.AUTHOR, tiers=content.TIERS, pricing=price_book,
+                   positioning=content.POSITIONING, guarantee=content.GUARANTEE,
+                   guarantee_not_covered=content.GUARANTEE_NOT_COVERED, guarantee_how=content.GUARANTEE_HOW)
 
 router = APIRouter()
 NO_CACHE = {"Cache-Control": "no-cache"}
@@ -77,7 +88,7 @@ def render(template: str, *, meta, jsonld: list[dict] | None = None, crumbs: lis
         blocks.append(seo.breadcrumb(crumbs))
     body = env.get_template(template).render(
         meta=meta, jsonld=seo.jsonld_scripts(blocks), crumbs=crumbs, final_cta=final_cta, **_context(), **context)
-    return HTMLResponse(body, status_code=status_code, headers=headers or PUBLIC_PAGE)
+    return HTMLResponse(price_book.resolve(body), status_code=status_code, headers=headers or PUBLIC_PAGE)
 
 
 def footer_html() -> str:
@@ -150,7 +161,7 @@ def start(request: Request, job: str = "", city: str = "", address: str = "", ro
         if k.isidentifier() and not hasattr(prefill, k): setattr(prefill, k, v)
     meta = seo.page_meta(
         "Start Your Free Permit Packet Preview | Permit Packets",
-        "Enter any US property address to preview a residential electrical permit packet free. Starting at $39.",
+        "Enter any US property address to preview a residential electrical permit packet free. Starting at {price:load_calc}.",
         "/start/", robots="noindex,follow")
     return render(
         "start.html", meta=meta, prefill=prefill, roles=sitedata.ROLES, job_map_json=json.dumps(JOB_TYPE_MAP),
@@ -240,8 +251,8 @@ _register_content(PRICING_PATH, "Permit Packet Pricing")
 @router.api_route(PRICING_PATH, methods=["GET", "HEAD"], include_in_schema=False)
 def pricing() -> Response:
     meta = seo.page_meta(
-        "Permit Packet Pricing: $39, $89 and $169 | Permit Packets",
-        "Three packages: $39 load calc and panel audit, $89 complete permit packet, $169 city-checked within 24 hours. Free watermarked preview.",
+        "Permit Packet Pricing: {price:load_calc}, {price:instant_packet} and {price:city_checked_24h} | Permit Packets",
+        "Three packages: {price:load_calc} Panel Capacity Report, {price:instant_packet} complete permit packet, {price:city_checked_24h} city-checked in 24 hours. Free watermarked preview.",
         PRICING_PATH, robots=seo.robots_for(PRICING_PATH))
     return render("pricing.html", meta=meta, jsonld=[seo.product_offers(), seo.faq(_qas(content.PRICING_FAQS))],
                   crumbs=[("Home", "/"), ("Pricing", PRICING_PATH)], final_cta=True, faqs=content.PRICING_FAQS)
@@ -256,6 +267,8 @@ def _faq_groups() -> list[tuple[str, str, list[tuple[str, str]]]]:
     gets a one-line summary and a link, so no answer is worded twice."""
     home = list(faq_data.FAQ)
     money = [qa for qa in home if qa[0] in ("How does payment work?", "Can I get a refund?")]
+    money.append(("What is the re-draft guarantee?", " ".join((
+        content.GUARANTEE, "Not covered: " + content.GUARANTEE_NOT_COVERED, "How to claim: " + content.GUARANTEE_HOW))))
     general = [qa for qa in home if qa not in money]
     pricing_items = [(q, f'{short} <a href="{PRICING_PATH}">See pricing</a>.') for q, _a, short in content.PRICING_FAQS[:4]]
     by_job = [(q, f'{short} <a href="{hub.path}#faq">Details on the {hub.crumb} page</a>.')

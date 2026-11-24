@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from permit_packets import pricing
+
 from permit_packets.jurisdictions import KNOWN, Jurisdiction
 
 
@@ -41,11 +43,12 @@ ROLES = {
 OWNER_ROLES = ("diy", "hiring")
 DEFAULT_ROLE = "diy"
 
-TIER_PARAMS = {"39": "load_calc", "89": "instant_packet", "169": "city_checked_24h"}
+# ?tier= values: the legacy numbers (39, 89, 169) and the new regular city-checked price (149) stay as aliases.
+TIER_PARAMS = {**pricing.TIER_ALIASES, **{key: key for key in pricing.TIER_KEYS}}
 
 
 def recommended_tier(role: str, tier_param: str = "") -> str:
-    """The tier to preselect: an explicit ?tier=, else $39 for a homeowner hiring an electrician, else $89."""
+    """The tier to preselect: an explicit ?tier=, else the Panel Capacity Report for a homeowner hiring an electrician, else the Instant Permit Packet."""
     if tier_param in TIER_PARAMS:
         return TIER_PARAMS[tier_param]
     return "load_calc" if role == "hiring" else "instant_packet"
@@ -116,4 +119,5 @@ NAV_PERMITS = [
     ("Solar & Battery (ESS)", "/solar-battery-permit/"),
     ("All cities", "/permits/"),
 ]
-NAV_LINKS = [("Tools", "/tools/"), ("Guides", "/guides/"), ("Permit Documents", "/permit-documents/"), ("Sample Packet", "/sample-packet/"), ("Pricing", "/pricing/"), ("FAQ", "/faq/")]
+# Tools, Guides, Permit Documents and FAQ are linked from the footer only.
+NAV_LINKS = [("Sample Packet", "/sample-packet/"), ("Pricing", "/pricing/")]

@@ -6,7 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 import app as app_module
-from permit_packets import seo
+from permit_packets import pricing, seo
 
 PLACEHOLDERS = [  # location pages are never placeholders any more; only /start-style stubs remain
 ]
@@ -79,9 +79,11 @@ def test_start_prefills_and_recommends_39_for_hiring(client):
     assert 'data-job="ev_charger"' in html and 'value="1 Main St"' in html and "El Cajon, CA" in html
 
 
-def test_start_defaults_to_89_and_tier_param_wins(client):
+def test_start_defaults_to_the_instant_packet_and_tier_param_wins(client):
     assert re.search(r'name="tier" value="instant_packet" checked', client.get("/start/?role=electrician").text)
     assert re.search(r'name="tier" value="city_checked_24h" checked', client.get("/start/?role=hiring&tier=169").text)
+    for alias in ("169", "149", "city_checked_24h"):
+        assert re.search(r'name="tier" value="city_checked_24h" checked', client.get(f"/start/?tier={alias}").text)
     junk = client.get("/start/?job=x&role=y&tier=7&city=nope").text
     assert re.search(r'name="who" value="diy" checked', junk) and 'data-job=""' in junk
 
@@ -95,7 +97,7 @@ def test_the_wizard_is_off_the_homepage_and_the_hero_submits_to_start(client):
     home = client.get("/").text
     assert 'id="workspace"' not in home and "studio-mode" not in home
     assert '<form id="hero-form" class="hero-form" action="/start/" method="get">' in home
-    assert 'href="/start/?tier=39"' in home and 'href="/start/?tier=169"' in home
+    assert 'href="/start/?tier=load_calc"' in home and 'href="/start/?tier=city_checked_24h"' in home
 
 
 def test_header_and_footer_links(client):
@@ -123,7 +125,7 @@ def test_json_ld_builders():
     assert seo.service("S", "Area", [])["areaServed"]["name"] == "Area"
     assert seo.article("H", "2026-01-01", "2026-01-02")["author"]["name"] == "Permit Packets by Lilos Growth"
     assert seo.webapp("W", "/start/")["url"].endswith("/start/")
-    assert seo.product_offers()["offers"]["lowPrice"] == "39"
+    assert seo.product_offers()["offers"]["lowPrice"] == str(min(pricing.price(tier) for tier in pricing.TIER_KEYS))
     assert "<" not in seo.jsonld_script({"a": "</script>"}).split(">", 1)[1].rsplit("</script", 1)[0]
 
 

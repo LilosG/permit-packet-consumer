@@ -2,6 +2,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
 
+from permit_packets.content import CITY_CHANGES_ANSWER
+
 GUIDES_PATH = "/guides/"
 GUIDES_TITLE = "Electrical Permit Guides, Comparisons & DIY Checklists"
 GUIDES_DESCRIPTION = "In-depth guides for residential electrical permits: EV charger wiring, 200A panel upgrades, subpanel feeders, equipment comparisons and NEC checklists."
@@ -135,7 +137,7 @@ GUIDES["owner-builder-permit-vs-licensed-electrician"] = Guide(
         ("Who pulls permit", "Homeowner occupying single-family residence", "State-licensed electrical contractor (C-10 / Master)"),
         ("Title block", "Owner name + '(Owner-Builder)' + signature line", "Company name + contractor license number"),
         ("City eligibility", "Allowed in El Cajon, Chandler, Mesa, Bellevue, Charlotte", "Required in San Francisco, Nashville & multi-family"),
-        ("Typical labor cost", "$0 labor (materials + permit fee + $89 plans)", "$800-$2,500+ for EV circuit; $3,500-$6,000+ for 200A upgrade"),
+        ("Typical labor cost", "$0 labor (materials + permit fee + {price:instant_packet} plans)", "$800-$2,500+ for EV circuit; $3,500-$6,000+ for 200A upgrade"),
         ("Inspection sign-off", "Homeowner meets inspector and fixes corrections", "Contractor handles rough-in, final sign-off & warranty"),
     ),
     sections=(
@@ -144,7 +146,7 @@ GUIDES["owner-builder-permit-vs-licensed-electrician"] = Guide(
             'In California, Arizona, Washington, and North Carolina, homeowners living in a detached single-family house generally qualify for an owner-builder exemption. Selecting DIY in Permit Packets prints your name with "(Owner-Builder)" and a signature line on every sheet. Read our <a href="/for/diy-homeowners/">DIY homeowner permit plans guide</a> to see how owner-builder packets are formatted.',
         )),
         ("When you must hire a licensed electrician", (
-            'Working inside a live main service panel carries serious arc-flash hazards, and cities like <a href="/permits/ca/san-francisco/">San Francisco</a> and <a href="/permits/tn/nashville/">Metro Nashville</a> restrict electrical permits strictly to licensed contractors. Even in contractor-only cities, you can run our $39 load calc first via our <a href="/for/homeowners-hiring-an-electrician/">quote-prep workflow</a> so every bid starts from verified numbers.',
+            'Working inside a live main service panel carries serious arc-flash hazards, and cities like <a href="/permits/ca/san-francisco/">San Francisco</a> and <a href="/permits/tn/nashville/">Metro Nashville</a> restrict electrical permits strictly to licensed contractors. Even in contractor-only cities, you can run our {price:load_calc} load calc first via our <a href="/for/homeowners-hiring-an-electrician/">quote-prep workflow</a> so every bid starts from verified numbers.',
         )),
     ),
     tool_links=("ev-charger-load-calculator", "residential-load-calculator"),
@@ -524,7 +526,7 @@ GUIDES["7-reasons-electrical-permits-fail-plan-check"] = Guide(
     related_slugs=("how-to-check-if-panel-can-handle-ev-charger", "2023-nec-and-california-electrical-code-permit-guide"),
     faqs=(
         ("How long does city electrical plan check usually take?", "Complete residential packets often clear in 1 to 5 business days, while incomplete submittals stall for weeks."),
-        ("What does the $169 24-Hour City-Checked package do?", "We review your generated sheets against your city's published checklist within 24 hours before releasing the packet."),
+        ("What does the {price:city_checked_24h} 24-Hour City-Checked package do?", "We review your generated sheets against your city's published checklist within 24 hours before releasing the packet."),
         ("Can I preview my packet before paying?", "Yes. Every packet generates a free watermarked preview with engineering checks before payment."),
     ),
 )
@@ -930,7 +932,7 @@ GUIDES["electrical-permit-cost-and-timeline-by-city"] = Guide(
     doc_links=("site-plan", "load-calculation"),
     related_slugs=("best-subpanel-sizes-detached-garage-workshop-adu", "cities-allowing-owner-builder-ev-charger-permits"),
     faqs=(
-        ("Does Permit Packets include the city's permit filing fee?", "No. Permit Packets ($39, $89, or $169) drafts your permit plans and calculations. You pay your city's permit fee directly to the building department when you file."),
+        ("Does Permit Packets include the city's permit filing fee?", "No. Permit Packets ({price:load_calc}, {price:instant_packet}, or {price:city_checked_24h}) drafts your permit plans and calculations. You pay your city's permit fee directly to the building department when you file."),
         ("Can I submit my permit packet online?", "Yes. Most cities accept PDF uploads through portals such as OpenDSD, ePlanLA, MyBuildingPermit.com, AB+C, or Accela Citizen Access. Your order page includes both one combined PDF and a split-file ZIP."),
         ("How many inspections are required after the permit is issued?", "Typically one final electrical inspection for an indoor EV charger or panel swap, or two inspections (underground trench rough-in + final) when trenching conduit to a detached garage or hot tub."),
     ),
@@ -945,17 +947,17 @@ GUIDES["how-much-does-an-electrical-permit-cost"] = Guide(
     title="How Much Does a Residential Electrical Permit Cost? (2026)",
     description="Residential electrical permit fees range from $50 to $350 by city and project type. See typical city filing fees, plan-check costs and drafting options.",
     answer=(
-        "A residential electrical permit typically costs $50 to $350 in municipal filing fees depending on whether you are adding a single 240V EV charger circuit or upgrading to a 200A service. When plans are required, automated permit drafting starts at $39 to $169 compared with $300 to $500+ for traditional CAD drafters."
+        "A residential electrical permit typically costs $50 to $350 in municipal filing fees depending on whether you are adding a single 240V EV charger circuit or upgrading to a 200A service. When plans are required, automated permit drafting starts at {price:load_calc} to {price:city_checked_24h} compared with $300 to $500+ for traditional CAD drafters."
     ),
     card="Breakdown of city electrical permit fees, plan-review charges and drafting costs by project type.",
     table_caption="Typical Residential Electrical Permit & Plan Preparation Costs",
     table_headers=("Project Type", "Typical City Filing Fee", "Plan Drafting Cost (Permit Packets)", "Traditional CAD Drafter"),
     table_rows=(
-        ("Level 2 EV Charger (240V Circuit)", "$75 - $225", "$89 Instant ($169 City-Checked)", "$300 - $500+"),
-        ("200A Panel / Service Upgrade", "$125 - $350", "$89 Instant ($169 City-Checked)", "$350 - $600+"),
-        ("Detached Garage / ADU Subpanel", "$100 - $275", "$89 Instant ($169 City-Checked)", "$300 - $500+"),
-        ("Hot Tub, Sauna or Heat Pump Circuit", "$75 - $200", "$89 Instant ($169 City-Checked)", "$300 - $450+"),
-        ("Load Calc & Panel Capacity Audit Only", "N/A (pre-quote check)", "$39 Load Calc & Panel Audit", "$150 - $250"),
+        ("Level 2 EV Charger (240V Circuit)", "$75 - $225", "{price:instant_packet} Instant ({price:city_checked_24h} City-Checked)", "$300 - $500+"),
+        ("200A Panel / Service Upgrade", "$125 - $350", "{price:instant_packet} Instant ({price:city_checked_24h} City-Checked)", "$350 - $600+"),
+        ("Detached Garage / ADU Subpanel", "$100 - $275", "{price:instant_packet} Instant ({price:city_checked_24h} City-Checked)", "$300 - $500+"),
+        ("Hot Tub, Sauna or Heat Pump Circuit", "$75 - $200", "{price:instant_packet} Instant ({price:city_checked_24h} City-Checked)", "$300 - $450+"),
+        ("Load Calc & Panel Capacity Audit Only", "N/A (pre-quote check)", "{price:load_calc} Panel Capacity Report", "$150 - $250"),
     ),
     sections=(
         ("How building departments calculate electrical permit fees", (
@@ -963,7 +965,7 @@ GUIDES["how-much-does-an-electrical-permit-cost"] = Guide(
             "Some cities also charge a separate plan-review fee (typically 25% to 65% of the permit fee) when drawings are required. Check your city's fee notes in our <a href=\"/permits/\">electrical permits by city directory</a>.",
         )),
         ("How to avoid paying twice for plans or service upgrades", (
-            "Before collecting contractor quotes for a new EV charger or heat pump, run your home through our <a href=\"/tools/ev-charger-load-calculator/\">free EV charger load calculator</a> or order the $39 Load Calc & Panel Audit. Knowing your NEC 220 spare capacity up front prevents unnecessary $3,500+ service upgrades and keeps <a href=\"/ev-charger-permit/\">permit plan preparation</a> predictable.",
+            "Before collecting contractor quotes for a new EV charger or heat pump, run your home through our <a href=\"/tools/ev-charger-load-calculator/\">free EV charger load calculator</a> or order the {price:load_calc} Panel Capacity Report. Knowing your NEC 220 spare capacity up front prevents unnecessary $3,500+ service upgrades and keeps <a href=\"/ev-charger-permit/\">permit plan preparation</a> predictable.",
         )),
         _EXTRA_SEC,
     ),
@@ -971,9 +973,9 @@ GUIDES["how-much-does-an-electrical-permit-cost"] = Guide(
     doc_links=("load-calculation", "site-plan"),
     related_slugs=("do-you-need-an-engineer-stamp-for-residential-electrical-permit", "electrical-permit-cost-and-timeline-by-city"),
     faqs=(
-        ("Does Permit Packets include the city's permit fee?", "No. You pay Permit Packets ($39, $89, or $169) for your permit plans and calculations, and pay the municipal filing fee directly to your city when submitting."),
+        ("Does Permit Packets include the city's permit fee?", "No. You pay Permit Packets ({price:load_calc}, {price:instant_packet}, or {price:city_checked_24h}) for your permit plans and calculations, and pay the municipal filing fee directly to your city when submitting."),
         ("Are there any hidden subscription fees?", "No. Every package is a one-time purchase per project, and you can generate a full watermarked preview free before paying."),
-        ("What if my city rejects my permit application?", "You can edit your inputs and regenerate your packet at any time, and orders can be refunded in full before you download the clean packet."),
+        ("What if my city rejects my permit application?", CITY_CHANGES_ANSWER),
     ),
 )
 
@@ -1142,7 +1144,7 @@ GUIDES["200a-panel-upgrade-cost-and-permit-checklist"] = Guide(
             "Before collecting electrician quotes, run your home through our <a href=\"/tools/residential-load-calculator/\">free residential load calculator</a> or generate a complete <a href=\"/panel-upgrade-permit/\">200A panel upgrade permit packet</a>.",
         )),
         ("Typical 200A panel upgrade costs: permits, plans & labor", (
-            "Municipal permit fees for a 200A service swap typically run $125 to $350, automated permit drawings cost $89 to $169 (versus $350 to $600+ from a CAD drafter), and licensed electrical contractor installation typically ranges from $3,200 to $6,000+ depending on overhead versus underground service lateral work.",
+            "Municipal permit fees for a 200A service swap typically run $125 to $350, automated permit drawings cost {price:instant_packet} to {price:city_checked_24h} (versus $350 to $600+ from a CAD drafter), and licensed electrical contractor installation typically ranges from $3,200 to $6,000+ depending on overhead versus underground service lateral work.",
         )),
         _EXTRA_SEC,
     ),

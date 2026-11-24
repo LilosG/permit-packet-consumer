@@ -386,7 +386,7 @@ class Compare:
 US = {
     "scope": "Residential electrical permit packet: site plan, single-line diagram, load calculation, panel schedule and equipment data sheets.",
     "how": "Built from one address, with parcel data from county GIS where available and your answers about the equipment.",
-    "price": "Three packages: $39, $89 and $169, with a free watermarked preview first.",
+    "price": "Three packages: {price:load_calc}, {price:instant_packet} and {price:city_checked_24h}, with a free watermarked preview first.",
     "stamp": "Not PE-stamped. You submit the application to your city yourself.",
 }
 
@@ -404,7 +404,7 @@ COMPARES: dict[str, Compare] = {c.slug: c for c in (
             ("Typical uses listed", "Fence, deck, shed, garage, driveway, pool, sign and remodeling permits, plus HOA and other permits.", "Electrical permits for EV chargers, panel upgrades, subpanels and 240 V circuits such as hot tubs."),
             ("How plans are made", "Remotely from satellite imagery, GIS data and county parcel information, with no site visit, plus customer-provided material.", US["how"]),
             ("Prices on the page", "Basic Plot Plan $99, Medium Site Plan $119, Detailed Site Plan (residential) $159.", US["price"]),
-            ("Turnaround stated", "Accepted site plans in under 24 hours.", "Download as soon as payment clears on the $89 package; the $169 package is checked against your city's requirements within 24 hours."),
+            ("Turnaround stated", "Accepted site plans in under 24 hours.", "Download as soon as payment clears on the {price:instant_packet} package; the {price:city_checked_24h} package is checked against your city's requirements within 24 hours."),
             ("Revisions and refunds", "Unlimited revisions and a money-back guarantee, with conditions shown on the page.", "Full refund before you download your clean packet."),
             ("Stamp or certification", "Plans are non-certified and not a survey.", US["stamp"]),
         ),

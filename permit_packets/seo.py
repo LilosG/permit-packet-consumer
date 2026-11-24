@@ -17,6 +17,8 @@ from xml.sax.saxutils import escape
 
 from markupsafe import Markup
 
+from permit_packets import pricing
+
 log = logging.getLogger("permit_packets")
 
 SITE_NAME = "Permit Packets"
@@ -32,13 +34,8 @@ HOME_DESCRIPTION = (
     "Generate a residential electrical permit packet from one address: site plan, single-line diagram, "
     "load calc and cut sheets. Free watermarked preview.")
 
-# Each package and its price. The order page and the schema.org offers read these.
-TIER_PRICES = {"load_calc": 39, "instant_packet": 89, "city_checked_24h": 169}
-TIER_NAMES = {
-    "load_calc": "Load Calc & Panel Audit",
-    "instant_packet": "Instant Permit Packet",
-    "city_checked_24h": "24-Hour City-Checked Packet",
-}
+# Each package's display name; prices live in permit_packets/pricing.py.
+TIER_NAMES = pricing.TIER_NAMES
 
 
 def public_base_url() -> str:
@@ -68,6 +65,7 @@ def page_meta(title: str, description: str, path: str, robots: str = "index,foll
         log.warning("SEO title is %d characters (max %d): %s", len(title), TITLE_MAX, title)
     if len(description) > DESCRIPTION_MAX:
         log.warning("SEO description is %d characters (max %d) on %s", len(description), DESCRIPTION_MAX, path)
+    title, description = pricing.resolve(title), pricing.resolve(description)
     canonical = absolute(canonical_path(path))
     image = absolute(og_image)
     q = lambda value: html.escape(value, quote=True)  # noqa: E731
@@ -139,20 +137,25 @@ def breadcrumb(items: list[tuple[str, str]]) -> dict:
 def faq(qas: list[tuple[str, str]]) -> dict:
     """FAQPage from (question, plain-text answer) pairs."""
     return {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
-        {"@type": "Question", "name": question, "acceptedAnswer": {"@type": "Answer", "text": answer}}
+        {"@type": "Question", "name": pricing.resolve(question),
+         "acceptedAnswer": {"@type": "Answer", "text": pricing.resolve(answer)}}
         for question, answer in qas]}
 
 
 def tier_offers() -> list[dict]:
-    return [
-        {"@type": "Offer", "name": TIER_NAMES[tier], "price": str(price), "priceCurrency": "USD",
-         "url": absolute(f"/start/?tier={price}")}
-        for tier, price in TIER_PRICES.items()]
+    offers = []
+    for tier in pricing.TIER_KEYS:
+        offer = {"@type": "Offer", "name": TIER_NAMES[tier], "price": str(pricing.price(tier)),
+                 "priceCurrency": "USD", "url": absolute(f"/start/?tier={tier}")}
+        if pricing.on_sale(tier):
+            offer["priceValidUntil"] = pricing.LAUNCH_ENDS.date().isoformat()
+        offers.append(offer)
+    return offers
 
 
 def product_offers() -> dict:
     """The three packages as one Product with an AggregateOffer."""
-    prices = list(TIER_PRICES.values())
+    prices = [pricing.price(tier) for tier in pricing.TIER_KEYS]
     return {"@context": "https://schema.org", "@type": "Product", "name": SITE_NAME,
             "brand": {"@type": "Brand", "name": SITE_NAME},
             "offers": {"@type": "AggregateOffer", "priceCurrency": "USD", "lowPrice": str(min(prices)),
@@ -350,7 +353,7 @@ def llms_txt() -> str:
     if loc_paths:
         lines += ["", "## City & State Electrical Permit Rules", ""]
         lines += [f"- [{path}]({absolute(path)})" for path, _ in loc_paths]
-    return "\n".join(lines) + "\n"
+    return pricing.resolve("\n".join(lines) + "\n")
 
 
 # ---- Conversion tracking ----
@@ -397,8 +400,8 @@ def llms_full_txt() -> str:
         "## Packages & Pricing (One-Time Per Project, Free Watermarked Preview)",
         "",
     ]
-    for _key, amount, name, desc, _pop in content.TIERS:
-        out.append(f"- **${amount} — {name}**: {desc}")
+    for key, name, desc, _pop in content.TIERS:
+        out.append(f"- **{pricing.money(pricing.price(key))} — {name}**: {desc}")
     out += ["", "## Supported Residential Electrical Permit Generators", ""]
     for h in content.HUBS.values():
         out.append(f"- **{h.h1}** ({absolute(h.path)}): {h.answer}")
@@ -414,4 +417,4 @@ def llms_full_txt() -> str:
             f"- **{city.label}** ({absolute(sitedata.city_path(city))}): Code: {city.nec_edition}; "
             f"Utility: {city.utility or 'Local utility'}; Portal: {city.submit_how}"
         )
-    return "\n".join(out) + "\n"
+    return pricing.resolve("\n".join(out) + "\n")

@@ -3,7 +3,12 @@
 Answers may hold inline HTML (links); the structured data gets the plain text."""
 from __future__ import annotations
 
+from permit_packets.content import CITY_CHANGES_ANSWER, POSITIONING
+
 FAQ: list[tuple[str, str]] = [
+    ("Do I need an electrician?",
+     POSITIONING + " Who can file depends on your city. Many let homeowners file for work they do themselves on their own home; "
+     'some require a licensed electrician for all electrical work. See <a href="/permits/">the permit rules for your city</a>.'),
     ("What's in a packet?",
      'A cover sheet with code notes, a site plan on aerial imagery with your lot lines, a single-line diagram, an NEC Article 220 load calculation with panel schedule, and the manufacturer cut sheets, as one PDF or a ZIP of individual files.'),
     ('How long does it take?',
@@ -23,5 +28,5 @@ FAQ: list[tuple[str, str]] = [
     ('Can I get a refund?',
      'Yes, a full refund if you ask before downloading your clean packet. 24-Hour City-Checked orders can be refunded any time before they\'re released. See the <a href="/refund/">Refund Policy</a>.'),
     ('What if my city asks for changes?',
-     "We can't guarantee approval. The packet follows the city's published checklist where we have it, and the $169 package adds a check against your city's requirements."),
+     CITY_CHANGES_ANSWER),
 ]

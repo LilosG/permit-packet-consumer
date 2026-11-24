@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "partials/ui.html" import link_cards, byline %}
+{% from "partials/ui.html" import link_cards, byline, price_tag %}
 {% block head_extra %}{{ verification }}{% endblock %}
 {% block body_attrs %} id="top"{% endblock %}
 {% block main %}
@@ -9,14 +9,14 @@
     <p class="eyebrow-pill">Residential electrical permits <i>•</i> NEC Article 220 load calcs</p>
     <h1>Electrical Permit Packets. <span class="accent">Done in Minutes.</span></h1>
     <p class="trust-row"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Built on NEC Article 220</span></p>
-    <p class="hero-sub">Stop paying CAD drafters $300–$500+ and waiting 3–7 business days—and don't risk plan-check rejection with a site-plan-only lot map. Generate your parcel site plan, single-line diagram, panel schedule, load calc, and UL cut sheets from one address.</p>
+    <p class="hero-sub">Electricians charge customers $300–$450 to prepare permit paperwork like this. Build yours from one address in minutes: site plan, single-line diagram, load calc, panel schedule and UL cut sheets.</p>
     <div class="guarantee"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Free Watermarked Preview</b><span>Inspect every sheet of your exact packet before you pay a cent.</span></div></div>
     <ul class="trust-items"><li><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg>Guided 2-minute form</li><li><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg>Real GIS parcel data</li><li><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>24-hr city-check option</li></ul>
   </div>
   <div class="action-card" id="hero-card">
     <div class="card-step-pill"><span class="live-dot"></span><span>Step 1 of 3 · Takes ~2 minutes</span></div>
     <h2>Start Your Permit Packet</h2>
-    <p class="action-sub">Enter any US property address to preview free • Starting at $39</p>
+    <p class="action-sub">Enter any US property address • Complete packet {price:instant_packet}{% if pricing.on_sale("instant_packet") %} (regularly {regular:instant_packet}){% endif %} · preview free</p>
     <form id="hero-form" class="hero-form" action="/start/" method="get">
       <div class="jt-pills" role="radiogroup" aria-label="Job type">
         <button type="button" class="jt-pill" role="radio" aria-checked="true" data-job="ev-charger">EV Charger</button>
@@ -40,7 +40,7 @@
   <p class="kicker">Built for homeowners &amp; solo electricians</p>
   <div class="metric-grid">
     <div class="metric"><span class="m-ic"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg></span><b>&lt; 5 Min</b><span>Typical time to generate a full packet</span></div>
-    <div class="metric"><span class="m-ic"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg></span><b>$89 vs $300–$500+</b><span>Compared with hiring a CAD drafter</span></div>
+    <div class="metric"><span class="m-ic"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg></span><b>{price:instant_packet} vs $300–$450</b><span>What electricians charge customers for permit paperwork</span></div>
     <div class="metric"><span class="m-ic"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><b>Any US address</b><span>Built-in checklists for {{ city_count }} cities</span></div>
   </div>
 </div></section>
@@ -48,6 +48,7 @@
 <section class="band dark blueprint-band" id="how"><div class="wrap">
   <p class="kicker">3-step automated drafting</p>
   <h2 class="band-title">How it works</h2>
+  <p class="band-sub positioning">{{ positioning }}</p>
   <p class="band-sub">From property address to submission-ready engineering sheets in under five minutes.</p>
   <ol class="how-steps dark-steps">
     <li><span class="num">01</span><b>Enter your address</b><span>Pick the job, drop the panel and equipment pins on the aerial map, and answer a few questions.</span></li>
@@ -154,7 +155,7 @@
       <h4>Pros</h4><ul class="pros"><li>Cheap and quick</li><li>Simple to use</li></ul>
       <h4>Limitations</h4><ul class="cons"><li>Lot map only — missing electrical diagrams &amp; load calc</li><li>You still need to produce the rest</li></ul></article>
     <article class="cmp featured"><span class="cmp-flag">Our pick</span><h3>Permit Packets</h3>
-      <dl><div><dt>Price</dt><dd>$39 – $169</dd></div><div><dt>Turnaround</dt><dd>Minutes</dd></div><div><dt>Best for</dt><dd>Residential EV chargers, service upgrades, subpanels and 240 V circuits</dd></div></dl>
+      <dl><div><dt>Price</dt><dd>{price:load_calc} – {price:city_checked_24h}</dd></div><div><dt>Turnaround</dt><dd>Minutes</dd></div><div><dt>Best for</dt><dd>Residential EV chargers, service upgrades, subpanels and 240 V circuits</dd></div></dl>
       <h4>Pros</h4><ul class="pros"><li>Complete packet from one address</li><li>NEC 220 math and UL sheets included</li><li>Free watermarked preview</li></ul>
       <h4>Limitations</h4><ul class="cons"><li>Not PE-stamped</li><li>You submit to the city yourself</li></ul>
       <a class="btn-primary full" href="/start/">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
@@ -168,32 +169,32 @@
   <p class="band-sub">Preview everything free. Pay only when you're ready to download.</p>
   <div class="price-grid">
     <article class="card price">
-      <h3>Load Calc &amp; Panel Audit</h3>
-      <p class="amount">$39</p>
-      <p>NEC 220 load calculation and a panel capacity audit.</p>
+      <h3>{{ pricing.TIER_NAMES["load_calc"] }}</h3>
+      {{ price_tag("load_calc") }}
+      <p>{{ pricing.PANEL_REPORT_DESCRIPTION }}</p>
       <ul class="tier-list">
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Free watermarked preview first</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>NEC Article 220 load calculation PDF</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Panel schedule &amp; capacity audit</span></li>
       </ul>
-      <a class="btn-secondary full" href="/start/?tier=39">Start Free Preview</a>
+      <a class="btn-secondary full" href="/start/?tier=load_calc">Start Free Preview</a>
     </article>
     <article class="card price popular">
       <i class="badge">Most popular</i>
       <h3>Instant Permit Packet</h3>
-      <p class="amount">$89</p>
+      {{ price_tag("instant_packet") }}
       <p>The complete clean packet and individual files. Download as soon as payment clears.</p>
       <ul class="tier-list">
-        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Load Calc &amp; Audit</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Panel Capacity Report</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>GIS aerial site plan &amp; measured run</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Single-line riser diagram &amp; UL cut sheets</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Combined PDF + split-file portal ZIP</span></li>
       </ul>
-      <a class="btn-primary full" href="/start/?tier=89">Start Free Preview</a>
+      <a class="btn-primary full" href="/start/?tier=instant_packet">Start Free Preview</a>
     </article>
     <article class="card price">
       <h3>24-Hour City-Checked Packet</h3>
-      <p class="amount">$169</p>
+      {{ price_tag("city_checked_24h") }}
       <p>The complete packet, checked against your city's published requirements within 24 hours.</p>
       <ul class="tier-list">
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Instant Permit Packet</span></li>
@@ -201,7 +202,7 @@
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Code &amp; utility parameter verification</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Delivered within 24 hours</span></li>
       </ul>
-      <a class="btn-secondary full" href="/start/?tier=169">Start Free Preview</a>
+      <a class="btn-secondary full" href="/start/?tier=city_checked_24h">Start Free Preview</a>
     </article>
   </div>
   <p class="center"><a class="link" href="/pricing/">Compare the packages</a></p>
@@ -227,6 +228,7 @@
   <div class="trust-grid">
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><h3>Free Watermarked Preview First</h3><p>Inspect every sheet of your generated packet and live NEC checks before you pay a cent to unlock the clean files.</p></article>
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span><h3>Full Refund Before Download</h3><p>Ask for a full refund before downloading your clean packet—or any time before release on a 24-Hour City-Checked order.</p></article>
+    <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><h3>Free Re-draft If We Made an Error</h3><p>{{ guarantee }}</p></article>
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg></span><h3>Secure Checkout via Whop</h3><p>Payments are processed through Whop; Permit Packets never sees or stores your payment card details.</p></article>
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-calc"/></svg></span><h3>NEC Article 220 &amp; 310.15 Engine</h3><p>Load calculations, conductor sizing, voltage drop, and AIC checks run directly from your address and job inputs.</p></article>
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><h3>Public GIS &amp; Aerial Sources</h3><p>Pulls parcel boundaries, lot lines, and aerial imagery from county GIS and public mapping sources where available.</p></article>

@@ -6,12 +6,14 @@
   <p class="eyebrow-pill">Transparent Pricing <i>•</i> Free Preview First</p>
   <h1>Permit Packet Pricing</h1>
   {{ byline() }}
-  <p class="answer">Permit Packets costs $39 for a load calculation and panel audit, $89 for the complete permit packet, or $169 for the complete packet checked against your city's published requirements within 24 hours. The preview is always free and watermarked, and you pay only to download.</p>
+  <p class="answer">Permit Packets costs {price:load_calc} for a Panel Capacity Report, {price:instant_packet} for the complete permit packet, or {price:city_checked_24h} for the complete packet checked against your city's published requirements within 24 hours. The preview is always free and watermarked, and you pay only to download.</p>
+  <p class="positioning">{{ positioning }}</p>
   <p class="cta-row">{{ cta("/start/") }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
 </header>
 
 <h2>How much does a permit packet cost?</h2>
 {{ tier_cards() }}
+<p class="guarantee-note"><b>Re-draft guarantee:</b> {{ guarantee }}</p>
 <p class="center-line">Payments processed securely by Whop. Comparing options? <a href="/compare/">Compare Permit Packets vs. CAD drafters &amp; site-plan tools</a>.</p>
 
 <aside class="preview-banner">
@@ -24,7 +26,7 @@
 
 <h2>What does each package unlock?</h2>
 <div class="table-wrap"><table class="compare">
-<thead><tr><th scope="col">What you get</th><th scope="col">$39 Load Calc &amp; Panel Audit</th><th scope="col">$89 Instant Permit Packet</th><th scope="col">$169 24-Hour City-Checked</th></tr></thead>
+<thead><tr><th scope="col">What you get</th><th scope="col">{price:load_calc} Panel Capacity Report</th><th scope="col">{price:instant_packet} Instant Permit Packet</th><th scope="col">{price:city_checked_24h} 24-Hour City-Checked</th></tr></thead>
 <tbody>
 <tr><th scope="row">Free watermarked preview</th><td>Yes</td><td>Yes</td><td>Yes</td></tr>
 <tr><th scope="row">NEC 220 load calculation sheet</th><td>Yes</td><td>Yes</td><td>Yes</td></tr>

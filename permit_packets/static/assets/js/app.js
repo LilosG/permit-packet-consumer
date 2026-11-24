@@ -390,9 +390,10 @@
     }
   }
 
-  /* The recommended package: $39 for a homeowner hiring an electrician, $89 for everyone else, unless ?tier= chose one.
+  /* The recommended package: the Panel Capacity Report for a homeowner hiring an electrician, the Instant Permit Packet for everyone else, unless ?tier= chose one.
      The visitor can still pick any package; once they have, a change of role no longer moves it. */
-  const TIER_PRICE = { load_calc: 39, instant_packet: 89, city_checked_24h: 169 };
+  // Prices come from the server (window.PP_PRICES, rendered from permit_packets/pricing.py).
+  const TIER_PRICE = Object.fromEntries(Object.entries((window.PP_PRICES || {}).tiers || {}).map(([key, tier]) => [key, tier.price]));
   const studio = $('#start');
   const explicitTier = studio.dataset.tierExplicit ? studio.dataset.tier : '';
   let tierTouched = Boolean(explicitTier);
@@ -402,7 +403,7 @@
     const key = recommendedTier();
     $$('.plan').forEach((plan) => {
       const badge = plan.querySelector('.badge.reco');
-      if (badge) badge.hidden = plan.querySelector('input').value !== key || key === 'instant_packet';  // $89 already says Most popular
+      if (badge) badge.hidden = plan.querySelector('input').value !== key || key === 'instant_packet';  // the Instant Permit Packet already says Most popular
     });
     if (!tierTouched) $(`input[name="tier"][value="${key}"]`).checked = true;
   }

@@ -56,7 +56,7 @@
     "Panel schedule & capacity audit"
   ],
   "instant_packet": [
-    "Everything in Load Calc & Audit",
+    "Everything in Panel Capacity Report",
     "GIS aerial site plan & measured run",
     "Single-line riser diagram & UL cut sheets",
     "Combined PDF + split-file portal ZIP"
@@ -69,18 +69,37 @@
   ]
 } %}
 
+{#- The price of a tier: while the launch offer runs, the regular price struck through, the launch price large and a
+    small badge; afterwards just the regular price. `suffix` is trusted markup such as "/packet". -#}
+{% macro price_tag(key, suffix="") -%}
+{%- if pricing.on_sale(key) -%}
+<p class="amount"><s class="price-was">${{ pricing.regular_price(key) }}</s> <span class="price-now">${{ pricing.price(key) }}</span>{{ suffix|safe }}</p>
+<p class="launch-note"><i class="badge launch">Launch price through {{ pricing.launch_end_label() }}</i></p>
+{%- else -%}
+<p class="amount">${{ pricing.price(key) }}{{ suffix|safe }}</p>
+{%- endif -%}
+{%- endmacro %}
+
+{% macro plan_price(key) -%}
+{%- if pricing.on_sale(key) -%}
+<b class="plan-price"><s class="price-was">${{ pricing.regular_price(key) }}</s> <span class="price-now">${{ pricing.price(key) }}</span></b><i class="badge launch">Launch price through {{ pricing.launch_end_label() }}</i>
+{%- else -%}
+<b class="plan-price">${{ pricing.price(key) }}</b>
+{%- endif -%}
+{%- endmacro %}
+
 {% macro tier_cards(job="", bullets=True) -%}
 <div class="price-grid">
-{%- for key, amount, name, text, popular in tiers %}
+{%- for key, name, text, popular in tiers %}
   <article class="card price{% if popular %} popular{% endif %}">
     {% if popular %}<i class="badge">Most popular</i>{% endif %}
     <div class="price-head">
       <h3>{{ name }}</h3>
-      <p class="amount">${{ amount }}<span>/packet</span></p>
+      {{ price_tag(key, "<span>/packet</span>") }}
     </div>
     <p class="price-desc">{{ text }}</p>
     {% if bullets and TIER_BULLETS.get(key) %}<ul class="tier-list">{% for b in TIER_BULLETS[key] %}<li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>{{ b }}</span></li>{% endfor %}</ul>{% endif %}
-    <a class="{{ 'btn-primary' if popular else 'btn-secondary' }} full" href="/start/?{% if job %}job={{ job }}&amp;{% endif %}tier={{ amount }}">Start Free Preview</a>
+    <a class="{{ 'btn-primary' if popular else 'btn-secondary' }} full" href="/start/?{% if job %}job={{ job }}&amp;{% endif %}tier={{ key }}">Start Free Preview</a>
   </article>
 {%- endfor %}
 </div>

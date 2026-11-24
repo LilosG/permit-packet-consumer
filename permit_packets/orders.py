@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 TIERS = ("load_calc", "instant_packet", "city_checked_24h")
-# in_review: a paid $169 order held for the 24-hour city check. Releasing it makes it "paid" and stamps released_at.
+# in_review: a paid city_checked_24h order held for the 24-hour city check. Releasing it makes it "paid" and stamps released_at.
 STATUSES = ("pending_payment", "in_review", "paid", "delivered")
 SQLITE_PATH = "/tmp/orders.db"
 

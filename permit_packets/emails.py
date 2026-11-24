@@ -80,7 +80,7 @@ def order_created(order: dict[str, Any], link: str) -> bool:
 
 
 def paid_ready(order: dict[str, Any], link: str) -> bool:
-    what = "Your load calculation and panel audit are" if order["tier"] == "load_calc" else "Your packet is"
+    what = "Your Panel Capacity Report is" if order["tier"] == "load_calc" else "Your packet is"
     return _send(
         order["customer_email"], "Your packet is ready to download",
         [f"Thanks for your payment. {what} ready to download for {order['address']}."],
@@ -103,7 +103,7 @@ def released(order: dict[str, Any], link: str) -> bool:
 
 
 def review_alert(order: dict[str, Any], order_link: str, admin_link: str) -> bool:
-    """Tell support a $169 order is paid and waiting in the review queue."""
+    """Tell support a 24-Hour City-Checked order is paid and waiting in the review queue."""
     paragraphs = [
         f"A 24-Hour City-Checked order was paid and is waiting for review: {order['order_code']}, {order['address']}.",
         f"Buyer: {order['customer_email']}",

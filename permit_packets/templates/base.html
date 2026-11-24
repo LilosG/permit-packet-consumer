@@ -14,10 +14,17 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="/assets/css/app.css?v={{ asset_version }}">
 {{ jsonld }}
+{{ prices_script() }}
 {{ ga }}
 </head>
 <body{% block body_attrs %}{% endblock %}>
 {% include "partials/icons.html" %}
+{% if pricing.launch_active() %}
+<div class="launch-banner" id="launch-banner" role="region" aria-label="Launch pricing">
+  <a class="launch-banner-text" href="/pricing/">Launch pricing: complete permit packets {price:instant_packet} (regularly {regular:instant_packet}) through {launch_end}.{% if pricing.bonus_active() %} Black Friday–Cyber Monday: bonus credits on Pro packs.{% endif %}</a>
+  <button type="button" class="launch-banner-close" id="launch-banner-close" aria-label="Dismiss launch pricing banner">&times;</button>
+</div>
+{% endif %}
 {% include "partials/header.html" %}
 {% if crumbs %}{% include "partials/breadcrumbs.html" %}{% endif %}
 {% block main %}{% endblock %}

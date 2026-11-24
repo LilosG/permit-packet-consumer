@@ -1,4 +1,4 @@
-"""The $169 review hold, the $39 sheet limit, refund tracking, order emails, Find my order, trust pages, sample data."""
+"""The 24-hour review hold, the Panel Capacity Report sheet limit, refund tracking, order emails, Find my order, trust pages, sample data."""
 import json
 import re
 from io import BytesIO
@@ -43,7 +43,7 @@ def admin_row(client, order, key="orders"):
     return next(r for r in rows if r["order_code"] == order["order_code"])
 
 
-# ---- $169: manual review hold ----
+# ---- 24-Hour City-Checked: manual review hold ----
 
 def test_a_paid_169_order_is_held_in_review_with_no_downloads(client, outbox, monkeypatch):
     monkeypatch.setenv("SUPPORT_EMAIL", "support@example.com")
@@ -102,7 +102,7 @@ def test_manual_approval_of_a_169_order_also_goes_to_review(client):
     assert client.post(f"/api/admin/orders/{row['id']}/approve", auth=ADMIN).json()["status"] == "in_review"
 
 
-# ---- $39: load calc and panel schedule only ----
+# ---- Panel Capacity Report: load calc and panel schedule only ----
 
 def test_a_39_order_gets_only_the_load_calc_and_panel_sheets(client):
     order = place_order(client, "load_calc")
@@ -275,9 +275,9 @@ def test_the_homepage_has_organization_and_faq_json_ld(client):
     assert (org["name"], org["email"], org["parentOrganization"]["name"]) == ("Permit Packets", "hello@myelectricalpermit.com", "Lilos Growth")
     faq = next(b for b in blocks if b["@type"] == "FAQPage")
     questions = re.findall(r'<button [^>]*class="faq-q"[^>]*>(.*?)<span class="faq-ic"', html)
-    assert [q["name"] for q in faq["mainEntity"]] == [q.replace("&amp;", "&") for q in questions] and len(questions) == 10
-    assert faq["mainEntity"][0]["name"] == "What's in a packet?" and faq["mainEntity"][8]["name"] == "Can I get a refund?"
-    assert "<" not in faq["mainEntity"][8]["acceptedAnswer"]["text"]
+    assert [q["name"] for q in faq["mainEntity"]] == [q.replace("&amp;", "&") for q in questions] and len(questions) == 11
+    assert faq["mainEntity"][0]["name"] == "Do I need an electrician?" and faq["mainEntity"][9]["name"] == "Can I get a refund?"
+    assert "<" not in faq["mainEntity"][9]["acceptedAnswer"]["text"]
 
 
 def test_checkout_wording_on_the_wizard(client):

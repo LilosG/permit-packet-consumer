@@ -30,7 +30,7 @@ from fastapi.exception_handlers import http_exception_handler as default_http_ex
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import ValidationError
 
-from permit_packets import emails, orders, pages, seo, sitedata
+from permit_packets import emails, orders, pages, pricing, seo, sitedata
 from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
 from permit_packets.core.preview import packet_documents_zip, packet_page_images, packet_subset_pdf
 from permit_packets.core.property_lookup import (
@@ -96,6 +96,7 @@ def _fill(html: str, *, redact_path: str | None = None) -> str:
     return (
         html.replace("{{GA}}", str(seo.ga_snippet(redact_path=redact_path)))
         .replace("{{ASSET_VERSION}}", ASSET_VERSION)
+        .replace("{{PP_PRICES}}", pages.prices_script())
         .replace("{{BASE_URL}}", public_base_url())
     )
 
@@ -528,7 +529,7 @@ def create_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
     }
 
 
-# The $39 package is only the NEC 220 load calculation and the panel schedule / capacity audit sheets.
+# The Panel Capacity Report (load_calc) is only the NEC 220 load calculation and the panel schedule / capacity audit sheets.
 LOAD_CALC_SHEETS = ("load-calculation", "panel-schedule")
 REVIEW_HOURS = 24
 
@@ -552,7 +553,7 @@ def _city_name(order: dict[str, Any]) -> str:
 
 
 def _mark_paid(order: dict[str, Any], request: Request) -> dict[str, Any]:
-    """Record a payment. A $169 order goes into the review hold and does not unlock; the others unlock now."""
+    """Record a payment. A city_checked_24h order goes into the review hold and does not unlock; the others unlock now."""
     link = _order_link(request, order)
     if order["tier"] == "city_checked_24h":
         order = orders.set_status(order["id"], "in_review") or order
@@ -624,7 +625,7 @@ def order_status(access_token: str) -> JSONResponse:
         "paid": paid,
         "in_review": order["status"] == "in_review",
         "tier": order["tier"],
-        "price": seo.TIER_PRICES[order["tier"]],
+        "price": pricing.price(order["tier"]),
         "address": order["address"],
         # What the order page reports to analytics when the order shows paid.
         "job": sitedata.job_for_api_slug(order["job_slug"]),
@@ -645,7 +646,7 @@ def order_status(access_token: str) -> JSONResponse:
             "pdf_url": f"/api/orders/{access_token}/pdf",
             "documents_url": f"/api/orders/{access_token}/documents" if zip_ok else None,
         })
-        if only is not None:  # the $39 package: just its two sheets, no city submission pages
+        if only is not None:  # the Panel Capacity Report: just its two sheets, no city submission pages
             view["files"] = [
                 {"title": document.title, "url": f"/api/orders/{access_token}/documents/{document.file_stem}"}
                 for document in job_type.documents if document.file_stem in only]
@@ -687,7 +688,7 @@ def order_preview_pages(access_token: str) -> JSONResponse:
 
 @app.get("/api/orders/{access_token}/pdf")
 def order_pdf(access_token: str) -> Response:
-    """The clean PDF, built on the fly so no file is stored. A $39 order gets just its two sheets."""
+    """The clean PDF, built on the fly so no file is stored. A load_calc order gets just its two sheets."""
     order = _paid_order(access_token)
     job_type, result = _build(order["job_slug"], order["payload"], preview=False)
     pdf, name = result.pdf, f'{order["order_code"]}-permit-packet.pdf'
@@ -716,12 +717,12 @@ def order_documents(access_token: str) -> Response:
 
 @app.get("/api/orders/{access_token}/documents/{file_stem}")
 def order_document(access_token: str, file_stem: str) -> Response:
-    """One sheet of the packet as its own PDF. A $39 order may only take its load calculation and panel schedule."""
+    """One sheet of the packet as its own PDF. A load_calc order may only take its load calculation and panel schedule."""
     order = _paid_order(access_token)
     job_type = _job_type(order["job_slug"])
     only = _allowed_sheets(order, job_type)
     if only is not None and file_stem not in only:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "This package includes only the load calculation and panel audit")
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "This package includes only the Panel Capacity Report")
     stems = tuple(document.file_stem for document in job_type.documents)
     if file_stem not in stems:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such sheet")
@@ -853,7 +854,7 @@ def admin_orders(request: Request) -> JSONResponse:
 
 @app.post("/api/admin/orders/{order_id}/approve", dependencies=[Depends(require_admin)])
 def approve_order(order_id: str, request: Request) -> dict:
-    """Mark a payment as received by hand, for a payment the webhook missed. Only a pending order changes: a $169 order goes to review like a webhook payment."""
+    """Mark a payment as received by hand, for a payment the webhook missed. Only a pending order changes: a city_checked_24h order goes to review like a webhook payment."""
     order = orders.get_by_id(order_id)
     if order is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such order")

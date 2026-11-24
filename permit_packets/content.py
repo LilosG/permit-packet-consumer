@@ -11,11 +11,28 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-TIERS = (
-    ("load_calc", "39", "Load Calc & Panel Audit", "NEC 220 load calculation and a panel capacity audit.", False),
-    ("instant_packet", "89", "Instant Permit Packet",
+from permit_packets import pricing
+
+# The positioning line and the re-draft guarantee. The wording is fixed: change it here and nowhere else.
+POSITIONING = "We make the packet. You, or your licensed electrician if your city requires one, sign and submit it."
+GUARANTEE = (
+    "If your city rejects the packet because of an error in it, like a wrong calculation, a drawing mistake, or an "
+    "item from the city's checklist we missed, send us the plan-check comments within 60 days and we'll re-draft it free.")
+GUARANTEE_NOT_COVERED = (
+    "A rejection because your city requires a licensed electrician to sign or file; details you entered wrong "
+    "(panel size, run length, equipment); or a job that changed after the packet was made. Your city always makes "
+    "the final decision.")
+GUARANTEE_HOW = "Email hello@myelectricalpermit.com with your order link and the plan-check comments."
+CITY_CHANGES_ANSWER = (
+    "If the city rejects your packet because of an error in it, send us the plan-check comments within 60 days and "
+    "we'll re-draft it free. Who signs and submits follows your city's rules: you, if your city lets owners file for "
+    "their own work, or your licensed electrician if it doesn't.")
+
+TIERS = (  # (key, display name, one-line description, most popular); prices come from pricing.py
+    ("load_calc", pricing.TIER_NAMES["load_calc"], pricing.PANEL_REPORT_DESCRIPTION, False),
+    ("instant_packet", pricing.TIER_NAMES["instant_packet"],
      "The complete clean packet and individual files. Download as soon as payment clears.", True),
-    ("city_checked_24h", "169", "24-Hour City-Checked Packet",
+    ("city_checked_24h", pricing.TIER_NAMES["city_checked_24h"],
      "The complete packet, checked against your city's published requirements within 24 hours.", False),
 )
 
@@ -165,8 +182,8 @@ _hub(Hub(
          "The service size has to cover the home's calculated load. The packet runs the NEC Article 220 calculation from your square footage and appliances and compares it to the new service size, with a pass or fail.",
          "To show the new service covers the calculated load."),
         ("Can I check my panel capacity before I buy anything else?",
-         "Yes. The $39 Load Calc & Panel Audit delivers the load calculation sheet and the panel schedule and capacity audit sheet, so you know your numbers before you collect quotes.",
-         "Yes, the $39 package delivers the load calc and capacity audit."),
+         "Yes. The {price:load_calc} Panel Capacity Report delivers the load calculation sheet and the panel schedule and capacity audit sheet, so you know your numbers before you collect quotes.",
+         "Yes, the {price:load_calc} package delivers the load calc and capacity audit."),
         ("What is the utility service request page?",
          "It is your job's data arranged for the utility's service request: utility, meter number, old and new service size, service type, and blank lines for the requested disconnect and reconnect. It is not the utility's form.",
          "Your job data laid out for the utility's request. Not their form."),
@@ -505,7 +522,7 @@ _aud(Audience(
          ("Then the permit has to be pulled by a licensed contractor, and the packet still helps: it gives them the site plan, diagram and load calculation to work from. See <a href=\"/for/homeowners-hiring-an-electrician/\">getting your plans ready before you hire an electrician</a>.",
           "Because the rules differ by city and state, check before you buy anything. The free preview costs nothing, so you can build the packet first and read the checklist on its first sheet.")),
         ("Which package should a DIY homeowner choose?",
-         ("The $89 Instant Permit Packet. It is the complete clean packet and the individual files, and you can download it as soon as payment clears. If you want it checked against your city's published requirements first, the $169 package does that within 24 hours.",)),
+         ("The {price:instant_packet} Instant Permit Packet. It is the complete clean packet and the individual files, and you can download it as soon as payment clears. If you want it checked against your city's published requirements first, the {price:city_checked_24h} package does that within 24 hours.",)),
     ),
     steps=(
         ("Choose \"I'm a homeowner doing the work myself\"", "Then enter the job address and pick the job."),
@@ -536,12 +553,12 @@ _aud(Audience(
     slug="homeowners-hiring-an-electrician", role="hiring", path="/for/homeowners-hiring-an-electrician/",
     h1="Get Your Permit Plans Ready Before You Hire an Electrician", crumb="Hiring an Electrician",
     title="Permit Plans Before You Hire an Electrician | Permit Packets",
-    description="Know your panel capacity before you get quotes. Run the NEC 220 load calc for $39, then hand the packet to your electrician.",
+    description="Know your panel capacity before you get quotes. Run the NEC 220 load calc for {price:load_calc}, then hand the packet to your electrician.",
     benefit="Know your panel capacity before you get quotes",
     answer=("Before you hire an electrician, find out whether your panel has room for the job. Permit Packets runs the "
             "NEC Article 220 load calculation from your address and home details, so every quote starts from the same "
             "numbers, and you can hand the finished packet to the electrician you choose."),
-    cta_params="?role=hiring&tier=39", tier_key="load_calc",
+    cta_params="?role=hiring&tier=load_calc", tier_key="load_calc",
     sections=(
         ("Why check my panel capacity before getting quotes?",
          ("A panel that is near its limit can change the job: it may need a service upgrade before a charger or a hot tub can go in. The load calculation shows the computed load against your service rating, with a pass or fail.",
@@ -556,8 +573,8 @@ _aud(Audience(
          ("Ask whether the quote includes a service upgrade, who pulls the permit and who submits it. Put your load calculation next to each answer: if your service already has spare capacity, an upgrade line on a quote is worth a question.",
           "The packet's first sheet also lists items flagged for review, such as existing loads and open panel spaces. Share those with the electrician so they can field verify them.")),
         ("Which package should I start with?",
-         ("Start with the $39 Load Calc & Panel Audit. It delivers the load calculation sheet and the panel schedule and capacity audit sheet, which is what you need to compare quotes.",
-          "When you are ready for the plans, choose the $89 Instant Permit Packet for the complete clean packet. Your preview is free either way.")),
+         ("Start with the {price:load_calc} Panel Capacity Report. It delivers the load calculation sheet and the panel schedule and capacity audit sheet, which is what you need to compare quotes.",
+          "When you are ready for the plans, choose the {price:instant_packet} Instant Permit Packet for the complete clean packet. Your preview is free either way.")),
     ),
     steps=(
         ("Choose \"I'm a homeowner hiring an electrician\"", "Enter the address and the job you are considering."),
@@ -566,10 +583,10 @@ _aud(Audience(
     ),
     tier_why="Just the load calculation and panel capacity audit, so you know your numbers before the quotes come in.",
     faqs=(
-        ("What do I get for $39?",
-         "The NEC 220 load calculation sheet and the panel schedule and capacity audit sheet. The full plans are in the $89 packet.",
+        ("What do I get for {price:load_calc}?",
+         "The NEC 220 load calculation sheet and the panel schedule and capacity audit sheet. The full plans are in the {price:instant_packet} packet.",
          "The load calc sheet and the panel capacity audit sheet."),
-        ("Can I upgrade from $39 to the full packet later?",
+        ("Can I upgrade from {price:load_calc} to the full packet later?",
          "You can run the wizard again and choose a larger package.",
          "Run the wizard again and choose a larger package."),
         ("Do I still need an electrician?",
@@ -607,8 +624,8 @@ _aud(Audience(
          ("The NEC Article 220 calculation runs on every job, with the sizing checks that go with it: service capacity, open panel spaces, breaker and conductor sizes and voltage drop. The first sheet shows each check with a result and a status of Pass, Fix or Note.",
           "Cities we have set up use their published checklist; any other address uses a general NEC checklist that the packet labels. Check each job page for the details: <a href=\"/panel-upgrade-permit/\">panel upgrade</a> and <a href=\"/subpanel-permit/\">subpanel</a> add a riser diagram or a feeder schedule.")),
         ("What if I want a second check before I submit?",
-         ("The $169 24-Hour City-Checked Packet adds a check against your city's published requirements. It is reviewed and released within 24 hours of payment, and you get an email when it is released.",
-          "The $89 Instant Permit Packet is available to download as soon as payment clears.")),
+         ("The {price:city_checked_24h} 24-Hour City-Checked Packet adds a check against your city's published requirements. It is reviewed and released within 24 hours of payment, and you get an email when it is released.",
+          "The {price:instant_packet} Instant Permit Packet is available to download as soon as payment clears.")),
         ("How do I upload to a city portal?",
          ("You get one combined PDF, or a ZIP of each sheet as its own file for portals that want separate uploads. Your order page also lists the city's submission steps and copy-paste fields for the portal.",
           "You submit to the city yourself. The packet is not PE-stamped, and approval is not guaranteed.")),
@@ -630,9 +647,9 @@ _aud(Audience(
          "Any U.S. address works. Cities we have set up use their published checklist; everywhere else uses a general checklist, so confirm local requirements.",
          "Any address; built-in checklists for set-up cities."),
         ("Do I pay per job?",
-         "Yes. Each packet is one purchase at $39, $89 or $169, and the preview is free.",
+         "Yes. Each packet is one purchase at {price:load_calc}, {price:instant_packet} or {price:city_checked_24h}, and the preview is free.",
          "Yes, per packet."),
-        ("Does the $169 package guarantee approval?",
+        ("Does the {price:city_checked_24h} package guarantee approval?",
          "No. It adds a check against your city's published requirements. The building department makes the decision.",
          "No. It adds a requirements check."),
     ),
@@ -663,9 +680,9 @@ _aud(Audience(
           "It is a drafting and NEC calculation tool. It is not PE-stamped, and it does not replace anyone's review.")),
         ("Why prepare the scope before the electrician arrives?",
          ("The panel and equipment locations, the measured run, the service size and the load calculation are on one set of sheets, so the electrician starts from a defined scope rather than a description.",
-          "A CAD drafter costs $300–$500+ and takes 3–7 business days. A packet is $89 and typically generated in under 5 minutes.")),
+          "A CAD drafter costs $300–$500+ and takes 3–7 business days. A packet is {price:instant_packet} and typically generated in under 5 minutes.")),
         ("Which package should a contractor choose?",
-         ("The $89 Instant Permit Packet, the complete clean packet. Start with the $39 Load Calc & Panel Audit if you only need to confirm the panel can take the job.",)),
+         ("The {price:instant_packet} Instant Permit Packet, the complete clean packet. Start with the {price:load_calc} Panel Capacity Report if you only need to confirm the panel can take the job.",)),
     ),
     steps=(
         ("Choose \"I'm a contractor or handyman\"", "Enter the address and the job's equipment and run."),
@@ -726,22 +743,22 @@ SAMPLE_SHEETS = (
 
 PRICING_FAQS = (
     ("How much does a permit packet cost?",
-     "There are three packages: $39 for the Load Calc & Panel Audit, $89 for the Instant Permit Packet and $169 for the 24-Hour City-Checked Packet. The preview is free.",
-     "$39, $89 or $169. The preview is free."),
+     "There are three packages: {price:load_calc} for the Panel Capacity Report, {price:instant_packet} for the Instant Permit Packet and {price:city_checked_24h} for the 24-Hour City-Checked Packet. The preview is free.",
+     "{price:load_calc}, {price:instant_packet} or {price:city_checked_24h}. The preview is free."),
     ("What does the free preview include?",
      "Every sheet of your exact packet, watermarked, and the live NEC check. You pay only to download the clean version.",
      "Every sheet, watermarked."),
-    ("What is the difference between the $89 and $169 packages?",
-     "Both are the complete packet. The $169 package is also checked against your city's published requirements, then reviewed and released within 24 hours of payment.",
-     "$169 adds a city-requirements check, released within 24 hours."),
+    ("What is the difference between the {price:instant_packet} and {price:city_checked_24h} packages?",
+     "Both are the complete packet. The {price:city_checked_24h} package is also checked against your city's published requirements, then reviewed and released within 24 hours of payment.",
+     "{price:city_checked_24h} adds a city-requirements check, released within 24 hours."),
     ("When can I download?",
-     "Your order unlocks automatically once the payment goes through, and the $89 packet is available to download as soon as payment clears. The $169 order is held for the city-requirements review, and you get an email when it is released.",
-     "On payment for $39 and $89; $169 after review."),
+     "Your order unlocks automatically once the payment goes through, and the {price:instant_packet} packet is available to download as soon as payment clears. The {price:city_checked_24h} order is held for the city-requirements review, and you get an email when it is released.",
+     "On payment for {price:load_calc} and {price:instant_packet}; {price:city_checked_24h} after review."),
     ("Who processes the payment?",
      "Whop. Payments are processed securely by Whop, and we do not see or store your card details.",
      "Whop, securely."),
     ("What is the refund policy?",
-     'You can get a full refund if you ask before downloading your clean packet. $169 orders can be refunded any time before release. Read the <a href="/refund/">Refund Policy</a>.',
+     'You can get a full refund if you ask before downloading your clean packet. {price:city_checked_24h} orders can be refunded any time before release. Read the <a href="/refund/">Refund Policy</a>.',
      "Full refund before you download the clean packet."),
 )
 

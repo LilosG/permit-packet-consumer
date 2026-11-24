@@ -1694,3 +1694,17 @@ table.compare tbody th { color: var(--ink); font-weight: 600; }
   margin: 0 0 6px;
   line-height: 1.25;
 }
+
+/* ---- Launch pricing: banner, struck-through regular price, launch badge, guarantee ---- */
+.launch-banner { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 9px 16px; background: #1d4ed8; color: #fff; font: 600 14px/1.4 var(--display); text-align: center; }
+.launch-banner[hidden] { display: none; }
+.launch-banner a { color: #fff; text-decoration: none; }
+.launch-banner a:hover { text-decoration: underline; }
+.launch-banner-close { flex: none; width: 28px; height: 28px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .16); color: #fff; font: 700 18px/1 var(--display); cursor: pointer; }
+.launch-banner-close:hover { background: rgba(255, 255, 255, .3); }
+.price-was { color: var(--muted, #64748b); font-size: .5em; font-weight: 600; letter-spacing: 0; }
+.plan .price-was { font-size: .8em; }
+.badge.launch { position: static; display: inline-block; top: auto; right: auto; background: #047857; box-shadow: none; font-size: 12px; }
+.launch-note { margin: 6px 0 0; }
+.plan .badge.launch { margin-top: 4px; }
+.guarantee-note { margin: 20px auto 0; max-width: 760px; text-align: center; color: var(--muted, #475569); font-size: 15px; }
