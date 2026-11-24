@@ -1630,3 +1630,25 @@ table.compare tbody th { color: var(--ink); font-weight: 600; }
 .metric:hover {
   border-top-color: var(--blue);
 }
+
+/* ==== Stage 17: Metrics Section Bottom Margin & Card Centering ==== */
+.metrics {
+  padding: 64px 0 76px;
+}
+.metric-grid {
+  align-items: stretch;
+  margin-top: 22px;
+}
+.metric {
+  align-content: center;
+  justify-items: center;
+  min-height: 176px;
+  padding: 28px 24px;
+}
+.metric b {
+  text-wrap: balance;
+}
+.metric span:not(.m-ic) {
+  max-width: 28ch;
+  text-wrap: balance;
+}
