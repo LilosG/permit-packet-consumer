@@ -15,6 +15,7 @@ SEATTLE = Jurisdiction(
     key="seattle-wa", name="Seattle", state="WA", known=True,
     permit_rules_verified="2026-11-21",
     who_may_pull="Washington licensed electrical contractors and qualifying owner-occupiers.",
+    owner_may_file=True,
     portal_url="https://www.seattle.gov/sdci/permits/permits-we-issue-(a-z)/electrical-permit",
     fee_note="Fees are calculated per the SDCI fee ordinance based on circuit counts and service amps.",
     sources=("https://www.seattle.gov/sdci",),

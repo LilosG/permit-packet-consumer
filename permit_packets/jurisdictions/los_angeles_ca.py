@@ -15,6 +15,7 @@ LOS_ANGELES = Jurisdiction(
     key="los-angeles-ca", name="Los Angeles", state="CA", known=True,
     permit_rules_verified="2026-11-21",
     who_may_pull="State-licensed electrical contractors (C-10) or owner-builders of single-family homes may apply.",
+    owner_may_file=True,
     portal_url="https://www.ladbs.org/services/core-services/plan-check-permit/electrical-permit",
     fee_note="Permit fees are based on the number of items and valuation per the LADBS fee schedule.",
     sources=("https://www.ladbs.org/",),

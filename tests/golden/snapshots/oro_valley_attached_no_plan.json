@@ -129,7 +129,10 @@
         "Load calculation for a new 240 V circuit",
         "Venting shown on the plans, if the charger requires it",
         "HOA or subdivision rules"
-      ]
+      ],
+      "owner_may_file": null,
+      "filing_line": "Check with Oro Valley whether you can file yourself or need a licensed electrician.",
+      "no_plan": {}
     },
     "address": "123 Sample St",
     "fields": [

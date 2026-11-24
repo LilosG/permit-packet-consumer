@@ -16,6 +16,7 @@ TAMPA = Jurisdiction(
     code_name="NEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="Florida licensed electrical contractors or qualifying owner-builders of single-family homes.",
+    owner_may_file=True,
     portal_url="https://www.tampa.gov/construction-services",
     fee_note="Electrical permit fees are set by the City of Tampa Construction Services fee schedule.",
     sources=("https://www.tampa.gov/construction-services",),

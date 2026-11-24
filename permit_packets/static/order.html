@@ -58,6 +58,7 @@
         <a class="button quiet" id="send-electrician" hidden>Send to your electrician</a>
       </div>
       <ul class="file-list" id="files" hidden></ul>
+      <p class="note" id="credit-note" hidden></p>
       <p class="note" id="one-pdf" hidden>This city takes one combined PDF, so upload the PDF as a single file.</p>
     </div>
     <div class="panel" data-packet-only>
@@ -177,7 +178,10 @@
       const item = document.createElement('li'); const link = document.createElement('a');
       link.href = file.url; link.textContent = `${file.title} (PDF)`; item.append(link); return item;
     }));
-    $('pdf').textContent = sheetsOnly ? 'Download both sheets (PDF)' : 'Download PDF';
+    $('pdf').textContent = sheetsOnly ? 'Download the report (PDF)' : 'Download PDF';
+    const credit = $('credit-note');
+    credit.hidden = !(sheetsOnly && order.price > 0);
+    if (!credit.hidden) credit.textContent = `Your $${String(Number(order.price).toFixed(2)).replace(/\.00$/, '')} is credited toward a full permit packet bought with this email within 30 days.`;
     $('pdf').href = order.pdf_url;
     $('zip').hidden = !order.documents_url;
     if (order.documents_url) $('zip').href = order.documents_url;

@@ -1,2 +1,5 @@
 from permit_packets.jurisdictions.general import make_city
+from dataclasses import replace
 NEW_YORK = make_city(*('new-york-ny', 'New York', 'NY', 'NYC', 'NYC licensed Master Electricians ONLY.', 'https://www.nyc.gov/site/buildings/index.page', 'Electrical permit fees are calculated via DOB NOW.', '2008 NEC (NYC Electrical Code)', 'Licensed electricians must pull a DOB NOW Build electrical permit for EVSE.', 'Service upgrades require ConEdison scheduling and DOB inspection.', (-74.2591, 40.4774, -73.7003, 40.9176), (-74.006, 40.7128), 'NYC DOB', '(311)', 'dobnowsupport@buildings.nyc.gov', 'https://a810-dobnow.nyc.gov/', 'DOB NOW', 'Master Electricians submit filings exclusively through DOB NOW.', 91, 'https://ashrae-meteo.info/v3.0/index.php?wmo=725030', 'ConEdison', 'ConEd', 'NYC enforces the New York City Electrical Code (2008 NEC base with NYC amendments).'))
+
+NEW_YORK = replace(NEW_YORK, owner_may_file=False, sources=NEW_YORK.sources + ("https://www.nyc.gov/site/buildings/property-or-business-owner/project-requirements-owner-electrical.page",))

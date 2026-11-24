@@ -16,6 +16,7 @@ RALEIGH = Jurisdiction(
     code_name="NEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="North Carolina licensed electrical contractors or owner-occupants of single-family dwellings.",
+    owner_may_file=True,
     portal_url="https://raleighnc.gov/permits",
     fee_note="Trade permit fees are assessed per the City of Raleigh Development Fee Guide.",
     sources=("https://raleighnc.gov/permits",),

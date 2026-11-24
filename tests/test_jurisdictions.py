@@ -36,7 +36,7 @@ def test_jurisdiction_json_has_exactly_the_keys_the_page_reads():
     assert set(jurisdiction_json(ORO_VALLEY, "ev_charger")) == {
         "key", "name", "state", "known", "code_name", "code_note", "department", "phone", "email",
         "website", "website_label", "submit_how", "source_url", "sets_required", "needs_parcel_number",
-        "label", "checklist", "single_pdf_only", "sheet_size",
+        "label", "checklist", "single_pdf_only", "sheet_size", "owner_may_file", "filing_line", "no_plan",
     }
     body = jurisdiction_json(ORO_VALLEY, "ev_charger")
     assert body["known"] is True

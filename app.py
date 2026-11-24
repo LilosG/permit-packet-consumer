@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import io
 import json
 import logging
 import os
@@ -10,6 +11,7 @@ import re
 import secrets
 import threading
 import time
+import zipfile
 from collections import deque
 from contextlib import asynccontextmanager
 from functools import lru_cache
@@ -30,6 +32,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import ValidationError
 
 from permit_packets import emails, orders, pages, payments, pricing, seo, sitedata
+from permit_packets.core import capacity_summary
 from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
 from permit_packets.core.preview import packet_documents_zip, packet_page_images, packet_subset_pdf
 from permit_packets.core.property_lookup import (
@@ -359,6 +362,7 @@ def _build(slug: str, payload: dict[str, Any], *, preview: bool) -> tuple[JobTyp
     """Build the packet. A preview carries the PREVIEW marks; a paid packet carries none."""
     job_type = _job_type(slug)
     payload = dict(payload)  # the logo is popped below, and an order's saved payload must stay whole
+    payload.pop("tier", None)  # the wizard tells the preview which package is chosen; the packet itself does not care
     logo = _contractor_logo(payload)
     request = _validated(job_type, payload)
     tokens = (
@@ -371,6 +375,19 @@ def _build(slug: str, payload: dict[str, Any], *, preview: bool) -> tuple[JobTyp
     finally:
         for var, token in tokens:
             var.reset(token)
+
+
+def _summary_pdf(payload: dict[str, Any], result: PacketResult, *, preview: bool) -> bytes:
+    """Page one of a Panel Capacity Report, built from what the packet computed."""
+    token = DEMO_MARKS.set(preview)
+    try:
+        return capacity_summary.summary_pdf({k: v for k, v in payload.items() if k != "tier"}, result.body)
+    finally:
+        DEMO_MARKS.reset(token)
+
+
+def _with_summary(payload: dict[str, Any], result: PacketResult, pdf: bytes, *, preview: bool) -> bytes:
+    return capacity_summary.prepend_summary(_summary_pdf(payload, result, preview=preview), pdf)
 
 
 def _single_pdf_only(payload: dict[str, Any]) -> bool:
@@ -400,6 +417,9 @@ def public_preview(slug: str, payload: dict[str, Any] = Body(...)) -> dict:
     """The free, watermarked look at a packet: the engineering check summary and its pages as JPEGs."""
     _, result = _build(slug, payload, preview=True)
     body = {key: value for key, value in result.body.items() if key not in PAID_ONLY}
+    if payload.get("tier") == "load_calc":  # the Panel Capacity Report opens with its summary page
+        pages_pdf = _with_summary(payload, result, result.pdf, preview=True)
+        return {**body, "packet_page_images": [base64.b64encode(p).decode() for p in packet_page_images(pages_pdf)]}
     return {**body, "packet_page_images": _page_images(result)}
 
 
@@ -580,7 +600,8 @@ def _allowed_sheets(order: dict[str, Any], job_type: JobType) -> frozenset[str] 
     if order["tier"] != "load_calc":
         return None
     return frozenset(
-        document.file_stem for document in job_type.documents if document.file_stem.split("-", 1)[-1] in LOAD_CALC_SHEETS)
+        [capacity_summary.STEM] + [document.file_stem for document in job_type.documents
+                                   if document.file_stem.split("-", 1)[-1] in LOAD_CALC_SHEETS])
 
 
 def _order_or_404(access_token: str) -> dict[str, Any]:
@@ -662,7 +683,7 @@ def order_status(access_token: str) -> JSONResponse:
             "documents_url": f"/api/orders/{access_token}/documents" if zip_ok else None,
         })
         if only is not None:  # the Panel Capacity Report: just its two sheets, no city submission pages
-            view["files"] = [
+            view["files"] = [{"title": capacity_summary.TITLE, "url": f"/api/orders/{access_token}/documents/{capacity_summary.STEM}"}] + [
                 {"title": document.title, "url": f"/api/orders/{access_token}/documents/{document.file_stem}"}
                 for document in job_type.documents if document.file_stem in only]
         else:
@@ -691,14 +712,18 @@ def _pdf_download(content: bytes, name: str, inline: bool = False) -> Response:
 def order_preview_pdf(access_token: str) -> Response:
     order = _order_or_404(access_token)
     _, result = _build(order["job_slug"], order["payload"], preview=True)
-    return _pdf_download(result.pdf, f'{order["order_code"]}-preview.pdf')
+    pdf = result.pdf
+    if order["tier"] == "load_calc":
+        pdf = _with_summary(order["payload"], result, pdf, preview=True)
+    return _pdf_download(pdf, f'{order["order_code"]}-preview.pdf')
 
 
 @app.get("/api/orders/{access_token}/preview-pages")
 def order_preview_pages(access_token: str) -> JSONResponse:
     order = _order_or_404(access_token)
     _, result = _build(order["job_slug"], order["payload"], preview=True)
-    return JSONResponse({"pages": _page_images(result), "ready": bool(result.body.get("ready"))}, headers=PRIVATE_DATA)
+    pages_pdf = _with_summary(order["payload"], result, result.pdf, preview=True) if order["tier"] == "load_calc" else result.pdf
+    return JSONResponse({"pages": [base64.b64encode(p).decode() for p in packet_page_images(pages_pdf)], "ready": bool(result.body.get("ready"))}, headers=PRIVATE_DATA)
 
 
 @app.get("/api/orders/{access_token}/pdf")
@@ -710,6 +735,7 @@ def order_pdf(access_token: str) -> Response:
     only = _allowed_sheets(order, job_type)
     if only is not None:
         pdf = packet_subset_pdf(pdf, tuple(d.file_stem for d in job_type.documents), only)
+        pdf = _with_summary(order["payload"], result, pdf, preview=False)
         name = f'{order["order_code"]}-load-calc-and-panel-audit.pdf'
     _downloaded(order)
     return _pdf_download(pdf, name)
@@ -725,6 +751,11 @@ def order_documents(access_token: str) -> Response:
     zip_name = job_type.zip_name.replace("-demo.zip", ".zip")
     only = _allowed_sheets(order, job_type)
     content = packet_documents_zip(result.pdf, stems, only)
+    if only is not None:
+        buffer = io.BytesIO(content)
+        with zipfile.ZipFile(buffer, "a", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr(f"{capacity_summary.STEM}.pdf", _summary_pdf(order["payload"], result, preview=False))
+        content = buffer.getvalue()
     _downloaded(order)
     return Response(content=content, media_type="application/zip",
                     headers={"Content-Disposition": f'attachment; filename="{zip_name}"', **PRIVATE_DATA})
@@ -739,11 +770,14 @@ def order_document(access_token: str, file_stem: str) -> Response:
     if only is not None and file_stem not in only:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "This package includes only the Panel Capacity Report")
     stems = tuple(document.file_stem for document in job_type.documents)
-    if file_stem not in stems:
+    if file_stem not in stems and not (only is not None and file_stem == capacity_summary.STEM):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such sheet")
     if _single_pdf_only(order["payload"]):
         raise HTTPException(status.HTTP_409_CONFLICT, "This city takes one combined PDF, not separate plan sheets")
     _, result = _build(order["job_slug"], order["payload"], preview=False)
+    if file_stem == capacity_summary.STEM:
+        _downloaded(order)
+        return _pdf_download(_summary_pdf(order["payload"], result, preview=False), f'{order["order_code"]}-{file_stem}.pdf')
     content = packet_subset_pdf(result.pdf, stems, frozenset({file_stem}))
     _downloaded(order)
     return _pdf_download(content, f'{order["order_code"]}-{file_stem}.pdf')

@@ -116,7 +116,10 @@
         "One-line diagram",
         "Load calculation",
         "Charger specifications and listing"
-      ]
+      ],
+      "owner_may_file": null,
+      "filing_line": "Check with your city whether you can file yourself or need a licensed electrician.",
+      "no_plan": {}
     },
     "address": "123 Sample St, Las Vegas, NV",
     "fields": [

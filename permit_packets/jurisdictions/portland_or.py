@@ -15,6 +15,7 @@ PORTLAND = Jurisdiction(
     key="portland-or", name="Portland", state="OR", known=True,
     permit_rules_verified="2026-11-21",
     who_may_pull="Oregon licensed electrical contractors and qualifying resident homeowners.",
+    owner_may_file=True,
     portal_url="https://www.portland.gov/bds/residential-permitting/residential-electrical-permits",
     fee_note="Electrical fees are set by the BDS fee schedule.",
     sources=("https://www.portland.gov/bds",),

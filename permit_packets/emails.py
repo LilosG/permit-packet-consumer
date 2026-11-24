@@ -79,12 +79,18 @@ def order_created(order: dict[str, Any], link: str) -> bool:
         link, "Your order page")
 
 
+def credit_line(price: float) -> str:
+    """The Panel Capacity Report credit promise, with the price the buyer paid."""
+    amount = f"{price:.2f}".removesuffix(".00")
+    return f"Your ${amount} is credited toward a full permit packet bought with this email within 30 days."
+
+
 def paid_ready(order: dict[str, Any], link: str) -> bool:
     what = "Your Panel Capacity Report is" if order["tier"] == "load_calc" else "Your packet is"
-    return _send(
-        order["customer_email"], "Your packet is ready to download",
-        [f"Thanks for your payment. {what} ready to download for {order['address']}."],
-        link, "Download from your order page")
+    paragraphs = [f"Thanks for your payment. {what} ready to download for {order['address']}."]
+    if order["tier"] == "load_calc" and (order.get("amount_cents") or 0) > 0:
+        paragraphs.append(credit_line(order["amount_cents"] / 100))
+    return _send(order["customer_email"], "Your packet is ready to download", paragraphs, link, "Download from your order page")
 
 
 def in_review(order: dict[str, Any], link: str, city: str) -> bool:

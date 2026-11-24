@@ -16,6 +16,7 @@ SACRAMENTO = Jurisdiction(
     code_name="CEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="California C-10 licensed contractors or owner-builders of single-family dwellings.",
+    owner_may_file=True,
     portal_url="https://www.cityofsacramento.gov/community-development/building",
     fee_note="Permit fees are set by the City of Sacramento Community Development fee schedule.",
     sources=("https://www.cityofsacramento.gov/community-development/building",),

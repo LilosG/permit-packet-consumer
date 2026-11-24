@@ -125,6 +125,7 @@ NASHVILLE = Jurisdiction(
     key="nashville-tn", name="Nashville", state="TN", known=True,
     permit_rules_verified="2026-11-17",
     who_may_pull="Only licensed contractors with an e-permit account can apply for a trade permit online. Homeowners and other unlicensed applicants apply in person at the Department of Codes and Building Safety.",
+    owner_may_file=True,
     portal_url="https://www.nashville.gov/departments/codes/construction-and-permits/e-permits-system",
     fee_note="",
     sources=("https://www.nashville.gov/departments/codes/construction-and-permits/trades-permits", "https://www.nashville.gov/departments/codes/construction-and-permits/e-permits-system", ADOPTED_CODES_URL),

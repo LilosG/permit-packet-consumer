@@ -1,2 +1,5 @@
 from permit_packets.jurisdictions.general import make_city
+from dataclasses import replace
 CHICAGO = make_city(*('chicago-il', 'Chicago', 'IL', 'CEC', 'Chicago-licensed supervising electricians ONLY.', 'https://www.chicago.gov/city/en/depts/bldgs.html', 'Permit fees are based on the Chicago DOB fee schedule.', '2017 NEC (Chicago Electrical Code)', 'Chicago requires rigid or intermediate metal conduit (RMC/IMC) or EMT for EV circuits.', 'Service upgrades require ComEd coordination and rigid metal raceways.', (-87.9401, 41.6445, -87.5241, 42.023), (-87.6298, 41.8781), 'Chicago DOB', '(312) 744-3113', 'dob@cityofchicago.org', 'https://www.chicago.gov/city/en/depts/bldgs.html', 'Chicago DOB Web Portal', 'Licensed supervising electricians submit via the DOB online portal.', 91, 'https://ashrae-meteo.info/v3.0/index.php?wmo=725300', 'ComEd', 'ComEd', 'Chicago enforces the Chicago Electrical Code (Title 14E, based on 2017 NEC).'))
+
+CHICAGO = replace(CHICAGO, owner_may_file=False, sources=CHICAGO.sources + ("https://chicago.gov/city/en/depts/bldgs/supp_info/electrical_inspections.html",))

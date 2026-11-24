@@ -16,6 +16,7 @@ SAN_ANTONIO = Jurisdiction(
     code_name="NEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="Texas licensed electrical contractors or verified homestead owners occupying the property.",
+    owner_may_file=True,
     portal_url="https://www.sanantonio.gov/DSD",
     fee_note="Electrical permit fees are based on the adopted San Antonio DSD fee schedule.",
     sources=("https://www.sanantonio.gov/DSD",),

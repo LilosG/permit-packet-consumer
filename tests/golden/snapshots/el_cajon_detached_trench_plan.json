@@ -135,7 +135,10 @@
         "Electrical plan with single-line diagram, conduit and conductor sizes",
         "NRTL listing mark on the charging equipment",
         "Mechanical plan, if indoor ventilation applies"
-      ]
+      ],
+      "owner_may_file": null,
+      "filing_line": "Check with El Cajon whether you can file yourself or need a licensed electrician.",
+      "no_plan": {}
     },
     "address": "123 Sample St",
     "fields": [

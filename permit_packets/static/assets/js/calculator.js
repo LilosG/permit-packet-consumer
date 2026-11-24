@@ -14,7 +14,7 @@
     const notes = r.notes.length ? `<ul class="check-list">${r.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '';
     return `<h2>Your result</h2><p class="calc-headline calc-${esc(r.status)}">${esc(r.headline)}</p>`
       + `<div class="table-wrap"><table class="compare"><tbody>${rows}</tbody></table></div>`
-      + `<h3>NEC sections applied</h3><ul class="check-list">${nec}</ul>${notes}`;
+      + `<h3>NEC sections applied</h3><ul class="check-list">${nec}</ul>${notes}${form.dataset.reportCta || ''}`;
   }
 
   form.addEventListener('submit', async (event) => {
@@ -37,4 +37,8 @@
     }
   });
   if (box.dataset.used === '1') report();
+  /* The Panel Capacity Report link under a result: report which tool sent the click. */
+  box.addEventListener('click', (event) => {
+    if (event.target.closest('.calc-report-link') && window.PP) window.PP.track('calculator_cta_clicked', { tool: slug });
+  });
 })();

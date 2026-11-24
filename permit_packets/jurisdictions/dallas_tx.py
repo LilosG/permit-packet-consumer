@@ -15,6 +15,7 @@ DALLAS = Jurisdiction(
     key="dallas-tx", name="Dallas", state="TX", known=True,
     permit_rules_verified="2026-11-21",
     who_may_pull="Registered electrical contractors (Master Electricians) or verified homestead owners.",
+    owner_may_file=True,
     portal_url="https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection",
     fee_note="Permit fees are assessed based on the Dallas building fee schedule.",
     sources=("https://dallascityhall.com/",),

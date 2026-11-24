@@ -16,6 +16,7 @@ HOUSTON = Jurisdiction(
     code_name="NEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="Texas licensed Master Electricians registered with the City of Houston or qualifying homestead owners.",
+    owner_may_file=True,
     portal_url="https://www.houstonpermittingcenter.org/",
     fee_note="Permit fees are calculated per the Houston Permitting Center fee schedule.",
     sources=("https://www.houstonpermittingcenter.org/",),

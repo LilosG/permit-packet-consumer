@@ -9,6 +9,9 @@
 <ul class="check-list">{% for ref, text in r.nec_rows %}<li><b>{{ ref }}</b>: {{ text }}</li>{% endfor %}</ul>
 {% if r.notes %}<ul class="check-list">{% for n in r.notes %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
 {%- endmacro %}
+{% macro report_cta(href) -%}
+<p class="calc-report-cta">Need it on paper for your electrician or the city? <a class="calc-report-link" href="{{ href }}">Get a Panel Capacity Report</a> with your address and parcel for {{ "{price:load_calc}"|fill }}, credited toward your full packet.</p>
+{%- endmacro %}
 {% block main %}
 <main class="page-main content">
 <header class="sub-hero">
@@ -19,7 +22,7 @@
 </header>
 
 <section class="section-card">
-<form class="calc-form" id="calc-form" method="get" action="{{ path }}#result" data-calc="{{ slug }}" style="margin-top:0">
+<form class="calc-form" id="calc-form" method="get" action="{{ path }}#result" data-calc="{{ slug }}" data-report-cta="{{ report_cta(report_href)|string|forceescape }}" style="margin-top:0">
 {%- for f in fields %}
   <label class="field">{{ f.label }}
   {%- if f.choice_labels %}<select name="{{ f.name }}">{% for v in f.choices %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ f.choice_labels[v] }}</option>{% endfor %}</select>
@@ -32,7 +35,7 @@
 </form>
 <section id="result" aria-live="polite" data-used="{{ 1 if used and not errors else 0 }}">
 {%- if errors %}<ul class="check-list calc-error">{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
-{%- if result %}<h2>Your result</h2>{{ result_block(result) }}{% endif %}
+{%- if result %}<h2>Your result</h2>{{ result_block(result) }}{{ report_cta(report_href) }}{% endif %}
 </section>
 <p class="note-line calc-disclaimer">{{ disclaimer }}</p>
 <p class="cta-row">{{ cta(cta_href, "Build the permit packet") }}<a class="link" href="/sample-packet/">See a sample packet</a></p>

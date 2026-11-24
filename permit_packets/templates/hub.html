@@ -28,7 +28,7 @@
 
 <section class="band alt"><div class="wrap narrow-band">
   <div class="section-card">
-    <h2>What do city plan reviewers check on a {{ hub.job_name }} permit?</h2>
+    <h2>What do city plan reviewers check on {{ hub.job_name|a_an }} permit?</h2>
     <p>{{ hub.checks_intro }}</p>
     <ul class="check-list">
     {%- for item in hub.checks %}<li>{{ item }}</li>{% endfor %}
@@ -45,14 +45,14 @@
 
 <section class="band"><div class="wrap">
   <p class="kicker">Simple pricing</p>
-  <h2 class="band-title">How much does a {{ hub.job_name }} permit packet cost?</h2>
+  <h2 class="band-title">How much does {{ hub.job_name|a_an }} permit packet cost?</h2>
   <p class="band-sub">Three packages, each with a free watermarked preview first. Compare them on the <a href="/pricing/">pricing page</a>.</p>
   {{ tier_cards(hub.slug, bullets=False) }}
 </div></section>
 
 <section class="band alt"><div class="wrap">
   {% set related_job = hub.slug %}{% include "partials/related.html" %}
-  <h2 class="band-title" style="margin-top:48px">Who uses a {{ hub.job_name }} permit packet?</h2>
+  <h2 class="band-title" style="margin-top:48px">Who uses {{ hub.job_name|a_an }} permit packet?</h2>
   {{ link_cards(who_cards, "who-grid", ["i-shield", "i-check", "i-diagram", "i-panel"], None, "") }}
 </div></section>
 

@@ -89,6 +89,7 @@ CHANDLER = Jurisdiction(
     key="chandler-az", name="Chandler", state="AZ", known=True,
     permit_rules_verified="2026-11-17",
     who_may_pull="A licensed contractor must do work that needs a permit unless the owner-applicant performs it. Where you rent or lease the home to others, a licensed contractor must obtain the permit (Homeowner Building Permit Manual, citing ARS 32-1121A).",
+    owner_may_file=True,
     portal_url=PORTAL_URL,
     fee_note="Chandler charges building permit and plan check fees by project valuation under its adopted fee schedule. The Building Safety page links the Building Permit Fees schedule.",
     sources=(SAFETY_URL, MANUAL_URL, AMENDMENTS_URL),

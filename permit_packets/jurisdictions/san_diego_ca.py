@@ -15,9 +15,11 @@ SAN_DIEGO = Jurisdiction(
     key="san-diego-ca", name="San Diego", state="CA", known=True,
     permit_rules_verified="2026-11-21",
     who_may_pull="Property owners of single-family dwellings or state-licensed electrical contractors (C-10) may pull permits.",
+    owner_may_file=True,
     portal_url="https://www.sandiego.gov/development-services/permits/electrical-permit",
     fee_note="Fees are calculated based on the scope of work per the published Information Bulletin 501.",
-    sources=("https://www.sandiego.gov/development-services",),
+    sources=("https://www.sandiego.gov/development-services", "https://sandiego.gov/development-services/forms-publications/information-bulletins/187"),
+    no_plan_jobs={"ev_charger": "https://sandiego.gov/development-services/forms-publications/information-bulletins/187"},
     nec_edition="2023 NEC (2025 California Electrical Code base)",
     permit_required={EV_CHARGER: True, SERVICE_UPGRADE: True, SUBPANEL: True, APPLIANCE_CIRCUIT: True},
     permit_notes={

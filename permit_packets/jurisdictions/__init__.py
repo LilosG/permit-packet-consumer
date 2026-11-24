@@ -65,6 +65,11 @@ class Jurisdiction:
     portal_url: str = ""  # where the permit application is filed
     fee_note: str = ""  # text only: how the city sets its fee. Never a dollar amount that is not published
     sources: tuple[str, ...] = ()  # official pages and documents behind the fields above
+    # True: owners may pull the permit for electrical work they do themselves on their own home. False: a licensed
+    # electrician must do and file all electrical work. None: not verified (never guess).
+    owner_may_file: bool | None = None
+    # Job type -> the official URL saying single-family installs of that job need no plans (a no-plan Simple Permit).
+    no_plan_jobs: dict[str, str] = field(default_factory=dict)
     nec_edition: str = ""  # the NEC edition the city enforces, e.g. "2023 NEC"
     # Job type -> True where an official source confirms the permit is required. A missing job is unconfirmed.
     permit_required: dict[str, bool] = field(default_factory=dict)
@@ -228,6 +233,41 @@ def jurisdiction_by_key(key: str | None, city: str | None = None, state: str | N
     return jurisdiction_for(city, state)
 
 
+# How each job reads in a sentence, without its article. EV stays capitalised.
+JOB_PHRASES = {
+    "ev_charger": "EV charger", "service_upgrade": "panel upgrade", "subpanel": "subpanel",
+    "appliance_circuit": "hot tub or 240V circuit", "generator": "generator", "solar_storage": "solar and battery system",
+}
+
+
+def job_phrase(job_type: str, article: bool = False) -> str:
+    """'EV charger' or, with article, 'an EV charger' / 'a panel upgrade'."""
+    phrase = JOB_PHRASES.get(job_type, job_type.replace("_", " "))
+    if not article:
+        return phrase
+    return ("an " if phrase[:1].lower() in "aeiou" or phrase.startswith("EV") else "a ") + phrase
+
+
+def filing_line(jurisdiction: Jurisdiction) -> str:
+    """One line on who may file the electrical permit here, from owner_may_file (None: not verified)."""
+    city = jurisdiction.name if jurisdiction.known else "your city"
+    if jurisdiction.owner_may_file is True:
+        return f"{city}: owners may file for work they do themselves on their own home. If you hire an electrician, they file it."
+    if jurisdiction.owner_may_file is False:
+        return f"{city}: a licensed electrician must do and file all electrical work. Hand them this packet."
+    return f"Check with {city} whether you can file yourself or need a licensed electrician."
+
+
+def no_plan_line(jurisdiction: Jurisdiction, job_type: str, link: bool = False) -> str:
+    """The Simple Permit sentence for a job the city's source says needs no plans for single-family installs."""
+    url = jurisdiction.no_plan_jobs.get(job_type)
+    if not url:
+        return ""
+    permit = f'<a href="{url}" rel="noopener">Simple Permit</a>' if link else "Simple Permit"
+    return (f"{jurisdiction.name} lets single-family {job_phrase(job_type)} permits go through a no-plan {permit}, "
+            "so you may not need a full packet. The Panel Capacity Report confirms your panel can take it.")
+
+
 def jurisdiction_json(jurisdiction: Jurisdiction, job_type: str) -> dict:
     """What the page needs to know about a city, for one job type."""
     checklist = jurisdiction.checklist_for(job_type)
@@ -250,5 +290,11 @@ def jurisdiction_json(jurisdiction: Jurisdiction, job_type: str) -> dict:
         "single_pdf_only": jurisdiction.single_pdf_only,
         "sheet_size": jurisdiction.sheet_size,
         "label": jurisdiction.label,
+        "owner_may_file": jurisdiction.owner_may_file,
+        "filing_line": filing_line(jurisdiction),
+        # Every no-plan job, so the wizard can follow the job the buyer picks after the address is found.
+        "no_plan": {key: {"url": url, "before": no_plan_line(jurisdiction, key).split("Simple Permit")[0],
+                          "after": no_plan_line(jurisdiction, key).split("Simple Permit")[1]}
+                    for key, url in jurisdiction.no_plan_jobs.items()},
         "checklist": [requirement.item for requirement in checklist.items],
     }

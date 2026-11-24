@@ -16,6 +16,7 @@ SCOTTSDALE = Jurisdiction(
     code_name="NEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="Arizona ROC-licensed contractors or qualifying owner-builders occupying a single-family home.",
+    owner_may_file=True,
     portal_url="https://www.scottsdaleaz.gov/planning-development/permits",
     fee_note="Electrical permit fees are calculated per the published Scottsdale development fee schedule.",
     sources=("https://www.scottsdaleaz.gov/planning-development/permits",),

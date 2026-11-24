@@ -109,7 +109,7 @@ def test_a_39_order_gets_only_the_load_calc_and_panel_sheets(client):
     pay(client, order)
     token = order["access_token"]
     body = view(client, order)
-    assert [f["url"].rsplit("/", 1)[1] for f in body["files"]] == ["05-load-calculation", "06-panel-schedule"]
+    assert [f["url"].rsplit("/", 1)[1] for f in body["files"]] == ["00-panel-capacity-summary", "05-load-calculation", "06-panel-schedule"]
     assert "portal_fields" not in body and "jurisdiction" not in body
 
     for stem in ("01-checklist-and-checks", "03-site-plan", "04-one-line-diagram", "07-equipment-data", "nope"):
@@ -119,11 +119,11 @@ def test_a_39_order_gets_only_the_load_calc_and_panel_sheets(client):
 
     combined = client.get(body["pdf_url"])
     document = pypdfium2.PdfDocument(combined.content)
-    assert len(document) == 2
+    assert len(document) == 3  # the summary page plus the two sheets
     text = " ".join(page.get_textpage().get_text_bounded() for page in document).lower()
     assert "load" in text and "panel" in text
     archive = ZipFile(BytesIO(client.get(body["documents_url"]).content))
-    assert archive.namelist() == ["05-load-calculation.pdf", "06-panel-schedule.pdf"]
+    assert sorted(archive.namelist()) == ["00-panel-capacity-summary.pdf", "05-load-calculation.pdf", "06-panel-schedule.pdf"]
 
 
 def test_89_and_released_169_orders_get_every_sheet(client):

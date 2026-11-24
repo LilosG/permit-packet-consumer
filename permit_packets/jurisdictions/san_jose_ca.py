@@ -15,6 +15,7 @@ SAN_JOSE = Jurisdiction(
     key="san-jose-ca", name="San Jose", state="CA", known=True,
     permit_rules_verified="2026-11-21",
     who_may_pull="Licensed contractors (C-10) and qualifying owner-builders.",
+    owner_may_file=True,
     portal_url="https://www.sanjoseca.gov/your-government/departments-offices/planning-building-code-enforcement",
     fee_note="Electrical permit fees are based on the city's adopted master fee schedule.",
     sources=("https://www.sanjoseca.gov/",),

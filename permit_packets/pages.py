@@ -24,7 +24,7 @@ from starlette.requests import Request
 from permit_packets import content, locations, seo, sitedata
 from permit_packets import pricing as price_book  # the route function below is also called pricing
 from permit_packets import faq as faq_data
-from permit_packets.jurisdictions import KNOWN
+from permit_packets.jurisdictions import KNOWN, filing_line, job_phrase
 
 log = logging.getLogger("permit_packets")
 
@@ -58,7 +58,14 @@ def prices_script() -> str:
     return f"<script>window.PP_PRICES = {data};</script>"
 
 
+def job_a(job) -> str:
+    """A job with its article: 'an EV charger', 'a panel upgrade', 'a hot tub or 240V circuit'."""
+    return job_phrase(getattr(job, "type_key", job), article=True)
+
+
 env.filters["fill"] = fill
+env.filters["job_a"] = job_a
+env.filters["a_an"] = lambda s: ("an " if s[:1].lower() in "aeiou" or s.startswith("EV") else "a ") + s
 env.globals["prices_script"] = lambda: Markup(prices_script())
 env.globals.update(last_reviewed=LAST_REVIEWED, author=seo.AUTHOR, tiers=content.TIERS, pricing=price_book,
                    positioning=content.POSITIONING, guarantee=content.GUARANTEE,
@@ -478,17 +485,30 @@ def permits_city(state: str, city: str) -> Response:
         (f"Which electrical code edition does {found.name} enforce?",
          f"{found.name} enforces the {found.nec_edition} alongside local municipal amendments."),
         (f"Which residential electrical jobs require plans in {found.name}?",
-         f"{found.label} requires electrical permits and supporting plans (site plan, single-line diagram, load calculation and cut sheets) for {', '.join(r['job'].lower() for r in rows)}."),
+         _city_plans_answer(found, rows)),
     ]
     if found.fee_note:
         city_faqs.append((f"How are electrical permit fees calculated in {found.name}?", found.fee_note))
     city_jsonld = [data, seo.faq(city_faqs)] if ok else []
     return render("permits_city.html", meta=meta, jsonld=city_jsonld, crumbs=crumbs, final_cta=True, rows=rows,
-                  city=found, h1=h1, verified=verified, who_lead=who_lead, who_bullets=who_bullets,
+                  city=found, filing=filing_line(found), h1=h1, verified=verified, who_lead=who_lead, who_bullets=who_bullets,
                   city_facts=city_facts, city_faqs=city_faqs)
 
 
 NOTE_WORDS = 170
+
+
+def _city_plans_answer(found, rows) -> str:
+    """Plans are named only for jobs the city does not let single-family installs skip them for."""
+    no_plan = {sitedata.JOBS[s].label for s in sitedata.JOBS if sitedata.JOBS[s].type_key in found.no_plan_jobs}
+    needs = [r["job"].lower() for r in rows if r["job"] not in no_plan]
+    text = f"{found.label} requires electrical permits for {', '.join(r['job'].lower() for r in rows)}."
+    if needs:
+        text += f" Supporting plans (site plan, single-line diagram, load calculation and cut sheets) apply to {', '.join(needs)}."
+    for s in sitedata.JOBS.values():
+        if s.type_key in found.no_plan_jobs and s.label in {r["job"] for r in rows}:
+            text += f" Single-family {job_phrase(s.type_key)} installs qualify for a no-plan Simple Permit."
+    return text
 
 
 def _first_sentence(text: str) -> str:
@@ -512,18 +532,27 @@ def _job_view(found, slug: str) -> dict:
         used += len(text.split())
     more_notes = len(checklist.notes) - len(notes)
     reviewer = [r.item for r in checklist.items]
+    no_plan_url = found.no_plan_jobs.get(job.type_key, "")
+    apply_answer = f"{found.submit_how}"
+    if no_plan_url:  # single-family installs need no plans here: do not call for plans in the answer
+        apply_answer = f"Single-family {job_phrase(job.type_key)} installs qualify for a no-plan Simple Permit in {found.name}."
     faqs = [
-        (f"Do I need a permit for a {job.label.lower()} in {found.name}?", found.permit_notes.get(job.type_key) or f"{found.label}'s official sources confirm an electrical permit is required for this job."),
-        (f"Who can pull the {job.label.lower()} permit in {found.name}?", _first_sentence(found.who_may_pull)),
+        (f"Do I need a permit for {job_phrase(job.type_key, article=True)} in {found.name}?", found.permit_notes.get(job.type_key) or f"{found.label}'s official sources confirm an electrical permit is required for this job."),
+        (f"Who can pull the {job_phrase(job.type_key)} permit in {found.name}?",
+         filing_line(found) + " " + _first_sentence(found.who_may_pull)),
         (f"Where do I apply in {found.name}?",
-         f"{found.submit_how}" + (f" Portal: {found.portal_url}." if found.portal_url else "") + (f" Department: {found.department}." if found.department else "")),
+         apply_answer + (f" Portal: {found.portal_url}." if found.portal_url else "") + (f" Department: {found.department}." if found.department else "")),
         (f"Which electrical code does {found.name} enforce?",
          f"{found.nec_edition}, with the city's local amendments."),
     ]
     if found.fee_note:
         faqs.append((f"What does the permit cost in {found.name}?", found.fee_note))
-    faqs.append((f"What does {found.name} ask to see with a {job.label.lower()} permit?",
-                 "; ".join(item.split(" (")[0] for item in reviewer[:3]) + ", among other items listed above."))
+    if no_plan_url:
+        faqs.append((f"What does {found.name} ask to see with {job_phrase(job.type_key, article=True)} permit?",
+                     apply_answer + " Larger installs, such as multi-family, follow the plan checklist above."))
+    else:
+        faqs.append((f"What does {found.name} ask to see with {job_phrase(job.type_key, article=True)} permit?",
+                     "; ".join(item.split(" (")[0] for item in reviewer[:3]) + ", among other items listed above."))
     engineering_rows: list[tuple[str, str]] = []
     if found.nec_edition:
         engineering_rows.append(("Adopted electrical code", found.nec_edition))
@@ -557,7 +586,8 @@ def _job_view(found, slug: str) -> dict:
         if s != slug and locations.job_indexable(found, s)
     ]
 
-    return {"job": job, "checklist": checklist, "own_checklist": own, "notes": notes, "more_notes": more_notes,
+    return {"filing": filing_line(found), "no_plan_url": no_plan_url, "job_text": job_phrase(job.type_key),
+            "job": job, "checklist": checklist, "own_checklist": own, "notes": notes, "more_notes": more_notes,
             "faqs": faqs, "engineering_rows": engineering_rows, "sibling_jobs": sibling_jobs}
 
 

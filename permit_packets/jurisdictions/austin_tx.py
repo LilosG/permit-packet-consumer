@@ -15,6 +15,7 @@ AUSTIN = Jurisdiction(
     key="austin-tx", name="Austin", state="TX", known=True,
     permit_rules_verified="2026-11-21",
     who_may_pull="Registered electrical contractors (Master Electricians) and homestead owners.",
+    owner_may_file=True,
     portal_url="https://www.austintexas.gov/department/development-services",
     fee_note="Electrical permit fees are based on the city's adopted fee schedule.",
     sources=("https://www.austintexas.gov/department/development-services",),

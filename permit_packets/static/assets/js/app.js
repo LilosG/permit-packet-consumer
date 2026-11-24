@@ -86,6 +86,27 @@
     if (property) drawPlan();
   }
 
+  /* Who may file in this city, from the city's own values; a no-plan Simple Permit note for the picked job. */
+  function applyFiling() {
+    const box = $('#filing-note');
+    if (!box) return;
+    const j = property && property.jurisdiction;
+    box.hidden = !j;
+    if (!j) return;
+    $('#filing-line').textContent = j.filing_line;
+    const plan = current && j.no_plan && j.no_plan[current.key];
+    const line = $('#no-plan-line');
+    line.hidden = !plan;
+    line.textContent = '';
+    if (plan) {
+      const link = document.createElement('a');
+      link.href = plan.url; link.rel = 'noopener'; link.textContent = 'Simple Permit';
+      line.append(plan.before, link, plan.after);
+    }
+    applyRole();
+    applyTier();
+  }
+
   function chooseType(key) {
     const next = jobTypes.find((type) => type.key === key);
     if (!next) return;
@@ -97,6 +118,7 @@
       tool = firstTool();
       if (property) drawPlan();
     }
+    if (property) applyFiling();
     $$('.type-card').forEach((card) => {
       const selected = card.dataset.type === key;
       card.setAttribute('aria-checked', String(selected));
@@ -280,6 +302,7 @@
       link.removeAttribute('href');
       checklistNote.textContent = found.jurisdiction.known ? loaded : nationalChecklistNote(found);
     }
+    applyFiling();
     $('#tb-scale').textContent = `Plan scale: 1 in = ${found.view.scale_ft_per_in} ft`;
     $('#site').hidden = false;
     drawPlan();
@@ -374,8 +397,17 @@
   let contractorLogo = null;
   const role = () => ($('input[name="who"]:checked') || {}).value || 'diy';
 
+  /* A city where only a licensed electrician may file hides the do-it-yourself role. */
   function applyRole() {
+    const noDiy = property && property.jurisdiction && property.jurisdiction.owner_may_file === false;
+    const diy = $('input[name="who"][value="diy"]');
+    if (diy) {
+      diy.closest('label').hidden = Boolean(noDiy);
+      if (noDiy && diy.checked) $('input[name="who"][value="hiring"]').checked = true;
+    }
     const owner = OWNER_ROLES.includes(role());
+    const peakHint = $('#peak-hint');
+    if (peakHint) peakHint.hidden = role() !== 'hiring';
     $('#contractor-grid').hidden = owner;
     const { contractor, license_number: license } = form.elements;
     if (owner) {
@@ -398,7 +430,8 @@
   const explicitTier = studio.dataset.tierExplicit ? studio.dataset.tier : '';
   let tierTouched = Boolean(explicitTier);
   const chosenTier = () => ($('input[name="tier"]:checked') || {}).value || 'instant_packet';
-  function recommendedTier() { return explicitTier || (role() === 'hiring' ? 'load_calc' : 'instant_packet'); }
+  const noPlanJob = () => Boolean(property && property.jurisdiction.no_plan && current && property.jurisdiction.no_plan[current.key]);
+  function recommendedTier() { return explicitTier || (role() === 'hiring' || noPlanJob() ? 'load_calc' : 'instant_packet'); }
   function applyTier() {
     const key = recommendedTier();
     $$('.plan').forEach((plan) => {
@@ -574,7 +607,7 @@
     $('#build-list').innerHTML = '';
     show('building');
     try {
-      const response = await api(`/api/public/preview/${type.slug}`, job);
+      const response = await api(`/api/public/preview/${type.slug}`, { ...job, tier: chosenTier() });
       const result = await response.json();
       lastJob = job;
       lastResult = result;

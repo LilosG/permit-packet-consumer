@@ -16,6 +16,7 @@ TACOMA = Jurisdiction(
     code_name="NEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="Washington licensed electrical contractors or owner-occupants of single-family dwellings.",
+    owner_may_file=True,
     portal_url="https://www.cityoftacoma.org/government/city_departments/planning_and_development_services",
     fee_note="Electrical permit fees are set by the City of Tacoma fee schedule.",
     sources=("https://www.cityoftacoma.org/government/city_departments/planning_and_development_services",),

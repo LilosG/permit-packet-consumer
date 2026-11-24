@@ -6,25 +6,28 @@
   <p class="eyebrow-pill">{{ city.label }} <i>•</i> {{ city.nec_edition }}</p>
   <h1>{{ h1 }}</h1>
   <p class="byline">{{ author }} · Last verified: {{ verified }}</p>
-  <p class="answer">{{ city.label }} requires an electrical permit for a {{ job.label|lower }}. This page collects what {{ city.name }}'s own pages and documents say, with the sources listed at the bottom.</p>
+  <p class="answer">{{ city.label }} requires an electrical permit for {{ job|job_a }}. This page collects what {{ city.name }}'s own pages and documents say, with the sources listed at the bottom.</p>
   <p class="cta-row">{{ cta(cta_href) }}<a class="btn-secondary" href="/sample-packet/">See a sample packet</a></p>
   {{ packet_strip() }}
 </header>
 
 <div class="section-stack">
 <section class="section-card">
-  <h2>Do you need a permit for a {{ job.label|lower }} in {{ city.name }}?</h2>
+  <h2>Do you need a permit for {{ job|job_a }} in {{ city.name }}?</h2>
   <p>{{ city.permit_notes.get(job.type_key) or (city.label ~ "'s official sources confirm an electrical permit is required for this job.") }}</p>
   <p>Check the sources below before you buy materials. The city decides what your project needs, and a permit exemption in one place does not carry over to another.</p>
 </section>
 
 <section class="section-card">
   <h2>Who can pull the permit?</h2>
+  <p class="filing-line"><b>{{ filing }}</b></p>
   <p>{{ city.who_may_pull }}</p>
 </section>
 
 <section class="section-card">
   <h2>How do you apply in {{ city.name }}?</h2>
+  {% if no_plan_url %}<p>Single-family {{ job_text }} installs qualify for a no-plan <a href="{{ no_plan_url }}" rel="noopener">Simple Permit</a> in {{ city.name }}.</p>
+  <h3>If your job needs plans (for example multi-family or larger installs)</h3>{% endif %}
   <p>{{ city.submit_how }}</p>
   <ul class="fact-list">
   {%- if city.department %}<li><b>Department:</b> {{ city.department }}</li>{% endif %}
@@ -38,8 +41,10 @@
 </section>
 
 <section class="section-card">
-  <h2>What does {{ city.name }} ask you to submit for a {{ job.label|lower }}?</h2>
-  <p>{% if own_checklist %}{{ checklist.source_label }}.{% else %}{{ city.name }} publishes no {{ job.label|lower }} checklist of its own, so this is the general NEC checklist for the job, with {{ city.name }}'s code notes added.{% endif %} A packet cannot promise approval, and the building department can ask for more.</p>
+  <h2>What does {{ city.name }} ask you to submit for {{ job|job_a }}?</h2>
+  {% if no_plan_url %}<p>Single-family {{ job_text }} installs qualify for a no-plan <a href="{{ no_plan_url }}" rel="noopener">Simple Permit</a> in {{ city.name }}.</p>
+  <h3>If your job needs plans (for example multi-family or larger installs)</h3>{% endif %}
+  <p>{% if own_checklist %}{{ checklist.source_label }}.{% else %}{{ city.name }} publishes no {{ job_text }} checklist of its own, so this is the general NEC checklist for the job, with {{ city.name }}'s code notes added.{% endif %} A packet cannot promise approval, and the building department can ask for more.</p>
   <ol class="check-list">
   {%- for req in checklist.items %}<li>{{ req.item }}</li>{% endfor %}
   </ol>
@@ -50,7 +55,7 @@
 </section>
 </div>
 
-{{ cta_band(cta_href, "Preview a " ~ city.name ~ " " ~ job.label|lower ~ " packet free, sheet by sheet.") }}
+{{ cta_band(cta_href, "Preview a " ~ city.name ~ " " ~ job_text ~ " packet free, sheet by sheet.") }}
 
 <section class="section-card" style="margin-top:28px">
   <h2>Which electrical code applies?</h2>

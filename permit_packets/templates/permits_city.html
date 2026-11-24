@@ -13,6 +13,7 @@
 
 {% if who_lead %}<section class="who-box" aria-labelledby="who-h">
 <h2 id="who-h">Who may pull the permit</h2>
+<p class="filing-line"><b>{{ filing }}</b></p>
 <p>{{ who_lead }}</p>
 {% if who_bullets %}<ul>{% for b in who_bullets %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
 </section>{% endif %}

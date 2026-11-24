@@ -16,6 +16,7 @@ PHOENIX = Jurisdiction(
     code_name="NEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="Arizona ROC-licensed electrical contractors or qualifying owner-occupants of single-family homes.",
+    owner_may_file=True,
     portal_url="https://www.phoenix.gov/pdd/permits",
     fee_note="Permit and plan review fees are assessed by valuation and circuit count under the Phoenix fee schedule.",
     sources=("https://www.phoenix.gov/pdd/permits",),

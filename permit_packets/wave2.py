@@ -149,7 +149,8 @@ def _calculator(slug: str):
                       c=c, path=path, slug=slug, fields=fields, values=values, errors=errors,
                       result=_result_view(result), used=used, example=example,
                       example_nec=calc_math.nec_rows(example["result"]["nec"]), faqs=faqs, disclaimer=w2.DISCLAIMER,
-                      detached_labels=calc_math.DETACHED_LABELS, cta_href=_start_cta(c.job, slug, request.query_params))
+                      detached_labels=calc_math.DETACHED_LABELS, cta_href=_start_cta(c.job, slug, request.query_params),
+                      report_href="/start/?tier=39&role=hiring" + (f"&job={c.job}" if c.job else ""))
 
     router.add_api_route(path, handler, methods=["GET", "HEAD"], include_in_schema=False)
 

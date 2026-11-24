@@ -16,6 +16,7 @@ AURORA = Jurisdiction(
     code_name="NEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="Colorado licensed electrical contractors or owner-occupants of single-family residences.",
+    owner_may_file=True,
     portal_url="https://www.auroragov.org/business_services/building_division",
     fee_note="Electrical permit fees are calculated based on project valuation per the Aurora fee schedule.",
     sources=("https://www.auroragov.org/business_services/building_division",),

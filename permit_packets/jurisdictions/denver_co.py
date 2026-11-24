@@ -15,6 +15,7 @@ DENVER = Jurisdiction(
     key="denver-co", name="Denver", state="CO", known=True,
     permit_rules_verified="2026-11-21",
     who_may_pull="Licensed electrical contractors and qualifying owner-occupants of single-family homes.",
+    owner_may_file=True,
     portal_url="https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Permits-and-Licenses",
     fee_note="Fees are calculated per the Denver CPD fee schedule.",
     sources=("https://www.denvergov.org/",),
