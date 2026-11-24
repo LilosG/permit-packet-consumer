@@ -454,11 +454,11 @@ def _fix_amount(order: dict[str, Any]) -> dict[str, Any]:
     """Settle what this order costs, once, when its first checkout is created: today's price less any Panel Capacity Report credit."""
     if order["amount_cents"] is not None:
         return order
-    credit_cents = 0
+    # The discount is only recorded here; the load_calc credit is claimed when the order is paid (_mark_paid).
     source, value = _credit_quote(order["customer_email"], order["tier"])
-    if source is not None and value > 0 and orders.claim_load_calc_credit(source["id"]):
-        credit_cents = value
-    orders.set_amount(order["id"], pricing.price(order["tier"]) * 100 - credit_cents, credit_cents)
+    credit_cents = value if source is not None else 0
+    orders.set_amount(order["id"], pricing.price(order["tier"]) * 100 - credit_cents, credit_cents,
+                      source["id"] if credit_cents else None)
     return orders.get_by_id(order["id"]) or order
 
 
@@ -474,7 +474,8 @@ def _checkout_url(order: dict[str, Any], request: Request) -> str:
     except payments.PaymentError as error:
         log.error("%s", error)
         return ""
-    orders.set_provider_order_id(order["id"], provider_order_id)
+    orders.add_checkout_link(provider_order_id, "order", order["id"], order["amount_cents"])
+    orders.set_provider_order_id(order["id"], provider_order_id)  # for display; payments are matched through checkout_links
     return url
 
 
@@ -560,6 +561,10 @@ def _city_name(order: dict[str, Any]) -> str:
 def _mark_paid(order: dict[str, Any], request: Request) -> dict[str, Any]:
     """Record a payment. A city_checked_24h order goes into the review hold and does not unlock; the others unlock now."""
     link = _order_link(request, order)
+    if order.get("credit_applied_cents") and order.get("credit_source_order_id"):
+        if not orders.claim_load_calc_credit(order["credit_source_order_id"]):  # another paid order got there first: the buyer still paid the discounted amount
+            log.warning("Order %s paid with a Panel Capacity Report credit that was already used (source order %s)",
+                        order["order_code"], order["credit_source_order_id"])
     if order["tier"] == "city_checked_24h":
         order = orders.set_status(order["id"], "in_review") or order
         _notify(emails.in_review, order, link, _city_name(order))
@@ -782,11 +787,11 @@ def require_admin(credentials: HTTPBasicCredentials | None = Depends(basic)) -> 
 # ---- Payment webhook ----
 
 def _find_paid_record(provider_order_id: str):
-    order = orders.get_by_provider_order_id(provider_order_id)
-    if order is not None:
-        return "order", order
-    pack = orders.get_pack_order_by_provider_order_id(provider_order_id)
-    return ("pack", pack) if pack is not None else None
+    link = orders.get_checkout_link(provider_order_id)
+    if link is None:
+        return None
+    record = orders.get_pack_order(link["record_id"]) if link["kind"] == "pack" else orders.get_by_id(link["record_id"])
+    return (link["kind"], record, link["amount_cents"]) if record is not None else None
 
 
 def _fulfil(kind: str, record: dict[str, Any], request: Request) -> None:
@@ -837,6 +842,7 @@ def buy_pack(request: Request, body: dict[str, Any] = Body(...)) -> dict:
     except payments.PaymentError as error:
         log.error("%s", error)
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Checkout isn't available right now. Try again shortly.") from None
+    orders.add_checkout_link(provider_order_id, "pack", record["id"], record["amount_cents"])
     orders.set_pack_provider_order_id(record["id"], provider_order_id)
     return {"checkout_url": url}
 
@@ -877,9 +883,9 @@ def create_credit_order(request: Request, body: dict[str, Any] = Body(...)) -> d
     return {"message": CREDIT_MESSAGE, "order_url": f"/order/{order['access_token']}"}
 
 
-def _credit_page(title: str, message: str, link: tuple[str, str] | None = None, status_code: int = 200) -> HTMLResponse:
+def _credit_page(title: str, message: str, link: tuple[str, str] | None = None, status_code: int = 200, form: str = "") -> HTMLResponse:
     from html import escape
-    extra = f'<p><a class="button" href="{escape(link[0])}">{escape(link[1])}</a></p>' if link else ""
+    extra = form or (f'<p><a class="button" href="{escape(link[0])}">{escape(link[1])}</a></p>' if link else "")
     html = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
             f'<meta name="robots" content="noindex, nofollow"><title>{escape(title)}</title>'
             f'<link rel="stylesheet" href="/assets/css/app.css?v={ASSET_VERSION}"></head><body><main class="page-main">'
@@ -889,8 +895,24 @@ def _credit_page(title: str, message: str, link: tuple[str, str] | None = None, 
 
 @app.api_route("/credits/confirm", methods=["GET", "HEAD"])
 @app.api_route("/credits/confirm/", methods=["GET", "HEAD"], include_in_schema=False)
-def confirm_credit(request: Request, token: str = "") -> Response:
-    """Opening the emailed link spends one credit and unlocks the order."""
+def confirm_credit_page(token: str = "") -> Response:
+    """The emailed link only asks. It never spends a credit; the button below posts the token."""
+    from html import escape
+    order = orders.get_by_id(orders.peek_confirm_token(token) or "") if token else None
+    if order is None:
+        return _credit_page("This link can't be used", "It has expired or was already used. Start again from your packet's package step.",
+                            ("/start/", "Start a packet"), status.HTTP_410_GONE)
+    form = (f'<form method="post" action="/credits/confirm"><input type="hidden" name="token" value="{escape(token, quote=True)}">'
+            '<button type="submit">Use 1 credit</button></form>')
+    return _credit_page(f"Use 1 credit for {order['address']}?", "One prepaid credit pays for this Instant Permit Packet.", form=form)
+
+
+@app.post("/credits/confirm")
+@app.post("/credits/confirm/", include_in_schema=False)
+async def confirm_credit(request: Request) -> Response:
+    """Spend one credit on the order the token was made for, unlock it and go to the order page."""
+    from urllib.parse import parse_qs
+    token = (parse_qs((await request.body()).decode("utf-8", "ignore")).get("token") or [""])[0]
     outcome, order_id = orders.redeem_confirm_token(token) if token else ("invalid", None)
     if outcome == "invalid":
         return _credit_page("This link can't be used", "It has expired or was already used. Start again from your packet's package step.",

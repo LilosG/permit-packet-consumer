@@ -28,12 +28,12 @@ def create_checkout(
 
 
 def handle_webhook(
-    raw_body: bytes, headers: Any, find_record: Callable[[str], tuple[str, dict[str, Any]] | None],
+    raw_body: bytes, headers: Any, find_record: Callable[[str], tuple[str, dict[str, Any], int] | None],
     on_paid: Callable[[str, dict[str, Any]], None],
 ) -> dict[str, Any]:
     """Verify and act on a provider webhook. A bad or missing signature is a 401 and changes nothing.
 
-    find_record(provider_order_id) -> (kind, record) or None; on_paid(kind, record) unlocks it and must be idempotent.
+    find_record(provider_order_id) -> (kind, record, amount_cents the checkout was made for) or None; on_paid(kind, record) unlocks it and must be idempotent.
     Any correctly signed event gets {"ok": True}, including ones that are ignored."""
     provider = _provider()
     if not provider.signature_ok(raw_body, headers.get(provider.SIGNATURE_HEADER)):
@@ -48,11 +48,11 @@ def handle_webhook(
     found = find_record(str(payment.get("order_id") or ""))
     if found is None:
         return {"ok": True}
-    kind, record = found
+    kind, record, expected = found
     paid = (payment.get("total_money") or {}).get("amount")
-    if record.get("amount_cents") is None or paid != record["amount_cents"]:
+    if paid != expected:
         log.error("Payment amount mismatch for %s %s: paid %s, expected %s; not unlocking",
-                  kind, record.get("order_code") or record.get("id"), paid, record.get("amount_cents"))
+                  kind, record.get("order_code") or record.get("id"), paid, expected)
         return {"ok": True}
     on_paid(kind, record)
     return {"ok": True}

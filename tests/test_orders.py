@@ -220,6 +220,21 @@ def test_duplicate_events_do_not_unlock_twice(client, monkeypatch):
     assert sent.count("Your packet is ready to download") == 1
 
 
+def test_every_checkout_link_counts_and_the_order_unlocks_once(client, monkeypatch):
+    sent = []
+    monkeypatch.setattr(emails, "send", lambda to, subject, text, html: sent.append(subject) or True)
+    order = place_order(client)  # checkout 1 (sq_order_1)
+    assert client.get(f"/api/orders/{order['access_token']}/pay", follow_redirects=False).status_code == 303  # checkout 2
+    row = orders.get_by_token(order["access_token"])
+    assert row["provider_order_id"] == "sq_order_2"  # display only: the latest
+    assert orders.get_checkout_link("sq_order_1")["amount_cents"] == row["amount_cents"]
+    assert post_event(client, event("sq_order_1", row["amount_cents"])).status_code == 200  # pay the FIRST link
+    assert _status(client, order) == "paid"
+    assert post_event(client, event("sq_order_2", row["amount_cents"])).status_code == 200  # the other link does nothing
+    assert post_event(client, event("sq_order_1", row["amount_cents"])).status_code == 200
+    assert _status(client, order) == "paid" and sent.count("Your packet is ready to download") == 1
+
+
 def test_a_delivered_order_is_not_set_back_to_paid(client):
     order = place_order(client)
     pay_order(client, order)

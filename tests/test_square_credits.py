@@ -133,22 +133,29 @@ def test_credits_are_spent_soonest_expiring_first_and_expired_lots_are_skipped(c
     assert len(orders._query("SELECT id FROM credit_redemptions")) == 3
 
 
-def test_the_confirm_link_unlocks_the_order_once(client, outbox):
+def test_opening_the_confirm_link_never_spends_a_credit_only_the_button_does(client, outbox):
     grant("pro@example.com", 2)
     answer = credit_order(client)
     assert answer["message"] == "If this email has credits, we've sent a confirmation link."
     link = next(text for to, subject, text in outbox if subject == "Confirm your prepaid credit")
     url = re.search(r"https://permits\.example\.com(/credits/confirm\?token=[\w-]+)", link).group(1)
+    token = url.split("token=")[1]
     row = orders.get_by_token(answer["order_url"].rsplit("/", 1)[1])
     assert (row["source"], row["tier"], row["status"]) == ("credit", "instant_packet", "pending_payment")
-    assert len(url.split("token=")[1]) >= 43  # 32 random bytes
-    first = client.get(url, follow_redirects=False)
+    assert len(token) >= 43  # 32 random bytes
+    for _ in range(3):  # any number of opens, GET or HEAD, changes nothing
+        page = client.get(url)
+        assert page.status_code == 200 and f"Use 1 credit for {row['address']}?" in page.text
+        assert 'method="post"' in page.text and f'name="token" value="{token}"' in page.text and "noindex" in page.headers["x-robots-tag"]
+        assert client.head(url).status_code == 200
+    assert lots()[0]["credits_used"] == 0 and orders.get_by_token(row["access_token"])["status"] == "pending_payment"
+    first = client.post("/credits/confirm", data={"token": token}, follow_redirects=False)
     assert first.status_code == 303 and first.headers["location"] == answer["order_url"]
     view = client.get(f"/api/orders/{row['access_token']}").json()
     assert view["paid"] and view["price"] == 0 and view["source"] == "credit"
     assert lots()[0]["credits_used"] == 1
-    again = client.get(url, follow_redirects=False)
-    assert again.status_code == 410 and lots()[0]["credits_used"] == 1
+    assert client.post("/credits/confirm", data={"token": token}, follow_redirects=False).status_code == 410
+    assert client.get(url).status_code == 410 and lots()[0]["credits_used"] == 1
 
 
 def test_only_the_hash_of_the_token_is_stored(client, outbox):
@@ -176,11 +183,11 @@ def test_no_credit_says_so_and_keeps_the_link_usable(client, outbox):
     order = place_order(client)
     row = orders.get_by_token(order["access_token"])
     token = orders.create_confirm_token("pro@example.com", row["id"])
-    page = client.get(f"/credits/confirm?token={token}")
+    page = client.post("/credits/confirm", data={"token": token})
     assert page.status_code == 200 and "No credits available" in page.text and "/pro-credits/" in page.text
     assert "noindex" in page.headers["x-robots-tag"]
     grant("pro@example.com", 1)
-    assert client.get(f"/credits/confirm?token={token}", follow_redirects=False).status_code == 303
+    assert client.post("/credits/confirm", data={"token": token}, follow_redirects=False).status_code == 303
 
 
 def test_the_credit_answer_never_reveals_whether_the_email_has_credits(client, outbox):
@@ -213,15 +220,29 @@ def packet_order(client, tier="instant_packet", email="buyer@example.com"):
     return orders.get_by_token(order["access_token"])
 
 
-def test_a_paid_panel_report_is_credited_once(client):
+def test_the_panel_report_credit_is_claimed_when_the_order_is_paid_not_at_checkout(client):
+    from tests.payment_helpers import pay_order
     report = paid_load_calc(client)
     first = packet_order(client)
-    assert first["credit_applied_cents"] == report["amount_cents"]
+    assert first["credit_applied_cents"] == report["amount_cents"] and first["credit_source_order_id"] == report["id"]
     assert first["amount_cents"] == pricing.price("instant_packet") * 100 - report["amount_cents"]
     assert CALLS[-1][1]["json"]["quick_pay"]["price_money"]["amount"] == first["amount_cents"]
-    assert orders.get_by_id(report["id"])["load_calc_credit_used_at"]
-    second = packet_order(client)
-    assert second["credit_applied_cents"] == 0 and second["amount_cents"] == pricing.price("instant_packet") * 100
+    assert orders.get_by_id(report["id"])["load_calc_credit_used_at"] is None  # starting checkout claims nothing
+    abandoned_again = packet_order(client)  # the first was abandoned: the credit is still offered
+    assert abandoned_again["credit_applied_cents"] == report["amount_cents"]
+    pay_order(client, {"access_token": first["access_token"]})
+    assert orders.get_by_id(report["id"])["load_calc_credit_used_at"]  # claimed on payment
+    assert packet_order(client)["credit_applied_cents"] == 0 and orders.get_by_token(first["access_token"])["status"] == "paid"
+
+
+def test_a_credit_already_claimed_by_another_paid_order_still_unlocks_with_a_warning(client, caplog):
+    from tests.payment_helpers import pay_order
+    paid_load_calc(client)
+    one, two = packet_order(client), packet_order(client)
+    pay_order(client, {"access_token": one["access_token"]})
+    with caplog.at_level("WARNING"):
+        pay_order(client, {"access_token": two["access_token"]})
+    assert orders.get_by_token(two["access_token"])["status"] == "paid" and "already used" in caplog.text
 
 
 def test_the_credit_applies_to_the_city_checked_packet_too_but_not_to_a_report(client):

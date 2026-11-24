@@ -20,6 +20,7 @@ COLUMNS = (
     "job_slug", "address", "jurisdiction_key", "payload_json", "created_at",
     "paid_at", "released_at", "downloaded_at",
     "provider_order_id", "amount_cents", "source", "credit_applied_cents", "load_calc_credit_used_at",
+    "credit_source_order_id",
 )
 TIME_COLUMNS = ("created_at", "paid_at", "released_at", "downloaded_at", "load_calc_credit_used_at")
 # Columns added after the first release. Existing databases get them from _migrate.
@@ -30,6 +31,7 @@ ADDED_OTHER = (
     ("amount_cents", "INTEGER"),
     ("source", "TEXT"),
     ("credit_applied_cents", "INTEGER DEFAULT 0"),
+    ("credit_source_order_id", "TEXT"),
 )
 SOURCES = ("checkout", "preview_saved", "credit")
 LOAD_CALC_CREDIT_DAYS = 30
@@ -56,7 +58,8 @@ CREATE TABLE IF NOT EXISTS orders (
     amount_cents     INTEGER,
     source           TEXT,
     credit_applied_cents INTEGER DEFAULT 0,
-    load_calc_credit_used_at TEXT
+    load_calc_credit_used_at TEXT,
+    credit_source_order_id TEXT
 )
 """
 _FIND_SCHEMA = """
@@ -103,6 +106,13 @@ _PACK_SCHEMAS = (
     customer_email TEXT NOT NULL,
     lot_id UUIDREF NOT NULL,
     order_id UUIDREF NOT NULL,
+    created_at TEXT NOT NULL
+)""",
+    """CREATE TABLE IF NOT EXISTS checkout_links (
+    provider_order_id TEXT NOT NULL PRIMARY KEY,
+    kind TEXT NOT NULL CHECK (kind IN ('order', 'pack')),
+    record_id TEXT NOT NULL,
+    amount_cents INTEGER NOT NULL,
     created_at TEXT NOT NULL
 )""",
     """CREATE TABLE IF NOT EXISTS credit_confirm_tokens (
@@ -413,10 +423,25 @@ def get_by_provider_order_id(provider_order_id: str) -> dict[str, Any] | None:
     return _get("WHERE provider_order_id = ?", provider_order_id) if provider_order_id else None
 
 
-def set_amount(order_id: str, amount_cents: int, credit_applied_cents: int = 0) -> bool:
-    """Fix what the buyer pays, once: only an order with no amount yet takes one."""
-    return _run("UPDATE orders SET amount_cents = ?, credit_applied_cents = ? WHERE id = ? AND amount_cents IS NULL",
-                (amount_cents, credit_applied_cents, order_id)) == 1
+def set_amount(order_id: str, amount_cents: int, credit_applied_cents: int = 0, credit_source_order_id: str | None = None) -> bool:
+    """Fix what the buyer pays, once: only an order with no amount yet takes one. The credit is only remembered here, not claimed."""
+    return _run("UPDATE orders SET amount_cents = ?, credit_applied_cents = ?, credit_source_order_id = ? "
+                "WHERE id = ? AND amount_cents IS NULL", (amount_cents, credit_applied_cents, credit_source_order_id, order_id)) == 1
+
+
+def add_checkout_link(provider_order_id: str, kind: str, record_id: str, amount_cents: int) -> None:
+    """Remember one Square checkout. Every link ever made for a record stays payable."""
+    postgres = bool(database_url())
+    _run("INSERT INTO checkout_links (provider_order_id, kind, record_id, amount_cents, created_at) VALUES (?, ?, ?, ?, ?)",
+         (provider_order_id, kind, record_id, amount_cents, _ts(postgres, datetime.now(timezone.utc))))
+
+
+def get_checkout_link(provider_order_id: str) -> dict[str, Any] | None:
+    if not provider_order_id:
+        return None
+    rows = _query("SELECT provider_order_id, kind, record_id, amount_cents FROM checkout_links WHERE provider_order_id = ?",
+                  (provider_order_id,))
+    return dict(zip(("provider_order_id", "kind", "record_id", "amount_cents"), rows[0])) if rows else None
 
 
 def set_provider_order_id(order_id: str, provider_order_id: str) -> None:
@@ -569,6 +594,14 @@ def create_confirm_token(email: str, order_id: str, now: datetime | None = None)
     _run("INSERT INTO credit_confirm_tokens (token_hash, customer_email, order_id, expires_at, used_at) VALUES (?, ?, ?, ?, NULL)",
          (_hash(token), email.strip().lower(), order_id, _ts(postgres, now + timedelta(minutes=CONFIRM_TOKEN_MINUTES))))
     return token
+
+
+def peek_confirm_token(token: str, now: datetime | None = None) -> str | None:
+    """The order id a token is good for, or None if it is unknown, used or expired. Changes nothing."""
+    postgres = bool(database_url())
+    rows = _query("SELECT order_id FROM credit_confirm_tokens WHERE token_hash = ? AND used_at IS NULL AND expires_at > ?",
+                  (_hash(token), _ts(postgres, now or datetime.now(timezone.utc))))
+    return str(rows[0][0]) if rows else None
 
 
 def redeem_confirm_token(token: str, now: datetime | None = None) -> tuple[str, str | None]:
