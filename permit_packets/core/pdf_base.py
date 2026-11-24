@@ -14,7 +14,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
-from permit_packets.core.checks import ASSUMED_NOTE
+from permit_packets.core.checks import with_assumed_note
 from permit_packets.core.layout import Sheet, content_w, current_sheet
 from permit_packets.core.title_block import TitleBlock, draw_title_block
 from reportlab.platypus import (
@@ -396,7 +396,7 @@ def cover_page(
             return "Assumed"  # relies on a default the buyer did not enter
         return "Pass" if passed else "Note" if neutral else "Fix"  # neutral: an optional item left empty
 
-    check_rows = [[_p(name), _p(result + (f" {ASSUMED_NOTE}" if len(rest) > 1 and rest[1] else "")),
+    check_rows = [[_p(name), _p(with_assumed_note(result) if len(rest) > 1 and rest[1] else result),
                    _p(check_status(passed, *rest), CELL_BOLD)]
                   for name, result, passed, *rest in checks]
 

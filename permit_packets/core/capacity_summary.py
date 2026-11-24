@@ -13,7 +13,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import Paragraph, Spacer
 
-from permit_packets.core.checks import ASSUMED_NOTE
+from permit_packets.core.checks import with_assumed_note
 from permit_packets.core.layout import SHEETS, content_w, use_sheet
 from permit_packets.core.pdf_base import (
     BODY, CELL, CELL_BOLD, H1, H2, SMALL, _heads, _p, _table, build_document, use_blank_area)
@@ -96,7 +96,7 @@ def summary_pdf(payload: dict, body: dict) -> bytes:
         return _p("PASS" if check["passed"] else "FAIL", CELL_BOLD)
 
     def result(check: dict) -> str:
-        return f"{check['result']} {ASSUMED_NOTE}" if check.get("assumed") else check["result"]
+        return with_assumed_note(check["result"]) if check.get("assumed") else check["result"]
 
     story = [
         _p(TITLE, H1),

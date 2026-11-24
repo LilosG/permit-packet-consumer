@@ -323,3 +323,13 @@ def test_panel_capacity_report_is_its_own_set_of_three_with_report_file_names(cl
     z = client.get(f"/api/orders/{order['access_token']}/documents")
     if z.status_code == 200:
         assert f'{order["order_code"]}-panel-capacity-report.zip' in z.headers["content-disposition"]
+
+
+def test_assumed_note_is_a_second_sentence_in_the_summary(client, outbox):
+    from permit_packets.core.checks import with_assumed_note
+    assert with_assumed_note("Enter the fault current") == with_assumed_note("Enter the fault current.")
+    order = place_order(client, "load_calc")
+    pay(client, order)
+    doc = pypdfium2.PdfDocument(client.get(f"/api/orders/{order['access_token']}/pdf").content)
+    text = " ".join(doc[0].get_textpage().get_text_bounded().split())
+    assert ". Uses a typical residential default" in text
