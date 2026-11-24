@@ -72,7 +72,7 @@ def test_checkout_followups_and_the_pay_link(outbox, env):
     assert subject == "Your checkout is still open"
     assert f"/api/orders/{order['access_token']}/pay" in text
     assert followups.run(now=at(order, hours=24, seconds=1)) == {"checkout_24h": 1}
-    assert "Full refund if you ask before downloading your clean packet." in outbox[1][2]
+    assert "re-draft it free" in outbox[1][2] and "Full refund" not in outbox[1][2]
 
 
 def test_followups_stop_after_the_email_pays(outbox, env):
@@ -100,13 +100,63 @@ def test_no_marketing_goes_out_without_business_postal_address(outbox, env, monk
 
 
 def test_72h_email_stops_after_dec_31_2026(outbox, env):
-    order = make_order(source="preview_saved")
-    orders.record_email_event(order["id"], "preview_1h", at(order, hours=1))
-    orders.record_email_event(order["id"], "preview_24h", at(order, hours=24))
     after = datetime.datetime(2027, 1, 2, 0, 0, 0, tzinfo=datetime.timezone.utc)
+    order = make_order(source="preview_saved")
+    orders._run("UPDATE orders SET created_at = ? WHERE id = ?", ((after - datetime.timedelta(hours=72)).isoformat(), order["id"]))
+    orders.record_email_event(order["id"], "preview_1h", after - datetime.timedelta(hours=71))
+    orders.record_email_event(order["id"], "preview_24h", after - datetime.timedelta(hours=48))
     assert followups.run(now=after) == {} and outbox == []
     before = datetime.datetime(2026, 12, 30, 0, 0, 0, tzinfo=datetime.timezone.utc)
+    order2 = make_order(source="preview_saved", email="p2@example.com")
+    orders._run("UPDATE orders SET created_at = ? WHERE id = ?", ((before - datetime.timedelta(hours=72)).isoformat(), order2["id"]))
+    orders.record_email_event(order2["id"], "preview_1h", before - datetime.timedelta(hours=71))
+    orders.record_email_event(order2["id"], "preview_24h", before - datetime.timedelta(hours=48))
     assert followups.run(now=before) == {"preview_72h": 1}
+
+
+def test_a_backlog_order_gets_only_the_latest_step(outbox, env):
+    order = make_order(source="preview_saved")
+    now = datetime.datetime(2026, 12, 1, 12, 0, 0, tzinfo=datetime.timezone.utc)
+    orders._run("UPDATE orders SET created_at = ? WHERE id = ?", ((now - datetime.timedelta(hours=30)).isoformat(), order["id"]))
+    assert followups.run(now=now) == {"preview_24h": 1}
+    assert subjects(outbox) == ["What happens after you download"]
+    assert orders.has_email_event(order["id"], "preview_1h")  # recorded, never emailed late
+    assert not orders.has_email_event(order["id"], "preview_72h")  # not due yet
+    followups.run(now=now)
+    assert len(outbox) == 1
+
+
+def test_an_order_older_than_four_days_gets_no_followup(outbox, env):
+    order = make_order(source="preview_saved")
+    now = datetime.datetime(2026, 12, 1, 12, 0, 0, tzinfo=datetime.timezone.utc)
+    orders._run("UPDATE orders SET created_at = ? WHERE id = ?", ((now - datetime.timedelta(days=5)).isoformat(), order["id"]))
+    assert followups.run(now=now) == {}
+    assert outbox == []
+
+
+def test_links_use_the_default_domain_without_public_base_url(outbox, env, monkeypatch):
+    monkeypatch.delenv("PUBLIC_BASE_URL", raising=False)
+    order = make_order(source="checkout")
+    followups.run(now=at(order, hours=1, seconds=1))
+    _, _, text, html = outbox[0]
+    assert f"https://myelectricalpermit.com/api/orders/{order['access_token']}/pay" in text
+    assert "https://myelectricalpermit.com/email/unsubscribe" in text
+    assert emails.unsubscribe_url("a@example.com").startswith("https://")
+
+
+def test_reviewed_downloads_do_not_block_a_new_eligible_one(outbox, env):
+    now = datetime.datetime(2026, 12, 1, 12, 0, 0, tzinfo=datetime.timezone.utc)
+    for i in range(205):  # already-reviewed downloads would fill the cap if not excluded in SQL
+        reviewed = make_order(source="checkout", email=f"r{i}@example.com")
+        orders.set_status(reviewed["id"], "paid")
+        orders.mark_downloaded(reviewed["id"])
+        orders.record_email_event(reviewed["id"], "review_7d", now)
+    eligible = make_order(source="checkout", email="eligible@example.com")
+    orders.set_status(eligible["id"], "paid")
+    orders.mark_downloaded(eligible["id"])
+    orders._run("UPDATE orders SET downloaded_at = ?", ((now - datetime.timedelta(days=10)).isoformat(),))
+    assert followups.run(now=now) == {"review_7d": 1}
+    assert "How did your permit go?" in subjects(outbox)
 
 
 def test_review_fires_after_seven_days(outbox, env):

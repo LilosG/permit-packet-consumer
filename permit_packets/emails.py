@@ -12,6 +12,8 @@ from typing import Any
 
 import httpx
 
+from permit_packets import seo
+
 log = logging.getLogger("permit_packets")
 
 RESEND_URL = "https://api.resend.com/emails"
@@ -198,8 +200,7 @@ def verify_unsubscribe_token(token: str) -> str | None:
 
 
 def unsubscribe_url(email: str) -> str:
-    base = os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
-    return f"{base}/email/unsubscribe?token={unsubscribe_token(email)}"
+    return f"{seo.public_base_url()}/email/unsubscribe?token={unsubscribe_token(email)}"
 
 
 def send_followup(to: str, subject: str, paragraphs: list[str], link: str | None, link_label: str) -> bool:

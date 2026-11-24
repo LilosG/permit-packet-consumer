@@ -676,27 +676,38 @@ def redeem_confirm_token(token: str, now: datetime | None = None) -> tuple[str, 
 
 # ---- Scheduled follow-up and review emails ----
 
-def list_pending(limit: int = 200) -> list[dict[str, Any]]:
-    """pending_payment orders that can get a follow-up (checkout or preview_saved). Credit orders never do."""
+FOLLOWUP_WINDOW_DAYS = 4  # a pending order older than this gets no sales follow-up
+REVIEW_START_DAYS = 7  # the review ask starts a week after download
+REVIEW_END_DAYS = 30  # and is never asked after a month
+
+
+def list_pending(limit: int = 200, now: datetime | None = None) -> list[dict[str, Any]]:
+    """pending_payment follow-up candidates from the last few days, newest first. Credit orders never get one."""
     postgres = bool(database_url())
+    now = now or datetime.now(timezone.utc)
     conn, marker = _connect()
     try:
         _ensure_schema(conn, postgres)
+        cutoff = _ts(postgres, now - timedelta(days=FOLLOWUP_WINDOW_DAYS))
         return _select(conn, marker,
-                       "WHERE status = 'pending_payment' AND source IN ('checkout', 'preview_saved')",
-                       (), f"ORDER BY created_at ASC LIMIT {int(limit)}")
+                       f"WHERE status = 'pending_payment' AND source IN ('checkout', 'preview_saved') AND created_at >= {marker}",
+                       (cutoff,), f"ORDER BY created_at DESC LIMIT {int(limit)}")
     finally:
         conn.close()
 
 
-def list_downloaded(limit: int = 200) -> list[dict[str, Any]]:
-    """Orders that have a clean download, oldest first, for the review request."""
+def list_downloaded(limit: int = 200, now: datetime | None = None) -> list[dict[str, Any]]:
+    """Orders downloaded 7 to 30 days ago that haven't been asked for a review yet, newest first."""
     postgres = bool(database_url())
+    now = now or datetime.now(timezone.utc)
     conn, marker = _connect()
     try:
         _ensure_schema(conn, postgres)
-        return _select(conn, marker, "WHERE downloaded_at IS NOT NULL", (),
-                       f"ORDER BY downloaded_at ASC LIMIT {int(limit)}")
+        where = (f"WHERE downloaded_at IS NOT NULL AND downloaded_at >= {marker} AND downloaded_at <= {marker} "
+                 "AND NOT EXISTS (SELECT 1 FROM email_events WHERE email_events.order_id = orders.id "
+                 "AND email_events.kind = 'review_7d')")
+        args = (_ts(postgres, now - timedelta(days=REVIEW_END_DAYS)), _ts(postgres, now - timedelta(days=REVIEW_START_DAYS)))
+        return _select(conn, marker, where, args, f"ORDER BY downloaded_at DESC LIMIT {int(limit)}")
     finally:
         conn.close()
 

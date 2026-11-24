@@ -10,13 +10,12 @@ import datetime
 import logging
 import os
 
-from permit_packets import content, emails, orders, pricing
+from permit_packets import content, emails, orders, pricing, seo
 
 log = logging.getLogger("permit_packets")
 
 MAX_PER_RUN = 200
 HOUR = datetime.timedelta(hours=1)
-DAY = datetime.timedelta(days=1)
 REVIEW_AFTER = datetime.timedelta(days=7)
 
 
@@ -31,16 +30,12 @@ def _parse(iso: str) -> datetime.datetime:
     return value.astimezone(datetime.timezone.utc)
 
 
-def _base() -> str:
-    return os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
-
-
 def _order_url(order: dict) -> str:
-    return f"{_base()}/order/{order['access_token']}"
+    return f"{seo.public_base_url()}/order/{order['access_token']}"
 
 
 def _pay_url(order: dict) -> str:
-    return f"{_base()}/api/orders/{order['access_token']}/pay"
+    return f"{seo.public_base_url()}/api/orders/{order['access_token']}/pay"
 
 
 def _guarantee_refund() -> str:
@@ -69,7 +64,7 @@ def _followup_copy(order: dict, kind: str, now: datetime.datetime) -> tuple[str,
                 _pay_url(order), "Resume checkout")
     # checkout_24h
     return ("Your checkout is still open",
-            [f"You started checking out for {address}. Your packet is ready to unlock:", _guarantee_refund()],
+            [f"You started checking out for {address}. Your packet is ready to unlock:", content.GUARANTEE],
             _pay_url(order), "Resume checkout")
 
 
@@ -94,18 +89,26 @@ def _followup_for(order: dict, now: datetime.datetime, counts: dict[str, int], s
     if orders.paid_since(email, _parse(order["created_at"])):
         return  # they paid for something with this email since; the sales nudge isn't for them
     age = now - _parse(order["created_at"])
+    # One email per order per run: the latest step that is due and not yet sent.
+    chosen = None
     for delay, kind in FOLLOWUPS[order["source"]]:
         if age < delay:
             continue
         if kind == "preview_72h" and not pricing.launch_active(now):
             continue
-        if orders.has_email_event(order["id"], kind):
-            continue
-        if sent[0] >= MAX_PER_RUN:
-            return
-        if _send(order, kind, now):
-            counts[kind] = counts.get(kind, 0) + 1
-            sent[0] += 1
+        chosen = kind
+    if chosen is None or orders.has_email_event(order["id"], chosen):
+        return
+    if sent[0] >= MAX_PER_RUN:
+        return
+    if _send(order, chosen, now):
+        counts[chosen] = counts.get(chosen, 0) + 1
+        sent[0] += 1
+        for delay, kind in FOLLOWUPS[order["source"]]:
+            if kind == chosen:
+                break
+            if age >= delay and not orders.has_email_event(order["id"], kind):
+                orders.record_email_event(order["id"], kind, now)  # never go out late
 
 
 def _review_for(order: dict, now: datetime.datetime, counts: dict[str, int], sent: list[int]) -> None:
@@ -145,11 +148,11 @@ def run(now: datetime.datetime | None = None) -> dict[str, int]:
         log.warning("BUSINESS_POSTAL_ADDRESS is not set, so no follow-up or review emails were sent")
         return counts
     sent: list[int] = [0]
-    for order in orders.list_pending(MAX_PER_RUN):
+    for order in orders.list_pending(MAX_PER_RUN, now):
         if sent[0] >= MAX_PER_RUN:
             break
         _followup_for(order, now, counts, sent)
-    for order in orders.list_downloaded(MAX_PER_RUN):
+    for order in orders.list_downloaded(MAX_PER_RUN, now):
         if sent[0] >= MAX_PER_RUN:
             break
         _review_for(order, now, counts, sent)
