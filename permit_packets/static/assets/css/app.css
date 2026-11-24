@@ -1652,3 +1652,45 @@ table.compare tbody th { color: var(--ink); font-weight: 600; }
   max-width: 28ch;
   text-wrap: balance;
 }
+
+/* ==== Stage 18: Lock Card Top Row, Single-Line Badges & Exact Heading Baseline ==== */
+.link-cards .lc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 34px;
+  margin-bottom: 14px;
+}
+
+.link-cards .lc-ic {
+  flex: 0 0 34px !important;
+  width: 34px !important;
+  height: 34px !important;
+  margin: 0 !important;
+  border-radius: 9px;
+}
+
+.link-cards .lc-ic .ic {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+.link-cards .lc-tag {
+  flex: none !important;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  line-height: 1.15;
+  letter-spacing: .05em;
+  white-space: nowrap !important;
+}
+
+.link-cards b {
+  display: block;
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
