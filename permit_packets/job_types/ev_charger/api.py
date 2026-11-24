@@ -104,7 +104,7 @@ def _build_response(request: BaseModel) -> PacketResult:
         "interior_conduit": packet.interior_conduit,
         "disconnect_amps": packet.disconnect_amps,
         "checks": [
-            {"name": check.name, "result": check.result, "passed": check.passed, **({"neutral": True} if check.neutral else {})}
+            {"name": check.name, "result": check.result, "passed": check.passed, **({"neutral": True} if check.neutral else {}), **({"assumed": True} if check.assumed else {})}
             for check in packet.checks
         ],
         "flags": packet.flags,

@@ -34,6 +34,7 @@ from pydantic import ValidationError
 
 from permit_packets import emails, followups, orders, pages, payments, pricing, seo, sitedata
 from permit_packets.core import capacity_summary
+from permit_packets.core.title_block import REPORT_SET, SET_NUMBERS
 from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
 from permit_packets.core.preview import packet_documents_zip, packet_page_images, packet_subset_pdf
 from permit_packets.core.property_lookup import (
@@ -359,7 +360,7 @@ def _validated(job_type: JobType, payload: dict[str, Any]):
         raise RequestValidationError(error.errors(include_url=False)) from error
 
 
-def _build(slug: str, payload: dict[str, Any], *, preview: bool) -> tuple[JobType, PacketResult]:
+def _build(slug: str, payload: dict[str, Any], *, preview: bool, report_set: bool = False) -> tuple[JobType, PacketResult]:
     """Build the packet. A preview carries the PREVIEW marks; a paid packet carries none."""
     job_type = _job_type(slug)
     payload = dict(payload)  # the logo is popped below, and an order's saved payload must stay whole
@@ -370,6 +371,7 @@ def _build(slug: str, payload: dict[str, Any], *, preview: bool) -> tuple[JobTyp
         (CONTRACTOR_LOGO, CONTRACTOR_LOGO.set(logo)),
         (DEMO_MARKS, DEMO_MARKS.set(preview)),
         (COMPANY_NAME, COMPANY_NAME.set("")),
+        *(((SET_NUMBERS, SET_NUMBERS.set(REPORT_SET)),) if report_set else ()),
     )
     try:
         return job_type, job_type.build_response(request)
@@ -547,7 +549,7 @@ def create_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
         checkout_url = ""
     else:
         checkout_url = _checkout_url(order, request)
-        _notify(emails.order_created, orders.get_by_id(order["id"]) or order, _order_link(request, order))
+        # A checkout order is covered by the 1-hour checkout follow-up, so no order-created email goes out.
     return {
         "order_code": order["order_code"],
         "access_token": order["access_token"],
@@ -712,7 +714,7 @@ def _pdf_download(content: bytes, name: str, inline: bool = False) -> Response:
 @app.get("/api/orders/{access_token}/preview-pdf")
 def order_preview_pdf(access_token: str) -> Response:
     order = _order_or_404(access_token)
-    _, result = _build(order["job_slug"], order["payload"], preview=True)
+    _, result = _build(order["job_slug"], order["payload"], preview=True, report_set=order["tier"] == "load_calc")
     pdf = result.pdf
     if order["tier"] == "load_calc":
         pdf = _with_summary(order["payload"], result, pdf, preview=True)
@@ -722,7 +724,7 @@ def order_preview_pdf(access_token: str) -> Response:
 @app.get("/api/orders/{access_token}/preview-pages")
 def order_preview_pages(access_token: str) -> JSONResponse:
     order = _order_or_404(access_token)
-    _, result = _build(order["job_slug"], order["payload"], preview=True)
+    _, result = _build(order["job_slug"], order["payload"], preview=True, report_set=order["tier"] == "load_calc")
     pages_pdf = _with_summary(order["payload"], result, result.pdf, preview=True) if order["tier"] == "load_calc" else result.pdf
     return JSONResponse({"pages": [base64.b64encode(p).decode() for p in packet_page_images(pages_pdf)], "ready": bool(result.body.get("ready"))}, headers=PRIVATE_DATA)
 
@@ -731,13 +733,13 @@ def order_preview_pages(access_token: str) -> JSONResponse:
 def order_pdf(access_token: str) -> Response:
     """The clean PDF, built on the fly so no file is stored. A load_calc order gets just its two sheets."""
     order = _paid_order(access_token)
-    job_type, result = _build(order["job_slug"], order["payload"], preview=False)
+    job_type, result = _build(order["job_slug"], order["payload"], preview=False, report_set=order["tier"] == "load_calc")
     pdf, name = result.pdf, f'{order["order_code"]}-permit-packet.pdf'
     only = _allowed_sheets(order, job_type)
     if only is not None:
         pdf = packet_subset_pdf(pdf, tuple(d.file_stem for d in job_type.documents), only)
         pdf = _with_summary(order["payload"], result, pdf, preview=False)
-        name = f'{order["order_code"]}-load-calc-and-panel-audit.pdf'
+        name = f'{order["order_code"]}-panel-capacity-report.pdf'
     _downloaded(order)
     return _pdf_download(pdf, name)
 
@@ -747,10 +749,12 @@ def order_documents(access_token: str) -> Response:
     order = _paid_order(access_token)
     if _single_pdf_only(order["payload"]):
         raise HTTPException(status.HTTP_409_CONFLICT, "This city takes one combined PDF, not separate plan sheets")
-    job_type, result = _build(order["job_slug"], order["payload"], preview=False)
+    job_type, result = _build(order["job_slug"], order["payload"], preview=False, report_set=order["tier"] == "load_calc")
     stems = tuple(document.file_stem for document in job_type.documents)
     zip_name = job_type.zip_name.replace("-demo.zip", ".zip")
     only = _allowed_sheets(order, job_type)
+    if only is not None:
+        zip_name = f'{order["order_code"]}-panel-capacity-report.zip'
     content = packet_documents_zip(result.pdf, stems, only)
     if only is not None:
         buffer = io.BytesIO(content)
@@ -775,7 +779,7 @@ def order_document(access_token: str, file_stem: str) -> Response:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such sheet")
     if _single_pdf_only(order["payload"]):
         raise HTTPException(status.HTTP_409_CONFLICT, "This city takes one combined PDF, not separate plan sheets")
-    _, result = _build(order["job_slug"], order["payload"], preview=False)
+    _, result = _build(order["job_slug"], order["payload"], preview=False, report_set=order["tier"] == "load_calc")
     if file_stem == capacity_summary.STEM:
         _downloaded(order)
         return _pdf_download(_summary_pdf(order["payload"], result, preview=False), f'{order["order_code"]}-{file_stem}.pdf')

@@ -169,9 +169,11 @@ def test_an_old_database_gets_the_new_columns(tmp_path, monkeypatch):
 
 def test_order_emails_carry_the_link_and_support_address(client, outbox):
     order = place_order(client, "instant_packet")
+    assert outbox == []  # a checkout order sends no order-created email; the 1-hour follow-up covers it
+    link = f"/order/{order['access_token']}"
+    emails.order_created({"customer_email": "buyer@example.com", "address": "1 Main", "order_code": "X"}, link)
     to, subject, text, html = outbox[0]
     assert to == "buyer@example.com" and subject.startswith("Your Permit Packet order: ")
-    link = f"/order/{order['access_token']}"
     assert link in text and link in html and "hello@myelectricalpermit.com" in text and "hello@myelectricalpermit.com" in html
     pay(client, order)
     assert outbox[1][1] == "Your packet is ready to download" and link in outbox[1][2]
@@ -194,7 +196,7 @@ def test_email_failures_never_break_checkout_the_webhook_or_the_order_page(clien
 def test_no_resend_key_logs_a_warning_and_continues(client, monkeypatch, caplog):
     monkeypatch.delenv("RESEND_API_KEY", raising=False)
     with caplog.at_level("WARNING", logger="permit_packets"):
-        place_order(client)
+        pay(client, place_order(client))
     assert "RESEND_API_KEY is not set" in caplog.text
 
 
@@ -307,3 +309,17 @@ def test_the_sample_address_never_calls_the_live_lookup_services(client, monkeyp
         "anchor_latitude": body["anchor"]["latitude"], "anchor_longitude": body["anchor"]["longitude"],
         "scale_ft_per_in": 30, "zoom": 1, "job_type": "ev_charger"})
     assert moved.status_code == 200 and moved.json()["address"] == body["address"]
+
+
+def test_panel_capacity_report_is_its_own_set_of_three_with_report_file_names(client, outbox):
+    order = place_order(client, "load_calc")
+    pay(client, order)
+    r = client.get(f"/api/orders/{order['access_token']}/pdf")
+    assert r.headers["content-disposition"] == f'attachment; filename="{order["order_code"]}-panel-capacity-report.pdf"'
+    doc = pypdfium2.PdfDocument(r.content)
+    pages = [doc[i].get_textpage().get_text_bounded() for i in range(len(doc))]
+    assert [f"Page {n} of 3" in pages[n - 1] and f"E-{n}" in pages[n - 1] for n in (1, 2, 3)] == [True] * 3
+    assert "EV charger · NEC 220.82 optional method" in pages[0] and "ASSUMED" in pages[0]
+    z = client.get(f"/api/orders/{order['access_token']}/documents")
+    if z.status_code == 200:
+        assert f'{order["order_code"]}-panel-capacity-report.zip' in z.headers["content-disposition"]
