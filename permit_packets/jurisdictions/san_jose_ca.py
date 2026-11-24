@@ -43,7 +43,7 @@ SAN_JOSE = Jurisdiction(
             items=(
                 Requirement("Permit application: address, owner, contractor and valuation", "application"),
                 Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
-                Requirement("Load calculation with the charger at 125% of its continuous rating (NEC 220, 625)", "load"),
+                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
                 Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
                 Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
             ),
