@@ -1620,3 +1620,13 @@ table.compare tbody th { color: var(--ink); font-weight: 600; }
 @media (max-width: 640px) {
   .trust-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ==== Stage 16: Unified Top-Edge Accent Across Bento & Metric Cards ==== */
+.bento-card,
+.metric {
+  border-top: 2px solid rgba(29, 78, 216, .16);
+}
+.bento-card:hover,
+.metric:hover {
+  border-top-color: var(--blue);
+}
