@@ -16,7 +16,7 @@
   <div class="action-card" id="hero-card">
     <div class="card-step-pill"><span class="live-dot"></span><span>Step 1 of 3 · Takes ~2 minutes</span></div>
     <h2>Start Your Permit Packet</h2>
-    <p class="action-sub">Enter any US property address • Complete packet {price:instant_packet}{% if pricing.on_sale("instant_packet") %} (regularly {regular:instant_packet}){% endif %} · preview free</p>
+    <p class="action-sub">Any US address · Complete packet {price:instant_packet}{% if pricing.on_sale("instant_packet") %} (reg. {regular:instant_packet}){% endif %} · Preview free</p>
     <form id="hero-form" class="hero-form" action="/start/" method="get">
       <div class="jt-pills" role="radiogroup" aria-label="Job type">
         <button type="button" class="jt-pill" role="radio" aria-checked="true" data-job="ev-charger">EV Charger</button>
@@ -157,7 +157,7 @@
     <article class="cmp featured"><span class="cmp-flag">Our pick</span><h3>Permit Packets</h3>
       <dl><div><dt>Price</dt><dd>{price:load_calc} – {price:city_checked_24h}</dd></div><div><dt>Turnaround</dt><dd>Minutes</dd></div><div><dt>Best for</dt><dd>Residential EV chargers, service upgrades, subpanels and 240 V circuits</dd></div></dl>
       <h4>Pros</h4><ul class="pros"><li>Complete packet from one address</li><li>NEC 220 math and UL sheets included</li><li>Free watermarked preview</li></ul>
-      <h4>Limitations</h4><ul class="cons"><li>Not PE-stamped</li><li>You submit to the city yourself</li></ul>
+      <h4>Limitations</h4><ul class="cons"><li>Not PE-stamped</li><li>You, or your licensed electrician, submit it</li></ul>
       <a class="btn-primary full" href="/start/">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></article>
   </div>
   <p class="center" style="margin-top:24px"><a class="link" href="/compare/">See detailed side-by-side comparisons vs. CAD drafters, Fiverr &amp; site-plan tools</a></p>
@@ -229,10 +229,9 @@
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><h3>Free Watermarked Preview First</h3><p>Inspect every sheet of your generated packet and live NEC checks before you pay a cent to unlock the clean files.</p></article>
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span><h3>Full Refund Before Download</h3><p>Ask for a full refund before downloading your clean packet—or any time before release on a 24-Hour City-Checked order.</p></article>
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><h3>Free Re-draft If We Made an Error</h3><p>{{ guarantee }}</p></article>
-    <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg></span><h3>Secure Checkout via Whop</h3><p>Payments are processed through Whop; Permit Packets never sees or stores your payment card details.</p></article>
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-calc"/></svg></span><h3>NEC Article 220 &amp; 310.15 Engine</h3><p>Load calculations, conductor sizing, voltage drop, and AIC checks run directly from your address and job inputs.</p></article>
     <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><h3>Public GIS &amp; Aerial Sources</h3><p>Pulls parcel boundaries, lot lines, and aerial imagery from county GIS and public mapping sources where available.</p></article>
-    <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><h3>Clear Scope &amp; Self-Filing</h3><p>Drafts are not PE-stamped and are not legal or engineering advice; you verify local rules and file with your city.</p></article>
+    <article class="trust-card"><span class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><h3>Clear Scope &amp; Self-Filing</h3><p>Drafts are not PE-stamped and are not legal or engineering advice. You, or your licensed electrician if your city requires one, sign and submit it.</p></article>
   </div>
 </div></section>
 

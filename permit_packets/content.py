@@ -71,7 +71,7 @@ STEPS_COMMON = (
     ("Preview every sheet free",
      "See the live NEC check and each sheet of your packet, watermarked, before you pay."),
     ("Pay, download and submit",
-     "Unlock the clean PDF and individual files, plus your city's submission steps. You submit to the city yourself."),
+     "Unlock the clean PDF and individual files, plus your city's submission steps. You, or your licensed electrician if your city requires one, submit it to the city."),
 )
 
 HUBS: dict[str, Hub] = {}
@@ -516,7 +516,7 @@ _aud(Audience(
          ("It depends on the city and the job. Cities that publish a checklist commonly ask for a permit application, a site plan to scale, a single-line diagram and a load calculation. The first sheet of your packet lists your city's items and marks each one Ready, Open or Check.",
           "The sheets are the same ones described on each job page: <a href=\"/ev-charger-permit/\">EV charger</a>, <a href=\"/panel-upgrade-permit/\">panel upgrade</a>, <a href=\"/subpanel-permit/\">subpanel</a> and <a href=\"/hot-tub-240v-permit/\">hot tub and 240V circuit</a>.")),
         ("How do I submit an owner-builder permit packet?",
-         ("You submit it yourself; Permit Packets does not file anything for you. After you pay, your order page gives you the clean PDF, the individual files, your city's submission steps and copy-paste fields for the permit form.",
+         ("You, or your licensed electrician if your city requires one, submit it to the city; Permit Packets does not file anything for you. After you pay, your order page gives you the clean PDF, the individual files, your city's submission steps and copy-paste fields for the permit form.",
           "Where a city asks for sheets uploaded separately, download the ZIP of individual files. Otherwise use the single PDF.")),
         ("What if my city does not allow owner-builder permits?",
          ("Then the permit has to be pulled by a licensed contractor, and the packet still helps: it gives them the site plan, diagram and load calculation to work from. See <a href=\"/for/homeowners-hiring-an-electrician/\">getting your plans ready before you hire an electrician</a>.",
@@ -532,8 +532,8 @@ _aud(Audience(
     tier_why="The complete clean packet, ready to submit. It is the package most homeowners choose.",
     faqs=(
         ("Does the packet make my permit application for me?",
-         "It prepares the plans and the fields for the city's form. You enter them and submit the application yourself.",
-         "It prepares the plans and form fields. You submit."),
+         "It prepares the plans and the fields for the city's form. You enter them. You, or your licensed electrician if your city requires one, submit the application to the city.",
+         "It prepares the plans and form fields. You, or your licensed electrician if your city requires one, submit it to the city."),
         ("Is the packet stamped by an engineer?",
          "No. It is an automated drafting and NEC calculation tool, so it is not PE-stamped. Some cities or jobs need a stamp or a licensed electrician's review.",
          "No. Some cities or jobs need a stamp or an electrician's review."),
@@ -628,7 +628,7 @@ _aud(Audience(
           "The {price:instant_packet} Instant Permit Packet is available to download as soon as payment clears.")),
         ("How do I upload to a city portal?",
          ("You get one combined PDF, or a ZIP of each sheet as its own file for portals that want separate uploads. Your order page also lists the city's submission steps and copy-paste fields for the portal.",
-          "You submit to the city yourself. The packet is not PE-stamped, and approval is not guaranteed.")),
+          "You, or your licensed electrician if your city requires one, submit it to the city. The packet is not PE-stamped, and approval is not guaranteed.")),
     ),
     steps=(
         ("Choose \"I'm an electrician\"", "Enter your name, license number and the job address."),

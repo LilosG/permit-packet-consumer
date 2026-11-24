@@ -16,7 +16,7 @@ FAQ: list[tuple[str, str]] = [
     ('Is this stamped by an engineer?',
      "No. It's an automated drafting and NEC calculation tool, not a PE-stamped document. Some cities or jobs need a stamp or a licensed electrician's review; check with your building department."),
     ('Who submits it to the city?',
-     "You do. After you pay, your order page gives you the clean PDF, the individual files, the city's submission steps and copy-paste fields for the portal."),
+     "You do, or your licensed electrician if your city requires one. Your order page lists the city's submission steps and the copy-paste fields for its portal. The packet is not PE-stamped, and approval is not guaranteed."),
     ('Which cities does it cover?',
      "Any U.S. address works. Cities we've set up use their published checklist; everywhere else uses a general checklist, so confirm local requirements with your building department."),
     ('Can a homeowner pull their own permit?',

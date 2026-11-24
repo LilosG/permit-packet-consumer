@@ -78,7 +78,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .trust-items .ic { width: 30px; height: 30px; padding: 6px; border-radius: 9px; background: var(--blue-soft); color: var(--blue); }
 .action-card { padding: 28px 26px; border: 1px solid var(--line); border-radius: 20px; background: #fff; box-shadow: 0 30px 60px -20px rgba(29, 78, 216, .22), 0 4px 12px -2px rgba(15, 23, 42, .04); }
 .action-card h2 { font-size: 24px; }
-.action-sub { margin: 4px 0 18px; color: var(--muted); font-size: 13px; letter-spacing: -.005em; white-space: nowrap; }
+.action-sub { margin: 4px 0 18px; color: var(--muted); font-size: 13px; letter-spacing: -.005em; white-space: normal; overflow-wrap: anywhere; }
 .jt-pills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
 .jt-pill { padding: 10px 12px; border: 1px solid var(--line-strong); background: #fff; color: var(--ink); font: 600 13.5px var(--display); white-space: nowrap; text-align: center; }
 .jt-pill:hover:not(:disabled) { background: var(--blue-soft); border-color: var(--blue-tint); }
@@ -1702,8 +1702,10 @@ table.compare tbody th { color: var(--ink); font-weight: 600; }
 .launch-banner a:hover { text-decoration: underline; }
 .launch-banner-close { flex: none; width: 28px; height: 28px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .16); color: #fff; font: 700 18px/1 var(--display); cursor: pointer; }
 .launch-banner-close:hover { background: rgba(255, 255, 255, .3); }
-.price-was { color: var(--muted, #64748b); font-size: .5em; font-weight: 600; letter-spacing: 0; }
-.plan .price-was { font-size: .8em; }
+.price-was { margin-left: 8px; color: var(--muted); font: 500 16px/1 var(--text); letter-spacing: 0; text-decoration: line-through; }
+.price .amount .price-now { font-weight: 800; }
+.vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.price .amount .vh, .plan-price .vh { margin: -1px; }
 .badge.launch { position: static; display: inline-block; top: auto; right: auto; background: #047857; box-shadow: none; font-size: 12px; }
 .launch-note { margin: 6px 0 0; }
 .plan .badge.launch { margin-top: 4px; }

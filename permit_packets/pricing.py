@@ -35,8 +35,8 @@ TIER_NAMES = {
     "city_checked_24h": "24-Hour City-Checked Packet",
 }
 PANEL_REPORT_DESCRIPTION = (
-    "A submittal-ready load calculation and panel schedule for your address, with a plain-English capacity "
-    "verdict. The full price is credited toward a permit packet within 30 days.")
+    "A submittal-ready NEC 220 load calculation and panel schedule for your address, so you know your panel's "
+    "capacity before you get quotes.")
 
 
 def _clock() -> datetime.datetime:

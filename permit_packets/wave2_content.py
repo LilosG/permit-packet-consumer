@@ -387,7 +387,7 @@ US = {
     "scope": "Residential electrical permit packet: site plan, single-line diagram, load calculation, panel schedule and equipment data sheets.",
     "how": "Built from one address, with parcel data from county GIS where available and your answers about the equipment.",
     "price": "Three packages: {price:load_calc}, {price:instant_packet} and {price:city_checked_24h}, with a free watermarked preview first.",
-    "stamp": "Not PE-stamped. You submit the application to your city yourself.",
+    "stamp": "Not PE-stamped. You, or your licensed electrician if your city requires one, submit the application to the city.",
 }
 
 COMPARES: dict[str, Compare] = {c.slug: c for c in (

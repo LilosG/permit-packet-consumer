@@ -69,9 +69,9 @@ def test_strikethrough_only_while_on_sale(client, at):
         page = text_of(client.get(path))
         assert STRIKE.search(page), path
         assert "Launch price through Dec 31" in page
-        assert '<s class="price-was">$89</s>' in page and "$59" in page
+        assert '<b class="price-now">$59</b><s class="price-was"><span class="vh">regularly </span>$89</s>' in page
     start = text_of(client.get("/start/"))
-    assert '<s class="price-was">$39</s> <span class="price-now">$29</span>' in start
+    assert '<span class="price-now">$29</span><s class="price-was"><span class="vh">regularly </span>$39</s>' in start
     at(JAN_1)
     for path in ("/pricing/", "/", "/start/"):
         page = text_of(client.get(path))
@@ -98,7 +98,26 @@ def test_panel_capacity_report_name_and_description(client):
         page = text_of(client.get(path))
         assert "Panel Capacity Report" in page
         assert "Load Calc & Panel Audit" not in page
+    assert pricing.PANEL_REPORT_DESCRIPTION == (
+        "A submittal-ready NEC 220 load calculation and panel schedule for your address, so you know your panel's "
+        "capacity before you get quotes.")
     assert pricing.PANEL_REPORT_DESCRIPTION in text_of(client.get("/pricing/"))
+    for path in ("/", "/pricing/", "/start/", "/terms/", "/llms-full.txt"):
+        page = text_of(client.get(path))
+        assert "plain-English capacity verdict" not in page and "credited toward" not in page
+
+
+def test_trust_cards_and_who_submits(client):
+    home = text_of(client.get("/"))
+    grid = home[home.index('class="trust-grid"'):]
+    grid = grid[:grid.index("</section>")]
+    assert grid.count('class="trust-card"') == 6 and "Secure Checkout via Whop" not in grid
+    assert ("Drafts are not PE-stamped and are not legal or engineering advice. You, or your licensed electrician "
+            "if your city requires one, sign and submit it.") in grid
+    answer = ("You do, or your licensed electrician if your city requires one. Your order page lists the city's "
+              "submission steps and the copy-paste fields for its portal. The packet is not PE-stamped, and approval "
+              "is not guaranteed.")
+    assert answer in home and answer in text_of(client.get("/faq/"))
 
 
 def test_home_hero_and_metric_copy(client, at):
@@ -106,12 +125,12 @@ def test_home_hero_and_metric_copy(client, at):
     page = text_of(client.get("/"))
     assert ("Electricians charge customers $300–$450 to prepare permit paperwork like this. Build yours from one "
             "address in minutes: site plan, single-line diagram, load calc, panel schedule and UL cut sheets.") in page
-    assert "Complete packet $59 (regularly $89) · preview free" in page
+    assert "Any US address · Complete packet $59 (reg. $89) · Preview free" in page
     assert "$59 vs $300–$450" in page and "What electricians charge customers for permit paperwork" in page
     assert "Starting at $39" not in page
     at(JAN_1)
     page = text_of(client.get("/"))
-    assert "Complete packet $89 · preview free" in page and "regularly" not in page.split("preview free")[0][-60:]
+    assert "Any US address · Complete packet $89 · Preview free" in page
 
 
 def test_positioning_line_on_home_pricing_and_first_faq(client):

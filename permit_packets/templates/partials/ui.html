@@ -73,7 +73,7 @@
     small badge; afterwards just the regular price. `suffix` is trusted markup such as "/packet". -#}
 {% macro price_tag(key, suffix="") -%}
 {%- if pricing.on_sale(key) -%}
-<p class="amount"><s class="price-was">${{ pricing.regular_price(key) }}</s> <span class="price-now">${{ pricing.price(key) }}</span>{{ suffix|safe }}</p>
+<p class="amount"><b class="price-now">${{ pricing.price(key) }}</b><s class="price-was"><span class="vh">regularly </span>${{ pricing.regular_price(key) }}</s>{{ suffix|safe }}</p>
 <p class="launch-note"><i class="badge launch">Launch price through {{ pricing.launch_end_label() }}</i></p>
 {%- else -%}
 <p class="amount">${{ pricing.price(key) }}{{ suffix|safe }}</p>
@@ -82,7 +82,7 @@
 
 {% macro plan_price(key) -%}
 {%- if pricing.on_sale(key) -%}
-<b class="plan-price"><s class="price-was">${{ pricing.regular_price(key) }}</s> <span class="price-now">${{ pricing.price(key) }}</span></b><i class="badge launch">Launch price through {{ pricing.launch_end_label() }}</i>
+<b class="plan-price"><span class="price-now">${{ pricing.price(key) }}</span><s class="price-was"><span class="vh">regularly </span>${{ pricing.regular_price(key) }}</s></b><i class="badge launch">Launch price through {{ pricing.launch_end_label() }}</i>
 {%- else -%}
 <b class="plan-price">${{ pricing.price(key) }}</b>
 {%- endif -%}
