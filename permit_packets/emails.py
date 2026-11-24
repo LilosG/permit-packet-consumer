@@ -138,3 +138,22 @@ def draft_saved(to_email: str, link: str, address: str, job: str, pdf_bytes: byt
     text, html = _compose(paras, link, "View saved preview & unlock clean PDF")
     atts = [{"filename": filename, "content": base64.b64encode(pdf_bytes).decode()}] if pdf_bytes else None
     return send(to_email, f"Your {job} permit packet preview: {address}", text, html, attachments=atts)
+
+
+def pack_ready(to_email: str, credits: int, expires: str, link: str) -> bool:
+    """Sent when a prepaid credit pack is paid. `expires` is a date such as "November 24, 2027"."""
+    return _send(
+        to_email, f"Your {credits} Permit Packets credits are ready",
+        [f"Thanks for your payment. {credits} Instant Permit Packet credits are now on {to_email}.",
+         "To use a credit: start a packet at the link below, choose \"I'm an electrician\" or \"I'm a contractor\", and at the package step choose "
+         "\"Use a prepaid credit\". Enter this email address and we'll send you a confirmation link. Opening it spends one credit and unlocks your packet.",
+         f"These credits expire on {expires}."],
+        link, "Start a packet")
+
+
+def credit_confirm(to_email: str, link: str) -> bool:
+    return _send(
+        to_email, "Confirm your prepaid credit",
+        ["Use the link below to spend one prepaid credit and unlock your Instant Permit Packet.",
+         "The link works once and expires in 30 minutes. If you didn't ask for it, you can ignore this email."],
+        link, "Confirm and use one credit")

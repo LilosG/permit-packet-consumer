@@ -33,7 +33,7 @@
     <h2 style="margin-top:22px">Unlock the clean packet (no watermark)</h2>
     <p class="lead">Your packet will unlock automatically once payment is complete. Keep this page open, or come back to it later.</p>
     <div class="actions">
-      <a class="button cta" id="wave" target="_blank" rel="noopener" hidden>Pay securely with Whop</a>
+      <a class="button cta" id="wave" target="_blank" rel="noopener" hidden>Pay securely with Square</a>
       <button class="quiet" id="refresh" type="button">Refresh Status</button>
     </div>
     <p class="note" id="no-wave" hidden>Payment isn't set up for this package yet. Keep this page and contact us with your order code.</p>
@@ -90,6 +90,14 @@
   let fieldsText = '';
 
   /* GA4 purchase: sent the first time this browser sees the order paid or in review. GA4 also dedupes by transaction_id. */
+  function trackCreditRedeemed(order) {
+    const key = `pp_credit_${token}`;
+    try { if (localStorage.getItem(key)) return; } catch { /* storage blocked: send anyway */ }
+    if (window.PP && window.PP.track('credit_redeemed', { job: order.job })) {
+      try { localStorage.setItem(key, '1'); } catch { /* ignore */ }
+    }
+  }
+
   function trackPurchase(order) {
     const key = `pp_purchase_${token}`;
     try { if (localStorage.getItem(key)) return; } catch { /* storage blocked: send anyway */ }
@@ -121,6 +129,7 @@
     const order = await response.json();
     $('address').textContent = order.address;
     if (order.paid || order.in_review) trackPurchase(order);
+    if (order.paid && order.source === 'credit') trackCreditRedeemed(order);
     $('review').hidden = !order.in_review;
     if (order.in_review) {
       $('pending').hidden = true; $('paid').hidden = true;
@@ -148,7 +157,8 @@
           }).catch(() => {});
         }
       }
-      if (order.whop_checkout_url) { $('wave').href = order.whop_checkout_url; $('wave').hidden = false; $('no-wave').hidden = true; }
+      if (order.checkout_url) { $('wave').href = order.checkout_url; $('wave').hidden = false; $('no-wave').hidden = true; }
+      else if (order.awaiting_credit_confirmation) { $('wave').hidden = true; $('no-wave').hidden = false; $('no-wave').textContent = 'This order is waiting for you to confirm your prepaid credit. Open the confirmation link we emailed you; it works once and expires in 30 minutes.'; }
       else { $('wave').hidden = true; $('no-wave').hidden = false; }
       if (manual) $('refreshed').textContent = `Still waiting for payment (checked ${new Date().toLocaleTimeString()}).`;
       return;

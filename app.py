@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import base64
 import hashlib
-import hmac
 import json
 import logging
 import os
@@ -30,7 +29,7 @@ from fastapi.exception_handlers import http_exception_handler as default_http_ex
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import ValidationError
 
-from permit_packets import emails, orders, pages, pricing, seo, sitedata
+from permit_packets import emails, orders, pages, payments, pricing, seo, sitedata
 from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
 from permit_packets.core.preview import packet_documents_zip, packet_page_images, packet_subset_pdf
 from permit_packets.core.property_lookup import (
@@ -51,10 +50,6 @@ log = logging.getLogger("permit_packets")
 
 STATIC = Path(__file__).parent / "permit_packets" / "static"
 ASSETS = STATIC / "assets"
-# Each tier's Whop checkout link, set in the environment; the link's price matches the tier.
-WHOP_PLAN_ENV = {"load_calc": "WHOP_PLAN_39", "instant_packet": "WHOP_PLAN_89", "city_checked_24h": "WHOP_PLAN_169"}
-WHOP_CHECKOUT_API = "https://api.whop.com/api/v1/checkout_configurations"
-WHOP_LINK_ENV = {"load_calc": "WHOP_LINK_39", "instant_packet": "WHOP_LINK_89", "city_checked_24h": "WHOP_LINK_169"}
 EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 # Order and admin pages hold one customer's job: keep them out of search results and caches.
 PRIVATE_PAGE = {"Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow, noarchive"}
@@ -433,19 +428,6 @@ def packet_documents(slug: str, payload: dict[str, Any] = Body(...)) -> Response
 
 # ---- Orders ----
 
-def _whop_plan(tier: str) -> str:
-    return os.environ.get(WHOP_PLAN_ENV[tier], "").strip() if os.environ.get("WHOP_API_KEY", "").strip() else ""
-
-
-def _whop_link(tier: str, access_token: str) -> str:
-    """The tier's fixed Whop link with the order's token in metadata, which Whop hands back in its webhook."""
-    base = os.environ.get(WHOP_LINK_ENV[tier], "").strip()
-    if not base:
-        return ""
-    joiner = "&" if "?" in base else "?"
-    return f"{base}{joiner}metadata[order_token]={quote(access_token, safe='')}"
-
-
 def _base_url(request: Request) -> str:
     configured = os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
     if configured:
@@ -455,24 +437,45 @@ def _base_url(request: Request) -> str:
     return f"{proto}://{host}"
 
 
-def _checkout_url(tier: str, access_token: str, request: Request) -> str:
-    """A checkout for this order: a Whop checkout configuration when the API key and plan are set, else the fixed link."""
-    plan_id = _whop_plan(tier)
-    if plan_id:
-        try:
-            response = httpx.post(
-                WHOP_CHECKOUT_API, timeout=10,
-                headers={"Authorization": f"Bearer {os.environ['WHOP_API_KEY'].strip()}"},
-                json={"variant_id": plan_id, "metadata": {"order_token": access_token},
-                      "redirect_url": f"{_base_url(request)}/order/{access_token}"})
-            response.raise_for_status()
-            url = response.json().get("purchase_url")
-            if isinstance(url, str) and url:
-                return url
-            log.error("Whop checkout configuration came back without a purchase_url")
-        except (httpx.HTTPError, ValueError) as error:
-            log.error("Whop checkout configuration failed: %s", error)
-    return _whop_link(tier, access_token)
+CREDIT_TIERS = ("instant_packet", "city_checked_24h")  # a paid Panel Capacity Report counts toward these
+
+
+def _credit_quote(email: str, tier: str) -> tuple[dict[str, Any] | None, int]:
+    """The paid load_calc order whose credit this checkout would use, and its value in cents (capped so $1 is still charged)."""
+    if tier not in CREDIT_TIERS:
+        return None, 0
+    source = orders.find_load_calc_credit(email)
+    if source is None:
+        return None, 0
+    return source, max(0, min(source["amount_cents"], pricing.price(tier) * 100 - 100))
+
+
+def _fix_amount(order: dict[str, Any]) -> dict[str, Any]:
+    """Settle what this order costs, once, when its first checkout is created: today's price less any Panel Capacity Report credit."""
+    if order["amount_cents"] is not None:
+        return order
+    credit_cents = 0
+    source, value = _credit_quote(order["customer_email"], order["tier"])
+    if source is not None and value > 0 and orders.claim_load_calc_credit(source["id"]):
+        credit_cents = value
+    orders.set_amount(order["id"], pricing.price(order["tier"]) * 100 - credit_cents, credit_cents)
+    return orders.get_by_id(order["id"]) or order
+
+
+def _checkout_url(order: dict[str, Any], request: Request) -> str:
+    """A fresh Square checkout for this order at its fixed amount, or "" when Square isn't set up or fails."""
+    if order["source"] == "credit":
+        return ""
+    order = _fix_amount(order)
+    try:
+        url, provider_order_id = payments.create_checkout(
+            "order", order, order["amount_cents"], order["customer_email"],
+            f"{_base_url(request)}/order/{order['access_token']}", pricing.TIER_NAMES[order["tier"]])
+    except payments.PaymentError as error:
+        log.error("%s", error)
+        return ""
+    orders.set_provider_order_id(order["id"], provider_order_id)
+    return url
 
 
 @app.post("/api/public/preview/{slug}/email", dependencies=[Depends(rate_limit("preview"))])
@@ -488,7 +491,7 @@ def email_preview(request: Request, slug: str, body: dict[str, Any] = Body(...))
     city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
     tier = body.get("tier") if body.get("tier") in orders.TIERS else "instant_packet"
     _, result = _build(job_type.slug, payload, preview=True)
-    order = orders.create_order(customer_email=email, tier=tier, job_slug=job_type.slug, address=job.address, jurisdiction_key=city.key, payload=payload)
+    order = orders.create_order(customer_email=email, tier=tier, job_slug=job_type.slug, address=job.address, jurisdiction_key=city.key, payload=payload, source="preview_saved")
     status_line = "NEC 220 & engineering check: Ready for submission." if result.body.get("ready") else "NEC 220 & engineering check: Some items need attention."
     _notify(emails.draft_saved, email, _order_link(request, order), order["address"], job_type.label, result.pdf, f"{order['order_code']}-preview.pdf", status_line)
     return {"order_code": order["order_code"], "order_url": f"/order/{order['access_token']}"}
@@ -515,17 +518,19 @@ def create_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
     city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
     order = orders.create_order(
         customer_email=email, tier=tier, job_slug=job_type.slug, address=job.address,
-        jurisdiction_key=city.key, payload=payload,
+        jurisdiction_key=city.key, payload=payload, source="checkout",
     )
     if os.environ.get("DEV_AUTO_APPROVE", "").strip().lower() == "true":
-        order = _mark_paid(order, request)
+        order = _mark_paid(_fix_amount(order), request)
+        checkout_url = ""
     else:
-        _notify(emails.order_created, order, _order_link(request, order))
+        checkout_url = _checkout_url(order, request)
+        _notify(emails.order_created, orders.get_by_id(order["id"]) or order, _order_link(request, order))
     return {
         "order_code": order["order_code"],
         "access_token": order["access_token"],
         "order_url": f"/order/{order['access_token']}",
-        "whop_checkout_url": _checkout_url(tier, order["access_token"], request),
+        "checkout_url": checkout_url,
     }
 
 
@@ -589,17 +594,18 @@ def _paid_order(access_token: str) -> dict[str, Any]:
     return order
 
 
-def _payment_ready(tier: str) -> bool:
-    return bool(_whop_plan(tier) or os.environ.get(WHOP_LINK_ENV[tier], "").strip())
+def _payment_ready(order: dict[str, Any]) -> bool:
+    return order["source"] != "credit" and all(
+        os.environ.get(name, "").strip() for name in ("SQUARE_ACCESS_TOKEN", "SQUARE_LOCATION_ID"))
 
 
 @app.get("/api/orders/{access_token}/pay")
 def pay_order(access_token: str, request: Request) -> Response:
-    """Send the buyer to a fresh Whop checkout for this order. The order page links here so polling never makes one."""
+    """Send the buyer to a fresh Square checkout for this order. The order page links here so polling never makes one."""
     order = _order_or_404(access_token)
     if order["status"] != "pending_payment":
         return RedirectResponse(f"/order/{access_token}", status_code=status.HTTP_303_SEE_OTHER)
-    url = _checkout_url(order["tier"], access_token, request)
+    url = _checkout_url(order, request)
     if not url:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Payment isn't set up for this package yet")
     return RedirectResponse(url, status_code=status.HTTP_303_SEE_OTHER)
@@ -625,13 +631,17 @@ def order_status(access_token: str) -> JSONResponse:
         "paid": paid,
         "in_review": order["status"] == "in_review",
         "tier": order["tier"],
-        "price": pricing.price(order["tier"]),
+        # What the buyer actually pays (or paid), not today's price.
+        "price": order["amount_cents"] / 100 if order["amount_cents"] is not None else pricing.price(order["tier"]),
+        "credit_applied": (order["credit_applied_cents"] or 0) / 100,
+        "source": order["source"],
+        "awaiting_credit_confirmation": order["source"] == "credit" and order["status"] == "pending_payment",
         "address": order["address"],
         # What the order page reports to analytics when the order shows paid.
         "job": sitedata.job_for_api_slug(order["job_slug"]),
         "city": order["jurisdiction_key"],
         "role": order["payload"].get("role", "") if isinstance(order.get("payload"), dict) else "",
-        "whop_checkout_url": f"/api/orders/{access_token}/pay" if _payment_ready(order["tier"]) else "",
+        "checkout_url": f"/api/orders/{access_token}/pay" if _payment_ready(order) else "",
     }
     if view["in_review"]:
         view["city_name"] = _city_name(order)
@@ -769,52 +779,131 @@ def require_admin(credentials: HTTPBasicCredentials | None = Depends(basic)) -> 
             status.HTTP_401_UNAUTHORIZED, "Admin sign-in required", headers={"WWW-Authenticate": 'Basic realm="Admin"'})
 
 
-# ---- Whop payment webhook ----
+# ---- Payment webhook ----
 
-WEBHOOK_TOLERANCE_S = 300
-PAID_EVENTS = {"payment.succeeded", "payment_succeeded"}
-
-
-def _whop_signature_ok(request_id: str, timestamp: str, body: bytes, header: str) -> bool:
-    """Standard Webhooks signature: HMAC-SHA256 of "id.timestamp.body", base64, sent as "v1,<sig>"."""
-    secret = os.environ.get("WHOP_WEBHOOK_SECRET", "").strip()
-    try:
-        if abs(time.time() - int(timestamp)) > WEBHOOK_TOLERANCE_S:
-            return False
-    except ValueError:
-        return False
-    key = secret.encode()  # Whop's ws_ secret is the HMAC key as is, not base64-decoded
-    signed = f"{request_id}.{timestamp}.".encode() + body
-    sent = [part.split(",", 1)[1] for part in header.split() if part.startswith("v1,")]
-    expected = base64.b64encode(hmac.new(key, signed, hashlib.sha256).digest()).decode()
-    return any(hmac.compare_digest(expected, candidate) for candidate in sent)
+def _find_paid_record(provider_order_id: str):
+    order = orders.get_by_provider_order_id(provider_order_id)
+    if order is not None:
+        return "order", order
+    pack = orders.get_pack_order_by_provider_order_id(provider_order_id)
+    return ("pack", pack) if pack is not None else None
 
 
-@app.post("/api/webhooks/whop")
-async def whop_webhook(request: Request) -> dict:
-    """Unlock an order when Whop reports its payment. Only a correctly signed request is believed."""
-    if not os.environ.get("WHOP_WEBHOOK_SECRET", "").strip():
-        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Webhook is not configured")
+def _fulfil(kind: str, record: dict[str, Any], request: Request) -> None:
+    """Unlock a paid order or credit a paid pack. Repeating it for the same record does nothing."""
+    if kind == "pack":
+        lot = orders.mark_pack_paid(record["id"])
+        if lot is not None:
+            log.info("Pack %s paid: %s credits for %s", record["id"], lot["credits_total"], record["customer_email"])
+            _notify(emails.pack_ready, record["customer_email"], lot["credits_total"],
+                    _date_label(lot["expires_at"]), f"{_base_url(request)}/start/")
+        return
+    if record["status"] == "pending_payment":
+        paid = _mark_paid(record, request)
+        log.info("Order %s paid through Square (now %s)", paid["order_code"], paid["status"])
+
+
+def _date_label(iso: str) -> str:
+    return datetime.fromisoformat(iso).strftime("%B %-d, %Y")
+
+
+@app.post("/api/webhooks/square")
+async def square_webhook(request: Request) -> dict:
+    """Unlock an order (or credit a pack) when Square reports a completed payment. Only a correctly signed request is believed."""
     body = await request.body()
-    if not _whop_signature_ok(
-            request.headers.get("webhook-id", ""), request.headers.get("webhook-timestamp", ""), body,
-            request.headers.get("webhook-signature", "")):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Bad signature")
+    return payments.handle_webhook(body, request.headers, _find_paid_record, lambda kind, record: _fulfil(kind, record, request))
+
+
+# ---- Prepaid credits ----
+
+CREDIT_MESSAGE = "If this email has credits, we've sent a confirmation link."
+
+
+@app.post("/api/public/packs", dependencies=[Depends(rate_limit("preview"))])
+def buy_pack(request: Request, body: dict[str, Any] = Body(...)) -> dict:
+    """Start a Square checkout for a credit pack. Body: {pack, email}. Credits and price are fixed now."""
+    email = str(body.get("email") or "").strip()
+    pack = body.get("pack")
+    if not EMAIL.match(email) or len(email) > 200:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Enter a valid email address")
+    if pack not in pricing.PACKS:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"pack must be one of {', '.join(pricing.PACKS)}")
+    credits = pricing.pack_credits(pack)
+    record = orders.create_pack_order(email, pack, credits, pricing.pack_price(pack) * 100)
     try:
-        payload = json.loads(body)
-    except ValueError:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Body must be JSON") from None
+        url, provider_order_id = payments.create_checkout(
+            "pack", record, record["amount_cents"], record["customer_email"],
+            f"{_base_url(request)}/pro-credits/?purchased=1", f"Permit Packets prepaid credits: {credits} Instant Permit Packets")
+    except payments.PaymentError as error:
+        log.error("%s", error)
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Checkout isn't available right now. Try again shortly.") from None
+    orders.set_pack_provider_order_id(record["id"], provider_order_id)
+    return {"checkout_url": url}
+
+
+@app.post("/api/public/credit-quote", dependencies=[Depends(rate_limit("preview"))])
+def credit_quote(body: dict[str, Any] = Body(...)) -> dict:
+    """The Panel Capacity Report credit a checkout for this email and tier would get, in dollars."""
+    email = str(body.get("email") or "").strip()
+    if not EMAIL.match(email) or len(email) > 200:
+        return {"credit": 0}
+    return {"credit": _credit_quote(email, str(body.get("tier") or ""))[1] / 100}
+
+
+@app.post("/api/public/orders/credit", dependencies=[Depends(rate_limit("preview"))])
+def create_credit_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
+    """Save an Instant Permit Packet order to be paid with a prepaid credit and email a one-time confirm link.
+    The answer never says whether the email has credits. Body: {job_slug, customer_email, payload, role}."""
+    email = str(body.get("customer_email") or "").strip()
+    payload = body.get("payload")
+    if not EMAIL.match(email) or len(email) > 200:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Enter a valid email address")
     if not isinstance(payload, dict):
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Body must be a JSON object")
-    data = payload.get("data")
-    metadata = data.get("metadata") if isinstance(data, dict) else None
-    token = metadata.get("order_token") if isinstance(metadata, dict) else None
-    if payload.get("type") in PAID_EVENTS and isinstance(token, str) and token:
-        order = orders.get_by_token(token)
-        if order is not None and order["status"] == "pending_payment":
-            order = _mark_paid(order, request)
-            log.info("Order %s paid through Whop (now %s)", order["order_code"], order["status"])
-    return {"ok": True}  # always 200 once signed, so Whop doesn't retry events we don't act on
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "payload must be the job's inputs")
+    if body.get("role") not in ("electrician", "contractor"):
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Prepaid credits are for electricians and contractors")
+    job_type = _job_type(str(body.get("job_slug") or ""))
+    payload = {**payload, "role": body["role"]}
+    working = dict(payload)
+    _contractor_logo(working)
+    job = _validated(job_type, working)
+    city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
+    order = orders.create_order(
+        customer_email=email, tier="instant_packet", job_slug=job_type.slug, address=job.address,
+        jurisdiction_key=city.key, payload=payload, source="credit", amount_cents=0)
+    if orders.credits_available(email) > 0:
+        token = orders.create_confirm_token(email, order["id"])
+        _notify(emails.credit_confirm, email, f"{_base_url(request)}/credits/confirm?token={quote(token, safe='')}")
+    return {"message": CREDIT_MESSAGE, "order_url": f"/order/{order['access_token']}"}
+
+
+def _credit_page(title: str, message: str, link: tuple[str, str] | None = None, status_code: int = 200) -> HTMLResponse:
+    from html import escape
+    extra = f'<p><a class="button" href="{escape(link[0])}">{escape(link[1])}</a></p>' if link else ""
+    html = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+            f'<meta name="robots" content="noindex, nofollow"><title>{escape(title)}</title>'
+            f'<link rel="stylesheet" href="/assets/css/app.css?v={ASSET_VERSION}"></head><body><main class="page-main">'
+            f'<h1>{escape(title)}</h1><p class="lead">{escape(message)}</p>{extra}</main></body></html>')
+    return HTMLResponse(html, status_code=status_code, headers=PRIVATE_PAGE)
+
+
+@app.api_route("/credits/confirm", methods=["GET", "HEAD"])
+@app.api_route("/credits/confirm/", methods=["GET", "HEAD"], include_in_schema=False)
+def confirm_credit(request: Request, token: str = "") -> Response:
+    """Opening the emailed link spends one credit and unlocks the order."""
+    outcome, order_id = orders.redeem_confirm_token(token) if token else ("invalid", None)
+    if outcome == "invalid":
+        return _credit_page("This link can't be used", "It has expired or was already used. Start again from your packet's package step.",
+                            ("/start/", "Start a packet"), status.HTTP_410_GONE)
+    if outcome == "no_credit":
+        return _credit_page("No credits available", "There's no unexpired prepaid credit on this email right now.",
+                            ("/pro-credits/", "Buy prepaid credits"))
+    order = orders.get_by_id(order_id or "")
+    if order is None:
+        return _credit_page("This link can't be used", "We couldn't find that order.", ("/start/", "Start a packet"), status.HTTP_404_NOT_FOUND)
+    if order["status"] == "pending_payment":
+        order = _mark_paid(order, request)
+    return RedirectResponse(f"/order/{order['access_token']}", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.api_route("/admin", methods=["GET", "HEAD"], dependencies=[Depends(require_admin)])
@@ -874,6 +963,30 @@ def release_order(order_id: str, request: Request) -> dict:
         raise HTTPException(status.HTTP_409_CONFLICT, "This order isn't in review")
     _notify(emails.released, released, _order_link(request, released))
     return {"id": released["id"], "order_code": released["order_code"], "status": released["status"], "released_at": released["released_at"]}
+
+
+@app.get("/api/admin/credits", dependencies=[Depends(require_admin)])
+def admin_credits() -> JSONResponse:
+    lots = [{"id": lot["id"], "email": lot["customer_email"], "total": lot["credits_total"], "used": lot["credits_used"],
+             "remaining": lot["remaining"], "expires_at": lot["expires_at"], "reason": lot["reason"]} for lot in orders.list_lots()]
+    return JSONResponse({"lots": lots}, headers=PRIVATE_DATA)
+
+
+@app.post("/api/admin/credits/grant", dependencies=[Depends(require_admin)])
+def admin_grant_credits(body: dict[str, Any] = Body(...)) -> dict:
+    email = str(body.get("email") or "").strip()
+    reason = str(body.get("reason") or "").strip()[:200]
+    try:
+        count = int(body.get("credits"))
+    except (TypeError, ValueError):
+        count = 0
+    if not EMAIL.match(email) or len(email) > 200:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Enter a valid email address")
+    if not 1 <= count <= 1000:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Credits must be a number from 1 to 1000")
+    lot = orders.grant_credits(email, count, reason)
+    log.info("Admin granted %s credits to %s (%s)", count, lot["customer_email"], reason or "no reason given")
+    return {"id": lot["id"], "expires_at": lot["expires_at"]}
 
 
 @app.get("/api/admin/orders/{order_id}/pdf", dependencies=[Depends(require_admin)])

@@ -306,6 +306,7 @@ def robots_txt() -> str:
         "Disallow: /admin\n"
         "Disallow: /api/\n"
         "Disallow: /order/\n"
+        "Disallow: /credits/confirm\n"
         "Disallow: /start/?\n"
         "Disallow: /tools/*?\n"
         "Disallow: /compare/*?\n\n"

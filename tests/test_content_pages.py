@@ -121,7 +121,7 @@ def test_sample_packet_shows_each_sheet(client):
 
 def test_pricing_page(client):
     html = client.get("/pricing/").text
-    for text in (*(f"${pricing.price(tier)}" for tier in pricing.TIER_KEYS), "Payments processed securely by Whop", "/refund/"):
+    for text in (*(f"${pricing.price(tier)}" for tier in pricing.TIER_KEYS), "Payments processed securely by Square", "/refund/"):
         assert text in html
 
 

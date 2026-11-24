@@ -24,7 +24,7 @@ FAQ: list[tuple[str, str]] = [
     ('Can my electrician use it?',
      "Yes. Choose \"I'm an electrician\" (or the contractor option) and the packet prints their license number in the title block."),
     ('How does payment work?',
-     'You pay securely through Whop. Once the payment goes through, your order unlocks automatically. We email you the link to your order page; lost it? Use Find my order.'),
+     'You pay securely through Square. Once the payment goes through, your order unlocks automatically. We email you the link to your order page; lost it? Use Find my order.'),
     ('Can I get a refund?',
      'Yes, a full refund if you ask before downloading your clean packet. 24-Hour City-Checked orders can be refunded any time before they\'re released. See the <a href="/refund/">Refund Policy</a>.'),
     ('What if my city asks for changes?',

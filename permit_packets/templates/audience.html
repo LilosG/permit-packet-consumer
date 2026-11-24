@@ -39,6 +39,7 @@
   <div class="price-one">
     <article class="card price popular"><i class="badge">Recommended</i><h3>{{ tier[1] }}</h3>{{ price_tag(tier[0]) }}<p>{{ aud.tier_why }}</p><a class="btn-primary full" href="/start/{{ aud.cta_params }}{{ '&amp;' if '?' in aud.cta_params else '?' }}tier={{ tier[0] }}">Start Free Preview</a></article>
   </div>
+  {% if aud.role in ("electrician", "contractor") %}<p class="center-line" style="margin-top:20px">Filing packets regularly? <a href="/pro-credits/">Buy prepaid credits</a> and use one per job.</p>{% endif %}
 </div></section>
 
 <section class="band alt"><div class="wrap">

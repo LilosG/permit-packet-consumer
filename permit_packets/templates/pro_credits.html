@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "partials/ui.html" import cta, byline %}
+{% block main %}
+<main class="page-main content">
+<header class="sub-hero">
+  <p class="eyebrow-pill">For electricians &amp; contractors</p>
+  <h1>Prepaid Permit Packet Credits for Electricians &amp; Contractors</h1>
+  {{ byline() }}
+  <p class="answer">Buy a pack of Instant Permit Packet credits once and use one per job. Credits are good for 12 months. One credit = one Instant Permit Packet, any job type, any city.</p>
+</header>
+
+<p class="note" id="purchased" role="status" hidden>Thanks for your payment. Your credits arrive by email as soon as the payment is confirmed.</p>
+
+<div class="price-grid" id="packs">
+{%- for key in packs %}
+  {%- set base = pricing.PACKS[key] %}{% set total = pricing.pack_credits(key) %}
+  <article class="card price{% if key == 'pack_10' %} popular{% endif %}">
+    {% if key == 'pack_10' %}<i class="badge">Most popular</i>{% endif %}
+    <div class="price-head">
+      <h3>{{ base }} credits{% if total > base %} <i class="badge launch">+{{ total - base }} bonus</i>{% endif %}</h3>
+      <p class="amount"><b class="price-now">${{ pricing.pack_price(key) }}</b>{% if pricing.pack_price(key) < pricing.pack_regular_price(key) %}<s class="price-was"><span class="vh">regularly </span>${{ pricing.pack_regular_price(key) }}</s>{% endif %}</p>
+    </div>
+    <p class="price-desc">${{ '%.2f'|format(pricing.per_credit(key)) }} per packet{% if total > base %} ({{ total }} credits in total){% endif %}</p>
+    <form class="pack-form" data-pack="{{ key }}" data-price="{{ pricing.pack_price(key) }}" novalidate>
+      <label class="field">Email address<input type="email" name="email" required maxlength="200" autocomplete="email" placeholder="you@example.com"></label>
+      <button type="submit" class="{{ 'btn-primary' if key == 'pack_10' else 'btn-secondary' }} full">Buy {{ total }} credits</button>
+      <p class="error" role="alert" hidden></p>
+    </form>
+  </article>
+{%- endfor %}
+</div>
+<p class="center-line">Credits are good for 12 months. One credit = one Instant Permit Packet, any job type, any city. Secure checkout by Square. Permit Packets never sees or stores your card details.</p>
+
+<h2>How credits work</h2>
+<ol class="steps-list">
+  <li>Buy a pack with the email you'll use for your jobs. We email you when it's ready.</li>
+  <li>Preview your packet free as usual. At the package step, choose "I'm an electrician" or "I'm a contractor", then "Use a prepaid credit".</li>
+  <li>Enter the email the credits were bought with. We email a confirmation link; opening it spends one credit and unlocks your packet.</li>
+</ol>
+<p>Credits do not pay for the 24-Hour City-Checked Packet or the Panel Capacity Report. See <a href="/pricing/">pricing</a> for the single-packet prices.</p>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+(() => {
+  if (/[?&]purchased=1/.test(location.search)) document.getElementById('purchased').hidden = false;
+  document.querySelectorAll('.pack-form').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = form.elements.email.value.trim(), error = form.querySelector('.error'), button = form.querySelector('button');
+      error.hidden = true;
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { error.textContent = 'Enter a valid email address.'; error.hidden = false; return; }
+      button.disabled = true;
+      try {
+        const response = await PP.api('/api/public/packs', { pack: form.dataset.pack, email });
+        const data = await response.json();
+        PP.track('pack_checkout_started', { pack: form.dataset.pack, price: Number(form.dataset.price) });
+        location.assign(data.checkout_url);
+      } catch (problem) {
+        error.textContent = problem.message; error.hidden = false; button.disabled = false;
+      }
+    });
+  });
+})();
+</script>
+{% endblock %}

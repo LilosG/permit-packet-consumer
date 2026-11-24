@@ -522,7 +522,7 @@
   <div data-panel="4" hidden>
     <section class="sheet" aria-label="Step 4: choose your package">
       <p class="step-title">Choose your package</p>
-      <p class="lead">You'll pay securely through Whop, then your clean PDF and files unlock on your order page.</p>
+      <p class="lead">You'll pay securely through Square, then your clean PDF and files unlock on your order page.</p>
       <form id="checkout" novalidate>
         <label class="field">Email address<input type="email" name="email" id="email" required maxlength="200" autocomplete="email" placeholder="you@example.com"></label>
         <div class="plans" role="radiogroup" aria-label="Package">
@@ -530,15 +530,24 @@
           <label class="plan popular"><input type="radio" name="tier" value="instant_packet"{% if prefill.tier_key == "instant_packet" %} checked{% endif %}><span class="plan-body"><i class="badge">Most popular</i>{{ plan_price("instant_packet") }}<span class="plan-name">{{ pricing.TIER_NAMES["instant_packet"] }}</span><span class="plan-desc">The full clean packet: site plan, diagram, schedule, load calc and cut sheets. Download as soon as payment clears.</span><span class="plan-perks"><span>✓ GIS aerial site plan &amp; measured run</span><span>✓ Single-line riser &amp; UL cut sheets</span><span>✓ Combined PDF + split-file ZIP</span></span></span></label>
           <label class="plan"><input type="radio" name="tier" value="city_checked_24h"{% if prefill.tier_key == "city_checked_24h" %} checked{% endif %}><span class="plan-body"><i class="badge reco" hidden>Recommended</i>{{ plan_price("city_checked_24h") }}<span class="plan-name">{{ pricing.TIER_NAMES["city_checked_24h"] }}</span><span class="plan-desc">Full packet, checked against your city's requirements within 24 hours</span><span class="plan-perks"><span>✓ Everything in Instant Permit Packet</span><span>✓ Manual review vs. city checklist</span><span>✓ Released within 24 hours</span></span></span></label>
         </div>
+        <div class="plans" id="credit-plans" style="grid-template-columns:minmax(0,1fr);margin-top:-6px" hidden>
+          <label class="plan"><input type="radio" name="tier" value="credit"><span class="plan-body"><span class="plan-name">Use a prepaid credit</span><span class="plan-desc">One credit pays for one Instant Permit Packet. We email you a link to confirm. <a href="/pro-credits/" target="_blank" rel="noopener">Buy prepaid credits</a></span></span></label>
+        </div>
+        <label class="field" id="credit-email-field" hidden>Email the credits were bought with<input type="email" id="credit-email" maxlength="200" autocomplete="email" placeholder="you@example.com"></label>
+        <div class="credit-summary" id="credit-summary" aria-live="polite" hidden>
+          <p class="credit-line" style="display:flex;justify-content:space-between;margin:0 0 4px"><span>Panel Capacity Report credit</span><b id="credit-amount"></b></p>
+          <p class="credit-total" style="display:flex;justify-content:space-between;margin:0 0 14px"><span>You pay today</span><b id="credit-total"></b></p>
+        </div>
+        <p class="note" id="credit-sent" role="status" hidden></p>
         <label class="flag"><input type="checkbox" id="ack" required><span>I understand this is a drafting &amp; calculation document, not a PE stamp, and I agree to the <a href="/terms/" target="_blank" rel="noopener">Terms</a> and <a href="/refund/" target="_blank" rel="noopener">Refund Policy</a>. I'm responsible for confirming who can sign and submit in my city.</span></label>
         <div class="error" id="pay-error" role="alert" hidden></div>
         <div class="actions">
           <button type="submit" id="pay-button">Continue to Payment</button>
           <button type="button" class="quiet" id="back-preview">Back to preview</button>
         </div>
-        <p class="pay-note">Payments processed securely by Whop · <a href="/refund/">Full refund before you download</a></p>
+        <p class="pay-note">Payments processed securely by Square · <a href="/refund/">Full refund before you download</a></p>
       </form>
-      <p class="note">After you pay on Whop, your files unlock automatically on your order page.</p>
+      <p class="note">After you pay on Square, your files unlock automatically on your order page.</p>
     </section>
   </div>
   </div>

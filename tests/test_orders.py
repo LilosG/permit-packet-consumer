@@ -1,4 +1,4 @@
-"""Public preview, order creation, Whop unlock and the admin approve flow."""
+"""Public preview, order creation, Square unlock and the admin approve flow."""
 import base64
 import json
 from pathlib import Path
@@ -8,7 +8,10 @@ import pypdfium2
 from fastapi.testclient import TestClient
 
 from app import app
-from permit_packets import orders, pricing
+from permit_packets import emails, orders, pricing
+from permit_packets.payments import square
+from tests import payment_helpers
+from tests.payment_helpers import CALLS, Reply, event, pay_order, post_event, sign
 from tests.test_ev_golden import GOLDEN, to_current_request
 
 SAMPLES = Path(__file__).parent / "samples"
@@ -20,12 +23,7 @@ def fresh_database(tmp_path, monkeypatch):
     monkeypatch.delenv("DEV_AUTO_APPROVE", raising=False)
     monkeypatch.setattr(orders, "SQLITE_PATH", str(tmp_path / "orders.db"))
     monkeypatch.setenv("ADMIN_PASSWORD", "admin-pw")
-    monkeypatch.setenv("WHOP_WEBHOOK_SECRET", "ws_test_secret")
-    for name in ("WHOP_API_KEY", "WHOP_PLAN_39", "WHOP_PLAN_89", "WHOP_PLAN_169"):
-        monkeypatch.delenv(name, raising=False)
-    monkeypatch.setenv("WHOP_LINK_39", "https://whop.com/checkout/plan_39")
-    monkeypatch.setenv("WHOP_LINK_89", "https://whop.com/checkout/plan_89")
-    monkeypatch.setenv("WHOP_LINK_169", "https://whop.com/checkout/plan_169")
+    payment_helpers.install(monkeypatch)
 
 
 @pytest.fixture
@@ -65,15 +63,15 @@ def test_preview_pdf_says_preview_and_has_no_lilos_text(client):
     assert "Lilos" not in text and "DEMO" not in text
 
 
-def test_an_order_is_saved_pending_with_its_whop_link(client):
-    for tier, link in (("load_calc", "39"), ("instant_packet", "89"), ("city_checked_24h", "169")):
+def test_an_order_is_saved_pending_with_its_square_link(client):
+    for number, tier in enumerate(("load_calc", "instant_packet", "city_checked_24h"), start=1):
         order = place_order(client, tier)
         assert order["order_code"].startswith("PP-")
         assert order["order_url"] == f"/order/{order['access_token']}"
-        assert order["whop_checkout_url"] == f"https://whop.com/checkout/plan_{link}?metadata[order_token]={order['access_token']}"
+        assert order["checkout_url"] == f"https://square.link/u/{number}"
     view = client.get(f"/api/orders/{order['access_token']}").json()
     assert (view["status"], view["paid"], view["order_code"]) == ("pending_payment", False, order["order_code"])
-    assert "pdf_url" not in view and view["whop_checkout_url"] == f"/api/orders/{order['access_token']}/pay"
+    assert "pdf_url" not in view and view["checkout_url"] == f"/api/orders/{order['access_token']}/pay"
     assert client.get(order["order_url"]).status_code == 200
 
 
@@ -159,147 +157,127 @@ def test_public_lookup_routes_need_no_login(client):
     assert client.post("/api/signin", json={"password": "x"}).status_code in (404, 405)
 
 
-# ---- Whop webhook ----
-
-def _signed(body: dict, secret="ws_test_secret", timestamp=None):
-    import hashlib, hmac, time
-    raw = json.dumps(body).encode()
-    stamp = str(int(timestamp if timestamp is not None else time.time()))
-    signature = base64.b64encode(hmac.new(secret.encode(), f"msg_1.{stamp}.".encode() + raw, hashlib.sha256).digest()).decode()
-    return raw, {"webhook-id": "msg_1", "webhook-timestamp": stamp, "webhook-signature": f"v1,{signature}",
-                 "content-type": "application/json"}
-
-
-def _event(token, kind="payment.succeeded"):
-    return {"type": kind, "data": {"metadata": {"order_token": token}}}
-
+# ---- Square webhook ----
 
 def _status(client, order):
     return client.get(f"/api/orders/{order['access_token']}").json()["status"]
 
 
-def test_a_signed_whop_payment_unlocks_the_order(client):
+def test_a_completed_square_payment_unlocks_the_order(client):
     order = place_order(client)
-    raw, headers = _signed(_event(order["access_token"]))
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+    pay_order(client, order)
     assert _status(client, order) == "paid"
     assert client.get(f"/api/orders/{order['access_token']}/pdf").status_code == 200
 
 
-def test_the_webhook_refuses_unsigned_and_wrongly_signed_requests(client):
+def test_the_signature_is_checked_good_bad_and_missing(client):
     order = place_order(client)
-    raw = json.dumps(_event(order["access_token"])).encode()
-    assert client.post("/api/webhooks/whop", content=raw).status_code == 401
-    raw, headers = _signed(_event(order["access_token"]), secret="someone-else")
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 401
-    raw, headers = _signed(_event(order["access_token"]), timestamp=1_000_000)
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 401
+    row = orders.get_by_token(order["access_token"])
+    body = event(row["provider_order_id"], row["amount_cents"])
+    raw = json.dumps(body).encode()
+    assert client.post("/api/webhooks/square", content=raw).status_code == 401  # missing
+    assert post_event(client, body, key="someone-else").status_code == 401  # bad
+    assert client.post("/api/webhooks/square", content=raw, headers={"x-square-hmacsha256-signature": ""}).status_code == 401
+    assert _status(client, order) == "pending_payment"  # none of them changed anything
+    assert post_event(client, body).status_code == 200  # good
+
+
+def test_an_unconfigured_key_never_verifies(client, monkeypatch):
+    order = place_order(client)
+    monkeypatch.delenv("SQUARE_WEBHOOK_SIGNATURE_KEY")
+    row = orders.get_by_token(order["access_token"])
+    raw = json.dumps(event(row["provider_order_id"], row["amount_cents"])).encode()
+    assert client.post("/api/webhooks/square", content=raw, headers=sign(raw, key="")).status_code == 401
     assert _status(client, order) == "pending_payment"
 
 
-def test_the_webhook_is_off_without_a_secret(client, monkeypatch):
-    monkeypatch.delenv("WHOP_WEBHOOK_SECRET")
-    assert client.post("/api/webhooks/whop", json={}).status_code == 503
-
-
-def test_the_webhook_ignores_other_events_and_unknown_tokens(client):
+def test_the_webhook_ignores_other_events_and_unknown_orders(client):
     order = place_order(client)
-    raw, headers = _signed(_event(order["access_token"], kind="payment.failed"))
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+    row = orders.get_by_token(order["access_token"])
+    assert post_event(client, event(row["provider_order_id"], row["amount_cents"], status="APPROVED")).status_code == 200
+    assert post_event(client, event(row["provider_order_id"], row["amount_cents"], kind="refund.created")).status_code == 200
+    assert post_event(client, event("sq_unknown", 5900)).status_code == 200
+    assert post_event(client, {"type": "payment.updated", "data": None}).status_code == 200
     assert _status(client, order) == "pending_payment"
-    raw, headers = _signed(_event("no-such-token"))
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
-    raw, headers = _signed({"type": "payment.succeeded", "data": None})
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+
+
+def test_a_wrong_amount_does_not_unlock(client, caplog):
+    order = place_order(client)
+    row = orders.get_by_token(order["access_token"])
+    with caplog.at_level("ERROR"):
+        assert post_event(client, event(row["provider_order_id"], row["amount_cents"] - 100)).status_code == 200
+    assert _status(client, order) == "pending_payment"
+    assert "amount mismatch" in caplog.text
+
+
+def test_duplicate_events_do_not_unlock_twice(client, monkeypatch):
+    sent = []
+    monkeypatch.setattr(emails, "send", lambda to, subject, text, html: sent.append(subject) or True)
+    order = place_order(client)
+    for kind in ("payment.created", "payment.updated", "payment.updated"):
+        pay_order(client, order, kind=kind)
+    assert _status(client, order) == "paid"
+    assert sent.count("Your packet is ready to download") == 1
 
 
 def test_a_delivered_order_is_not_set_back_to_paid(client):
     order = place_order(client)
-    raw, headers = _signed(_event(order["access_token"]))
-    client.post("/api/webhooks/whop", content=raw, headers=headers)
+    pay_order(client, order)
     client.get(f"/api/orders/{order['access_token']}/pdf")
     assert _status(client, order) == "delivered"
-    client.post("/api/webhooks/whop", content=raw, headers=headers)
+    pay_order(client, order)
     assert _status(client, order) == "delivered"
 
 
-def test_the_signing_key_is_the_raw_ws_secret_not_a_decoded_one(client):
-    import hashlib, hmac, time
-    order = place_order(client)
-    raw = json.dumps(_event(order["access_token"])).encode()
-    stamp = str(int(time.time()))
-    wrong_key = b"test_secret"  # the secret without its ws_ prefix, as a prefix-stripping reading would use
-    sig = base64.b64encode(hmac.new(wrong_key, f"msg_1.{stamp}.".encode() + raw, hashlib.sha256).digest()).decode()
-    headers = {"webhook-id": "msg_1", "webhook-timestamp": stamp, "webhook-signature": f"v1,{sig}"}
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 401
-    raw, headers = _signed(_event(order["access_token"]))
-    headers["webhook-signature"] = "v1,bogus " + headers["webhook-signature"]  # several signatures may be sent
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
-    assert _status(client, order) == "paid"
+# ---- Square checkout ----
 
-
-# ---- Whop checkout configurations ----
-
-class _Reply:
-    def __init__(self, body, status_code=200): self._body, self.status_code = body, status_code
-    def json(self): return self._body
-    def raise_for_status(self):
-        import httpx
-        if self.status_code >= 400:
-            raise httpx.HTTPStatusError("bad", request=httpx.Request("POST", "http://x"), response=httpx.Response(self.status_code))
-
-
-@pytest.fixture
-def whop_api(monkeypatch):
-    import app as app_module
-    calls = []
-    def fake_post(url, **kwargs):
-        calls.append((url, kwargs))
-        return _Reply({"purchase_url": f"https://whop.com/purchase/{len(calls)}"})
-    monkeypatch.setattr(app_module.httpx, "post", fake_post)
-    monkeypatch.setenv("WHOP_API_KEY", "key_123")
-    monkeypatch.setenv("WHOP_PLAN_89", "plan_abc")
-    monkeypatch.setenv("PUBLIC_BASE_URL", "https://permits.example.com/")
-    return calls
-
-
-def test_an_order_gets_a_whop_checkout_configuration_when_the_api_is_set(client, whop_api):
+def test_a_checkout_posts_the_payment_link_request(client):
     order = place_order(client, "instant_packet")
-    assert order["whop_checkout_url"] == "https://whop.com/purchase/1"
-    url, call = whop_api[0]
-    assert url == "https://api.whop.com/api/v1/checkout_configurations"
-    assert call["headers"] == {"Authorization": "Bearer key_123"}
-    assert call["json"] == {
-        "variant_id": "plan_abc", "metadata": {"order_token": order["access_token"]},
-        "redirect_url": f"https://permits.example.com/order/{order['access_token']}"}
+    assert order["checkout_url"] == "https://square.link/u/1"
+    url, call = CALLS[0]
+    assert url == "https://connect.squareupsandbox.com/v2/online-checkout/payment-links"
+    assert call["headers"] == {"Authorization": "Bearer tok_test", "Content-Type": "application/json", "Square-Version": square.SQUARE_VERSION}
+    body = call["json"]
+    assert body["quick_pay"] == {"name": pricing.TIER_NAMES["instant_packet"],
+                                 "price_money": {"amount": pricing.price("instant_packet") * 100, "currency": "USD"}, "location_id": "LOC1"}
+    assert body["checkout_options"] == {"redirect_url": f"https://permits.example.com/order/{order['access_token']}"}
+    assert body["pre_populated_data"] == {"buyer_email": "buyer@example.com"}
+    assert body["payment_note"] == order["order_code"]
+    assert len(body["idempotency_key"]) == 36
+    row = orders.get_by_token(order["access_token"])
+    assert (row["provider_order_id"], row["source"]) == ("sq_order_1", "checkout")
 
 
-def test_a_tier_without_a_plan_uses_its_fixed_link(client, whop_api):
-    order = place_order(client, "load_calc")
-    assert whop_api == [] and order["whop_checkout_url"].startswith("https://whop.com/checkout/plan_39?metadata[order_token]=")
+def test_production_uses_the_live_host(client, monkeypatch):
+    monkeypatch.setenv("SQUARE_ENVIRONMENT", "production")
+    place_order(client)
+    assert CALLS[0][0].startswith("https://connect.squareup.com/")
 
 
-def test_a_failed_whop_api_falls_back_to_the_fixed_link(client, whop_api, monkeypatch):
-    import app as app_module
-    monkeypatch.setattr(app_module.httpx, "post", lambda *a, **k: _Reply({}, 500))
-    monkeypatch.setenv("WHOP_LINK_89", "https://whop.com/checkout/plan_89")
+def test_a_failed_checkout_gives_no_link(client):
+    square.httpx.post = lambda *a, **k: Reply({}, 500)
+    assert place_order(client)["checkout_url"] == ""
+
+
+def test_the_buyer_sees_the_price_they_paid_not_todays(client, monkeypatch):
     order = place_order(client, "instant_packet")
-    assert order["whop_checkout_url"].startswith("https://whop.com/checkout/plan_89?metadata[order_token]=")
-    monkeypatch.delenv("WHOP_LINK_89")
-    assert place_order(client, "instant_packet")["whop_checkout_url"] == ""
+    paid = pricing.price("instant_packet")
+    monkeypatch.setattr(pricing, "launch_active", lambda now=None: False)
+    assert pricing.price("instant_packet") != paid
+    assert client.get(f"/api/orders/{order['access_token']}").json()["price"] == paid
 
 
-def test_the_order_page_checkout_makes_one_configuration_per_click_not_per_poll(client, whop_api):
+def test_the_order_page_checkout_makes_one_link_per_click_not_per_poll(client):
     order = place_order(client, "instant_packet")
     for _ in range(3):
         client.get(f"/api/orders/{order['access_token']}")
-    assert len(whop_api) == 1
+    assert len(CALLS) == 1
     response = client.get(f"/api/orders/{order['access_token']}/pay", follow_redirects=False)
-    assert response.status_code == 303 and response.headers["location"] == "https://whop.com/purchase/2"
-    raw, headers = _signed(_event(order["access_token"]))
-    client.post("/api/webhooks/whop", content=raw, headers=headers)
+    assert response.status_code == 303 and response.headers["location"] == "https://square.link/u/2"
+    assert CALLS[1][1]["json"]["quick_pay"]["price_money"]["amount"] == orders.get_by_token(order["access_token"])["amount_cents"]
+    pay_order(client, order)
     paid = client.get(f"/api/orders/{order['access_token']}/pay", follow_redirects=False)
-    assert paid.headers["location"] == f"/order/{order['access_token']}" and len(whop_api) == 2
+    assert paid.headers["location"] == f"/order/{order['access_token']}" and len(CALLS) == 2
     assert client.get("/api/orders/nope/pay", follow_redirects=False).status_code == 404
 
 

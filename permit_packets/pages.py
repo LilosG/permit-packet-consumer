@@ -98,7 +98,7 @@ def footer_html() -> str:
 
 # ---- The trailing-slash rule ----
 
-SLASH_EXEMPT_PREFIXES = ("/api/", "/order/", "/admin", "/assets/")
+SLASH_EXEMPT_PREFIXES = ("/api/", "/order/", "/admin", "/assets/", "/credits/confirm")
 
 
 async def trailing_slash(request: Request, call_next):
@@ -256,6 +256,21 @@ def pricing() -> Response:
         PRICING_PATH, robots=seo.robots_for(PRICING_PATH))
     return render("pricing.html", meta=meta, jsonld=[seo.product_offers(), seo.faq(_qas(content.PRICING_FAQS))],
                   crumbs=[("Home", "/"), ("Pricing", PRICING_PATH)], final_cta=True, faqs=content.PRICING_FAQS)
+
+
+PRO_CREDITS_PATH = "/pro-credits/"
+PRO_CREDITS_TITLE = "Prepaid Permit Packet Credits for Electricians & Contractors"
+_register_content(PRO_CREDITS_PATH, PRO_CREDITS_TITLE)
+
+
+@router.api_route(PRO_CREDITS_PATH, methods=["GET", "HEAD"], include_in_schema=False)
+def pro_credits() -> Response:
+    meta = seo.page_meta(
+        PRO_CREDITS_TITLE,
+        "Prepaid packs of Instant Permit Packet credits for electricians and contractors. Good for 12 months, any job type, any city.",
+        PRO_CREDITS_PATH, robots=seo.robots_for(PRO_CREDITS_PATH))
+    return render("pro_credits.html", meta=meta, crumbs=[("Home", "/"), ("Prepaid Credits", PRO_CREDITS_PATH)],
+                  final_cta=True, packs=list(price_book.PACKS))
 
 
 FAQ_PATH = "/faq/"

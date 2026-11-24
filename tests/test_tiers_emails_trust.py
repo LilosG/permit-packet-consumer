@@ -11,7 +11,8 @@ from fastapi.testclient import TestClient
 import app as app_module
 from app import app
 from permit_packets import emails, orders
-from tests.test_orders import _event, _signed, ev_payload, fresh_database, place_order  # noqa: F401
+from tests.payment_helpers import pay_order
+from tests.test_orders import ev_payload, fresh_database, place_order  # noqa: F401
 
 ADMIN = ("x", "admin-pw")
 
@@ -30,8 +31,7 @@ def outbox(monkeypatch):
 
 
 def pay(client, order):
-    raw, headers = _signed(_event(order["access_token"]))
-    assert client.post("/api/webhooks/whop", content=raw, headers=headers).status_code == 200
+    pay_order(client, order)
 
 
 def view(client, order):
@@ -283,7 +283,7 @@ def test_the_homepage_has_organization_and_faq_json_ld(client):
 def test_checkout_wording_on_the_wizard(client):
     html = client.get("/start/").text
     assert 'I understand this is a drafting &amp; calculation document, not a PE stamp, and I agree to the <a href="/terms/" target="_blank"' in html
-    assert 'Payments processed securely by Whop · <a href="/refund/">Full refund before you download</a>' in html
+    assert 'Payments processed securely by Square · <a href="/refund/">Full refund before you download</a>' in html
     order = place_order(client)
     assert "We've emailed you this link. Lost it?" in client.get(order["order_url"]).text
 

@@ -14,7 +14,7 @@
 <header class="site-header"><div class="bar"><a class="brand" href="/"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d4ed8"/><path d="M7 11.5h18M7 16h18M7 20.5h18M12 7v18M20 7v18" stroke="#fff" stroke-opacity=".3"/><path d="M17.6 6.5 10 17.2h5.2l-1.6 8.3L22 14.3h-5.3z" fill="#fff"/></svg><span>Permit Packets</span></a><span></span><a class="pill-cta" href="/admin">Orders</a></div></header>
 <main class="page-main wide">
   <h1>Orders</h1>
-  <p class="lead">Newest first. Orders unlock automatically when Whop confirms payment. Use the button only if a confirmed payment didn't unlock its order.</p>
+  <p class="lead">Newest first. Orders unlock automatically when Square confirms payment. Use the button only if a confirmed payment didn't unlock its order.</p>
   <p id="msg" class="note" aria-live="polite"></p>
   <h2>In review</h2>
   <p class="lead" id="review-empty">Nothing waiting for review.</p>
@@ -27,6 +27,19 @@
     <thead><tr><th>Code</th><th>Email</th><th>Address</th><th>Package</th><th>Status</th><th>Downloaded</th><th>Created</th><th></th></tr></thead>
     <tbody id="rows"></tbody>
   </table></div>
+  <h2 style="margin-top:32px">Credits</h2>
+  <div class="table-wrap"><table class="orders">
+    <thead><tr><th>Email</th><th>Total</th><th>Used</th><th>Remaining</th><th>Expires</th></tr></thead>
+    <tbody id="credit-rows"></tbody>
+  </table></div>
+  <p id="credit-empty" class="lead">No credit lots yet.</p>
+  <form id="grant-form" style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-top:14px">
+    <label class="field">Email<input type="email" name="email" required maxlength="200"></label>
+    <label class="field">Credits<input type="number" name="credits" min="1" max="1000" required></label>
+    <label class="field">Reason<input type="text" name="reason" maxlength="200"></label>
+    <button type="submit">Grant credits</button>
+  </form>
+  <p id="grant-msg" class="note" aria-live="polite"></p>
 </main>
 {{FOOTER}}
 <script>
@@ -35,7 +48,7 @@
   const TIERS = Object.fromEntries(Object.entries((window.PP_PRICES || {}).tiers || {}).map(([key, tier]) => [key, tier.name]));
   const LABELS = { pending_payment: 'Pending payment', in_review: 'In review', paid: 'Paid', delivered: 'Delivered' };
   const reviewRows = document.getElementById('review-rows');
-  const cell = (text) => { const td = document.createElement('td'); td.textContent = text; return td; };
+  const cell = (text) => { const td = document.createElement('td'); td.textContent = String(text); return td; };
 
   async function load() {
     const response = await fetch('/api/admin/orders');
@@ -94,7 +107,30 @@
       return tr;
     }));
   }
+  async function loadCredits() {
+    const response = await fetch('/api/admin/credits');
+    if (!response.ok) return;
+    const { lots } = await response.json();
+    document.getElementById('credit-empty').hidden = lots.length > 0;
+    document.getElementById('credit-rows').replaceChildren(...lots.map((lot) => {
+      const tr = document.createElement('tr');
+      tr.append(cell(lot.email), cell(lot.total), cell(lot.used), cell(lot.remaining), cell(new Date(lot.expires_at).toLocaleDateString()));
+      return tr;
+    }));
+  }
+  document.getElementById('grant-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.target, note = document.getElementById('grant-msg');
+    const result = await fetch('/api/admin/credits/grant', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: form.email.value.trim(), credits: Number(form.credits.value), reason: form.reason.value.trim() }) });
+    if (!result.ok) { const data = await result.json().catch(() => ({})); note.textContent = typeof data.detail === 'string' ? data.detail : `Could not grant (${result.status}).`; return; }
+    note.textContent = `Granted ${form.credits.value} credits to ${form.email.value.trim()}.`;
+    form.reset();
+    loadCredits();
+  });
   load();
+  loadCredits();
 })();
 </script>
 </body>

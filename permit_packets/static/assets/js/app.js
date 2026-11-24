@@ -407,8 +407,35 @@
     });
     if (!tierTouched) $(`input[name="tier"][value="${key}"]`).checked = true;
   }
-  $$('input[name="who"]').forEach((radio) => radio.addEventListener('change', () => { applyRole(); applyTier(); }));
-  $$('input[name="tier"]').forEach((radio) => radio.addEventListener('change', () => { tierTouched = true; }));
+  /* Prepaid credits are offered to electricians and contractors only. */
+  const PRO_ROLES = ['electrician', 'contractor'];
+  function applyCreditOption() {
+    const pro = PRO_ROLES.includes(role());
+    $('#credit-plans').hidden = !pro;
+    if (!pro && chosenTier() === 'credit') $('input[name="tier"][value="instant_packet"]').checked = true;
+    syncCredit();
+  }
+  /* The Panel Capacity Report credit line, shown before payment when this email has a paid one from the last 30 days. */
+  let creditQuoteKey = '';
+  async function syncCredit() {
+    const tier = chosenTier(), email = $('#email').value.trim();
+    $('#credit-email-field').hidden = tier !== 'credit';
+    $('#email').closest('.field').hidden = tier === 'credit';
+    if (tier === 'credit' || !EMAIL.test(email) || !TIER_PRICE[tier]) { $('#credit-summary').hidden = true; creditQuoteKey = ''; return; }
+    const key = `${email}|${tier}`;
+    creditQuoteKey = key;
+    try {
+      const data = await (await api('/api/public/credit-quote', { email, tier })).json();
+      if (creditQuoteKey !== key) return;
+      const credit = Number(data.credit) || 0;
+      $('#credit-summary').hidden = credit <= 0;
+      $('#credit-amount').textContent = `\u2212$${credit}`;
+      $('#credit-total').textContent = `$${TIER_PRICE[tier] - credit}`;
+    } catch { $('#credit-summary').hidden = true; }
+  }
+  $$('input[name="who"]').forEach((radio) => radio.addEventListener('change', () => { applyRole(); applyTier(); applyCreditOption(); }));
+  $$('input[name="tier"]').forEach((radio) => radio.addEventListener('change', () => { tierTouched = true; syncCredit(); }));
+  $('#email').addEventListener('change', syncCredit);
 
   /* ---- Conversion events: every one carries job, city, role and tier (landing_page is added by track) ---- */
   const JOB_SLUGS = Object.fromEntries(Object.entries(JSON.parse(studio.dataset.jobTypes || '{}')).map(([slug, key]) => [key, slug]));
@@ -597,21 +624,23 @@
   $('#checkout').addEventListener('submit', async (event) => {
     event.preventDefault();
     $('#pay-error').hidden = true;
-    const email = $('#email').value.trim();
+    const paysWithCredit = chosenTier() === 'credit';
+    const email = (paysWithCredit ? $('#credit-email') : $('#email')).value.trim();
     if (lastWasSample) return payError('This preview uses the sample address. Go back and enter the real job address before ordering.');
     if (!EMAIL.test(email)) return payError('Enter a valid email address so we can find your order.');
     if (!$('#ack').checked) return payError('Please confirm you understand this is a drafting & calculation document, not a PE stamp, and that you agree to the Terms and Refund Policy.');
+    if (paysWithCredit) return redeemWithCredit(email);
     track('checkout_started', eventParams());
     const button = $('#pay-button');
     button.disabled = true;
     button.textContent = 'Saving your order…';
-    const tab = window.open('', '_blank');  // opened now, while the click still counts, and pointed at Whop below
+    const tab = window.open('', '_blank');  // opened now, while the click still counts, and pointed at Square below
     try {
       const response = await api('/api/public/orders', {
         job_slug: lastType.slug, customer_email: email, tier: new FormData($('#checkout')).get('tier'), payload: lastJob, role: role(),
       });
       const order = await response.json();
-      if (tab && order.whop_checkout_url) tab.location.href = order.whop_checkout_url;
+      if (tab && order.checkout_url) tab.location.href = order.checkout_url;
       else if (tab) tab.close();
       location.assign(order.order_url);
     } catch (error) {
@@ -621,6 +650,25 @@
       button.textContent = 'Continue to Payment';
     }
   });
+
+  /* Asks for the confirmation email. The answer is the same whether or not the email has credits. */
+  async function redeemWithCredit(email) {
+    const button = $('#pay-button');
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    try {
+      const response = await api('/api/public/orders/credit', {
+        job_slug: lastType.slug, customer_email: email, payload: lastJob, role: role(),
+      });
+      const data = await response.json();
+      $('#credit-sent').textContent = data.message;
+      $('#credit-sent').hidden = false;
+    } catch (error) {
+      payError(error.message);
+    }
+    button.disabled = false;
+    button.textContent = 'Continue to Payment';
+  }
 
   /* ---- Start ---- */
   async function start() {
@@ -640,6 +688,7 @@
       : jobTypes.some((type) => type.key === 'ev_charger') ? 'ev_charger' : jobTypes[0].key);
     applyRole();
     applyTier();
+    applyCreditOption();
     show(1, false);
     // /start/?address=... (the homepage form, a hub CTA, a sample link): run the lookup without another click.
     if (studio.dataset.autolookup && addressInput.value.trim()) $('#find').requestSubmit();
