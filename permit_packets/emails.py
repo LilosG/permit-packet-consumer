@@ -86,7 +86,7 @@ def order_created(order: dict[str, Any], link: str) -> bool:
 def credit_line(price: float) -> str:
     """The Panel Capacity Report credit promise, with the price the buyer paid."""
     amount = f"{price:.2f}".removesuffix(".00")
-    return f"Your ${amount} is credited toward a full permit packet bought with this email within 30 days."
+    return f"Buy a full permit packet with this same email within 30 days and your ${amount} comes off automatically at checkout. No code needed."
 
 
 def paid_ready(order: dict[str, Any], link: str) -> bool:

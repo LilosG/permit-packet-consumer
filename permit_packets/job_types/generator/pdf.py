@@ -224,7 +224,7 @@ def render_generator_packet_pdf(packet: GeneratorPacket) -> bytes:
         contractor_cell=contractor_with_license(job.contractor, job.license_number),
         checklist_cell=checklist_cell,
         checklist_rows=checklist_rows(packet),
-        checks=[(c.name, c.result, c.passed, c.neutral) for c in packet.checks],
+        checks=[(c.name, c.result, c.passed, c.neutral, c.assumed) for c in packet.checks],
         flags=packet.flags,
         stamp_box_in=jurisdiction.stamp_box_in,
     )

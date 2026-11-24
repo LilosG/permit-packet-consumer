@@ -148,15 +148,15 @@ def test_the_public_preview_adds_the_summary_only_for_the_load_calc_package(orde
 
 
 def test_the_credit_line_uses_the_price_paid(order_client, monkeypatch):
-    assert emails.credit_line(29) == "Your $29 is credited toward a full permit packet bought with this email within 30 days."
-    assert emails.credit_line(39.5).startswith("Your $39.50 ")
+    assert emails.credit_line(29) == "Buy a full permit packet with this same email within 30 days and your $29 comes off automatically at checkout. No code needed."
+    assert emails.credit_line(39.5).startswith("Buy a full permit packet with this same email within 30 days and your $39.50 ")
     sent = []
     monkeypatch.setattr(emails, "_send", lambda to, subject, paragraphs, link, label: sent.append(paragraphs) or True)
     emails.paid_ready({"customer_email": "a@b.co", "tier": "load_calc", "address": "1 Main", "amount_cents": 2900}, "https://x")
     emails.paid_ready({"customer_email": "a@b.co", "tier": "instant_packet", "address": "1 Main", "amount_cents": 8900}, "https://x")
-    assert any("Your $29 is credited" in p for p in sent[0]) and not any("credited" in p for p in sent[1])
+    assert any("your $29 comes off automatically" in p for p in sent[0]) and not any("credited" in p for p in sent[1])
     page = Path(__file__).parent.parent / "permit_packets" / "static" / "order.html"
-    assert "is credited toward a full permit packet bought with this email within 30 days" in page.read_text()
+    assert "comes off automatically at checkout. No code needed." in page.read_text()
 
 
 def test_the_calculator_result_offers_the_panel_capacity_report(web):

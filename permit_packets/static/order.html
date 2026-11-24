@@ -181,7 +181,7 @@
     $('pdf').textContent = sheetsOnly ? 'Download the report (PDF)' : 'Download PDF';
     const credit = $('credit-note');
     credit.hidden = !(sheetsOnly && order.price > 0);
-    if (!credit.hidden) credit.textContent = `Your $${String(Number(order.price).toFixed(2)).replace(/\.00$/, '')} is credited toward a full permit packet bought with this email within 30 days.`;
+    if (!credit.hidden) credit.textContent = `Buy a full permit packet with this same email within 30 days and your $${String(Number(order.price).toFixed(2)).replace(/\.00$/, '')} comes off automatically at checkout. No code needed.`;
     $('pdf').href = order.pdf_url;
     $('zip').hidden = !order.documents_url;
     if (order.documents_url) $('zip').href = order.documents_url;

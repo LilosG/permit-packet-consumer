@@ -307,7 +307,7 @@ def _cover(packet: AppliancePacket) -> list:
         contractor_cell=contractor_with_license(job.contractor, job.license_number),
         checklist_cell=checklist_cell,
         checklist_rows=checklist_rows(packet),
-        checks=[(check.name, check.result, check.passed, check.neutral) for check in packet.checks],
+        checks=[(check.name, check.result, check.passed, check.neutral, check.assumed) for check in packet.checks],
         flags=packet.flags,
         stamp_box_in=job.jurisdiction.stamp_box_in,
     )

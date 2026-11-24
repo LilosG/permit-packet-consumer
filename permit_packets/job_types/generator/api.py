@@ -70,7 +70,7 @@ def _build_response(request: BaseModel) -> PacketResult:
         "conduit": f"Type {packet.cable_type} cable" if packet.conduit_size is None else packet.raceway_text,
         "voltage_drop_percent": round(packet.branch.vd_percent, 1),
         "checks": [
-            {"name": c.name, "result": c.result, "passed": c.passed, **({"neutral": True} if c.neutral else {})}
+            {"name": c.name, "result": c.result, "passed": c.passed, **({"neutral": True} if c.neutral else {}), **({"assumed": True} if c.assumed else {})}
             for c in packet.checks
         ],
         "flags": packet.flags,

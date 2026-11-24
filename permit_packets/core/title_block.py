@@ -1,6 +1,7 @@
 """The title block on every drawing and data page: project, sheet, contractor and the designer's sign-off."""
 from __future__ import annotations
 
+from contextvars import ContextVar
 from dataclasses import dataclass
 
 from reportlab.lib import colors
@@ -43,6 +44,11 @@ def title_block_for(job) -> TitleBlock:
     """The title block for any job: every job type has an address, a plan, a contractor and a license."""
     parcel = job.plan.parcel_number if job.plan and job.plan.parcel_number else ""
     return TitleBlock(job.address, parcel, job.contractor, job.license_number, job.customer)
+
+
+# A Panel Capacity Report numbers its sheets as their own set of three: sheet title -> sheet number.
+REPORT_SET = {"Panel Capacity Summary": 1, "Load Calculation": 2, "Panel Schedule": 3}
+SET_NUMBERS: ContextVar[dict[str, int] | None] = ContextVar("set_numbers", default=None)
 
 
 def sheet_number(index: int) -> str:
@@ -99,6 +105,9 @@ def _signature_cell(c, x, y, w, h, *, pad=4, owner_builder=False):
 
 def draw_title_block(c, sheet: Sheet, block: TitleBlock, *, title: str, number: int, total: int) -> None:
     x0, y0, w, h = sheet.margin, sheet.block_y, sheet.content_w, sheet.block_h
+    own = SET_NUMBERS.get()
+    if own and title in own:
+        number, total = own[title], len(own)
     c.saveState()
     address = block.address
     parcel = f"Parcel {block.parcel}" if block.parcel else "Parcel: not on file"

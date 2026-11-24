@@ -10,12 +10,14 @@ from io import BytesIO
 import pypdfium2
 from reportlab.lib import colors
 from reportlab.lib.units import inch
-from reportlab.platypus import Spacer
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import Paragraph, Spacer
 
+from permit_packets.core.checks import with_assumed_note
 from permit_packets.core.layout import SHEETS, content_w, use_sheet
 from permit_packets.core.pdf_base import (
     BODY, CELL, CELL_BOLD, H1, H2, SMALL, _heads, _p, _table, build_document, use_blank_area)
-from permit_packets.core.title_block import TitleBlock
+from permit_packets.core.title_block import REPORT_SET, SET_NUMBERS, TitleBlock
 from permit_packets.jurisdictions import jurisdiction_by_key
 
 STEM = "00-panel-capacity-summary"
@@ -32,8 +34,8 @@ CAPACITY_CHECK = re.compile(r"capacity|spaces|feeder load|panel rating", re.I)
 
 
 def capacity_checks(checks: list[dict]) -> list[dict]:
-    chosen = [c for c in checks if CAPACITY_CHECK.search(c.get("name", "")) and not c.get("neutral")]
-    return chosen or [c for c in checks if not c.get("neutral")]
+    live = [c for c in checks if not c.get("neutral") and not c.get("assumed")]  # an ASSUMED check never moves the verdict
+    return [c for c in live if CAPACITY_CHECK.search(c.get("name", ""))] or live
 
 
 def verdict(checks: list[dict]) -> tuple[bool, str]:
@@ -65,6 +67,17 @@ def summary_rows(payload: dict, body: dict) -> list[tuple[str, str]]:
     return [(label, value) for label, value in rows if value]
 
 
+def job_label(job_type: str) -> str:
+    """"ev_charger" -> "EV charger"."""
+    words = [("EV" if word == "ev" else word) for word in (job_type or "").replace("-", "_").split("_") if word]
+    text = " ".join(words)
+    return text[:1].upper() + text[1:]
+
+
+def method_label(payload: dict) -> str:
+    return "NEC 220.87 measured demand" if payload.get("peak_demand_kw") else "NEC 220.82 optional method"
+
+
 def summary_pdf(payload: dict, body: dict) -> bytes:
     """One letter-size sheet with the packet's title block."""
     city = jurisdiction_by_key(payload.get("jurisdiction_key"), payload.get("city"), payload.get("state"))
@@ -75,10 +88,19 @@ def summary_pdf(payload: dict, body: dict) -> bytes:
     checks = body.get("checks") or []
     ok, headline = verdict(checks)
     width = content_w()
-    mark = lambda passed: "PASS" if passed else "FAIL"
+    amber = colors.HexColor("#b26a00")
+
+    def mark(check: dict):
+        if check.get("assumed"):
+            return Paragraph("ASSUMED", ParagraphStyle("assumed", parent=CELL_BOLD, textColor=amber))
+        return _p("PASS" if check["passed"] else "FAIL", CELL_BOLD)
+
+    def result(check: dict) -> str:
+        return with_assumed_note(check["result"]) if check.get("assumed") else check["result"]
+
     story = [
         _p(TITLE, H1),
-        _p(f"{city.label if city.known else 'Panel'} - {body.get('job_type', '').replace('_', ' ')}", SMALL),
+        _p(f"{job_label(body.get('job_type', ''))} · {method_label(payload)}", SMALL),
         Spacer(1, 10),
         _table([[_p(headline, H2)]], [width], head=False,
                extra=[("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e3f1e6" if ok else "#f8e1de"))]),
@@ -88,7 +110,7 @@ def summary_pdf(payload: dict, body: dict) -> bytes:
         Spacer(1, 12),
         _p("Checks", H2),
         _table([_heads("Check", "Result", "")] + [
-            [_p(c["name"], CELL_BOLD), _p(c["result"]), _p(mark(c["passed"]), CELL_BOLD)]
+            [_p(c["name"], CELL_BOLD), _p(result(c)), mark(c)]
             for c in checks if not c.get("neutral")],
                [2.0 * inch, width - 3.0 * inch, 1.0 * inch]),
     ]
@@ -96,8 +118,12 @@ def summary_pdf(payload: dict, body: dict) -> bytes:
         story += [Spacer(1, 12), _p("Your options", H2)]
         story += [_p(f"{index}. {text}.", BODY) for index, text in enumerate(OPTIONS, 1)]
     sheet = SHEETS["letter"]
-    with use_sheet(sheet), use_blank_area(None):
-        return build_document([story], title=TITLE, block=block, sheet_titles=[TITLE])
+    token = SET_NUMBERS.set(REPORT_SET)
+    try:
+        with use_sheet(sheet), use_blank_area(None):
+            return build_document([story], title=TITLE, block=block, sheet_titles=[TITLE])
+    finally:
+        SET_NUMBERS.reset(token)
 
 
 def prepend_summary(summary_bytes: bytes, pdf: bytes) -> bytes:

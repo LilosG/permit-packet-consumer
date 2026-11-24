@@ -13,13 +13,16 @@ MISSING_FAULT_CURRENT = "Enter the utility's available fault current"
 def interrupting_rating_check(job) -> Check:
     """NEC 110.9 and 110.10: equipment must be rated to interrupt the fault current available at it."""
     fault = job.available_fault_current_a
+    entered = getattr(job, "model_fields_set", None)
+    aic_default = entered is not None and "equipment_aic_ka" not in entered
     if not fault:
-        return Check("Interrupting rating", MISSING_FAULT_CURRENT, False)
+        return Check("Interrupting rating", MISSING_FAULT_CURRENT, False, assumed=True)
     rating = job.equipment_aic_ka * 1000
     if rating >= fault:
         return Check(
             "Interrupting rating",
-            f"{job.equipment_aic_ka} kA ({rating:,} A) covers the {fault:,} A available (110.9, 110.10)", True)
+            f"{job.equipment_aic_ka} kA ({rating:,} A) covers the {fault:,} A available (110.9, 110.10)", True,
+            assumed=aic_default)
     needed = -(-fault // 1000)
     return Check(
         "Interrupting rating",

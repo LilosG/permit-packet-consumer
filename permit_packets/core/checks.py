@@ -3,6 +3,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+ASSUMED_NOTE = ("Uses a typical residential default; get the utility's fault current letter and the panel's label "
+                "to confirm.")
+
 
 @dataclass(frozen=True)
 class Check:
@@ -10,3 +13,10 @@ class Check:
     result: str
     passed: bool
     neutral: bool = False  # an optional item left empty: shown as a note, not a failure
+    assumed: bool = False  # relies on a default the buyer did not enter: shown as ASSUMED, not PASS
+
+
+def with_assumed_note(result: str) -> str:
+    """The check's own note, then the ASSUMED note as a second sentence."""
+    first = result.rstrip()
+    return f"{first if first.endswith('.') else first + '.'} {ASSUMED_NOTE}"
