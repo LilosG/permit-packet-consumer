@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import hmac
 import io
 import json
 import logging
@@ -31,7 +32,7 @@ from fastapi.exception_handlers import http_exception_handler as default_http_ex
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import ValidationError
 
-from permit_packets import emails, orders, pages, payments, pricing, seo, sitedata
+from permit_packets import emails, followups, orders, pages, payments, pricing, seo, sitedata
 from permit_packets.core import capacity_summary
 from permit_packets.core.pdf_base import COMPANY_NAME, CONTRACTOR_LOGO, DEMO_MARKS
 from permit_packets.core.preview import packet_documents_zip, packet_page_images, packet_subset_pdf
@@ -801,6 +802,29 @@ def find_order(request: Request, body: dict[str, Any] = Body(...)) -> dict:
         except Exception:
             log.exception("Find my order failed")
     return {"message": FIND_ORDER_MESSAGE}
+
+
+# ---- Scheduled emails: cron, opt-out ----
+
+@app.post("/api/cron/emails")
+def cron_emails(request: Request) -> dict:
+    """Send the follow-ups and review requests that are due. Only a correctly signed caller is believed."""
+    secret = os.environ.get("CRON_SECRET", "").strip()
+    provided = request.headers.get("X-Cron-Secret", "")
+    if not secret or not provided or not hmac.compare_digest(provided, secret):
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Bad cron secret")
+    return followups.run()
+
+
+@app.api_route("/email/unsubscribe", methods=["GET", "HEAD"])
+@app.api_route("/email/unsubscribe/", methods=["GET", "HEAD"], include_in_schema=False)
+def unsubscribe_page(token: str = "") -> Response:
+    """The link every follow-up and review email carries. Opening it stops those emails for the address."""
+    email = emails.verify_unsubscribe_token(token)
+    if email is None:
+        return _credit_page("This link isn't valid", "It may be corrupted or cut off. Copy the whole unsubscribe link from the email and try again.")
+    orders.add_optout(email)
+    return _credit_page("You're unsubscribed", f"We'll stop sending follow-up and review emails to {email}.")
 
 
 # ---- Admin ----

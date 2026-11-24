@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import base64
+import hashlib
+import hmac
 
 import logging
 import os
@@ -163,3 +165,69 @@ def credit_confirm(to_email: str, link: str) -> bool:
         ["Use the link below to spend one prepaid credit and unlock your Instant Permit Packet.",
          "The link works once and expires in 30 minutes. If you didn't ask for it, you can ignore this email."],
         link, "Confirm and use one credit")
+
+
+# ---- Follow-up and review emails ----
+
+def business_postal_address() -> str:
+    return os.environ.get("BUSINESS_POSTAL_ADDRESS", "").strip()
+
+
+def _sign(data: str, secret: str) -> str:
+    return hmac.new(secret.encode(), data.encode(), hashlib.sha256).hexdigest()
+
+
+def unsubscribe_token(email: str) -> str:
+    """A token that verifies with CREDITS_SECRET and still lets us recover the email when the link is opened."""
+    secret = os.environ.get("CREDITS_SECRET", "").strip()
+    encoded = base64.urlsafe_b64encode(email.strip().lower().encode()).rstrip(b"=").decode()
+    return f"{encoded}.{_sign(encoded, secret)}"
+
+
+def verify_unsubscribe_token(token: str) -> str | None:
+    """The email a token was made for, or None if it doesn't verify against CREDITS_SECRET."""
+    try:
+        encoded, signature = token.rsplit(".", 1)
+        email = base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4)).decode()
+    except Exception:
+        return None
+    secret = os.environ.get("CREDITS_SECRET", "").strip()
+    if not secret or not hmac.compare_digest(signature, _sign(encoded, secret)):
+        return None
+    return email
+
+
+def unsubscribe_url(email: str) -> str:
+    base = os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
+    return f"{base}/email/unsubscribe?token={unsubscribe_token(email)}"
+
+
+def send_followup(to: str, subject: str, paragraphs: list[str], link: str | None, link_label: str) -> bool:
+    """A follow-up or review email: the message, an unsubscribe link and the business postal address footer."""
+    postal = business_postal_address()
+    support = support_email()
+    unsubscribe = unsubscribe_url(to)
+    text = "\n\n".join(paragraphs)
+    if link:
+        text += f"\n\n{link_label}: {link}"
+    text += f"\n\nQuestions? Email {support}."
+    text += f"\nUnsubscribe: {unsubscribe}"
+    text += f"\n{postal}"
+    body = "".join(f'<p style="margin:0 0 14px">{escape(p)}</p>' for p in paragraphs)
+    button = ""
+    if link:
+        button = (
+            f'<p style="margin:22px 0"><a href="{escape(link, quote=True)}" style="display:inline-block;padding:12px 22px;'
+            f'border-radius:999px;background:#1d4ed8;color:#ffffff;text-decoration:none;font-weight:600">{escape(link_label)}</a></p>'
+            f'<p style="margin:0 0 14px;color:#475569;font-size:14px">Or paste this link into your browser:<br>'
+            f'<a href="{escape(link, quote=True)}" style="color:#1d4ed8;word-break:break-all">{escape(link)}</a></p>')
+    footer = (
+        f'<p style="margin:24px 0 0;color:#64748b;font-size:14px">Questions? Email '
+        f'<a href="mailto:{escape(support)}" style="color:#1d4ed8">{escape(support)}</a>. '
+        f'<a href="{escape(unsubscribe, quote=True)}" style="color:#64748b">Unsubscribe</a></p>'
+        f'<p style="margin:12px 0 0;color:#64748b;font-size:13px">{escape(postal)}</p>')
+    html = (
+        '<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;'
+        'color:#0f172a;max-width:560px;margin:0 auto;padding:24px">'
+        f'{body}{button}{footer}</div>')
+    return send(to, subject, text, html)

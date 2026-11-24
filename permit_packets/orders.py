@@ -132,6 +132,33 @@ def _postgres_pack_schema(schema: str) -> str:
     return out
 
 
+# Scheduled follow-up and review emails. Unique on (order_id, kind) so a run can't send the same email twice.
+_EMAIL_EVENT_SCHEMAS = (
+    """CREATE TABLE IF NOT EXISTS email_events (
+    order_id TEXT NOT NULL,
+    kind TEXT NOT NULL,
+    sent_at TEXT NOT NULL,
+    PRIMARY KEY (order_id, kind)
+)""",
+    """CREATE TABLE IF NOT EXISTS email_optouts (
+    email TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL
+)""",
+)
+_POSTGRES_EMAIL_EVENT_SCHEMAS = (
+    """CREATE TABLE IF NOT EXISTS email_events (
+    order_id UUID NOT NULL,
+    kind TEXT NOT NULL,
+    sent_at TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (order_id, kind)
+)""",
+    """CREATE TABLE IF NOT EXISTS email_optouts (
+    email TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL
+)""",
+)
+
+
 _migrated: set[str] = set()
 _CODE_FLOOR = 1000  # codes start at PP-1001
 
@@ -153,6 +180,8 @@ def _ensure_schema(conn, postgres: bool) -> None:
     conn.execute(_POSTGRES_FIND_SCHEMA if postgres else _FIND_SCHEMA)
     for schema in _PACK_SCHEMAS:
         conn.execute(_postgres_pack_schema(schema) if postgres else schema.replace("UUIDREF", "TEXT"))
+    for schema in (_POSTGRES_EMAIL_EVENT_SCHEMAS if postgres else _EMAIL_EVENT_SCHEMAS):
+        conn.execute(schema)
     conn.commit()
     _migrate(conn, postgres)
 
@@ -641,5 +670,84 @@ def redeem_confirm_token(token: str, now: datetime | None = None) -> tuple[str, 
                 return "ok", str(order_id)
         conn.rollback()
         return "no_credit", None
+    finally:
+        conn.close()
+
+
+# ---- Scheduled follow-up and review emails ----
+
+def list_pending(limit: int = 200) -> list[dict[str, Any]]:
+    """pending_payment orders that can get a follow-up (checkout or preview_saved). Credit orders never do."""
+    postgres = bool(database_url())
+    conn, marker = _connect()
+    try:
+        _ensure_schema(conn, postgres)
+        return _select(conn, marker,
+                       "WHERE status = 'pending_payment' AND source IN ('checkout', 'preview_saved')",
+                       (), f"ORDER BY created_at ASC LIMIT {int(limit)}")
+    finally:
+        conn.close()
+
+
+def list_downloaded(limit: int = 200) -> list[dict[str, Any]]:
+    """Orders that have a clean download, oldest first, for the review request."""
+    postgres = bool(database_url())
+    conn, marker = _connect()
+    try:
+        _ensure_schema(conn, postgres)
+        return _select(conn, marker, "WHERE downloaded_at IS NOT NULL", (),
+                       f"ORDER BY downloaded_at ASC LIMIT {int(limit)}")
+    finally:
+        conn.close()
+
+
+def paid_since(email: str, since: datetime) -> bool:
+    """Whether this email has paid for any order at or after `since`."""
+    postgres = bool(database_url())
+    rows = _query("SELECT 1 FROM orders WHERE lower(customer_email) = ? AND status IN ('paid', 'delivered') AND paid_at >= ? LIMIT 1",
+                  (email.strip().lower(), _ts(postgres, since)))
+    return bool(rows)
+
+
+def has_email_event(order_id: str, kind: str) -> bool:
+    rows = _query("SELECT 1 FROM email_events WHERE order_id = ? AND kind = ?", (order_id, kind))
+    return bool(rows)
+
+
+def record_email_event(order_id: str, kind: str, now: datetime | None = None) -> None:
+    """Remember an email went out. Repeating it for the same order and kind does nothing."""
+    postgres = bool(database_url())
+    conn, marker = _connect()
+    try:
+        _ensure_schema(conn, postgres)
+        if postgres:
+            sql = (f"INSERT INTO email_events (order_id, kind, sent_at) VALUES ({marker}, {marker}, {marker}) "
+                   "ON CONFLICT (order_id, kind) DO NOTHING")
+        else:
+            sql = "INSERT OR IGNORE INTO email_events (order_id, kind, sent_at) VALUES (?, ?, ?)"
+        conn.execute(sql.replace("?", marker), (order_id, kind, _ts(postgres, now or datetime.now(timezone.utc))))
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def is_opted_out(email: str) -> bool:
+    rows = _query("SELECT 1 FROM email_optouts WHERE lower(email) = ?", (email.strip().lower(),))
+    return bool(rows)
+
+
+def add_optout(email: str, now: datetime | None = None) -> None:
+    """Stop future follow-ups and review requests to this email. Idempotent."""
+    postgres = bool(database_url())
+    conn, marker = _connect()
+    try:
+        _ensure_schema(conn, postgres)
+        if postgres:
+            sql = (f"INSERT INTO email_optouts (email, created_at) VALUES ({marker}, {marker}) "
+                   "ON CONFLICT (email) DO NOTHING")
+        else:
+            sql = "INSERT OR IGNORE INTO email_optouts (email, created_at) VALUES (?, ?)"
+        conn.execute(sql.replace("?", marker), (email.strip().lower(), _ts(postgres, now or datetime.now(timezone.utc))))
+        conn.commit()
     finally:
         conn.close()

@@ -467,7 +467,10 @@
     } catch { $('#credit-summary').hidden = true; }
   }
   $$('input[name="who"]').forEach((radio) => radio.addEventListener('change', () => { applyRole(); applyTier(); applyCreditOption(); }));
-  $$('input[name="tier"]').forEach((radio) => radio.addEventListener('change', () => { tierTouched = true; syncCredit(); }));
+  $$('input[name="tier"]').forEach((radio) => radio.addEventListener('change', () => {
+    tierTouched = true; syncCredit();
+    track('tier_selected', { tier: chosenTier(), role: role() });
+  }));
   $('#email').addEventListener('change', syncCredit);
 
   /* ---- Conversion events: every one carries job, city, role and tier (landing_page is added by track) ---- */
@@ -645,6 +648,7 @@
         const res = await api(`/api/public/preview/${lastType.slug}/email`, { customer_email: email, tier: new FormData($('#checkout')).get('tier') || 'instant_packet', payload: lastJob, role: role() });
         const saved = await res.json();
         if (!$('#email').value) $('#email').value = email;
+        track('preview_saved', { job: eventParams().job, city: eventParams().city, role: eventParams().role });
         msg.innerHTML = `Saved! Emailed your link to <b>${esc(email)}</b> (<a href="${esc(saved.order_url)}">open saved link</a>).`;
         msg.hidden = false; btn.textContent = 'Sent';
       } catch (err) { msg.textContent = err.message; msg.hidden = false; btn.disabled = false; btn.textContent = 'Email my preview'; }
