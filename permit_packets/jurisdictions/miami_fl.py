@@ -1,19 +1,13 @@
-from permit_packets.jurisdictions import Checklist, Requirement
 from dataclasses import replace
+from permit_packets.jurisdictions import Checklist, Requirement
 from permit_packets.jurisdictions.general import make_city
 MIAMI = make_city(*('miami-fl', 'Miami', 'FL', 'NEC', 'Florida state-licensed electrical contractors (EC/ER) or qualifying owner-builders.', 'https://www.miamigov.com/Services/Permits-Construction/Electrical-Permits', 'Electrical permit fees are calculated per the City of Miami Building Department fee schedule.', '2020 NEC (Florida Building Code 8th Ed)', 'An electrical permit and load calculation are required for residential EV charger installations.', 'Panel and service upgrades require Florida Power & Light (FPL) coordination and grounding verification.', (-80.3198, 25.709, -80.1392, 25.8558), (-80.1918, 25.7617), 'City of Miami Building Department', '(305) 416-1100', 'building@miamigov.com', 'https://www.miamigov.com/Services/Permits-Construction', 'Miami iBuild Online Portal', 'Submit applications and PDF plans online through the City of Miami iBuild portal.', 91, 'https://ashrae-meteo.info/v3.0/index.php?wmo=722020', 'Florida Power & Light (FPL)', 'FPL', 'Miami enforces the 8th Edition Florida Building Code (2020 NEC base) with Miami-Dade high-velocity wind zone anchorage rules.'))
 
 # Verified from evidence/verified/ by tools/import_evidence.py.
 MIAMI = replace(
     MIAMI,
-    permit_rules_verified="",
-)
-
-# Verified from evidence/verified/ by tools/import_evidence.py.
-MIAMI = replace(
-    MIAMI,
     owner_may_file=True,
-    who_may_pull="Strictly limited to owner-occupied one- and two-family residential work; requires in-person interview, written test, proof of residency (ID + utility bill), and signed/notarized Owner-Builder disclosure statement at MRC 444 SW 2nd Ave",
+    who_may_pull="Strictly limited to owner-occupied one-family and two-family residential work only; requires in-person interview and test at Miami Riverside Center (444 SW 2nd Ave, 1st Floor), proof of residency (ID with property address and utility bill), and a signed and notarized Owner-Builder disclosure statement.",
     checklists={
         **MIAMI.checklists,
         "ev_charger": replace(
@@ -100,6 +94,16 @@ MIAMI = replace(
                 Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
                 Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
                 Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
+                Requirement("Permit application signed by owner and contractor and notarized for both signatures", "application",
+                            "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels"),
+                Requirement("Riser diagram showing existing equipment sizes, OCP size, DC/AC inverter and PV panel specifications, and interconnection diagram", "one_line",
+                            "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels"),
+                Requirement("Calculation of entire grid and size of inverter, compliance with NEC 705.12D (120%), and support/mounting detail", "load",
+                            "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels"),
+                Requirement("Product equipment specifications, manufacturer material data sheets, and storage battery size, type, and location (if used)", "equipment",
+                            "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels"),
+                Requirement("Transfer switch (manual or automatic) and switching equipment detail from and to the public utility electrical system", "one_line",
+                            "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels"),
                 Requirement("Permit application signed by both owner and contractor and notarized for both signatures", "application",
                             "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels"),
                 Requirement("Plans with riser diagram, OCP/equipment sizes, inverter/PV specs, NEC 705.12(D) (120%) compliance, labels, and mounting details", "one_line",

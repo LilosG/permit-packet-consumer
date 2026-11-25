@@ -1,0 +1,44 @@
+jurisdiction_key: seattle-wa
+city: Seattle
+state: WA
+checked_on: 2026-11-25
+jobs:
+  service_upgrade:
+    load_calculation:
+      method: NEC Article 220
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: a complete project load summary to include existing loads as computed in accordance with NEC Article 220, and all added loads.
+      url: https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf
+  ev_charger:
+    load_calculation:
+      same_as: service_upgrade
+  subpanel:
+    load_calculation:
+      same_as: service_upgrade
+  appliance_circuit:
+    load_calculation:
+      same_as: service_upgrade
+  generator:
+    load_calculation:
+      same_as: service_upgrade
+  solar_storage:
+    plans_required_single_family:
+      value: true
+      conditions: All new installations of energy storage systems (ESS) require SDCI plan review under 2023 SEC 80.51(B)(1)(k); standalone solar PV requires plan review at 12 kW or greater
+      quote: An SDCI plan review is now required for new installations of energy storage systems.
+      url: https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf
+    load_calculation:
+      same_as: service_upgrade
+forms_found:
+- name: 2023 Seattle Electrical Code Quick Reference
+  url: https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf
+  opened: true
+- name: Submittal Requirements for Electrical Plan Review (Section 80.51)
+  url: https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf
+  opened: true
+- name: Load Calculations Sample (Seattle City Light - Commercial/Multifamily)
+  url: https://www.seattle.gov/documents/Departments/CityLight/Construction/LoadCalculations_Sample.pdf
+  opened: true
+open_questions:
+- SDCI requires load calculations in accordance with NEC Article 220 for plan review submittals, but no Seattle-specific single-family residential load calculation worksheet, mandatory 220.82 vs. 220.83 subsection, or EV charger load factor was found on seattle.gov; confirm with SDCI electrical inspections whether OTC residential permits require a specific NEC 220 method.

@@ -2,7 +2,24 @@
   "jurisdiction_key": "portland-or",
   "city": "Portland",
   "state": "OR",
-  "checked_on": "2026-11-24",
+  "checked_on": "2026-11-25",
+  "forms_found": [
+    {
+      "name": "Electrical Plan Review Program Guide",
+      "url": "https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download",
+      "opened": true
+    },
+    {
+      "name": "Electrical Renewable Energy Permit Application",
+      "url": "https://www.portland.gov/ppd/documents/electrical-renewable-energy-permit-application/download",
+      "opened": true
+    },
+    {
+      "name": "Statewide Alternate Method No. 09-01 (Calculating Electrical Vehicle Charging Station Loads)",
+      "url": "https://www.oregon.gov/bcd/codes-stand/Documents/sam-09-01-calcelectricalvehiclecharge.pdf",
+      "opened": true
+    }
+  ],
   "agency": "Portland Permitting & Development (PP&D)",
   "portal_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
   "code_edition": {
@@ -43,6 +60,8 @@
     ]
   },
   "open_questions": [
+    "Portland Permitting & Development (PP&D) does not publish a city-specific residential electrical load calculation worksheet or specify whether NEC 220.82 or 220.83 is required; confirming whether standard single-family trade permits without plan review require submitting a load calculation would require contacting PP&D Electrical Inspections directly.",
+    "No Portland-specific single-family Level 2 EV charger load factor (e.g., 100% vs. 125%) is stated on portland.gov; Oregon BCD Statewide Alternate Method 09-01 addresses demand factors for multiple charging stations rather than a single residential EV charger.",
     "No dedicated City of Portland single-family residential electrical submittal checklist was found for standalone Level 2 EV chargers, standby/portable generators, or residential battery energy storage systems (ESS) on portland.gov.",
     "The 'Checklist and Submittal Requirements for Prescriptive Solar installations' and 'Required solar permit application documents and plans' pages referenced on https://www.portland.gov/ppd/solar-permit-app-guide and https://www.portland.gov/ppd/residential-permitting/structural-engineering/one-and-two-family-residential-structures were not indexed to verify electrical one-line diagram or battery storage specifics.",
     "Portland is served by both Portland General Electric (PGE) and Pacific Power depending on neighborhood; PGE requirements are cited above as the primary utility, while Pacific Power requirements were not separately queried.",
@@ -50,6 +69,14 @@
   ],
   "jobs": {
     "ev_charger": {
+      "load_calculation": {
+        "method": "not_stated",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load calculations as per the Electrical Code. If adding load to an existing service or sub-distribution, show the existing load and the new load to be added.",
+        "url": "https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "You need a residential electrical permit if you are: Adding a light fixture. Adding an electrical outlet. Changing a fuse box to circuit breakers.",
@@ -87,13 +114,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic PDF upload via DevHub (or 3 paper sets if electrical plan review is required)",
@@ -128,6 +148,14 @@
       ]
     },
     "service_upgrade": {
+      "load_calculation": {
+        "method": "not_stated",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load calculations as per the Electrical Code. If adding load to an existing service or sub-distribution, show the existing load and the new load to be added.",
+        "url": "https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "Permits needed to install a new meter base to upgrade to 200A service. This requires a 200A service/feeder permit.",
@@ -173,13 +201,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic PDF upload via DevHub (or 3 paper sets if electrical plan review is required)",
@@ -214,6 +235,14 @@
       ]
     },
     "subpanel": {
+      "load_calculation": {
+        "method": "not_stated",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load calculations as per the Electrical Code. If adding load to an existing service or sub-distribution, show the existing load and the new load to be added.",
+        "url": "https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "Permits needed to install a new subpanel right next to the existing panel to add more breaker spaces. This requires a 200A service/feeder permit.",
@@ -251,13 +280,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic PDF upload via DevHub (or 3 paper sets if electrical plan review is required)",
@@ -286,6 +308,14 @@
       ]
     },
     "appliance_circuit": {
+      "load_calculation": {
+        "method": "not_stated",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load calculations as per the Electrical Code. If adding load to an existing service or sub-distribution, show the existing load and the new load to be added.",
+        "url": "https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "Installing an air conditioner (you'll also need a mechanical permit) Installing, changing, or repairing a hard-wired electrical system.",
@@ -323,13 +353,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic PDF upload via DevHub (or 3 paper sets if electrical plan review is required)",
@@ -358,6 +381,14 @@
       ]
     },
     "generator": {
+      "load_calculation": {
+        "method": "not_stated",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load calculations as per the Electrical Code. If adding load to an existing service or sub-distribution, show the existing load and the new load to be added.",
+        "url": "https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "Installing, changing, or repairing a hard-wired electrical system.",
@@ -395,13 +426,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic PDF upload via DevHub (or 3 paper sets if electrical plan review is required)",
@@ -436,6 +460,14 @@
       ]
     },
     "solar_storage": {
+      "load_calculation": {
+        "method": "not_stated",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load calculations as per the Electrical Code. If adding load to an existing service or sub-distribution, show the existing load and the new load to be added.",
+        "url": "https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "Apply for solar permits online using DevHub. Learn about solar permitting, application types, submittal requirements and fees to install solar panels and solar water heating systems in residential and commercial buildings.",
@@ -489,13 +521,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Adobe Acrobat (.pdf) format uploaded via DevHub, max 100MB; all plans drawn to scale (no sketches)",

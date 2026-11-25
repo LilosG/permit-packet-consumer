@@ -1,7 +1,7 @@
 """San Diego, CA: City of San Diego Development Services"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -13,8 +13,7 @@ SOURCE_LABEL = "From San Diego Development Services and the San Diego Municipal 
 
 SAN_DIEGO = Jurisdiction(
     key="san-diego-ca", name="San Diego", state="CA", known=True,
-    last_verified="2026-11-24",
-    permit_rules_verified="",
+    permit_rules_verified="2026-11-21",
     who_may_pull="Property owner or lessee may be issued an electrical permit; property owner doing the work or hiring different contractors must sign and upload Owner-Builder Verification Form (DS-3042) before permit issuance.",
     owner_may_file=True,
     portal_url="https://www.sandiego.gov/development-services/permits/electrical-permit",
@@ -43,6 +42,11 @@ SAN_DIEGO = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
+                Requirement("Permit application: address, owner, contractor and valuation", "application"),
+                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
+                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
+                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
+                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
                 Requirement("Completed Circuit Card (DS-1779A) with load calculations provided on site for inspection", "load",
                             "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187"),
                 Requirement("EVCS manufacturer's installation instructions provided on site for inspection", "equipment",
@@ -69,6 +73,13 @@ SAN_DIEGO = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
+                Requirement("Permit application: address, scope and valuation", "application"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
+                Requirement("Panel and meter base specifications and listing", "equipment"),
+                Requirement("Site plan showing the meter and main panel", "site_plan"),
+                Requirement("Utility service request", "utility"),
+                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
                 Requirement("Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection", "panel_schedule",
                             "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
                 Requirement("Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)", "gec",
@@ -77,7 +88,6 @@ SAN_DIEGO = Jurisdiction(
                             "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf"),
                 Requirement("Stamped and signed electrical plan and calculations when plans are required", "one_line",
                             "https://www.sandiego.gov/development-services/permits/electrical-permit/plan"),
-                SURGE_PROTECTION,
                 Requirement("Project Contacts Information DS-345 for plan-required electrical permits", "application",
                             "https://www.sandiego.gov/development-services/permits/electrical-permit/plan"),
                 Requirement("Electrical Circuit Card DS-1779 available on job site for rough inspection", "panel_schedule",
@@ -93,6 +103,11 @@ SAN_DIEGO = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
+                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Panel specifications and listing", "equipment"),
                 Requirement("Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection", "panel_schedule",
                             "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
                 Requirement("Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)", "by_others",
@@ -116,6 +131,11 @@ SAN_DIEGO = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the panel and the appliance", "site_plan"),
+                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Manufacturer specifications and listing", "equipment"),
                 Requirement("Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection", "panel_schedule",
                             "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
                 Requirement("Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)", "by_others",
@@ -137,6 +157,11 @@ SAN_DIEGO = Jurisdiction(
         ),
         "generator": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, generator inlet and feeder route", "site_plan"),
+                Requirement("One-line diagram showing interlock or transfer switch (NEC 702.5)", "one_line"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Interlock kit / transfer switch UL listing and cut sheets", "equipment"),
                 Requirement("Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection", "panel_schedule",
                             "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
                 Requirement("Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)", "by_others",
@@ -155,6 +180,11 @@ SAN_DIEGO = Jurisdiction(
         ),
         "solar_storage": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, inverter/ESS and output route", "site_plan"),
+                Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
+                Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
+                Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
                 Requirement("Building Construction Plans incorporating all elements of the Residential Solar PV Project Plan Template", "site_plan",
                             "https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit"),
                 Requirement("Single-Line Diagram showing complete rating information of the existing electrical system", "one_line",

@@ -11,6 +11,7 @@ from fastapi import HTTPException
 from permit_packets.core.drawing_sets import DRAWING_TITLES, STAMP_SIDE, STAMP_X, STAMP_Y
 from permit_packets.jurisdictions import jurisdiction_by_key
 from tests.packet_helpers import build, complete_inputs, page_texts
+from tests.test_city_compliance import CASES, IDS
 
 SF = jurisdiction_by_key("san-francisco-ca")
 KEYS = ("ev_charger", "service_upgrade", "subpanel", "appliance_circuit")
@@ -49,6 +50,23 @@ def test_every_drawing_sheet_prints_capitals_at_least_one_eighth_inch(packet):
         heights = [(text.get_charbox(i)[3] - text.get_charbox(i)[1]) / 72 for i in range(text.count_chars())
                    if chr(raw.FPDFText_GetUnicode(text, i)) in FLAT_CAPITALS]
         assert heights and min(heights) >= 0.125, f"drawing sheet {number}: {min(heights):.3f} in"
+
+
+@pytest.mark.parametrize("jurisdiction,key", CASES, ids=IDS)
+def test_every_drawing_sheet_on_a_drawing_set_meets_the_one_eighth_inch_floor(jurisdiction, key):
+    """Whatever a city's checklist holds, a drawing-set sheet never prints text under 1/8 in: the
+    cover moves rows it cannot fit to the continued sheet instead of shrinking past the floor."""
+    result = build(key, complete_inputs(key, jurisdiction))
+    document = pypdfium2.PdfDocument(result.pdf)
+    try:
+        for number, page in enumerate(_d_pages(document), 1):
+            text = page.get_textpage()
+            heights = [(text.get_charbox(i)[3] - text.get_charbox(i)[1]) / 72 for i in range(text.count_chars())
+                       if chr(raw.FPDFText_GetUnicode(text, i)) in FLAT_CAPITALS]
+            assert heights and min(heights) >= 0.125, \
+                f"{jurisdiction.key}/{key} drawing sheet {number}: {min(heights):.3f} in"
+    finally:
+        document.close()
 
 
 def test_every_drawing_sheet_has_the_2_inch_stamp_area_in_the_same_spot(packet):

@@ -19,6 +19,23 @@
     "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103",
     "ok": true
   },
+  "forms_found": [
+    {
+      "name": "Form DS-1779A - Circuit Card (Supplemental) (Rev. 09-26)",
+      "url": "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf",
+      "opened": true
+    },
+    {
+      "name": "Form DS-1779 - Circuit Card (Rev. 08-26)",
+      "url": "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf",
+      "opened": true
+    },
+    {
+      "name": "How to Submit/Create Projects Online – Solar Photovoltaic Permits (DSD PV User Guide)",
+      "url": "https://www.sandiego.gov/sites/default/files/dsd_pv_user_guide.pdf",
+      "opened": true
+    }
+  ],
   "utility": {
     "name": "San Diego Gas & Electric (SDG&E)",
     "requirements": [
@@ -91,7 +108,9 @@
     "Information Bulletin 301 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301) exact printed revision date should be confirmed directly on the HTML page.",
     "Specific single-family residential generator, transfer switch, and interlock submittal requirements were not found in an explicit residential generator bulletin on sandiego.gov; verify against DSD electrical plan check requirements (https://www.sandiego.gov/development-services/permits/electrical-permit/plan).",
     "Standard plan sheet size and detailed PDF file upload specifications are referenced via a separate link ('View PDF requirements') whose contents were not returned in search snippets (https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit).",
-    "Information Bulletin 103 (May 2026) tables specifying whether single-family service upgrades and subpanels qualify for Simple Permits-MEP were not fully returned in search snippets; verify the electrical fee/eligibility tables directly on https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103."
+    "Information Bulletin 103 (May 2026) tables specifying whether single-family service upgrades and subpanels qualify for Simple Permits-MEP were not fully returned in search snippets; verify the electrical fee/eligibility tables directly on https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103.",
+    "Information Bulletin 103 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103) lists 'Generator Only, Each. $176.57. Not applicable. No' in its fee table, but the full table row and column headers confirming whether residential standby generators always require plans (i.e., do not qualify for Simple Permits - MEP) should be verified directly on IB-103.",
+    "Information Bulletin 301 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301) specifies structural calculations for roof/PV dead load but does not explicitly state an electrical load calculation method for rooftop solar with battery storage; verify with DSD whether Form DS-1779A is required when a service/panel upgrade or ESS backup load is included."
   ],
   "jobs": {
     "ev_charger": {
@@ -608,11 +627,12 @@
         }
       ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "NEC 220.82",
+        "city_worksheet": "DS-1779A (09-26) Circuit Card (Supplemental) - Branch-Circuit, Feeder, and Service Load Calculations",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Optional Method: 2025 California Electrical Code Section 220-82 (based on 2023 NEC)",
+        "url": "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf",
+        "ok": true
       },
       "sheet_requirements": {
         "sheet_size": "11x17 minimum, 36x48 maximum (when plans required)",
@@ -700,11 +720,12 @@
         }
       ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "NEC 220.82",
+        "city_worksheet": "DS-1779A (09-26) Circuit Card (Supplemental) - Branch-Circuit, Feeder, and Service Load Calculations",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Optional Method: 2025 California Electrical Code Section 220-82 (based on 2023 NEC)",
+        "url": "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf",
+        "ok": true
       },
       "sheet_requirements": {
         "sheet_size": "11x17 minimum, 36x48 maximum",

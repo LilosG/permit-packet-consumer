@@ -1,7 +1,7 @@
 """Phoenix, AZ: City of Phoenix Planning & Development Department"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -13,9 +13,8 @@ SOURCE_LABEL = "From City of Phoenix Planning & Development electrical guideline
 
 PHOENIX = Jurisdiction(
     key="phoenix-az", name="Phoenix", state="AZ", known=True,
-    last_verified="2026-11-24",
     code_name="NEC",
-    permit_rules_verified="",
+    permit_rules_verified="2026-11-21",
     who_may_pull="Owner must occupy the building and act as general contractor; per A.R.S. 32-1121.A(5), property may not be for sale or rent within one year after Certificate of Occupancy.",
     owner_may_file=True,
     portal_url="https://www.phoenix.gov/pdd/permits",
@@ -43,6 +42,11 @@ PHOENIX = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
+                Requirement("Permit application: address, owner, contractor and valuation", "application"),
+                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
+                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
+                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
+                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
                 Requirement("Submit plans electronically via SHAPE PHX Customer Portal or in person by appointment", "application",
                             "https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00311.pdf"),
                 Requirement("Load calculations for upstream distribution equipment affected by added load when plans are required", "load",
@@ -61,6 +65,13 @@ PHOENIX = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
+                Requirement("Permit application: address, scope and valuation", "application"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
+                Requirement("Panel and meter base specifications and listing", "equipment"),
+                Requirement("Site plan showing the meter and main panel", "site_plan"),
+                Requirement("Utility service request", "utility"),
+                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
                 Requirement("Complete site plan showing transformer and service equipment locations", "site_plan",
                             "https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf"),
                 Requirement("Service equipment and panelboard schedules showing volt-ampere or ampere ratings of feeders and branch circuits", "panel_schedule",
@@ -69,7 +80,6 @@ PHOENIX = Jurisdiction(
                             "https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf"),
                 Requirement("Identify serving electrical utility company (APS or SRP)", "utility",
                             "https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf"),
-                SURGE_PROTECTION,
             ),
             source_url="https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf",
             source_label="From the city's published pages",
@@ -81,6 +91,11 @@ PHOENIX = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
+                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Panel specifications and listing", "equipment"),
                 Requirement("Complete site plan showing transformer and service equipment locations", "site_plan",
                             "https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf"),
                 Requirement("Service equipment and panelboard schedules showing volt-ampere or ampere ratings of feeders and branch circuits", "panel_schedule",
@@ -99,6 +114,11 @@ PHOENIX = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the panel and the appliance", "site_plan"),
+                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Manufacturer specifications and listing", "equipment"),
                 Requirement("Pool/Spa Residential Permit Application and plot plan emailed to plotplan.submittals@phoenix.gov for pool/spa projects", "application",
                             "https://www.phoenix.gov/administration/departments/pdd/residential-building/resident-plan-reviews/pool-spa-permits.html"),
                 Requirement("Volt-ampere, horsepower, or nameplate data and motor disconnecting device ratings on electrical plans", "equipment",
@@ -115,6 +135,11 @@ PHOENIX = Jurisdiction(
         ),
         "generator": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, generator inlet and feeder route", "site_plan"),
+                Requirement("One-line diagram showing interlock or transfer switch (NEC 702.5)", "one_line"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Interlock kit / transfer switch UL listing and cut sheets", "equipment"),
                 Requirement("Grounding and bonding details and sizes for generators and equipment grounding conductors", "egc_size",
                             "https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf"),
                 Requirement("Complete floor plan showing equipment layout, working space, wire and conduit sizes, and circuit numbers", "packet_gap",
@@ -128,6 +153,11 @@ PHOENIX = Jurisdiction(
         ),
         "solar_storage": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, inverter/ESS and output route", "site_plan"),
+                Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
+                Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
+                Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
                 Requirement("Three-line diagram and equipment cut sheets for all solar PV equipment", "one_line",
                             "https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf"),
                 Requirement("Email SolarAPP+ approved documents, manufacturer spec sheets, three-line diagram, and plot plan to pdd.records@phoenix.gov", "application",

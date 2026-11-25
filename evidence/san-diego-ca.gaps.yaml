@@ -1,0 +1,33 @@
+jurisdiction_key: san-diego-ca
+city: San Diego
+state: CA
+checked_on: 2026-11-25
+jobs:
+  generator:
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+    load_calculation:
+      method: "NEC 220.82"
+      city_worksheet: "DS-1779A (09-26) Circuit Card (Supplemental) - Branch-Circuit, Feeder, and Service Load Calculations"
+      ev_charger_load_factor: "not_stated"
+      quote: "Optional Method: 2025 California Electrical Code Section 220-82 (based on 2023 NEC)"
+      url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf
+  solar_storage:
+    load_calculation:
+      same_as: generator
+forms_found:
+  - name: "Form DS-1779A - Circuit Card (Supplemental) (Rev. 09-26)"
+    url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf
+    opened: true
+  - name: "Form DS-1779 - Circuit Card (Rev. 08-26)"
+    url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf
+    opened: true
+  - name: "How to Submit/Create Projects Online – Solar Photovoltaic Permits (DSD PV User Guide)"
+    url: https://www.sandiego.gov/sites/default/files/dsd_pv_user_guide.pdf
+    opened: true
+open_questions:
+  - "Information Bulletin 103 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103) lists 'Generator Only, Each. $176.57. Not applicable. No' in its fee table, but the full table row and column headers confirming whether residential standby generators always require plans (i.e., do not qualify for Simple Permits - MEP) should be verified directly on IB-103."
+  - "Information Bulletin 301 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301) specifies structural calculations for roof/PV dead load but does not explicitly state an electrical load calculation method for rooftop solar with battery storage; verify with DSD whether Form DS-1779A is required when a service/panel upgrade or ESS backup load is included."

@@ -1,13 +1,7 @@
-from permit_packets.jurisdictions import Checklist, Requirement
 from dataclasses import replace
+from permit_packets.jurisdictions import Checklist, Requirement
 from permit_packets.jurisdictions.general import make_city
-ATLANTA = make_city(*('atlanta-ga', 'Atlanta', 'GA', 'NEC', 'Georgia licensed electrical contractors.', 'https://www.atlantaga.gov/government/departments/city-planning', 'Electrical permit fees are based on the Atlanta building fee schedule.', '2020 NEC (Georgia Standard)', 'Electrical permits are required for all EV charging stations.', 'Panel upgrades require Georgia Power meter release and grounding verification.', (-84.551, 33.6478, -84.2896, 33.8868), (-84.388, 33.749), 'Atlanta City Planning', '(404) 330-6145', 'dpcd@atlantaga.gov', 'https://aca3.accela.com/ATLANTA_GA/', 'Atlanta Accela Citizen Access', 'Submit online via Atlanta Accela Citizen Access.', 93, 'https://ashrae-meteo.info/v3.0/index.php?wmo=722190', 'Georgia Power', 'Georgia Power', 'Atlanta enforces the 2020 NEC (Georgia State Minimum Standard Code).'))
-
-# Verified from evidence/verified/ by tools/import_evidence.py.
-ATLANTA = replace(
-    ATLANTA,
-    permit_rules_verified="",
-)
+ATLANTA = make_city(*('atlanta-ga', 'Atlanta', 'GA', 'NEC', 'Georgia licensed electrical contractors.', 'https://www.atlantaga.gov/government/departments/city-planning', 'Electrical permit fees are based on the Atlanta building fee schedule.', '2023 NEC (Georgia Standard)', 'Electrical permits are required for all EV charging stations.', 'Panel upgrades require Georgia Power meter release and grounding verification.', (-84.551, 33.6478, -84.2896, 33.8868), (-84.388, 33.749), 'Atlanta City Planning', '(404) 330-6145', 'dpcd@atlantaga.gov', 'https://aca3.accela.com/ATLANTA_GA/', 'Atlanta Accela Citizen Access', 'Submit online via Atlanta Accela Citizen Access.', 93, 'https://ashrae-meteo.info/v3.0/index.php?wmo=722190', 'Georgia Power', 'Georgia Power', 'Atlanta enforces the 2023 NEC (Georgia State Minimum Standard Code, effective January 1, 2025).'))
 
 # Verified from evidence/verified/ by tools/import_evidence.py.
 ATLANTA = replace(
@@ -43,12 +37,17 @@ ATLANTA = replace(
                 Requirement("Site plan showing the meter and main panel", "site_plan"),
                 Requirement("Utility service request", "utility"),
                 Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
+                Requirement("Service entrance and meter socket compliance with Georgia Power Blue Book requirements", "utility",
+                            "https://www.georgiapower.com/business/industry-services/start-stop-move/establish-new-connection.html"),
+                Requirement("Municipal electrical inspection approval prior to utility meter set", "by_others",
+                            "https://www.georgiapower.com/business/industry-services/start-stop-move/establish-new-connection.html",
+                            who="City of Atlanta inspector: approval before Georgia Power sets the meter"),
                 Requirement("Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal", "application",
                             "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting"),
                 Requirement("Electrical Permit Application", "application",
                             "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists"),
             ),
-            source_url="https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+            source_url="https://www.georgiapower.com/business/industry-services/start-stop-move/establish-new-connection.html",
             source_label="From the city's published pages"),
         "subpanel": replace(
             ATLANTA.checklists["subpanel"],
@@ -87,12 +86,14 @@ ATLANTA = replace(
                 Requirement("One-line diagram showing interlock or transfer switch (NEC 702.5)", "one_line"),
                 Requirement("Load calculation (NEC 220)", "load"),
                 Requirement("Interlock kit / transfer switch UL listing and cut sheets", "equipment"),
+                Requirement("Standby generation equipment placement restriction (no equipment between Georgia Power meter and customer meter socket)", "one_line",
+                            "https://www.georgiapower.com/content/dam/georgia-power/pdfs/business-pdfs/bluebook_2023.pdf"),
                 Requirement("Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal", "application",
                             "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting"),
                 Requirement("Electrical Permit Application", "application",
                             "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists"),
             ),
-            source_url="https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+            source_url="https://www.georgiapower.com/content/dam/georgia-power/pdfs/business-pdfs/bluebook_2023.pdf",
             source_label="From the city's published pages",
             code_note=ATLANTA.code_note),
         "solar_storage": Checklist(
@@ -102,12 +103,20 @@ ATLANTA = replace(
                 Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
                 Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
                 Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
+                Requirement("Georgia Power PowerClerk interconnection application", "by_others",
+                            "https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html",
+                            who="Georgia Power: interconnection application through PowerClerk"),
+                Requirement("One-line drawing with solar panel, inverter, and battery storage specifications", "one_line",
+                            "https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html"),
+                Requirement("Customer-signed Georgia Power interconnection agreement", "by_others",
+                            "https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html",
+                            who="You, as the Georgia Power customer: sign the interconnection agreement"),
                 Requirement("Single and Two-Family Solar PV online application via Accela Citizen Access (ACA) portal", "application",
                             "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting"),
                 Requirement("Submittal Info-Solar Roof Install - Res (or Express) packet and PV - Inspection Checklist", "application",
                             "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists"),
             ),
-            source_url="https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+            source_url="https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html",
             source_label="From the city's published pages",
             code_note=ATLANTA.code_note),
     },

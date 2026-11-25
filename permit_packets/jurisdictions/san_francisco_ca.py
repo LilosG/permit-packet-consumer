@@ -41,8 +41,7 @@ CODE_NOTE = (
 SAN_FRANCISCO = Jurisdiction(
     key="san-francisco-ca", name="San Francisco", state="CA", known=True,
     no_plan_jobs={'service_upgrade': 'https://www.sf.gov/apply-electrical-permit', 'subpanel': 'https://www.sf.gov/apply-electrical-permit', 'appliance_circuit': 'https://www.sf.gov/apply-electrical-permit', 'generator': 'https://www.sf.gov/apply-electrical-permit'},
-    last_verified="2026-11-24",
-    permit_rules_verified="",
+    permit_rules_verified="2026-11-17",
     who_may_pull="Contractors must hold a B, C7, C10, C45, C46, C61 or D34 license (a C7 covers only low-voltage work). Only owners of a stand-alone single-family dwelling (R-3 occupancy) may apply to do the work themselves; staff may direct an owner to hire a licensed contractor.",
     owner_may_file=None,
     portal_url="https://sf.gov/apply-electrical-permit",
@@ -108,6 +107,24 @@ SAN_FRANCISCO = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
+                Requirement("Application: address, block/lot, owner, contractor, license number and phone", "application",
+                            "https://sfmta.com/media/36888/download"),
+                Requirement("Existing load, electrical service and equipment documented", "load",
+                            "https://sfmta.com/media/36888/download"),
+                Requirement("Load calculation (CEC 220), unless the registered contractor verifies one charger fits the panel", "load",
+                            "https://sfmta.com/media/36888/download"),
+                Requirement("One-line diagram: charger, panel, raceway, wire types and sizes, main breaker and service voltage", "one_line",
+                            "https://sfmta.com/media/36888/download"),
+                Requirement("Site plan, approximately to scale: panel, meter and charger", "site_plan",
+                            "https://sfmta.com/media/36888/download"),
+                Requirement("Charger manufacturer specifications and installation guidelines", "equipment",
+                            "https://sfmta.com/media/36888/download"),
+                Requirement("NRTL listing mark on all equipment (UL 2594 / UL 2202)", "equipment",
+                            "https://sfmta.com/media/36888/download"),
+                Requirement("Mechanical ventilation, only if the manufacturer requires it", "ventilation",
+                            "https://sfmta.com/media/36888/download"),
+                Requirement("Panel schedule (CEC 220)", "panel_schedule",
+                            "https://sfmta.com/media/36888/download"),
                 Requirement("Project address, parcel number, owner/contractor contact details, and valid contractor license", "application",
                             "https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf"),
                 Requirement("EVSE manufacturer specifications and installation guidelines", "equipment",
@@ -117,7 +134,7 @@ SAN_FRANCISCO = Jurisdiction(
                 Requirement("Details documenting existing load, electrical service, and equipment", "panel_schedule",
                             "https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf"),
             ),
-            source_url="https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf",
+            source_url="https://sfmta.com/media/36888/download",
             source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
@@ -142,6 +159,13 @@ SAN_FRANCISCO = Jurisdiction(
         ),
         "service_upgrade": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the meter and main panel", "site_plan"),
+                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Panel and meter equipment specifications and listing", "equipment"),
+                Requirement("Utility service request", "utility"),
+                SURGE_PROTECTION,
                 Requirement("Building occupancy type and floor where electrical work is performed", "application",
                             "https://www.sf.gov/apply-electrical-permit"),
                 Requirement("Category 3 electrical work declaration for services or distribution equipment", "application",
@@ -150,7 +174,6 @@ SAN_FRANCISCO = Jurisdiction(
                             "https://www.sf.gov/apply-electrical-permit"),
                 Requirement("Estimated valuation of electrical work including all materials and labor", "application",
                             "https://www.sf.gov/apply-electrical-permit"),
-                SURGE_PROTECTION,
             ),
             source_url="https://www.sf.gov/apply-electrical-permit",
             source_label="From the city's published pages",
@@ -158,6 +181,11 @@ SAN_FRANCISCO = Jurisdiction(
         ),
         "subpanel": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
+                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Panel specifications and listing", "equipment"),
                 Requirement("Building occupancy type and floor where electrical work is performed", "application",
                             "https://www.sf.gov/apply-electrical-permit"),
                 Requirement("Category 3 electrical work declaration for services or distribution equipment", "application",
@@ -173,6 +201,11 @@ SAN_FRANCISCO = Jurisdiction(
         ),
         "appliance_circuit": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the panel and the appliance", "site_plan"),
+                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Manufacturer specifications and listing", "equipment"),
                 Requirement("Number of devices or outlets being installed", "application",
                             "https://www.sf.gov/apply-electrical-permit"),
                 Requirement("Building occupancy type and floor where electrical work is performed", "application",
@@ -186,6 +219,11 @@ SAN_FRANCISCO = Jurisdiction(
         ),
         "generator": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, generator inlet and feeder route", "site_plan"),
+                Requirement("One-line diagram showing interlock or transfer switch (NEC 702.5)", "one_line"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Interlock kit / transfer switch UL listing and cut sheets", "equipment"),
                 Requirement("Building occupancy type and floor where electrical work is performed", "application",
                             "https://www.sf.gov/apply-electrical-permit"),
                 Requirement("Category 3 electrical work declaration for services or distribution equipment", "application",
@@ -201,6 +239,11 @@ SAN_FRANCISCO = Jurisdiction(
         ),
         "solar_storage": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, inverter/ESS and output route", "site_plan"),
+                Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
+                Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
+                Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
                 Requirement("Roof plan showing modules, conduit routing, disconnects, inverters, service, and subpanels", "site_plan",
                             "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
                 Requirement("Single-line or multi-line wiring diagram with wire/conduit sizes and ampacity calculations", "one_line",

@@ -2,14 +2,13 @@
   "jurisdiction_key": "houston-tx",
   "city": "Houston",
   "state": "TX",
-  "checked_on": "2026-11-24",
-  "agency": "City of Houston Public Works, Houston Permitting Center",
-  "portal_url": "https://www.pdinet.pd.houstontx.gov/iPermits/",
+  "checked_on": "2026-11-25",
   "code_edition": {
-    "value": "unknown",
-    "effective_date": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "value": "2026 NEC (adopted statewide by Texas Department of Licensing and Regulation with a limited GFCI exception for certain outdoor outlets; enforced by Houston with City administrative amendments)",
+    "effective_date": "2026-09-01",
+    "quote": "The adopted amendments adopt the 2026 National Electrical Code as the state electrical code, with a limited exception pertaining to ground-fault circuit interrupter requirements for certain outdoor outlets.",
+    "url": "https://www.tdlr.texas.gov/news/rulemaking/2026/09/01/commission-adopts-rules-12/",
+    "ok": true
   },
   "who_may_file": {
     "owner_may_file": "unknown",
@@ -18,6 +17,45 @@
     "url": "https://www.tdlr.texas.gov/electricians/compliance-guide.htm",
     "ok": true
   },
+  "forms_found": [
+    {
+      "name": "Houston Permitting Center - Electrical Charging Outlet Permit (HPWCODE1056)",
+      "url": "https://www.houstonpermittingcenter.org/hpwcode1056",
+      "opened": false
+    },
+    {
+      "name": "Houston Permitting Center - Electrical Meter & Loop Service Permit (HPWCODE1055)",
+      "url": "https://www.houstonpermittingcenter.org/hpwcode1055",
+      "opened": false
+    },
+    {
+      "name": "Houston Permitting Center - Circuit Panel Permit (HPWCODE1062)",
+      "url": "https://www.houstonpermittingcenter.org/hpwcode1062",
+      "opened": false
+    },
+    {
+      "name": "Houston Permitting Center - Electrical Outlet Permit (HPWCODE1053)",
+      "url": "https://www.houstonpermittingcenter.org/hpwcode1053",
+      "opened": false
+    },
+    {
+      "name": "Houston Permitting Center - Range Receptacle Permit (HPWCODE1063)",
+      "url": "https://www.houstonpermittingcenter.org/hpwcode1063",
+      "opened": false
+    },
+    {
+      "name": "Houston Permitting Center - Generator Permit (HPWCODE1118)",
+      "url": "https://www.houstonpermittingcenter.org/hpwcode1118",
+      "opened": false
+    },
+    {
+      "name": "Houston Permitting Center - Solar Panel Permit (HPWCODE1119)",
+      "url": "https://www.houstonpermittingcenter.org/hpwcode1119",
+      "opened": false
+    }
+  ],
+  "agency": "City of Houston Public Works, Houston Permitting Center",
+  "portal_url": "https://www.pdinet.pd.houstontx.gov/iPermits/",
   "utility": {
     "name": "CenterPoint Energy Houston Electric",
     "requirements": [
@@ -36,6 +74,9 @@
     ]
   },
   "open_questions": [
+    "Open the City of Houston 2026 NEC notice and the City of Houston Electrical Code (Administrative Code Provisions adopted by Ord. No. 2023-9071) on houstonpermittingcenter.org directly in a browser to confirm whether Houston enforces the 2026 NEC as-is or adds local technical amendments, and to quote the exact section governing whether homeowners may pull residential electrical permits.",
+    "Open https://www.houstonpermittingcenter.org/hpwcode1056, hpwcode1055, hpwcode1062, hpwcode1053, hpwcode1063, and hpwcode1118 directly in a browser to verify 'Plan Review Required' flags, residential load calculation worksheet requirements, EV charger load factors, and sheet/format requirements.",
+    "Open https://www.houstonpermittingcenter.org/hpwcode1119 and the Solar Panel Plan Review User Guide PDF directly in a browser to verify residential solar + battery storage permit requirements, submittal checklist items, sheet requirements, and Houston's implementation of Texas SB 1252 / SB 1202.",
     "Direct indexing of houstonpermittingcenter.org pages is blocked/limited in web search; individual HPWCODE pages (https://www.houstonpermittingcenter.org/hpwcode1056, hpwcode1055, hpwcode1062, hpwcode1053, hpwcode1118, hpwcode1119) could only be quoted from City of Houston's search.houstontx.gov index snippets and must be opened directly to verify 'Plan Review Required' flags, submittal checklists, and local rules.",
     "Confirm directly on houstonpermittingcenter.org whether a homeowner (homestead owner-builder) may pull an electrical permit in the City of Houston or if Houston ordinances restrict electrical permits strictly to City-registered electrical contractors.",
     "Confirm whether Houston Permitting Center publishes a residential electrical load calculation worksheet or EV charger load factor, and how Houston implements Texas SB 1202 for residential backup power (generators/batteries).",
@@ -43,17 +84,31 @@
   ],
   "jobs": {
     "ev_charger": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Registered electrical contractors who wish to install electrical charging outlet must apply for an electrical permit.",
         "url": "https://www.houstonpermittingcenter.org/hpwcode1056",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Electrical Vehicle Charging Outlets Permit (HPWCODE1056)",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": false,
       "checklist": {
@@ -71,6 +126,19 @@
           "ok": true
         }
       ],
+      "local_rules": [],
+      "searched": [
+        "site:houstonpermittingcenter.org \"electric vehicle\" OR \"EV charger\" permit",
+        "site:houstontx.gov \"hpwcode1056\" OR \"Electrical Vehicle Charging Outlets Permit\""
+      ]
+    },
+    "service_upgrade": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -85,24 +153,11 @@
         "quote": "unknown",
         "url": "unknown"
       },
-      "local_rules": [],
-      "searched": [
-        "site:houstonpermittingcenter.org \"electric vehicle\" OR \"EV charger\" permit",
-        "site:houstontx.gov \"hpwcode1056\" OR \"Electrical Vehicle Charging Outlets Permit\""
-      ]
-    },
-    "service_upgrade": {
       "permit_required": {
         "value": true,
         "quote": "Registered electrical contractors who wish to install Electrical Meter & Loop Service must apply for an electrical permit.",
         "url": "https://www.houstonpermittingcenter.org/hpwcode1055",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Electrical Meter & Loop Service Permit (HPWCODE1055)",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": false,
       "checklist": {
@@ -120,6 +175,19 @@
           "ok": true
         }
       ],
+      "local_rules": [],
+      "searched": [
+        "site:houstonpermittingcenter.org \"service upgrade\" OR \"panel\" permit",
+        "site:houstontx.gov \"hpwcode1055\" OR \"Electrical Meter & Loop Service Permit\""
+      ]
+    },
+    "subpanel": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -134,24 +202,11 @@
         "quote": "unknown",
         "url": "unknown"
       },
-      "local_rules": [],
-      "searched": [
-        "site:houstonpermittingcenter.org \"service upgrade\" OR \"panel\" permit",
-        "site:houstontx.gov \"hpwcode1055\" OR \"Electrical Meter & Loop Service Permit\""
-      ]
-    },
-    "subpanel": {
       "permit_required": {
         "value": true,
         "quote": "Registered electrical contractors who wish to install or re-wire circuit breakers must request an electrical permit.",
         "url": "https://www.houstonpermittingcenter.org/hpwcode1062",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Circuit Panel Permit (HPWCODE1062)",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": false,
       "checklist": {
@@ -169,6 +224,18 @@
           "ok": true
         }
       ],
+      "local_rules": [],
+      "searched": [
+        "site:houstonpermittingcenter.org \"subpanel\" OR \"Circuit Panel Permit\""
+      ]
+    },
+    "appliance_circuit": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -183,23 +250,11 @@
         "quote": "unknown",
         "url": "unknown"
       },
-      "local_rules": [],
-      "searched": [
-        "site:houstonpermittingcenter.org \"subpanel\" OR \"Circuit Panel Permit\""
-      ]
-    },
-    "appliance_circuit": {
       "permit_required": {
         "value": true,
         "quote": "An electrical permit is required in any instance in which a new outlet or circuit must be installed to serve the needs of a new or repaired appliance within a",
         "url": "https://www.houstonpermittingcenter.org/hpwcode1050",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Electrical Outlet Permit (HPWCODE1053) / Appliance Electrical Permits",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": false,
       "checklist": {
@@ -217,6 +272,18 @@
           "ok": true
         }
       ],
+      "local_rules": [],
+      "searched": [
+        "site:houstontx.gov \"hpwcode1050\" OR \"hpwcode1053\" appliance circuit"
+      ]
+    },
+    "generator": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -231,23 +298,11 @@
         "quote": "unknown",
         "url": "unknown"
       },
-      "local_rules": [],
-      "searched": [
-        "site:houstontx.gov \"hpwcode1050\" OR \"hpwcode1053\" appliance circuit"
-      ]
-    },
-    "generator": {
       "permit_required": {
         "value": true,
         "quote": "Registered electrical contractors who wish to install a standby generator must apply for an electrical permit.",
         "url": "https://www.houstonpermittingcenter.org/hpwcode1118",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Generator Permit (HPWCODE1118)",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": false,
       "checklist": {
@@ -265,6 +320,17 @@
           "ok": true
         }
       ],
+      "local_rules": [],
+      "searched": [
+        "site:houstontx.gov \"hpwcode1118\" OR \"Generator Permit\""
+      ]
+    },
+    "solar_storage": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -279,17 +345,7 @@
         "quote": "unknown",
         "url": "unknown"
       },
-      "local_rules": [],
-      "searched": [
-        "site:houstontx.gov \"hpwcode1118\" OR \"Generator Permit\""
-      ]
-    },
-    "solar_storage": {
-      "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
+      "requirements": [],
       "plans_required_single_family": {
         "value": "depends",
         "program_name": "Solar Panel Permit (HPWCODE1119) / Solar Panel Plan Review (ProjectDox)",
@@ -302,21 +358,6 @@
         "title": "Solar Panel Plan Review User Guide V 9.2",
         "revision_date": "Fall 2024",
         "url": "https://www.houstonpermittingcenter.org/hpwcode1119"
-      },
-      "requirements": [],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "local_rules": [],
       "searched": [

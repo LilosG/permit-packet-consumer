@@ -188,3 +188,68 @@
   job: solar_storage
   item: "Incorporate Residential Solar PV Project Plan Template elements into design"
   section: packet_gap
+- city: atlanta-ga
+  job: service_upgrade
+  item: Municipal electrical inspection approval prior to utility meter set
+  section: by_others
+  who: 'City of Atlanta inspector: approval before Georgia Power sets the meter'
+- city: atlanta-ga
+  job: solar_storage
+  item: Georgia Power PowerClerk interconnection application
+  section: by_others
+  who: 'Georgia Power: interconnection application through PowerClerk'
+- city: atlanta-ga
+  job: solar_storage
+  item: Customer-signed Georgia Power interconnection agreement
+  section: by_others
+  who: 'You, as the Georgia Power customer: sign the interconnection agreement'
+- city: el-cajon-ca
+  job: solar_storage
+  item: SDG&E Rule 21 interconnection application submitted through the DIIS Online Application Portal
+  section: by_others
+  who: 'SDG&E: Rule 21 interconnection application through the DIIS portal'
+- city: los-angeles-ca
+  job: generator
+  item: LADWP engineering review and approval of backup generator equipment configuration and transfer switch
+  section: by_others
+  who: 'LADWP engineering: review and approval of the generator configuration and transfer switch'
+- city: oakland-ca
+  job: service_upgrade
+  item: PG&E AIC (Available Interrupting Current) letter for all electrical service releases (required at inspection)
+  section: by_others
+  who: 'PG&E: AIC (available fault current) letter, required at inspection'
+- city: oakland-ca
+  job: generator
+  item: Zoning Worksheet with Basic Application for Development Review, site photos, site plan, elevations and/or vendor cut sheet
+  section: by_others
+  who: 'City of Oakland Planning: zoning review (Basic Application for Development Review, site photos, elevations)'
+- city: oakland-ca
+  job: generator
+  item: Noise compliance documentation or test per Planning Code OMC 17.120.050 (may be requested at final inspection)
+  section: by_others
+  who: 'You or your contractor: noise documentation or test, if the inspector asks at final'
+- city: oakland-ca
+  job: solar_storage
+  item: SolarAPP+ Approval Document and approval number
+  section: by_others
+  who: 'Your California-licensed solar contractor: SolarAPP+ approval (contractors only)'
+- city: oakland-ca
+  job: solar_storage
+  item: SolarAPP+ Spec Sheet and Contractors Declaration Form
+  section: by_others
+  who: 'Your California-licensed solar contractor: SolarAPP+ spec sheet and Contractors Declaration'
+- city: san-jose-ca
+  job: service_upgrade
+  item: Contractor documentation verifying 25 ohms or less resistance to earth if using a single ground rod
+  section: by_others
+  who: 'Your electrician: ground-rod resistance test (25 ohms or less) when only one ground rod is used'
+- city: san-jose-ca
+  job: generator
+  item: Special Use Permit from Planning (for generator installations that do not qualify as Safety Assessment projects)
+  section: by_others
+  who: 'City of San Jose Planning: Special Use Permit, only if the generator doesn''t qualify as a Safety Assessment project'
+- city: san-jose-ca
+  job: solar_storage
+  item: Building plans including framing plan, anchorage and weatherproofing details, and structural calculations
+  section: by_others
+  who: 'A licensed engineer or your solar contractor: framing plan, anchorage details and structural calculations'

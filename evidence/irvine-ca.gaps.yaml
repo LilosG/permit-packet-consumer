@@ -1,0 +1,52 @@
+jurisdiction_key: irvine-ca
+city: Irvine
+state: CA
+checked_on: 2026-11-25
+jobs:
+  ev_charger:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "not_stated"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+  service_upgrade:
+    load_calculation:
+      same_as: ev_charger
+  subpanel:
+    load_calculation:
+      same_as: ev_charger
+  appliance_circuit:
+    load_calculation:
+      same_as: ev_charger
+  generator:
+    permit_required:
+      value: not_stated
+      quote: "unknown"
+      url: unknown
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+    load_calculation:
+      same_as: ev_charger
+    requirements: []
+forms_found:
+  - name: "Single Family Electrical Calculation Sheet (Form 66-108)"
+    url: https://www.cityofirvine.gov/content/single-family-electrical-calculation-sheet
+    opened: false #
+  - name: "Electric Vehicle Charging Station (EVCS) Permit Worksheet (2.0) (Form 66-114)"
+    url: https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20
+    opened: false #
+  - name: "Residential EVCS Application Package (Updated 2024)"
+    url: https://www.cityofirvine.gov/files-repo/community-development/residential-evcs-application-packageupdated-2024pdf
+    opened: false #
+  - name: "Temporary Generator Permit Application (Form 57-88)"
+    url: https://cityofirvine.gov/forms-directory
+    opened: false #
+open_questions:
+  - "Single Family Electrical Calculation Sheet (Form 66-108, 66-108.pdf) listed at https://www.cityofirvine.gov/content/single-family-electrical-calculation-sheet could not be opened directly; opening this PDF in a browser should settle Irvine's required residential load calculation method (NEC 220.82 vs. 220.83) for EV chargers, service upgrades, subpanels, 240 V appliance circuits, and generators."
+  - "Electric Vehicle Charging Station (EVCS) Permit Worksheet (2.0) (Form 66-114, 66-114.pdf) at https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20 and Residential EVCS Application Package (Updated 2024) at https://www.cityofirvine.gov/files-repo/community-development/residential-evcs-application-packageupdated-2024pdf could not be opened directly; opening them in a browser should confirm whether Irvine specifies an EV charger load factor or requires Form 66-108 alongside Form 66-114."
+  - "No dedicated residential permanent standby generator, transfer switch, or generator interlock permit webpage or submittal checklist was found on cityofirvine.gov. The Forms Directory at https://cityofirvine.gov/forms-directory lists Temporary Generator Permit Application (Form 57-88), which could not be opened directly, and https://cityofirvine.gov/building-permits-and-inspections/same-day-permits directs applicants for projects not listed as eligible same-day permits to contact Community Development at 949-724-6313 regarding standard plan-check requirements."
+  - "Regarding the prior unresolved portal conflict: https://cityofirvine.gov/building-permits-and-inspections/same-day-permits states that as of September 14 the legacy site (permits.cityofirvine.org) no longer accepts new no-plan-check permit applications and all eligible no-plan-check permits (including Electrical Panel Upgrades and Miscellaneous Residential Work) must be submitted through PermitsDIRECT! powered by Symbium; EVCS is not listed as an eligible same-day permit type on that page."

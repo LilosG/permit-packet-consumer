@@ -1,0 +1,40 @@
+jurisdiction_key: austin-tx
+city: Austin
+state: TX
+checked_on: 2026-11-25
+jobs:
+  ev_charger:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+  service_upgrade:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+  subpanel:
+    load_calculation:
+      same_as: ev_charger
+  appliance_circuit:
+    load_calculation:
+      same_as: ev_charger
+  generator:
+    load_calculation:
+      same_as: ev_charger
+  solar_storage:
+    load_calculation:
+      same_as: ev_charger
+forms_found:
+  - name: "Electric Service Planning Application (ESPA)"
+    url: https://austinenergy.com/-/media/project/websites/austinenergy/commercial/pdfs-and-files/espaformv1.pdf?rev=4f6683646fb24329b451bdd4fcf9e6ab&sc_lang=en&hash=C9CE5E7C7B2A7BC61FF628464E9FE422
+    opened: true
+  - name: "ESPA Reference Guide"
+    url: https://austinenergy.com/-/media/project/websites/austinenergy/commercial/PDFs%20and%20Files/ESPA%20Reference%20Guide.pdf
+    opened: true
+open_questions:
+  - "No City of Austin residential electrical load calculation worksheet, required NEC Article 220 method (such as 220.82 or 220.83), or EV charger load factor is published on austintexas.gov or austinenergy.com. Austin Energy's Electric Service Planning Application (ESPA) requests 'Total NEC-Calculated Load (amps)' without specifying a calculation method; confirm directly with Austin DSD Residential Plan Review or on https://www.austintexas.gov/development-services/apply-standalone-permit."

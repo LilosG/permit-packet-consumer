@@ -1,0 +1,58 @@
+jurisdiction_key: phoenix-az
+city: Phoenix
+state: AZ
+checked_on: 2026-11-25
+jobs:
+  ev_charger:
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+  service_upgrade:
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+  subpanel:
+    plans_required_single_family:
+      value: yes
+      conditions: "Stated for Residential Permit by Inspector (RPBI) projects; Pool and Spa Residential Permit Application (TRT/DOC/00916) separately states pool sub-panels over 60 amps require electrical plans"
+      quote: "One-line electrical diagram, load calculations and panel schedules (if sub-panel is installed)"
+      url: https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00690.pdf
+  appliance_circuit:
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+  generator:
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+forms_found:
+  - name: "Electric Vehicle Chargers – Residential Permitting (TRT/DOC/00311)"
+    url: https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00311.pdf
+    revision_date: "05/23"
+    opened: false
+  - name: "Residential Over the Counter Permits Guideline (TRT/DOC/00366)"
+    url: https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00366.pdf
+    revision_date: "06/17"
+    opened: false
+  - name: "Residential - Permit by - Inspector (RPBI) (TRT/DOC/00690)"
+    url: https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00690.pdf
+    opened: false
+  - name: "Pool and Spa Residential Permit Application (TRT/DOC/00916)"
+    url: https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00916.pdf
+    revision_date: "10/17"
+    opened: false
+  - name: "Electrical Submittal Requirements - Interpretation (TRT/DOC/00574)"
+    url: https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf
+    opened: false
+open_questions:
+  - "Full text of Electric Vehicle Chargers – Residential Permitting (TRT/DOC/00311) at https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00311.pdf is needed to confirm whether existing single-family Level 2 EVSE installations without a service upgrade over 200 amps require plans."
+  - "Residential Over the Counter Permits Guideline (TRT/DOC/00366) at https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00366.pdf lists electric service upgrades not exceeding 200 amps under Express Permits, and Shape PHX Quick Permits issue 200-amp 1-phase upgrades, but a direct official policy quote explicitly stating no plans are required for single-family service upgrades 200 amps or less (and requiring plans above 200 amps) was not retrieved."
+  - "No published City of Phoenix policy document was found explicitly stating whether plans are required for a standalone single-family 240 V appliance circuit or a residential standby generator / transfer switch / interlock installation; Shape PHX records (e.g., CTR-102310087, CTR-102311225) show residential backup generators processed via Electronic Plan Review, but a written city policy page is needed to confirm."

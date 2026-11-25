@@ -2,7 +2,64 @@
   "jurisdiction_key": "los-angeles-ca",
   "city": "Los Angeles",
   "state": "CA",
-  "checked_on": "2026-11-24",
+  "checked_on": "2026-11-25",
+  "forms_found": [
+    {
+      "name": "Express Permits (No Plan Check Required) - Information Bulletin P/GI 2026-003 (Rev. 06-10-2026)",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
+      "opened": true
+    },
+    {
+      "name": "NEC Standard Electrical Load Calculation for Single Family Dwellings (IN-Form.00, Rev. 03-23-2016)",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/inspection/sfd-electrical-vehicle-charger-service-load-calculation-form-in-form-00.pdf",
+      "opened": true
+    },
+    {
+      "name": "Document Submittal Requirements for an Alteration or Addition to an Existing Single-Family Dwelling or Multi-Family Dwelling - Information Bulletin P/GI 2026-008 (Rev. 08-04-2026)",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/document-submittal-requirements-for-an-alteration-or-addition-to-an-existing-single-family-dwelling-or-multi-family-dwelling-ib-p-gi2020-008.pdf",
+      "opened": true
+    },
+    {
+      "name": "Guidelines for Plan Check and Permit Requirements for Solar Energy Devices - Information Bulletin P/GI 2023-027",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
+      "opened": true
+    },
+    {
+      "name": "LAFD Energy Storage System (ESS) Memo and Checklist (Ver 2.1, May 2, 2023)",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/misc/LAFD-ESS-Memo-and-Checklist.pdf",
+      "opened": true
+    },
+    {
+      "name": "City of Los Angeles Electrical Plan Check Correction List",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/city-of-los-angeles-electrical-plan-check-correction-list.pdf",
+      "opened": true
+    },
+    {
+      "name": "Solar PV Central Inverter Standard Plan - Comprehensive",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/solar-pv-central-inverter-standard-plan---comprehensive.pdf",
+      "opened": true
+    },
+    {
+      "name": "Solar PV Microinverter/ACM Standard Plan - Simplified",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/solar_pv_microinverter_standard_plan_simplified_2017_la_electrical_code.pdf",
+      "opened": true
+    },
+    {
+      "name": "LADWP Guide to Electric Service",
+      "url": "https://www.ladwp.com/sites/default/files/documents/Guide_to_Electric_Service.pdf",
+      "opened": true
+    },
+    {
+      "name": "Counter Plan Check Correction Sheet (2026 LABC/LARC)",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/counter-plan-corrections-sheet.pdf",
+      "opened": true
+    },
+    {
+      "name": "Permitting Checklist for Electric Vehicle Charging Station Applications",
+      "url": "https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Station%20Applications.pdf",
+      "opened": true
+    }
+  ],
   "agency": "Los Angeles Department of Building and Safety",
   "portal_url": "https://permitla.lacitydbs.org/Login/login.html",
   "code_edition": {
@@ -43,11 +100,300 @@
     ]
   },
   "open_questions": [
+    "Confirm whether LADBS requires electrical plan check for residential optional standby generators / transfer switches or interlocks under LAMC 93.0206 or P/GI 2026-003 (check full text of https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits and https://dbs.lacity.gov/start under 'Install a home battery or generator').",
+    "Verify the exact EV charger demand/load factor line and footnotes on IN-Form.00 (https://dbs.lacity.gov/sites/default/files/efs/forms/inspection/sfd-electrical-vehicle-charger-service-load-calculation-form-in-form-00.pdf) and whether LADBS accepts NEC 220.82/220.83 optional calculations for service upgrades, subpanels, appliance circuits, generators, or solar+storage.",
+    "Confirm residential electrical plan check PDF upload specifications, copy counts, and C-10 contractor vs. California Registered Electrical Engineer signature requirements under LAMC 93.0206(a) on https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/city-of-los-angeles-electrical-plan-check-correction-list.pdf and ePlanLA guidelines.",
+    "Verify full submittal checklist items for residential service upgrades (>320A or >400A) in LADWP Guide to Electric Service (https://www.ladwp.com/sites/default/files/documents/Guide_to_Electric_Service.pdf), including exact wording for the 2-copy load schedule and plot plan requirements.",
+    "Verify whether LADBS has issued a 2026 revision to Information Bulletin P/GI 2023-027 for solar PV and energy storage systems (https://dbs.lacity.gov/node/3977).",
     "Information Bulletin P/GI 2026-003 (Express Permits) lists an effective date of 01-01-2026 and revised date 06-10-2026 in the snippet, but the file URL returned by search is ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf; verify full current text of P/GI 2026-003 on dbs.lacity.gov (https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf).",
     "Information Bulletin P/GI 2023-027 (Guidelines for Plan Check and Permit Requirements for Solar Energy Devices) is hosted at /sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf and dated 01/01/2023; verify whether a 2026 revision of P/GI 2023-027 has been issued under the 2025 CEC (https://dbs.lacity.gov/node/3977).",
     "Specific LADBS residential electrical plan check rules for standalone generator transfer switches/interlocks and standardized sheet size/PDF submittal specifications for residential electrical plans were not returned in search snippets; verify on https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits."
   ],
   "jobs": {
+    "service_upgrade": {
+      "load_calculation": {
+        "method": "city worksheet",
+        "city_worksheet": "NEC Standard Electrical Load Calculation for Single Family Dwellings (IN-Form.00)",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "3 or less Appliances, Total Appliance VA; 4 or more Appliances, 75% of Total Appliance VA (NEC 220.53)",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/inspection/sfd-electrical-vehicle-charger-service-load-calculation-form-in-form-00.pdf",
+        "ok": true
+      },
+      "sheet_requirements": {
+        "sheet_size": "18x24 minimum",
+        "copies_or_format": "not_stated",
+        "signature_or_stamp": "not_stated",
+        "quote": "Plans prepared with ink or indelible pencil or by a reproduction process, drawn to scale, fully dimensioned, and a minimum size of 18\" x 24\" for single-family dwellings and a minimum size of 24\" x 36\" for multi-family dwellings.",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/document-submittal-requirements-for-an-alteration-or-addition-to-an-existing-single-family-dwelling-or-multi-family-dwelling-ib-p-gi2020-008.pdf",
+        "ok": true
+      },
+      "requirements": [
+        {
+          "item": "LADWP meter spot request for new residential service panel",
+          "section": "utility",
+          "quote": "When a contractor or homeowner plans to install a new residential service panel, they must first request a meter spot.",
+          "url": "https://www.ladwp.com/construction-services/construction-and-renovation-electric-service-requests/request-meter-spot-single-family-residential-home-or-adu-320-amps",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "permit_required": {
+        "value": true,
+        "quote": "Electrical Permits are required for any electrical work.",
+        "url": "https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Express Permits",
+        "quote": "1. Electrical installation with voltage of less than 600 volts and up to 400 amps total load in existing office, retail and residential buildings only.",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [
+        {
+          "rule": "Meter Spot Sheet required prior to LADBS inspection for overhead services 200A or less",
+          "quote": "A Meter Spot Sheet, for all overhead residential services rated 200amps or less, must be obtained from the ESR, prior to inspection by the Department of Building and Safety (DBS).",
+          "url": "https://www.ladwp.com/sites/default/files/documents/Guide_to_Electric_Service.pdf",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
+        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
+      ]
+    },
+    "subpanel": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "18x24 minimum",
+        "copies_or_format": "not_stated",
+        "signature_or_stamp": "not_stated",
+        "quote": "Plans prepared with ink or indelible pencil or by a reproduction process, drawn to scale, fully dimensioned, and a minimum size of 18\" x 24\" for single-family dwellings and a minimum size of 24\" x 36\" for multi-family dwellings.",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/document-submittal-requirements-for-an-alteration-or-addition-to-an-existing-single-family-dwelling-or-multi-family-dwelling-ib-p-gi2020-008.pdf",
+        "ok": true
+      },
+      "requirements": [],
+      "permit_required": {
+        "value": true,
+        "quote": "Electrical Permits are required for any electrical work.",
+        "url": "https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Express Permits",
+        "quote": "Adding circuits, outlets, lighting, a subpanel, voice/data wiring, or repairing damaged wiring is generally an express electrical permit. Plans required? No.",
+        "url": "https://dbs.lacity.gov/start",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [
+        {
+          "rule": "Express electrical permits apply only to non-engineered wiring up to 400A",
+          "quote": "These electrical installation permits apply only to non-engineered wiring. 1. Electrical installation with voltage of less than 600 volts and up to 400 amps total load in existing office, retail and residential buildings only.",
+          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:dbs.lacity.gov \"subpanel\" electrical permit",
+        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
+        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
+      ]
+    },
+    "appliance_circuit": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "18x24 minimum",
+        "copies_or_format": "not_stated",
+        "signature_or_stamp": "not_stated",
+        "quote": "Plans prepared with ink or indelible pencil or by a reproduction process, drawn to scale, fully dimensioned, and a minimum size of 18\" x 24\" for single-family dwellings and a minimum size of 24\" x 36\" for multi-family dwellings.",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/document-submittal-requirements-for-an-alteration-or-addition-to-an-existing-single-family-dwelling-or-multi-family-dwelling-ib-p-gi2020-008.pdf",
+        "ok": true
+      },
+      "requirements": [],
+      "permit_required": {
+        "value": true,
+        "quote": "Electrical Permits are required for any electrical work.",
+        "url": "https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Express Permits",
+        "quote": "Adding circuits, outlets, lighting, a subpanel, voice/data wiring, or repairing damaged wiring is generally an express electrical permit. Plans required? No.",
+        "url": "https://dbs.lacity.gov/start",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [
+        {
+          "rule": "Express electrical permits apply only to non-engineered wiring up to 400A",
+          "quote": "These electrical installation permits apply only to non-engineered wiring. 1. Electrical installation with voltage of less than 600 volts and up to 400 amps total load in existing office, retail and residential buildings only.",
+          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:dbs.lacity.gov \"spa\" OR \"hot tub\" OR \"sauna\" OR \"heat pump\" OR \"mini-split\" electrical permit",
+        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
+        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
+      ]
+    },
+    "generator": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "18x24 minimum",
+        "copies_or_format": "not_stated",
+        "signature_or_stamp": "not_stated",
+        "quote": "Plans prepared with ink or indelible pencil or by a reproduction process, drawn to scale, fully dimensioned, and a minimum size of 18\" x 24\" for single-family dwellings and a minimum size of 24\" x 36\" for multi-family dwellings.",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/document-submittal-requirements-for-an-alteration-or-addition-to-an-existing-single-family-dwelling-or-multi-family-dwelling-ib-p-gi2020-008.pdf",
+        "ok": true
+      },
+      "requirements": [
+        {
+          "item": "LADWP engineering review and approval of backup generator equipment configuration and transfer switch",
+          "section": "utility",
+          "quote": "When installing a emergency or standby generator that is connected to your service panel, the equipment configuration and transfer switch must be reviewed and approved by LADWP engineering.",
+          "url": "https://www.ladwp.com/construction-services/construction-and-renovation-electric-service-requests",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "permit_required": {
+        "value": true,
+        "quote": "Electrical Permits are required for any electrical work.",
+        "url": "https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [
+        {
+          "rule": "Backup generator and transfer switch connected to service panel require LADWP engineering review",
+          "quote": "When installing a emergency or standby generator that is connected to your service panel, the equipment configuration and transfer switch must be reviewed and approved by LADWP engineering.",
+          "url": "https://www.ladwp.com/construction-services/construction-and-renovation-electric-service-requests",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:dbs.lacity.gov \"generator\" OR \"transfer switch\" OR \"interlock\" OR \"standby\" electrical",
+        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
+        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
+      ]
+    },
+    "solar_storage": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "18x24 minimum",
+        "copies_or_format": "not_stated",
+        "signature_or_stamp": "not_stated",
+        "quote": "Plans prepared with ink or indelible pencil or by a reproduction process, drawn to scale, fully dimensioned, and a minimum size of 18\" x 24\" for single-family dwellings and a minimum size of 24\" x 36\" for multi-family dwellings.",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/document-submittal-requirements-for-an-alteration-or-addition-to-an-existing-single-family-dwelling-or-multi-family-dwelling-ib-p-gi2020-008.pdf",
+        "ok": true
+      },
+      "permit_required": {
+        "value": true,
+        "quote": "A. Electrical Permits: An electrical permit is required for the installation of solar photovoltaic systems.",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Express Permits",
+        "quote": "A rooftop system on a one- or two-family dwelling. b. The total capacity of the photovoltaic system being installed is 10 kW or less.",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
+        "ok": true
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "GUIDELINES FOR PLAN CHECK AND PERMIT REQUIREMENTS",
+        "revision_date": "01/01/2023",
+        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf"
+      },
+      "requirements": [
+        {
+          "item": "Approved plans and related technical specifications available onsite at inspection",
+          "section": "equipment",
+          "quote": "1. All approved plans and related technical specifications shall be available onsite at the time of inspection.",
+          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Clear brush-free area of 10 feet required for ground-mounted PV arrays",
+          "section": "site_plan",
+          "quote": "A clear, brush-free area of 10 feet shall be required for ground mounted PV arrays.",
+          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "local_rules": [
+        {
+          "rule": "Solar panels must have fire classification per UL 790 or ASTM E 108",
+          "quote": "The solar energy panels shall be listed, tested, and identified with a fire classification in accordance with UL 790 or ASTM E 108.",
+          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:dbs.lacity.gov \"P/GI 2020-027\" OR \"P/GI 2023-027\" OR \"Solar Energy Devices\"",
+        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
+        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
+      ]
+    },
     "ev_charger": {
       "permit_required": {
         "value": true,
@@ -112,266 +458,6 @@
       ],
       "searched": [
         "site:dbs.lacity.gov \"P/BC 2026-084\" OR \"EVCS\" OR \"electric vehicle\" residential",
-        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
-      ]
-    },
-    "service_upgrade": {
-      "permit_required": {
-        "value": true,
-        "quote": "Electrical Permits are required for any electrical work.",
-        "url": "https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": false,
-        "program_name": "Express Permits",
-        "quote": "1. Electrical installation with voltage of less than 600 volts and up to 400 amps total load in existing office, retail and residential buildings only.",
-        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
-        "ok": true
-      },
-      "checklist_published": false,
-      "checklist": {
-        "title": "unknown",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "local_rules": [
-        {
-          "rule": "Meter Spot Sheet required prior to LADBS inspection for overhead services 200A or less",
-          "quote": "A Meter Spot Sheet, for all overhead residential services rated 200amps or less, must be obtained from the ESR, prior to inspection by the Department of Building and Safety (DBS).",
-          "url": "https://www.ladwp.com/sites/default/files/documents/Guide_to_Electric_Service.pdf",
-          "ok": true
-        }
-      ],
-      "searched": [
-        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
-        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
-      ]
-    },
-    "subpanel": {
-      "permit_required": {
-        "value": true,
-        "quote": "Electrical Permits are required for any electrical work.",
-        "url": "https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": false,
-        "program_name": "Express Permits",
-        "quote": "Adding circuits, outlets, lighting, a subpanel, voice/data wiring, or repairing damaged wiring is generally an express electrical permit. Plans required? No.",
-        "url": "https://dbs.lacity.gov/start",
-        "ok": true
-      },
-      "checklist_published": false,
-      "checklist": {
-        "title": "unknown",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "local_rules": [
-        {
-          "rule": "Express electrical permits apply only to non-engineered wiring up to 400A",
-          "quote": "These electrical installation permits apply only to non-engineered wiring. 1. Electrical installation with voltage of less than 600 volts and up to 400 amps total load in existing office, retail and residential buildings only.",
-          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
-          "ok": true
-        }
-      ],
-      "searched": [
-        "site:dbs.lacity.gov \"subpanel\" electrical permit",
-        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
-        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
-      ]
-    },
-    "appliance_circuit": {
-      "permit_required": {
-        "value": true,
-        "quote": "Electrical Permits are required for any electrical work.",
-        "url": "https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": false,
-        "program_name": "Express Permits",
-        "quote": "Adding circuits, outlets, lighting, a subpanel, voice/data wiring, or repairing damaged wiring is generally an express electrical permit. Plans required? No.",
-        "url": "https://dbs.lacity.gov/start",
-        "ok": true
-      },
-      "checklist_published": false,
-      "checklist": {
-        "title": "unknown",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "local_rules": [
-        {
-          "rule": "Express electrical permits apply only to non-engineered wiring up to 400A",
-          "quote": "These electrical installation permits apply only to non-engineered wiring. 1. Electrical installation with voltage of less than 600 volts and up to 400 amps total load in existing office, retail and residential buildings only.",
-          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
-          "ok": true
-        }
-      ],
-      "searched": [
-        "site:dbs.lacity.gov \"spa\" OR \"hot tub\" OR \"sauna\" OR \"heat pump\" OR \"mini-split\" electrical permit",
-        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
-        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
-      ]
-    },
-    "generator": {
-      "permit_required": {
-        "value": true,
-        "quote": "Electrical Permits are required for any electrical work.",
-        "url": "https://dbs.lacity.gov/services/plan-review-permitting/electrical-permits",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "checklist_published": false,
-      "checklist": {
-        "title": "unknown",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "local_rules": [
-        {
-          "rule": "Backup generator and transfer switch connected to service panel require LADWP engineering review",
-          "quote": "When installing a emergency or standby generator that is connected to your service panel, the equipment configuration and transfer switch must be reviewed and approved by LADWP engineering.",
-          "url": "https://www.ladwp.com/construction-services/construction-and-renovation-electric-service-requests",
-          "ok": true
-        }
-      ],
-      "searched": [
-        "site:dbs.lacity.gov \"generator\" OR \"transfer switch\" OR \"interlock\" OR \"standby\" electrical",
-        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
-        "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
-      ]
-    },
-    "solar_storage": {
-      "permit_required": {
-        "value": true,
-        "quote": "A. Electrical Permits: An electrical permit is required for the installation of solar photovoltaic systems.",
-        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": false,
-        "program_name": "Express Permits",
-        "quote": "A rooftop system on a one- or two-family dwelling. b. The total capacity of the photovoltaic system being installed is 10 kW or less.",
-        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf",
-        "ok": true
-      },
-      "checklist_published": true,
-      "checklist": {
-        "title": "GUIDELINES FOR PLAN CHECK AND PERMIT REQUIREMENTS",
-        "revision_date": "01/01/2023",
-        "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf"
-      },
-      "requirements": [
-        {
-          "item": "Approved plans and related technical specifications available onsite at inspection",
-          "section": "equipment",
-          "quote": "1. All approved plans and related technical specifications shall be available onsite at the time of inspection.",
-          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
-          "page": null,
-          "ok": true
-        },
-        {
-          "item": "Clear brush-free area of 10 feet required for ground-mounted PV arrays",
-          "section": "site_plan",
-          "quote": "A clear, brush-free area of 10 feet shall be required for ground mounted PV arrays.",
-          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
-          "page": null,
-          "ok": true
-        }
-      ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "local_rules": [
-        {
-          "rule": "Solar panels must have fire classification per UL 790 or ASTM E 108",
-          "quote": "The solar energy panels shall be listed, tested, and identified with a fire classification in accordance with UL 790 or ASTM E 108.",
-          "url": "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
-          "ok": true
-        }
-      ],
-      "searched": [
-        "site:dbs.lacity.gov \"P/GI 2020-027\" OR \"P/GI 2023-027\" OR \"Solar Energy Devices\"",
-        "site:dbs.lacity.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
         "site:dbs.lacity.gov \"sheet size\" OR \"11x17\" OR \"11 x 17\" OR \"ePlanLA\" electrical plans"
       ]
     }

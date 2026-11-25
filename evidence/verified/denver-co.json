@@ -2,7 +2,29 @@
   "jurisdiction_key": "denver-co",
   "city": "Denver",
   "state": "CO",
-  "checked_on": "2026-11-24",
+  "checked_on": "2026-11-25",
+  "forms_found": [
+    {
+      "name": "DBC ADMIN 133 - Electrical Plan Review Required (Revised 2026-09-18)",
+      "url": "https://www.denvergov.org/files/assets/public/v/5/community-planning-and-development/documents/ds/building-codes/policies/admin-133-electrical-plan-review-required.pdf",
+      "opened": true
+    },
+    {
+      "name": "Clarification on Residential Electric Infrastructure Requirements (DEC Sections R404.4, R404.5, & R404.6, Revised 2026-09-21)",
+      "url": "https://denvergov.org/files/assets/public/v/4/community-planning-and-development/documents/ds/building-codes/policies/dec-r404.4_r404.5_r404.6_residential-electric-infrastructure-requirements.pdf",
+      "opened": true
+    },
+    {
+      "name": "Denver Fire Department Stationary Emergency & Standby Generators Guideline (Updated 2026-01-08)",
+      "url": "https://www.denvergov.org/files/assets/public/v/1/fire-department/documents/generator_install_guideline_2026.pdf",
+      "opened": true
+    },
+    {
+      "name": "DRC R329.6 Roof Access and Pathways for PV Drawings",
+      "url": "https://denvergov.org/files/assets/public/v/1/community-planning-and-development/documents/ds/building-codes/policies/drc-r329.6-roof-access-and-pathways-for-pv_drawings.pdf",
+      "opened": true
+    }
+  ],
   "agency": "Denver Community Planning and Development",
   "portal_url": "https://aca-prod.accela.com/denver/default.aspx",
   "code_edition": {
@@ -43,12 +65,21 @@
     ]
   },
   "open_questions": [
+    "No Denver-specific residential electrical load calculation worksheet, required NEC 220 method (220.82 vs. 220.83), or EV charger load factor was found on denvergov.org; confirm directly with Denver CPD (planreview@denvergov.org) whether any load calculation documentation is requested at inspection or during E-permits submittal for single-family electrical permits.",
+    "Neither the Quick Permits page (https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Quick-Permits) nor DBC ADMIN 133 (https://www.denvergov.org/files/assets/public/v/5/community-planning-and-development/documents/ds/building-codes/policies/admin-133-electrical-plan-review-required.pdf) explicitly states whether a single-family residential standby generator or generator inlet with transfer switch/interlock qualifies as a Quick Permit (under 'Any other equipment or appliance with a rated voltage of over 50 volts' on services 400A or less) or requires electrical plan review; confirm with Denver CPD.",
     "Denver's Quick Permits webpage (https://www.denvergov.org/quickpermits) and page 4+ of ADMIN 131A (https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf) listing exact residential electrical Quick Permit scopes (EV charger, service upgrade, subpanel, appliance circuit, standalone generator) were not fully returned in search snippets; open directly to confirm exact eligibility.",
     "Confirm the exact effective date of Denver's adoption of the 2026 NEC / NFPA 70 on https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Building-Codes-Policies-and-Guides.",
     "No Denver-specific residential electrical load calculation worksheet or EV charger load factor was found on denvergov.org; confirm whether CPD requires a specific NEC 220 method for single-family electrical permits."
   ],
   "jobs": {
     "ev_charger": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Quick permits are trade-specific permits that can be issued without the need for a plan review or a Building Log.",
@@ -86,13 +117,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic via E-permits (Quick Permits or Building Log); email to planreview@denvergov.org for homeowner Quick Permits",
@@ -115,6 +139,13 @@
       ]
     },
     "service_upgrade": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Quick permits are trade-specific permits that can be issued without the need for a plan review or a Building Log.",
@@ -152,13 +183,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic via E-permits (Quick Permits or Building Log); email to planreview@denvergov.org for homeowner Quick Permits",
@@ -180,6 +204,13 @@
       ]
     },
     "subpanel": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Quick permits are trade-specific permits that can be issued without the need for a plan review or a Building Log.",
@@ -217,13 +248,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic via E-permits (Quick Permits or Building Log); email to planreview@denvergov.org for homeowner Quick Permits",
@@ -245,6 +269,13 @@
       ]
     },
     "appliance_circuit": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Quick permits are trade-specific permits that can be issued without the need for a plan review or a Building Log.",
@@ -282,13 +313,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic via E-permits (Quick Permits or Building Log); email to planreview@denvergov.org for homeowner Quick Permits",
@@ -310,17 +334,24 @@
       ]
     },
     "generator": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "A zoning permit is required for solar panels that are not building-mounted and generators on the exterior of the structure.",
         "url": "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/Solar-Permits",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "none",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": false,
       "checklist": {
@@ -338,13 +369,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic via E-permits (Quick Permits or Building Log); email to planreview@denvergov.org for homeowner Quick Permits",
@@ -359,6 +383,13 @@
       ]
     },
     "solar_storage": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "All systems require an electrical permit.",
@@ -412,13 +443,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic PDF upload via E-permits (Quick Permits for SolarAPP+, Building Log otherwise)",

@@ -2,7 +2,29 @@
   "jurisdiction_key": "sacramento-ca",
   "city": "Sacramento",
   "state": "CA",
-  "checked_on": "2026-11-24",
+  "checked_on": "2026-11-25",
+  "forms_found": [
+    {
+      "name": "CDD-0213 Electrical Load Calculation Worksheet (Revised 05-06-2026)",
+      "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0213_Electrical-Load-Calculation-Worksheet.pdf",
+      "opened": false
+    },
+    {
+      "name": "CDD-0212 Electrical Plan Check Requirements (Revised 01-01-2026)",
+      "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+      "opened": false
+    },
+    {
+      "name": "CDD-0154 Streamline Residential EVSE Permit Submission Checklist (Revised 06-16-2026)",
+      "url": "https://cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0154_EVSE-Installations-Submission-Checklist.pdf",
+      "opened": false
+    },
+    {
+      "name": "CDD-0312 New Residential Building (1-2 Units) Submittal Checklist",
+      "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0312_New-Residential-Building-1-2-Units-Submittal-Checklist.pdf",
+      "opened": false
+    }
+  ],
   "agency": "City of Sacramento Community Development Department, Building Division",
   "portal_url": "https://aca-prod.accela.com/SACRAMENTO/Default.aspx",
   "code_edition": {
@@ -49,12 +71,209 @@
     ]
   },
   "open_questions": [
+    "Could not retrieve the full list of eligible Residential Minor Electrical permit scopes (including whether standalone single-family subpanels require a permit without plans) from https://www.cityofsacramento.gov/community-development/building/building-forms/minor-permit-application-form-bundles",
+    "No City of Sacramento single-family residential standby generator, generator inlet, or transfer switch/interlock electrical permit checklist or submittal guide was found on cityofsacramento.gov (CDD-0008 only covers wireless cell tower emergency standby generators); checking https://www.cityofsacramento.gov/community-development/building/building-forms in a browser would confirm whether a residential generator form exists.",
+    "Could not retrieve the full text of https://www.cityofsacramento.gov/community-development/building/permit-services/residential-solar to confirm whether residential rooftop solar with battery storage requires a load calculation (such as CDD-0213 under 2025 CEC 220.82).",
     "Could not retrieve the full list of eligible scopes under Web Minor Permits / Residential Minor Electrical permits (e.g., whether like-for-like panel changeouts, subpanels, or 240V appliance circuits qualify without plans) from https://www.cityofsacramento.gov/community-development/building/building-forms/minor-permit-application-form-bundles",
     "Could not retrieve the full text of https://www.cityofsacramento.gov/community-development/building/permit-services/residential-solar to verify whether standalone battery storage or non-SolarAPP+ residential PV has a published city submittal checklist.",
     "No City of Sacramento single-family residential standby/portable generator or transfer switch electrical permit checklist or submittal guide was found on cityofsacramento.gov.",
     "Could not verify the exact EV charger load factor percentage (100% vs 125%) printed inside CDD-0213 from search snippets of https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0213_Electrical-Load-Calculation-Worksheet.pdf"
   ],
   "jobs": {
+    "subpanel": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Complete set of Electrical Plans and Building Permit Application CDD-0200",
+          "section": "application",
+          "quote": "Provide a complete set of Electrical Plans. Also Include a completed Building Permit Application Form CDD-0200 with your submittal.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Single-line drawings showing main service size, conductors, OCPDs, AIC, and grounding",
+          "section": "one_line",
+          "quote": "Provide Single Line Drawings.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Complete CEC load calculations and complete panel schedules",
+          "section": "load",
+          "quote": "Complete CEC calculations based on sq. ft. and with actual loads, include 125% for continuous loads and add 25% of largest motor.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Commitment letter from SMUD for new or upgraded services",
+          "section": "utility",
+          "quote": "Note: All new or upgraded services require a commitment letter from SMUD.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+          "page": 1,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "city_worksheet",
+        "city_worksheet": "Electrical Load Calculation Worksheet (CDD-0213) - https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0213_Electrical-Load-Calculation-Worksheet.pdf",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Provide Load Calculations.",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+        "ok": true
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF files (APP, PLANS, SUPP) via Electronic Plan Check",
+        "signature_or_stamp": "Unsigned electronic architect/engineer stamps on initial submittal; signed on cycle 2 and beyond when required",
+        "quote": "The electronic process simply involves PDF file submission instead of paper.",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Plan-Review/Electronic-Plan-Check/EPC-Submittal-Guide-Full-Version.pdf",
+        "ok": true
+      },
+      "local_rules": [],
+      "searched": [
+        "site:cityofsacramento.gov \"panel\" OR \"service upgrade\" OR \"subpanel\" electrical permit",
+        "site:cityofsacramento.gov \"Web Minor Permits\" OR \"Minor Electrical\""
+      ]
+    },
+    "generator": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF files (APP, PLANS, SUPP) via Electronic Plan Check",
+        "signature_or_stamp": "Unsigned electronic architect/engineer stamps on initial submittal; signed on cycle 2 and beyond when required",
+        "quote": "The electronic process simply involves PDF file submission instead of paper.",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Plan-Review/Electronic-Plan-Check/EPC-Submittal-Guide-Full-Version.pdf",
+        "ok": true
+      },
+      "local_rules": [],
+      "searched": [
+        "site:cityofsacramento.gov \"generator\" \"transfer switch\" OR \"standby\" permit",
+        "site:cityofsacramento.gov \"residential\" \"generator\" electrical permit"
+      ]
+    },
+    "solar_storage": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "permit_required": {
+        "value": true,
+        "quote": "Customers can submit their SB379 – SolarAPP+ Applications online and are able to monitor the progress of their project status, with greater transparency and ease than through emails.",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/it/digitalstrategy/Residential%20SolarApp.pdf",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": "depends",
+        "program_name": "SolarAPP+",
+        "quote": "SolarAPP+, short for Solar Automated Permit Processing, automates the residential",
+        "url": "https://www.cityofsacramento.gov/community-development/building/permit-services/residential-solar",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Submit eligible residential solar applications online through SolarAPP+",
+          "section": "application",
+          "quote": "Customers can submit their SB379 – SolarAPP+ Applications online and are able to monitor the progress of their project status, with greater transparency and ease than through emails.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/it/digitalstrategy/Residential%20SolarApp.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Submit SMUD interconnection application via PowerClerk with one-time fee",
+          "section": "utility",
+          "quote": "Visit PowerClerk for all solar and distributed generation projects.",
+          "url": "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Interconnected energy storage must follow SMUD Rule 21 interconnection requirements",
+          "section": "utility",
+          "quote": "Note: Interconnected energy storage will be treated as distributed generation and fall under Rule 21 interconnection requirements.",
+          "url": "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF files (APP, PLANS, SUPP) via Electronic Plan Check",
+        "signature_or_stamp": "Unsigned electronic architect/engineer stamps on initial submittal; signed on cycle 2 and beyond when required",
+        "quote": "The electronic process simply involves PDF file submission instead of paper.",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Plan-Review/Electronic-Plan-Check/EPC-Submittal-Guide-Full-Version.pdf",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "SMUD uses Rule 21 or Advanced Inverter Functions settings for interconnection",
+          "quote": "SMUD uses either Rule 21 or Advanced Inverter Functions (AIF) settings as part of the Interconnection application process.",
+          "url": "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information",
+          "ok": true
+        },
+        {
+          "rule": "Battery storage must be charged with on-site renewable energy to qualify for NEM",
+          "quote": "To qualify for Net Energy Metering (NEM), all storage must be charged with renewable energy on site.",
+          "url": "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:cityofsacramento.gov \"SolarAPP+\" OR \"Energy Storage\" OR \"Battery\" permit checklist",
+        "site:cityofsacramento.gov/community-development/building/permit-services/residential-solar"
+      ]
+    },
     "ev_charger": {
       "permit_required": {
         "value": true,
@@ -239,80 +458,6 @@
         "site:cityofsacramento.gov/community-development/building \"minor\" electrical permit"
       ]
     },
-    "subpanel": {
-      "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "checklist_published": false,
-      "checklist": {
-        "title": "unknown",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [
-        {
-          "item": "Complete set of Electrical Plans and Building Permit Application CDD-0200",
-          "section": "application",
-          "quote": "Provide a complete set of Electrical Plans. Also Include a completed Building Permit Application Form CDD-0200 with your submittal.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-          "page": 1,
-          "ok": true
-        },
-        {
-          "item": "Single-line drawings showing main service size, conductors, OCPDs, AIC, and grounding",
-          "section": "one_line",
-          "quote": "Provide Single Line Drawings.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-          "page": 1,
-          "ok": true
-        },
-        {
-          "item": "Complete CEC load calculations and complete panel schedules",
-          "section": "load",
-          "quote": "Complete CEC calculations based on sq. ft. and with actual loads, include 125% for continuous loads and add 25% of largest motor.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-          "page": 1,
-          "ok": true
-        },
-        {
-          "item": "Commitment letter from SMUD for new or upgraded services",
-          "section": "utility",
-          "quote": "Note: All new or upgraded services require a commitment letter from SMUD.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-          "page": 1,
-          "ok": true
-        }
-      ],
-      "load_calculation": {
-        "method": "city_worksheet",
-        "city_worksheet": "Electrical Load Calculation Worksheet (CDD-0213) - https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0213_Electrical-Load-Calculation-Worksheet.pdf",
-        "ev_charger_load_factor": "not_stated",
-        "quote": "Provide Load Calculations.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-        "ok": true
-      },
-      "sheet_requirements": {
-        "sheet_size": "not_stated",
-        "copies_or_format": "Electronic PDF files (APP, PLANS, SUPP) via Electronic Plan Check",
-        "signature_or_stamp": "Unsigned electronic architect/engineer stamps on initial submittal; signed on cycle 2 and beyond when required",
-        "quote": "The electronic process simply involves PDF file submission instead of paper.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Plan-Review/Electronic-Plan-Check/EPC-Submittal-Guide-Full-Version.pdf",
-        "ok": true
-      },
-      "local_rules": [],
-      "searched": [
-        "site:cityofsacramento.gov \"panel\" OR \"service upgrade\" OR \"subpanel\" electrical permit",
-        "site:cityofsacramento.gov \"Web Minor Permits\" OR \"Minor Electrical\""
-      ]
-    },
     "appliance_circuit": {
       "permit_required": {
         "value": "depends",
@@ -386,126 +531,6 @@
       "searched": [
         "site:cityofsacramento.gov \"hot tub\" OR \"spa\" OR \"heat pump\" electrical permit",
         "site:cityofsacramento.gov \"Web Minor Permits\" OR \"Minor Electrical\""
-      ]
-    },
-    "generator": {
-      "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "checklist_published": false,
-      "checklist": {
-        "title": "unknown",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "not_stated",
-        "copies_or_format": "Electronic PDF files (APP, PLANS, SUPP) via Electronic Plan Check",
-        "signature_or_stamp": "Unsigned electronic architect/engineer stamps on initial submittal; signed on cycle 2 and beyond when required",
-        "quote": "The electronic process simply involves PDF file submission instead of paper.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Plan-Review/Electronic-Plan-Check/EPC-Submittal-Guide-Full-Version.pdf",
-        "ok": true
-      },
-      "local_rules": [],
-      "searched": [
-        "site:cityofsacramento.gov \"generator\" \"transfer switch\" OR \"standby\" permit",
-        "site:cityofsacramento.gov \"residential\" \"generator\" electrical permit"
-      ]
-    },
-    "solar_storage": {
-      "permit_required": {
-        "value": true,
-        "quote": "Customers can submit their SB379 – SolarAPP+ Applications online and are able to monitor the progress of their project status, with greater transparency and ease than through emails.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/it/digitalstrategy/Residential%20SolarApp.pdf",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "depends",
-        "program_name": "SolarAPP+",
-        "quote": "SolarAPP+, short for Solar Automated Permit Processing, automates the residential",
-        "url": "https://www.cityofsacramento.gov/community-development/building/permit-services/residential-solar",
-        "ok": true
-      },
-      "checklist_published": false,
-      "checklist": {
-        "title": "unknown",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [
-        {
-          "item": "Submit eligible residential solar applications online through SolarAPP+",
-          "section": "application",
-          "quote": "Customers can submit their SB379 – SolarAPP+ Applications online and are able to monitor the progress of their project status, with greater transparency and ease than through emails.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/it/digitalstrategy/Residential%20SolarApp.pdf",
-          "page": 1,
-          "ok": true
-        },
-        {
-          "item": "Submit SMUD interconnection application via PowerClerk with one-time fee",
-          "section": "utility",
-          "quote": "Visit PowerClerk for all solar and distributed generation projects.",
-          "url": "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information",
-          "page": null,
-          "ok": true
-        },
-        {
-          "item": "Interconnected energy storage must follow SMUD Rule 21 interconnection requirements",
-          "section": "utility",
-          "quote": "Note: Interconnected energy storage will be treated as distributed generation and fall under Rule 21 interconnection requirements.",
-          "url": "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information",
-          "page": null,
-          "ok": true
-        }
-      ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "not_stated",
-        "copies_or_format": "Electronic PDF files (APP, PLANS, SUPP) via Electronic Plan Check",
-        "signature_or_stamp": "Unsigned electronic architect/engineer stamps on initial submittal; signed on cycle 2 and beyond when required",
-        "quote": "The electronic process simply involves PDF file submission instead of paper.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Plan-Review/Electronic-Plan-Check/EPC-Submittal-Guide-Full-Version.pdf",
-        "ok": true
-      },
-      "local_rules": [
-        {
-          "rule": "SMUD uses Rule 21 or Advanced Inverter Functions settings for interconnection",
-          "quote": "SMUD uses either Rule 21 or Advanced Inverter Functions (AIF) settings as part of the Interconnection application process.",
-          "url": "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information",
-          "ok": true
-        },
-        {
-          "rule": "Battery storage must be charged with on-site renewable energy to qualify for NEM",
-          "quote": "To qualify for Net Energy Metering (NEM), all storage must be charged with renewable energy on site.",
-          "url": "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information",
-          "ok": true
-        }
-      ],
-      "searched": [
-        "site:cityofsacramento.gov \"SolarAPP+\" OR \"Energy Storage\" OR \"Battery\" permit checklist",
-        "site:cityofsacramento.gov/community-development/building/permit-services/residential-solar"
       ]
     }
   }

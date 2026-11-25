@@ -1,0 +1,80 @@
+jurisdiction_key: dallas-tx
+city: Dallas
+state: TX
+checked_on: 2026-11-25
+jobs:
+  service_upgrade:
+    permit_required:
+      value: yes
+      quote: "When required: Any wiring, panel upgrades, new circuits, service changes, or electrical work on a building."
+      url: https://dallascityhall.com/departments/sustainabledevelopment/guide/Pages/default.aspx
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "PDF upload in DallasNow portal (under 256 MB per PDF)"
+      signature_or_stamp: "not_stated"
+      quote: "File size: Keep each PDF under 256 MB (DallasNow file limit)."
+      url: https://dallascityhall.com/departments/pnv/Documents/AH%20Memos/PDV%20Drawing%20Sheet%20Filename%20Format%20Instructions%20-%209.18.25.pdf
+  ev_charger:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      same_as: service_upgrade
+    sheet_requirements:
+      same_as: service_upgrade
+  subpanel:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      same_as: service_upgrade
+    sheet_requirements:
+      same_as: service_upgrade
+  appliance_circuit:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      same_as: service_upgrade
+    sheet_requirements:
+      same_as: service_upgrade
+  generator:
+    sheet_requirements:
+      same_as: service_upgrade
+forms_found:
+  - name: "Electrical Permit Application Checklist and Required Documents (5/10/2024)"
+    url: https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/ELECTRICAL%20PERMIT%20APPLICATION%20CHECKLIST%20updateJ.pdf
+    opened: false
+  - name: "Backup Generator Permit Application Checklist and Required Plans/Documents"
+    url: https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/BACKUP%20GENERATOR%20PERMIT-updateJ.pdf
+    opened: false
+  - name: "Planning & Development Drawing Sheet Filename Format Instructions (9/18/2025)"
+    url: https://dallascityhall.com/departments/pnv/Documents/AH%20Memos/PDV%20Drawing%20Sheet%20Filename%20Format%20Instructions%20-%209.18.25.pdf
+    opened: false
+  - name: "Uploading Plans With Multiple Pages in DallasNow (9/18/2025)"
+    url: https://dallascityhall.com/departments/pnv/Documents/AH%20Memos/Uploading%20Plans%20With%20Multiple%20Pages%20in%20DallasNow%20-%209.18.25.pdf
+    opened: false
+  - name: "DallasNow Terminology Reference Guide (6/27/2025)"
+    url: https://dallascityhall.com/departments/pnv/Documents/DallasNow%20Terminology%20Reference%20Guide_6.27.25.pdf
+    opened: false
+  - name: "Chapter 52: Administrative Procedures for the Construction Codes (Current through April 23, 2025)"
+    url: https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/Chapter%2052%20as%20of%203-27-24.pdf
+    opened: false
+  - name: "Chapter 52: Administrative Procedures for the Construction Codes (April 2024)"
+    url: https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/Chapter52April24.pdf
+    opened: false
+  - name: "Chapter 56 Amendment, Dallas Electrical Code (2023 NEC, April 2026)"
+    url: https://dallascityhall.com/departments/pnv/Documents/AH%20Memos/Chapter%2056%20Amendment,%20Dallas%20Electrical%20Code,.pdf
+    opened: false
+  - name: "Backup Generator Permit Application Checklist (Rev 09-11-2018)"
+    url: https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/pdf/BI_Backup%20Generator%20Permit_Rev%2009-11-2018.pdf
+    opened: false
+  - name: "Electrical Permit Application Checklist (Rev 7/2000)"
+    url: https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/pdf/building/ElectricalPermit.pdf
+    opened: false
+open_questions:
+  - "Whether standalone contractor-pulled single-family electrical permits (EV charger, service upgrade, subpanel, 240 V appliance circuit) are exempt from plan submittal; opening Section 301.4.7.6 ('Alternative provisions') of https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/Chapter%2052%20as%20of%203-27-24.pdf and the Residential Electrical Permit workflow in DallasNow (https://aca-prod.accela.com/DALLASTX) would settle this (note: Chapter 56 Section 81.3(A) requires homestead homeowners doing their own work to file approved plans and specifications)."
+  - "Minimum/maximum drawing sheet size specifically for standalone electrical and backup generator plan submittals (other Dallas residential checklists such as SOLARPANELWATERHEATEROROTHERSYSTEM.pdf and Single_Family_Dwelling_Remodel.pdf state 11x17 minimum to 36x48 maximum, but the full text of https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/BACKUP%20GENERATOR%20PERMIT-updateJ.pdf and https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/ELECTRICAL%20PERMIT%20APPLICATION%20CHECKLIST%20updateJ.pdf needs to be opened to confirm whether the same sheet-size note appears there)."
+  - "Signature or professional seal exemptions for single-family electrical and backup generator plans; opening Section 301.4.7.4.3 ('Plans exempted from engineer's seal') of https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/Chapter%2052%20as%20of%203-27-24.pdf and the glossary entry on https://dallascityhall.com/departments/sustainabledevelopment/guide/Pages/default.aspx would settle this."

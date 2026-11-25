@@ -1,0 +1,170 @@
+jurisdiction_key: atlanta-ga
+city: Atlanta
+state: GA
+checked_on: 2026-11-25
+who_may_file:
+  owner_may_file: unknown
+  conditions: not_stated
+  quote: unknown
+  url: unknown
+jobs:
+  ev_charger:
+    permit_required:
+      value: not_stated
+      quote: unknown
+      url: unknown
+    plans_required_single_family:
+      value: false
+      conditions: none
+      quote: The following do not require plan review and can be submitted online. Plumbing Permits for new or replacement plumbing for one and two family residences. Electrical permits (commercial and residential)
+      url: https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+    sheet_requirements:
+      sheet_size: not_stated
+      copies_or_format: Online portal (Accela Citizen Access)
+      signature_or_stamp: not_stated
+      quote: The following do not require plan review and can be submitted online. Plumbing Permits for new or replacement plumbing for one and two family residences. Electrical permits (commercial and residential)
+      url: https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit
+    requirements: []
+  service_upgrade:
+    permit_required:
+      value: true
+      quote: the Public Service Commission requires that all wiring and equipment in or upon the premises of the Customer to the point of the service connection shall have the approval of an inspector from the constituted authority
+      url: https://www.georgiapower.com/business/industry-services/start-stop-move/establish-new-connection.html
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements:
+    - item: Service entrance and meter socket compliance with Georgia Power Blue Book requirements
+      section: utility
+      quote: The service entrance and meter socket must be installed per Blue Book requirements.
+      url: https://www.georgiapower.com/business/industry-services/start-stop-move/establish-new-connection.html
+      page: null
+    - item: Municipal electrical inspection approval prior to utility meter set
+      section: utility
+      quote: the Public Service Commission requires that all wiring and equipment in or upon the premises of the Customer to the point of the service connection shall have the approval of an inspector from the constituted authority
+      url: https://www.georgiapower.com/business/industry-services/start-stop-move/establish-new-connection.html
+      page: null
+  subpanel:
+    permit_required:
+      value: not_stated
+      quote: unknown
+      url: unknown
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  appliance_circuit:
+    permit_required:
+      value: not_stated
+      quote: unknown
+      url: unknown
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  generator:
+    permit_required:
+      value: not_stated
+      quote: unknown
+      url: unknown
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements:
+    - item: Standby generation equipment placement restriction (no equipment between Georgia Power meter and customer meter socket)
+      section: one_line
+      quote: No customer standby generation equipment shall be installed between the Company's meter and customer's meter socket.
+      url: https://www.georgiapower.com/content/dam/georgia-power/pdfs/business-pdfs/bluebook_2023.pdf
+      page: 90
+  solar_storage:
+    permit_required:
+      value: true
+      quote: 'Commonly-permitted projects include: New Construction. Additions/Alterations. Demolitions. Accessory structures (Sheds and ADUs) Fences. Decks and Porches. Windows, Roofs, and Solar panels.'
+      url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/getting-started-with-our-zd-p-services
+    plans_required_single_family:
+      value: not_stated
+      conditions: not_stated
+      quote: unknown
+      url: unknown
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      sheet_size: not_stated
+      copies_or_format: not_stated
+      signature_or_stamp: not_stated
+      quote: unknown
+      url: unknown
+    requirements:
+    - item: Georgia Power PowerClerk interconnection application
+      section: utility
+      quote: To participate in either program, you or your installer must fill out an application using PowerClerk, our interconnection for application tool.
+      url: https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html
+      page: null
+    - item: One-line drawing with solar panel, inverter, and battery storage specifications
+      section: one_line
+      quote: Facility and technical information, including a one-line drawing and panel and inverter specifications. If battery storage is included, battery specifications must also be provided.
+      url: https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html
+      page: null
+    - item: Customer-signed Georgia Power interconnection agreement
+      section: utility
+      quote: However, even if an installer assists or completes the online application, the interconnection agreement will be solely between Georgia Power Company and the Georgia Power customer. All applications will require the Georgia Power customer's signature.
+      url: https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html
+      page: null
+forms_found:
+- name: Homeowner's Affidavit Form
+  url: https://atlantaga.gov/home/showpublisheddocument/43020/637145012601370000
+  opened: false
+- name: Electrical Permit Application
+  url: https://atlantaga.gov/home/showpublisheddocument/33210/636500536008370000
+  opened: false
+- name: Residential EV charging checklist
+  url: https://atlantaga.gov/home/showpublisheddocument/37302/636658725389330000
+  opened: false
+- name: EV charging guide
+  url: https://www.atlantaga.gov/home/showdocument?id=34401
+  opened: false
+- name: How to obtain an Electrical Permit (FAQ)
+  url: https://www.atlantaga.gov/Home/ShowDocument?id=9619
+  opened: false
+- name: Express Solar Panel Install Checklist
+  url: https://atlantaga.gov/home/showpublisheddocument/52522/637764617399370000
+  opened: false
+- name: Contractor's License Affidavit / Exception checklist
+  url: https://atlantaga.gov/home/showpublisheddocument/62750/638562989000670000
+  opened: false
+- name: Georgia Power BlueBook 2023
+  url: https://www.georgiapower.com/content/dam/georgia-power/pdfs/business-pdfs/bluebook_2023.pdf
+  opened: true
+- name: Georgia Power Interconnection Process Guide
+  url: https://www.georgiapower.com/content/dam/georgia-power/pdfs/company-pdfs/solar-pdfs/Interconnection-Process-Guide.pdf
+  opened: true
+- name: Georgia Power Behind-the-Meter Distribution Interconnection Summary
+  url: https://www.georgiapower.com/content/dam/georgia-power/pdfs/company-pdfs/BTM-Distribution-Interconnection-Summary-09_23.pdf
+  opened: true
+- name: Georgia Power Distributed Generation Interconnection Construction Guidelines
+  url: https://www.georgiapower.com/content/dam/georgia-power/pdfs/residential-pdfs/solar/dg-interconnection-construction-guidelines.pdf
+  opened: true
+open_questions:
+- 'The seven City of Atlanta PDFs listed under forms_found (opened: false) could not be opened directly in this environment and their text is not indexed in search snippets; open them in a browser to extract verbatim quotes for the remaining gaps.'
+- Homeowner eligibility to pull standalone residential electrical permits (who_may_file) and any residency/affidavit conditions should be verified from https://atlantaga.gov/home/showpublisheddocument/43020/637145012601370000, https://atlantaga.gov/home/showpublisheddocument/62750/638562989000670000, and https://www.atlantaga.gov/Home/ShowDocument?id=9619.
+- EV charger permit requirements, load calculation method (NEC 220.82 vs. 220.83), any city worksheet, EV charger load factor, and submittal items should be verified from https://atlantaga.gov/home/showpublisheddocument/37302/636658725389330000, https://www.atlantaga.gov/home/showdocument?id=34401, and 'EV Charger Affidavit Form' on https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists.
+- Permit-required scopes and submittal items for subpanels, 240 V appliance circuits, and residential standby generators should be verified from https://atlantaga.gov/home/showpublisheddocument/33210/636500536008370000, https://www.atlantaga.gov/Home/ShowDocument?id=9619, and 'Description of Electrical Permits & Inspections' on https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists.
+- Residential solar PV and battery storage (ESS) plan-review thresholds, sheet size, signature/stamp rules, and city submittal items should be verified from https://atlantaga.gov/home/showpublisheddocument/52522/637764617399370000 as well as 'Submittal Info-Solar Roof Install - Res', 'Building Permit Packet - (Express)', and 'PV - Inspection Checklist' on https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists.
