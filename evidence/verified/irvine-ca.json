@@ -2,7 +2,29 @@
   "jurisdiction_key": "irvine-ca",
   "city": "Irvine",
   "state": "CA",
-  "checked_on": "2026-11-24",
+  "checked_on": "2026-11-25",
+  "forms_found": [
+    {
+      "name": "Single Family Electrical Calculation Sheet (Form 66-108)",
+      "url": "https://www.cityofirvine.gov/content/single-family-electrical-calculation-sheet",
+      "opened": false
+    },
+    {
+      "name": "Electric Vehicle Charging Station (EVCS) Permit Worksheet (2.0) (Form 66-114)",
+      "url": "https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20",
+      "opened": false
+    },
+    {
+      "name": "Residential EVCS Application Package (Updated 2024)",
+      "url": "https://www.cityofirvine.gov/files-repo/community-development/residential-evcs-application-packageupdated-2024pdf",
+      "opened": false
+    },
+    {
+      "name": "Temporary Generator Permit Application (Form 57-88)",
+      "url": "https://cityofirvine.gov/forms-directory",
+      "opened": false
+    }
+  ],
   "agency": "City of Irvine Community Development, Building and Safety",
   "portal_url": "https://permits.cityofirvine.org/",
   "code_edition": {
@@ -49,6 +71,10 @@
     ]
   },
   "open_questions": [
+    "Single Family Electrical Calculation Sheet (Form 66-108, 66-108.pdf) listed at https://www.cityofirvine.gov/content/single-family-electrical-calculation-sheet could not be opened directly; opening this PDF in a browser should settle Irvine's required residential load calculation method (NEC 220.82 vs. 220.83) for EV chargers, service upgrades, subpanels, 240 V appliance circuits, and generators.",
+    "Electric Vehicle Charging Station (EVCS) Permit Worksheet (2.0) (Form 66-114, 66-114.pdf) at https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20 and Residential EVCS Application Package (Updated 2024) at https://www.cityofirvine.gov/files-repo/community-development/residential-evcs-application-packageupdated-2024pdf could not be opened directly; opening them in a browser should confirm whether Irvine specifies an EV charger load factor or requires Form 66-108 alongside Form 66-114.",
+    "No dedicated residential permanent standby generator, transfer switch, or generator interlock permit webpage or submittal checklist was found on cityofirvine.gov. The Forms Directory at https://cityofirvine.gov/forms-directory lists Temporary Generator Permit Application (Form 57-88), which could not be opened directly, and https://cityofirvine.gov/building-permits-and-inspections/same-day-permits directs applicants for projects not listed as eligible same-day permits to contact Community Development at 949-724-6313 regarding standard plan-check requirements.",
+    "Regarding the prior unresolved portal conflict: https://cityofirvine.gov/building-permits-and-inspections/same-day-permits states that as of September 14 the legacy site (permits.cityofirvine.org) no longer accepts new no-plan-check permit applications and all eligible no-plan-check permits (including Electrical Panel Upgrades and Miscellaneous Residential Work) must be submitted through PermitsDIRECT! powered by Symbium; EVCS is not listed as an eligible same-day permit type on that page.",
     "Conflicting EVCS submittal paths: https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family states all EVCS applications must be submitted via IrvineReady!, while https://permits.cityofirvine.org/irvinepermits/ApplyInstrutctions.htm still instructs applicants to use the online self-service WMSR permit for single-family EVCS and panelboards up to 400 amps.",
     "The EVCS Permit Worksheet (2.0) PDF (Form 66-114, referenced at https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20) could not be opened directly to verify whether it specifies a residential NEC 220 load calculation method or EV charger load factor.",
     "No dedicated residential standby or portable generator electrical permit webpage or checklist was found on cityofirvine.gov or permits.cityofirvine.org.",
@@ -56,6 +82,13 @@
   ],
   "jobs": {
     "ev_charger": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "All EVCS applications will need to be submitted electronically through the IrvineReady! Online Plan Submission Portal.",
@@ -109,13 +142,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
@@ -150,6 +176,13 @@
       ]
     },
     "service_upgrade": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "If main electrical panel upgrade is applicable, enter \"1\" Panelboard, 400 amps or less box.",
@@ -195,13 +228,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
@@ -224,6 +250,13 @@
       ]
     },
     "subpanel": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "If main electrical panel upgrade is applicable, enter \"1\" Panelboard, 400 amps or less box.",
@@ -269,13 +302,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
@@ -298,6 +324,13 @@
       ]
     },
     "appliance_circuit": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Involves no more than 10 electrical fixtures and/or outlets, indoors or outdoors",
@@ -335,13 +368,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
@@ -377,22 +403,22 @@
       },
       "plans_required_single_family": {
         "value": "unknown",
-        "program_name": "unknown",
+        "conditions": "unknown",
         "quote": "unknown",
         "url": "unknown"
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
         "ev_charger_load_factor": "unknown",
         "quote": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
         "url": "unknown"
       },
       "sheet_requirements": {

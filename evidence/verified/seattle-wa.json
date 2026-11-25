@@ -2,7 +2,24 @@
   "jurisdiction_key": "seattle-wa",
   "city": "Seattle",
   "state": "WA",
-  "checked_on": "2026-11-24",
+  "checked_on": "2026-11-25",
+  "forms_found": [
+    {
+      "name": "2023 Seattle Electrical Code Quick Reference",
+      "url": "https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf",
+      "opened": true
+    },
+    {
+      "name": "Submittal Requirements for Electrical Plan Review (Section 80.51)",
+      "url": "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf",
+      "opened": true
+    },
+    {
+      "name": "Load Calculations Sample (Seattle City Light - Commercial/Multifamily)",
+      "url": "https://www.seattle.gov/documents/Departments/CityLight/Construction/LoadCalculations_Sample.pdf",
+      "opened": true
+    }
+  ],
   "agency": "Seattle Department of Construction and Inspections (SDCI)",
   "portal_url": "https://cosaccela.seattle.gov/Portal/",
   "code_edition": {
@@ -37,89 +54,21 @@
     ]
   },
   "open_questions": [
+    "SDCI requires load calculations in accordance with NEC Article 220 for plan review submittals, but no Seattle-specific single-family residential load calculation worksheet, mandatory 220.82 vs. 220.83 subsection, or EV charger load factor was found on seattle.gov; confirm with SDCI electrical inspections whether OTC residential permits require a specific NEC 220 method.",
     "SDCI's Electrical Permit webpage (https://www.seattle.gov/construction-and-inspections/permits/permits-we-issue-(a-z)/electrical-permit) still states 'under 7.7KW' for no-plan-review solar PV, while the 2020/2023 SEC Section 80.51 text (https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf) raised the threshold to 12 kW; confirm the active OTC PV threshold with SDCI.",
     "Tip 339 (https://www.seattle.gov/DPD/Publications/CAM/cam339.pdf) is dated October 15, 2015 and focuses on commercial/life-safety systems; confirm with SDCI whether single-family optional standby or portable generators with interlocks/transfer switches qualify for OTC permits or require plan review under 2023 SEC Section 80.51.",
     "No Seattle-specific residential electrical load calculation worksheet or EV charger load factor was found in the retrieved SDCI documents; confirm whether SDCI requires a specific NEC 220 method for single-family OTC permits."
   ],
   "jobs": {
-    "ev_charger": {
-      "permit_required": {
-        "value": true,
-        "quote": "Electrical permits are required for all electric vehicle charger installations.",
-        "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": false,
-        "program_name": "Over the Counter (OTC / self-issued) Online Permit",
-        "quote": "Electrical permits for a Level II Charger (40 amp) single-family residence require no plan review and may be obtained online at https://cosaccela.seattle.gov/Portal/.",
-        "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf",
-        "ok": true
-      },
-      "checklist_published": true,
-      "checklist": {
-        "title": "Tip 132 - Installation of Electric Vehicle (EV) Charger for Single-Family and Multifamily Homes",
-        "revision_date": "unknown",
-        "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf"
-      },
-      "requirements": [
-        {
-          "item": "Apply online via Seattle Services Portal and print OTC permit the same day",
-          "section": "application",
-          "quote": "You can apply online by choosing the Permit – Trade, Construction, and Land Use link and then selecting the appropriate electrical permit. You can print your permit the same day.",
-          "url": "https://www.seattle.gov/construction-and-inspections/permits/permits-we-issue-(a-z)/electrical-permit",
-          "page": null,
-          "ok": true
-        },
-        {
-          "item": "Plan review required if EV charger is fed by services or feeders rated 400 amps or more",
-          "section": "one_line",
-          "quote": "Level II and III chargers may require plan review if being fed by services or feeders rated 400 amps or more.",
-          "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf",
-          "page": 2,
-          "ok": true
-        }
-      ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "not_stated",
-        "copies_or_format": "Electronic upload through Seattle Services Portal when plan review is required",
-        "signature_or_stamp": "not_stated",
-        "quote": "If your permit requires plan review, you can submit your plans and specifications electronically through the Seattle Services Portal",
-        "url": "https://www.seattle.gov/construction-and-inspections/permits/permits-we-issue-(a-z)/electrical-permit",
-        "ok": true
-      },
-      "local_rules": [
-        {
-          "rule": "Car chargers cannot be located in the public right-of-way",
-          "quote": "Car chargers cannot be located in the public right-of-way.",
-          "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf",
-          "ok": true
-        },
-        {
-          "rule": "Electrical permit must be posted on-site (2023 SEC 80.52(B))",
-          "quote": "Posting of Electrical Permits. SDCI is reinstating the requirement to post the electrical permits on-site. 80.52(B)",
-          "url": "https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf",
-          "ok": true
-        },
-        {
-          "rule": "Plan review required if three or more OTC permits are issued in a single building impacting a feeder or service",
-          "quote": "A plan review is required where three or more over the counter permits are issued in a single building which could impact a feeder, service, or fire alarm system. 80.51(B)(1)(j)",
-          "url": "https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf",
-          "ok": true
-        }
-      ],
-      "searched": [
-        "site:seattle.gov \"electric vehicle\" OR \"EV charger\" electrical permit residential"
-      ]
-    },
     "service_upgrade": {
+      "load_calculation": {
+        "method": "NEC Article 220",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "a complete project load summary to include existing loads as computed in accordance with NEC Article 220, and all added loads.",
+        "url": "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "You need to get a permit for all electrical work, with a few exceptions.",
@@ -173,13 +122,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload through Seattle Services Portal when plan review is required; drawn to clearly indicated commonly accepted scale",
@@ -206,7 +148,93 @@
         "site:seattle.gov \"service upgrade\" OR \"panel\" electrical permit SDCI"
       ]
     },
+    "ev_charger": {
+      "load_calculation": {
+        "method": "NEC Article 220",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "a complete project load summary to include existing loads as computed in accordance with NEC Article 220, and all added loads.",
+        "url": "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf",
+        "ok": true
+      },
+      "permit_required": {
+        "value": true,
+        "quote": "Electrical permits are required for all electric vehicle charger installations.",
+        "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Over the Counter (OTC / self-issued) Online Permit",
+        "quote": "Electrical permits for a Level II Charger (40 amp) single-family residence require no plan review and may be obtained online at https://cosaccela.seattle.gov/Portal/.",
+        "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf",
+        "ok": true
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "Tip 132 - Installation of Electric Vehicle (EV) Charger for Single-Family and Multifamily Homes",
+        "revision_date": "unknown",
+        "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf"
+      },
+      "requirements": [
+        {
+          "item": "Apply online via Seattle Services Portal and print OTC permit the same day",
+          "section": "application",
+          "quote": "You can apply online by choosing the Permit – Trade, Construction, and Land Use link and then selecting the appropriate electrical permit. You can print your permit the same day.",
+          "url": "https://www.seattle.gov/construction-and-inspections/permits/permits-we-issue-(a-z)/electrical-permit",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Plan review required if EV charger is fed by services or feeders rated 400 amps or more",
+          "section": "one_line",
+          "quote": "Level II and III chargers may require plan review if being fed by services or feeders rated 400 amps or more.",
+          "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf",
+          "page": 2,
+          "ok": true
+        }
+      ],
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic upload through Seattle Services Portal when plan review is required",
+        "signature_or_stamp": "not_stated",
+        "quote": "If your permit requires plan review, you can submit your plans and specifications electronically through the Seattle Services Portal",
+        "url": "https://www.seattle.gov/construction-and-inspections/permits/permits-we-issue-(a-z)/electrical-permit",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Car chargers cannot be located in the public right-of-way",
+          "quote": "Car chargers cannot be located in the public right-of-way.",
+          "url": "https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf",
+          "ok": true
+        },
+        {
+          "rule": "Electrical permit must be posted on-site (2023 SEC 80.52(B))",
+          "quote": "Posting of Electrical Permits. SDCI is reinstating the requirement to post the electrical permits on-site. 80.52(B)",
+          "url": "https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf",
+          "ok": true
+        },
+        {
+          "rule": "Plan review required if three or more OTC permits are issued in a single building impacting a feeder or service",
+          "quote": "A plan review is required where three or more over the counter permits are issued in a single building which could impact a feeder, service, or fire alarm system. 80.51(B)(1)(j)",
+          "url": "https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:seattle.gov \"electric vehicle\" OR \"EV charger\" electrical permit residential"
+      ]
+    },
     "subpanel": {
+      "load_calculation": {
+        "method": "NEC Article 220",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "a complete project load summary to include existing loads as computed in accordance with NEC Article 220, and all added loads.",
+        "url": "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "You need to get a permit for all electrical work, with a few exceptions.",
@@ -236,13 +264,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload through Seattle Services Portal when plan review is required; drawn to clearly indicated commonly accepted scale",
@@ -276,6 +297,14 @@
       ]
     },
     "appliance_circuit": {
+      "load_calculation": {
+        "method": "NEC Article 220",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "a complete project load summary to include existing loads as computed in accordance with NEC Article 220, and all added loads.",
+        "url": "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "You need to get a permit for all electrical work, with a few exceptions.",
@@ -305,13 +334,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload through Seattle Services Portal when plan review is required; drawn to clearly indicated commonly accepted scale",
@@ -333,6 +355,14 @@
       ]
     },
     "generator": {
+      "load_calculation": {
+        "method": "NEC Article 220",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "a complete project load summary to include existing loads as computed in accordance with NEC Article 220, and all added loads.",
+        "url": "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "You need to get a permit for all electrical work, with a few exceptions.",
@@ -385,13 +415,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload through Seattle Services Portal when plan review is required; drawn to clearly indicated commonly accepted scale",
@@ -406,17 +429,25 @@
       ]
     },
     "solar_storage": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "load_calculation": {
+        "method": "NEC Article 220",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "a complete project load summary to include existing loads as computed in accordance with NEC Article 220, and all added loads.",
+        "url": "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "You need to obtain the required permits to install your solar system.",
         "url": "https://www.seattle.gov/DPD/publications/CAM/cam420.pdf",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Online OTC Permit (PV <= 12 kW, no ESS) or Electrical Plan Review (PV > 12 kW or any ESS)",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": true,
       "checklist": {
@@ -434,13 +465,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic upload through Seattle Services Portal when plan review is required; drawn to clearly indicated commonly accepted scale",

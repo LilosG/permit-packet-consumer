@@ -1,0 +1,56 @@
+jurisdiction_key: sacramento-ca
+city: Sacramento
+state: CA
+checked_on: 2026-11-25
+jobs:
+  subpanel:
+    permit_required:
+      value: not_stated
+      quote: "unknown"
+      url: unknown
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+  generator:
+    permit_required:
+      value: not_stated
+      quote: "unknown"
+      url: unknown
+    plans_required_single_family:
+      value: not_stated
+      conditions: "none"
+      quote: "unknown"
+      url: unknown
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+    requirements: []
+  solar_storage:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+forms_found:
+  - name: "CDD-0213 Electrical Load Calculation Worksheet (Revised 05-06-2026)"
+    url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0213_Electrical-Load-Calculation-Worksheet.pdf
+    opened: false
+  - name: "CDD-0212 Electrical Plan Check Requirements (Revised 01-01-2026)"
+    url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf
+    opened: false
+  - name: "CDD-0154 Streamline Residential EVSE Permit Submission Checklist (Revised 06-16-2026)"
+    url: https://cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0154_EVSE-Installations-Submission-Checklist.pdf
+    opened: false
+  - name: "CDD-0312 New Residential Building (1-2 Units) Submittal Checklist"
+    url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0312_New-Residential-Building-1-2-Units-Submittal-Checklist.pdf
+    opened: false
+open_questions:
+  - "Could not retrieve the full list of eligible Residential Minor Electrical permit scopes (including whether standalone single-family subpanels require a permit without plans) from https://www.cityofsacramento.gov/community-development/building/building-forms/minor-permit-application-form-bundles"
+  - "No City of Sacramento single-family residential standby generator, generator inlet, or transfer switch/interlock electrical permit checklist or submittal guide was found on cityofsacramento.gov (CDD-0008 only covers wireless cell tower emergency standby generators); checking https://www.cityofsacramento.gov/community-development/building/building-forms in a browser would confirm whether a residential generator form exists."
+  - "Could not retrieve the full text of https://www.cityofsacramento.gov/community-development/building/permit-services/residential-solar to confirm whether residential rooftop solar with battery storage requires a load calculation (such as CDD-0213 under 2025 CEC 220.82)."

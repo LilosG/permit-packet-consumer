@@ -1,0 +1,149 @@
+jurisdiction_key: miami-fl
+city: Miami
+state: FL
+checked_on: 2026-11-25
+code_edition:
+  value: 2020 NEC (NFPA 70) via Florida Building Code 8th Edition (2023); enforced as-is by City of Miami (9th Edition / 2023 NEC scheduled effective 2026-12-31)
+  effective_date: 2023-12-31
+  quote: Florida Building Code- Residential / 8th Edition (2023) Florida Fire Prevention Code / 8th Edition. National Electrical Code (NEC) / (NFPA 70) / 2020 Edition.
+  url: https://www.miami.gov/My-Government/Departments/Building/Building-Services/State-of-Florida-Applicable-Codes
+who_may_file:
+  owner_may_file: true
+  conditions: Strictly limited to owner-occupied one-family and two-family residential work only; requires in-person interview and test at Miami Riverside Center (444 SW 2nd Ave, 1st Floor), proof of residency (ID with property address and utility bill), and a signed and notarized Owner-Builder disclosure statement.
+  quote: Please note that the City of Miami strictly limits Owner-Builder permits to owner-occupied One-family and Two-family residential work only.
+  url: https://www.miami.gov/Permits-Construction/Remodeling-and-Construction/Become-an-Owner-Builder
+jobs:
+  ev_charger:
+    permit_required:
+      value: true
+      quote: Permits for all work must be obtained (i.e. Building, Electrical, Mechanical, Plumbing, etc.).
+      url: https://www.miami.gov/Permits-Construction/Remodeling-and-Construction/Become-an-Owner-Builder
+    plans_required_single_family:
+      value: not_stated
+      conditions: none
+      quote: unknown
+      url: unknown
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+    sheet_requirements:
+      sheet_size: not_stated
+      copies_or_format: PDF upload in ePlan/ProjectDox (one file per drawing sheet, landscape orientation for drawings)
+      signature_or_stamp: not_stated
+      quote: To ensure consistency and efficiency in the ePlan Review process, all files uploaded to ProjectDox must follow strict naming and formatting standards.
+      url: https://www.miami.gov/Permits-Construction/Digital-Permitting/Standard-Naming-Convention-for-Drawings-Documents
+    requirements: []
+  service_upgrade:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      value: not_stated
+      conditions: Residential service repair only is eligible for an Easy Permit without plan review; full service upgrade plan requirements are not explicitly stated.
+      quote: The Easy Permit Request program allows qualified contractors to apply, for small projects that do not require plan review (i.e. no major construction) and immediately receive a building permit via e-mail to begin working.
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  subpanel:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  appliance_circuit:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  generator:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  solar_storage:
+    permit_required:
+      value: true
+      quote: Select "start application" and then "building application". [You'll then need to select standalone, electrical permit, then "solar panel"].
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels
+    plans_required_single_family:
+      value: true
+      conditions: One set of plans signed and sealed by a Florida licensed Engineer; for projects less than $50,000, plans may be prepared by a qualifying contractor with an EC or CVC license.
+      quote: One set of plans signed and sealed by a Florida licensed Engineer. For projects less than $50,000 plans may be prepared by a qualifying contractor with an EC or CVC license.
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+    sheet_requirements:
+      sheet_size: not_stated
+      copies_or_format: PDF upload in ePlan/ProjectDox (or in-person submittal at 444 SW 2nd Ave, 4th Floor)
+      signature_or_stamp: Florida licensed Engineer (or qualifying contractor with an EC or CVC license for projects less than $50,000)
+      quote: One set of plans signed and sealed by a Florida licensed Engineer. For projects less than $50,000 plans may be prepared by a qualifying contractor with an EC or CVC license.
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels
+    requirements:
+    - item: Permit application signed by owner and contractor and notarized for both signatures
+      section: application
+      quote: Permit application, signed by owner & contractor and notarized for both signatures. This application will be printed after you apply online, below.
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels
+      page: null
+    - item: Riser diagram showing existing equipment sizes, OCP size, DC/AC inverter and PV panel specifications, and interconnection diagram
+      section: one_line
+      quote: Riser diagram showing existing equipment sizes and OCP size. DC/AC inverter specifications and photovoltaic panel specifications. Diagram of both systems integrated/interconnected.
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels
+      page: null
+    - item: Calculation of entire grid and size of inverter, compliance with NEC 705.12D (120%), and support/mounting detail
+      section: load
+      quote: Calculation of entire grid and size of inverter. Compliance with NEC 705.12D (120%) Provide support and mounting detail.
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels
+      page: null
+    - item: Product equipment specifications, manufacturer material data sheets, and storage battery size, type, and location (if used)
+      section: equipment
+      quote: Product equipment specifications and material data sheet from the manufacturer. If storage batteries are used, indicate size, type and location.
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels
+      page: null
+    - item: Transfer switch (manual or automatic) and switching equipment detail from and to the public utility electrical system
+      section: one_line
+      quote: Indicate transfer switch, manual or automatic. Detail to be shown for all switching equipment and methods from and to public utility electrical system.
+      url: https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels
+      page: null
+forms_found:
+- name: Standard Naming Convention for Drawings & Documents
+  url: https://www.miami.gov/files/sharedassets/public/v/7/eplan/eplanhelp/eplan-review-standard-naming-conventions-remediated.pdf
+  opened: true
+- name: City of Miami Standard Document File Naming Convention
+  url: https://www.miami.gov/files/assets/public/document-resources/pdf-docs/eplan/city-of-miami-standard-document-file-naming-convention-v1.pdf
+  opened: true
+- name: City of Miami Standard Drawing File Naming Convention
+  url: https://www.miami.gov/files/assets/public/document-resources/pdf-docs/eplan/city-of-miami-standard-drawing-file-naming-convention-v1.pdf
+  opened: true
+- name: Owner's Affidavit of Exemption (Roof to Wall Connection Hurricane Mitigation Retrofit - Rev. 02-20-2015)
+  url: https://www.miami.gov/files/assets/public/document-resources/pdf-docs/building/forms/owner_affidavit-of-exemption.pdf
+  opened: true
+- name: Homeowner's Express Review Training Guide
+  url: https://www.miami.gov/files/assets/public/v/3/document-resources/pdf-docs/building/training-resources/homeowners-express-review-training-guide.pdf
+  opened: true
+open_questions:
+- No dedicated City of Miami single-family residential electrical submittal checklist was found on miami.gov for EV chargers, main service upgrades, subpanels, 240 V appliance circuits, or standby generators; confirming with the Building Department (305-416-1100 / eplanbuilding@miamigov.com) or checking the interactive Residential Permit Guide map at https://www.miami.gov/My-Government/Departments/Building/Residential-Permit-Guide would settle job-specific plan and submittal requirements.
+- No City of Miami-published residential electrical load calculation worksheet, mandatory NEC 220 method (220.82 vs. 220.83), or EV charger load factor was found on miami.gov; confirming with the Building Department Electrical Plan Review division would settle this.
+- The Owner's Affidavit of Exemption PDF on miami.gov (owner_affidavit-of-exemption.pdf) is for Roof-to-Wall Connection Hurricane Mitigation Retrofit, not an Owner-Builder electrical affidavit; the Owner-Builder disclosure statement is issued in person at the Miami Riverside Center Homeowner Assistance counter.

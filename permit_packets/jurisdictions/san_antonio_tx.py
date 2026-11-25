@@ -1,7 +1,7 @@
 """San Antonio, TX: City of San Antonio Development Services (DSD)"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -17,7 +17,7 @@ SAN_ANTONIO = Jurisdiction(
     last_verified="2026-11-25",
     code_name="NEC",
     permit_rules_verified="2026-11-25",
-    who_may_pull="Electrical permits can only be obtained by licensed electrical contractors registered with the City (homeowners may only pull plumbing permits for an existing homestead)",
+    who_may_pull="Homeowners may only pull a plumbing permit for an existing homestead residence where they personally perform the work; electrical permits require a City- or State-licensed trade contractor registered with the City.",
     owner_may_file=False,
     portal_url="https://www.sanantonio.gov/DSD",
     fee_note="Electrical permit fees are based on the adopted San Antonio DSD fee schedule.",
@@ -44,6 +44,11 @@ SAN_ANTONIO = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
+                Requirement("Permit application: address, owner, contractor and valuation", "application"),
+                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
+                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
+                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
+                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
                 Requirement("Electrical Permit Application submitted via BuildSA portal (or in person) with contractor license, address, and work summary", "application",
                             "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf"),
                 Requirement("Itemized quantities of electrical equipment/circuits to be installed, repaired, or modified for fee calculation", "equipment",
@@ -60,13 +65,19 @@ SAN_ANTONIO = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
+                Requirement("Permit application: address, scope and valuation", "application"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
+                Requirement("Panel and meter base specifications and listing", "equipment"),
+                Requirement("Site plan showing the meter and main panel", "site_plan"),
+                Requirement("Utility service request", "utility"),
+                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
                 Requirement("Electrical Permit Application submitted via BuildSA portal (or in person) with contractor license, address, and work summary", "application",
                             "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf"),
                 Requirement("Itemized quantities of electrical equipment/circuits to be installed, repaired, or modified for fee calculation", "equipment",
                             "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf"),
                 Requirement("Indication of whether work with CPS Energy is required", "utility",
                             "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf"),
-                SURGE_PROTECTION,
             ),
             source_url="https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf",
             source_label="From the city's published pages",
@@ -78,6 +89,11 @@ SAN_ANTONIO = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
+                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Panel specifications and listing", "equipment"),
                 Requirement("Electrical Permit Application submitted via BuildSA portal (or in person) with contractor license, address, and work summary", "application",
                             "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf"),
                 Requirement("Itemized quantities of electrical equipment/circuits to be installed, repaired, or modified for fee calculation", "equipment",
@@ -94,6 +110,11 @@ SAN_ANTONIO = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the panel and the appliance", "site_plan"),
+                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Manufacturer specifications and listing", "equipment"),
                 Requirement("Electrical Permit Application submitted via BuildSA portal (or in person) with contractor license, address, and work summary", "application",
                             "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf"),
                 Requirement("Itemized quantities of electrical equipment/circuits to be installed, repaired, or modified for fee calculation", "equipment",
@@ -110,6 +131,11 @@ SAN_ANTONIO = Jurisdiction(
         ),
         "generator": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, generator inlet and feeder route", "site_plan"),
+                Requirement("One-line diagram showing interlock or transfer switch (NEC 702.5)", "one_line"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Interlock kit / transfer switch UL listing and cut sheets", "equipment"),
                 Requirement("Electrical Permit Application submitted via BuildSA portal (or in person) with contractor license, address, and work summary", "application",
                             "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf"),
                 Requirement("Itemized quantities of electrical equipment/circuits to be installed, repaired, or modified for fee calculation", "equipment",
@@ -123,6 +149,11 @@ SAN_ANTONIO = Jurisdiction(
         ),
         "solar_storage": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, inverter/ESS and output route", "site_plan"),
+                Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
+                Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
+                Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
                 Requirement("Online DSD Photovoltaic permit application submitted by a Master Electrician via BuildSA building module", "application",
                             "https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf"),
                 Requirement("Site Plan showing existing/proposed structures, setbacks to property/lot lines, and main electrical service wall layout", "site_plan",

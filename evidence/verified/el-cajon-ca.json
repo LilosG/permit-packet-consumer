@@ -2,7 +2,56 @@
   "jurisdiction_key": "el-cajon-ca",
   "city": "El Cajon",
   "state": "CA",
-  "checked_on": "2026-11-24",
+  "checked_on": "2026-11-25",
+  "who_may_file": {
+    "owner_may_file": true,
+    "conditions": "Individual owner of property must be the owner of record and sign an affidavit attesting to ownership and conditions of affidavit; statewide California owner-builder residency and resale limits also apply under Business and Professions Code Section 7044.",
+    "quote": "The building official may issue a permit to an individual owner of property after the owner of record has signed an affidavit attesting to ownership and conditions of affidavit.",
+    "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
+    "ok": true
+  },
+  "forms_found": [
+    {
+      "name": "El Cajon City Council Agenda (Oct 14, 2025) - Title 15 / Chapter 15.24 Electrical Permits",
+      "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
+      "opened": true
+    },
+    {
+      "name": "Owner Builder Form",
+      "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2",
+      "opened": false
+    },
+    {
+      "name": "Permit Application",
+      "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2",
+      "opened": false
+    },
+    {
+      "name": "Photovoltaic - Fire Code Installation standards",
+      "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2",
+      "opened": false
+    },
+    {
+      "name": "Residential EV Charging Checklist",
+      "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-2878/-toggle-all/-sortn-EDate/-folder-39/-npage-3",
+      "opened": false
+    },
+    {
+      "name": "Expedited Photovoltaic Application",
+      "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-folder-39/-toggle-allpast/-npage-3",
+      "opened": false
+    },
+    {
+      "name": "SDG&E Builder Services Express Program Fact Sheet v2",
+      "url": "https://www.sdge.com/sites/default/files/documents/2025-02/BSP%20Fact%20Sheet%20--%20Express%20Program%20v2.pdf?nid=27556",
+      "opened": true
+    },
+    {
+      "name": "SDG&E Generation Interconnection 101",
+      "url": "https://www.sdge.com/sites/default/files/Generation%20Interconnection%20101%20-%20as%20of%20October%202024.pdf",
+      "opened": true
+    }
+  ],
   "agency": "City of El Cajon Community Development, Building Safety (Building Division)",
   "portal_url": "https://www.elcajon.gov/PACO",
   "code_edition": {
@@ -11,12 +60,6 @@
     "quote": "California Electrical Code, 2025 Edition—Adopted by reference. The California Electrical Code, 2025 Edition, as published by the International Code Council",
     "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
     "ok": true
-  },
-  "who_may_file": {
-    "owner_may_file": "unknown",
-    "conditions": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
   },
   "utility": {
     "name": "San Diego Gas & Electric (SDG&E)",
@@ -48,6 +91,10 @@
     ]
   },
   "open_questions": [
+    "Exact plans_required_single_family thresholds, load_calculation method/worksheet, EV charger load factor, sheet_size, signature_or_stamp, and job-specific city submittal checklists could not be verified because El Cajon's Document Central PDFs ('Residential EV Charging Checklist', 'Expedited Photovoltaic Application', 'Photovoltaic - Fire Code Installation standards', 'Owner Builder Form', and 'Permit Application' in folder-39) could not be opened directly.",
+    "Full body text of El Cajon Municipal Code Chapter 15.92 (Sections 15.92.030, 15.92.035, 15.92.037, 15.92.040, and 15.92.050 covering solar, advanced energy storage systems, and EV charging stations) was only indexed by section title in the October 14, 2025 agenda PDF; opening the full Chapter 15.92 municipal code text would confirm city-specific streamlined permitting and submittal requirements for EV chargers and solar with battery storage.",
+    "Specific conditions printed on El Cajon's 'Owner Builder Form' (such as occupancy duration or affidavit wording beyond Municipal Code Section 15.24.020) require opening the PDF in Document Central folder-39.",
+    "Whether single-family standby generators, subpanels, service upgrades, or 240 V appliance circuits qualify for over-the-counter issuance without plan review in El Cajon requires accessing the Building Permits and Forms subpages linked from https://www.elcajon.gov/your-government/departments/community-development/building-fire-safety-division.",
     "El Cajon's Building Permits, Photovoltaic Permits, and Forms subpages linked from https://www.elcajon.gov/your-government/departments/community-development/building-fire-safety-division (including https://www.elcajon.gov/your-government/departments/community-development/building-fire-safety/photovoltaic) were not indexed or accessible to extract verbatim job-specific submittal checklists or over-the-counter eligibility rules.",
     "The PDFs listed in Building Division Document Central—including 'Residential EV Charging Checklist' (https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-2878/-toggle-all/-sortn-EDate/-folder-39/-npage-3), 'Owner Builder Form', 'Permit Application', and 'Photovoltaic - Fire Code Installation standards' (https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2)—could not be opened directly to verify their contents, revision dates, or load calculation requirements.",
     "The exact effective date of the 2025 California Electrical Code adoption ordinance in the October 14, 2025 City Council agenda (https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf) could not be verified verbatim from the indexed excerpt.",
@@ -56,9 +103,10 @@
   "jobs": {
     "ev_charger": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "No electric wiring, devices, appliances or equipment shall be installed within or on any building, structure or premises, nor shall any alteration or addition be made in any such existing wiring, devices, appliances, or equipment without first securing a permit",
+        "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
@@ -67,22 +115,6 @@
         "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
         "ok": true
       },
-      "checklist_published": true,
-      "checklist": {
-        "title": "Residential EV Charging Checklist",
-        "revision_date": "unknown",
-        "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-2878/-toggle-all/-sortn-EDate/-folder-39/-npage-3"
-      },
-      "requirements": [
-        {
-          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
-          "section": "application",
-          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
-          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
-          "page": null,
-          "ok": true
-        }
-      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -92,11 +124,35 @@
       },
       "sheet_requirements": {
         "sheet_size": "not_stated",
-        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO) portal",
         "signature_or_stamp": "not_stated",
         "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
         "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
         "ok": true
+      },
+      "requirements": [
+        {
+          "item": "Online permit application with required forms and plans uploaded via PACO",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "checklist_published": true,
+      "checklist": {
+        "title": "Residential EV Charging Checklist",
+        "revision_date": "unknown",
+        "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-2878/-toggle-all/-sortn-EDate/-folder-39/-npage-3"
       },
       "local_rules": [
         {
@@ -113,9 +169,10 @@
     },
     "service_upgrade": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "No electric wiring, devices, appliances or equipment shall be installed within or on any building, structure or premises, nor shall any alteration or addition be made in any such existing wiring, devices, appliances, or equipment without first securing a permit",
+        "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
@@ -124,22 +181,6 @@
         "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
         "ok": true
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [
-        {
-          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
-          "section": "application",
-          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
-          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
-          "page": null,
-          "ok": true
-        }
-      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -149,11 +190,43 @@
       },
       "sheet_requirements": {
         "sheet_size": "not_stated",
-        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO) portal",
         "signature_or_stamp": "not_stated",
         "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
         "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
         "ok": true
+      },
+      "requirements": [
+        {
+          "item": "Online permit application with required forms and plans uploaded via PACO",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "SDG&E service request via My Project Center with detailed project scope, site plans, and load calculations",
+          "section": "utility",
+          "quote": "You can begin by submitting a service request through the My Project Center. Make sure to have your detailed project scope, site plans and load calculations ready.",
+          "url": "https://www.sdge.com/myprojectcenter",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
       },
       "local_rules": [
         {
@@ -170,9 +243,10 @@
     },
     "subpanel": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "No electric wiring, devices, appliances or equipment shall be installed within or on any building, structure or premises, nor shall any alteration or addition be made in any such existing wiring, devices, appliances, or equipment without first securing a permit",
+        "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
@@ -181,22 +255,6 @@
         "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
         "ok": true
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [
-        {
-          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
-          "section": "application",
-          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
-          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
-          "page": null,
-          "ok": true
-        }
-      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -206,11 +264,35 @@
       },
       "sheet_requirements": {
         "sheet_size": "not_stated",
-        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO) portal",
         "signature_or_stamp": "not_stated",
         "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
         "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
         "ok": true
+      },
+      "requirements": [
+        {
+          "item": "Online permit application with required forms and plans uploaded via PACO",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
       },
       "local_rules": [
         {
@@ -227,9 +309,10 @@
     },
     "appliance_circuit": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "No electric wiring, devices, appliances or equipment shall be installed within or on any building, structure or premises, nor shall any alteration or addition be made in any such existing wiring, devices, appliances, or equipment without first securing a permit",
+        "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
@@ -238,22 +321,6 @@
         "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
         "ok": true
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [
-        {
-          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
-          "section": "application",
-          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
-          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
-          "page": null,
-          "ok": true
-        }
-      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -263,11 +330,35 @@
       },
       "sheet_requirements": {
         "sheet_size": "not_stated",
-        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO) portal",
         "signature_or_stamp": "not_stated",
         "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
         "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
         "ok": true
+      },
+      "requirements": [
+        {
+          "item": "Online permit application with required forms and plans uploaded via PACO",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
       },
       "local_rules": [
         {
@@ -284,9 +375,10 @@
     },
     "generator": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "No electric wiring, devices, appliances or equipment shall be installed within or on any building, structure or premises, nor shall any alteration or addition be made in any such existing wiring, devices, appliances, or equipment without first securing a permit",
+        "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
@@ -295,22 +387,6 @@
         "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
         "ok": true
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
-        "url": "unknown"
-      },
-      "requirements": [
-        {
-          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
-          "section": "application",
-          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
-          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
-          "page": null,
-          "ok": true
-        }
-      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -320,11 +396,35 @@
       },
       "sheet_requirements": {
         "sheet_size": "not_stated",
-        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO) portal",
         "signature_or_stamp": "not_stated",
         "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
         "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
         "ok": true
+      },
+      "requirements": [
+        {
+          "item": "Online permit application with required forms and plans uploaded via PACO",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
       },
       "local_rules": [
         {
@@ -342,8 +442,8 @@
     "solar_storage": {
       "permit_required": {
         "value": true,
-        "quote": "Developed by the National Renewable Energy Laboratory with support from the U.S. Department of Energy, SolarAPP+ provides a web-based portal that streamlines and automates permit reviews.",
-        "url": "https://www.elcajon.gov/Home/Components/News/News/5754/18?arch=1&npage=4",
+        "quote": "No electric wiring, devices, appliances or equipment shall be installed within or on any building, structure or premises, nor shall any alteration or addition be made in any such existing wiring, devices, appliances, or equipment without first securing a permit",
+        "url": "https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf",
         "ok": true
       },
       "plans_required_single_family": {
@@ -353,22 +453,6 @@
         "url": "https://www.elcajon.gov/Home/Components/News/News/5754/18?arch=1&npage=4",
         "ok": true
       },
-      "checklist_published": true,
-      "checklist": {
-        "title": "Photovoltaic - Fire Code Installation standards",
-        "revision_date": "unknown",
-        "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2"
-      },
-      "requirements": [
-        {
-          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
-          "section": "application",
-          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
-          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
-          "page": null,
-          "ok": true
-        }
-      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -378,11 +462,43 @@
       },
       "sheet_requirements": {
         "sheet_size": "not_stated",
-        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "copies_or_format": "Web-based portal via SolarAPP+ for automated solar permit reviews, or online upload via PACO",
         "signature_or_stamp": "not_stated",
-        "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
-        "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+        "quote": "Developed by the National Renewable Energy Laboratory with support from the U.S. Department of Energy, SolarAPP+ provides a web-based portal that streamlines and automates permit reviews.",
+        "url": "https://www.elcajon.gov/Home/Components/News/News/5754/18?arch=1&npage=4",
         "ok": true
+      },
+      "requirements": [
+        {
+          "item": "Online permit application with required forms and plans uploaded via PACO",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "SDG&E Rule 21 interconnection application submitted through the DIIS Online Application Portal",
+          "section": "utility",
+          "quote": "Resources and forms needed for RULE 21 retail customers and WDAT wholesale customers. Applications can be submitted and tracked through the DIIS Online Application Portal.",
+          "url": "https://www.sdge.com/solar/solar-and-battery-installation-center",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "checklist_published": true,
+      "checklist": {
+        "title": "Photovoltaic - Fire Code Installation standards",
+        "revision_date": "unknown",
+        "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2"
       },
       "local_rules": [
         {

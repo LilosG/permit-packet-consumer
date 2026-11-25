@@ -1,0 +1,115 @@
+jurisdiction_key: henderson-nv
+city: Henderson
+state: NV
+checked_on: 2026-11-25
+code_edition:
+  value: "2023 National Electrical Code with Southern Nevada and City of Henderson amendments"
+  effective_date: 2026-01-02
+  quote: "(Effective on submittals received on or after January 2, 2026) 2023 NEC Amendments - Final-2025-03-27."
+  url: https://www.cityofhenderson.com/business/development-services-center/construction-codes
+who_may_file:
+  owner_may_file: true
+  conditions: "Primary Nevada residence for owner's own occupancy and not intended for sale or lease; requires Nevada State Contractors Board Owner Builder Affidavit of Exemption per NRS 624.031 and Owner/Builder Sub-Contractor Voucher specifying Electrical work."
+  quote: "required per NRS 624.031 for an owner of a property who is building or improving a residential structure on the property for his own occupancy and not intended for sale or lease."
+  url: https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained
+jobs:
+  ev_charger:
+    permit_required:
+      value: yes
+      quote: "Electrical permit - A separate permit required for most electrical work."
+      url: https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained
+    plans_required_single_family:
+      value: not_stated
+      conditions: "not_stated"
+      quote: "unknown"
+      url: unknown
+    load_calculation:
+      method: "city worksheet"
+      city_worksheet: "Residential Electrical Load Calculation Worksheet"
+      ev_charger_load_factor: "not_stated"
+      quote: "Residential Electrical Load Calculation Worksheet (Form) This is usually done by the electrician but can be done by the homeowner."
+      url: https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Electronic submittal through DSC Online portal"
+      signature_or_stamp: "Wet-sealed or stamped by licensed professional; if drawn by homeowner, each page signed by homeowner"
+      quote: "Plans must be “wet-sealed” or stamped by the licensed professional that prepared the drawings. If the plans are drawn by the homeowner each page must be signed by the homeowner."
+      url: https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained
+    requirements: []
+  service_upgrade:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  subpanel:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  appliance_circuit:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  generator:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+  solar_storage:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    requirements: []
+forms_found:
+  - name: "Electrical Permits Submittal Checklist"
+    url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+    opened: false
+  - name: "Residential Photovoltaic (Solar) Submittal Checklist"
+    url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+    opened: false
+  - name: "Residential Standby Generator Submittal Checklist"
+    url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+    opened: false
+  - name: "Homeowner Permitting Guide"
+    url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+    opened: false
+  - name: "Residential Electrical Load Calculation Worksheet"
+    url: https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information
+    opened: false
+  - name: "Owner Builder Affidavit of Exemption"
+    url: https://www.cityofhenderson.com/residents/advanced-components/custom-pages/custom-documents-images-calendar/-toggle-allpast-874/-folder-22/-npage-5-874/-sortn-EName-874/-sortd-asc-874
+    opened: false
+  - name: "Photovoltaic System Permit Authorization"
+    url: https://www.cityofhenderson.com/residents/advanced-components/custom-pages/custom-documents-images-calendar/-toggle-allpast-874/-folder-22/-npage-5-874/-sortn-EName-874/-sortd-asc-874
+    opened: false
+open_questions:
+  - "Open the PDF checklists for Electrical Permits, Residential Photovoltaic (Solar), and Residential Standby Generator linked on https://www.cityofhenderson.com/business/development-services-center/submittal-checklist to extract itemized submittal requirements, plans_required_single_family thresholds, sheet_size, and revision dates."
+  - "Open the Residential Electrical Load Calculation Worksheet PDF linked on https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information to confirm NEC 220.82 vs 220.83 method and EV charger load factor."
+  - "Check https://www.cityofhenderson.com/government/departments/building-and-fire-safety/building-online-services and the Homeowner Permitting Guide to confirm whether single-family EV chargers, panel upgrades, subpanels, or appliance circuits qualify for instant/no-plan permits via DSC Online."
+  - "Confirm whether City of Henderson accepts SolarAPP+ for residential rooftop solar PV and battery storage."

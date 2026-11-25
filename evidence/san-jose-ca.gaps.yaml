@@ -1,0 +1,239 @@
+jurisdiction_key: san-jose-ca
+city: San Jose
+state: CA
+checked_on: 2026-11-25
+code_edition:
+  value: "2025 California Electrical Code (CCR Title 24 Part 3), adopted statewide by the California Building Standards Commission; local San Jose amendments not confirmed in retrieved snippets"
+  effective_date: 2026-01-01
+  quote: "Plans submitted after Jan 1, 2026 will be reviewed under the 2025 codes (including Building, Electrical, Plumbing, Mechanical, Residential, Fire, CALGreen, and Energy)."
+  url: https://www.sanjoseca.gov/your-government/departments-offices/planning-building-code-enforcement/building-division/adopted-building-codes
+who_may_file:
+  owner_may_file: true
+  conditions: "Property owner must submit Form 311 (Owner-Builder Acknowledgement and Verification of Information Form) when signing as Owner-Builder; specific occupancy or rental limits inside Form 311 were not opened."
+  quote: "Who can apply? Only property owners and qualified contractors may apply for an online building permit."
+  url: https://www.sanjoseca.gov/business/development-services-permit-center/online-permits-at-sjpermits-org/building-online-permits
+jobs:
+  ev_charger:
+    permit_required:
+      value: yes
+      quote: "A Level 2 station requires an electrical permit; depending on the manufacturer, it may also require a mechanical permit."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electric-vehicle-charging-stations
+    plans_required_single_family:
+      value: not_stated
+      conditions: "Single-family/duplex properties obtain an online permit at SJPermits.org; load calculations are required when the existing service panel rating is 125 amperes or less."
+      quote: "unknown"
+      url: unknown
+    load_calculation:
+      method: "California Electrical Code Article 220"
+      city_worksheet: "none"
+      ev_charger_load_factor: "125%"
+      quote: "Load calculations must include 125% of the maximum EV charging load and be provided when the service panel rating is 125 amperes or less (California Electrical Code Article 220)."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electric-vehicle-charging-stations
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Online permit at SJPermits.org"
+      signature_or_stamp: "not_stated"
+      quote: "unknown"
+      url: unknown
+    requirements:
+      - item: "Existing electrical service panel rating, EV charging system load, and circuit size"
+        section: load
+        quote: "Specify the panel rating of the existing electrical service, for example, 200 amp service, at the residence. Indicate the EV charging system load and circuit size."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electric-vehicle-charging-stations
+        page: null
+      - item: "Load calculations including 125% of maximum EV charging load when service panel rating is 125 A or less"
+        section: load
+        quote: "Load calculations must include 125% of the maximum EV charging load and be provided when the service panel rating is 125 amperes or less (California Electrical Code Article 220)."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electric-vehicle-charging-stations
+        page: null
+      - item: "Plans (if any) and manufacturer instructions available on-site at inspection"
+        section: equipment
+        quote: "Have plans and manufacturer instructions, if any, available. Ensure there is access to all areas of the project work; provide a ladder if one is needed."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electric-vehicle-charging-stations
+        page: null
+  service_upgrade:
+    permit_required:
+      value: yes
+      quote: "An electrical permit is required to upgrade the main electrical service panel of a residence. It is easy to get the permit online."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/electrical-service-panel-upgrades
+    plans_required_single_family:
+      value: not_stated
+      conditions: "Online permit at SJPermits.org covers Service Change/Survey up to 400 Amps (like-for-like replacements in the same location, with no alterations to exterior finishes); non-qualifying projects require plan submittal via Standard Plan Review."
+      quote: "Service Change/Survey up to 400 Amps. Only like-for-like replacements in the same location, with no alterations to exterior finishes."
+      url: https://www.sanjoseca.gov/business/development-services-permit-center/online-permits-at-sjpermits-org/building-online-permits
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "Load calculations and undergrounding conduit are generally not required unless: Additional load is being added and the inspector requires the calculations."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/electrical-service-panel-upgrades
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Online permit at SJPermits.org; if plan review is required, apply at SJPermits and upload through SJePlans"
+      signature_or_stamp: "not_stated"
+      quote: "unknown"
+      url: unknown
+    requirements:
+      - item: "Load calculations if additional load is being added and required by the inspector"
+        section: load
+        quote: "Load calculations and undergrounding conduit are generally not required unless: Additional load is being added and the inspector requires the calculations."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/electrical-service-panel-upgrades
+        page: null
+      - item: "Contractor documentation verifying 25 ohms or less resistance to earth if using a single ground rod"
+        section: gec
+        quote: "If using only a single ground rod, documentation from the contractor verifying a resistance to earth of 25 ohms or less at the single ground rod is needed prior to final approval."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/electrical-service-panel-upgrades
+        page: null
+  subpanel:
+    permit_required:
+      value: yes
+      quote: "Electrical work requires a permit, specifically an electrical permit. Depending on the project and type of property, an easy online permit may be available."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electrical-projects
+    plans_required_single_family:
+      value: not_stated
+      conditions: "Single-family and duplex properties use SJPermits.org for qualifying common electrical projects; projects not eligible for an online permit require plan submittal via Standard Plan Review."
+      quote: "If an online permit is not available, your project requires the submittal of plans to obtain the permit."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electrical-projects
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "Main service panels, service conductors, subpanels, associated feeders and overcurrent devices shall be sized per calculated load. Minimum 100 amps."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electrical-projects
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Online permit at SJPermits.org; if Standard Plan Review applies, apply at SJPermits and upload documents through SJePlans"
+      signature_or_stamp: "not_stated"
+      quote: "You will first apply at SJPermits and then upload documents through SJePlans."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electrical-projects
+    requirements:
+      - item: "Building Permit Application (for projects requiring Standard Plan Review)"
+        section: application
+        quote: "Building Permit Application - See instructions. Owner-Builder Acknowledgement and Verification of Information Form - Submit only if the property owner is the permit applicant."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electrical-projects
+        page: null
+      - item: "Owner-Builder Acknowledgement and Verification of Information Form (if property owner is the permit applicant)"
+        section: application
+        quote: "Owner-Builder Acknowledgement and Verification of Information Form - Submit only if the property owner is the permit applicant."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electrical-projects
+        page: null
+  appliance_circuit:
+    permit_required:
+      same_as: subpanel
+    plans_required_single_family:
+      same_as: subpanel
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      same_as: subpanel
+    requirements:
+      same_as: subpanel
+  generator:
+    permit_required:
+      same_as: subpanel
+    plans_required_single_family:
+      value: yes
+      conditions: "Electrical plan required; for qualifying single-family/duplex Safety Assessment projects through Simple Projects Service, the electrical plan is reviewed by the City inspector in the field; non-qualifying projects require Standard Plan Review and a Special Use Permit."
+      quote: "The electrical plan as described here will be reviewed by the City inspector in the field."
+      url: https://www.sanjoseca.gov/?NavID=8957
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "Panels served by the generator. Wiring methods and conductor sizing. Rating and location of overcurrent devices. Grounding and bonding details. Load calculations."
+      url: https://www.sanjoseca.gov/?NavID=8957
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Upload project files online before visiting Permit Center (Simple Projects Service), or bring 2 paper copies"
+      signature_or_stamp: "not_stated"
+      quote: "Skip printing out the plans and forms and instead Upload Your Project Files any time before you visit the Permit Center."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/building-permit-services/simple-projects-service
+    requirements:
+      - item: "Completed Building Permit Application and Form 311 Owner-Builder Acknowledgement (if property owner is applicant)"
+        section: application
+        quote: "Completed Building Permit Application - See instructions. Form 311 Owner-Builder Acknowledgement and Verification of Information Form - Bring only if the property owner is the permit applicant."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/building-permit-services/simple-projects-service
+        page: null
+      - item: "Owner-Builder Acknowledgement and Verification of Information Form (if property owner is permit applicant)"
+        section: application
+        quote: "Owner-Builder Acknowledgement and Verification of Information Form - Submit if the property owner is the permit applicant."
+        url: https://www.sanjoseca.gov/?NavID=8957
+        page: null
+      - item: "Site plan showing generator, transfer switch, main electrical service, sub-panels, and minimum working clearances"
+        section: site_plan
+        quote: "Generator location and, if used, transfer switch. Main electrical service and sub-panels. Minimum working clearances at electrical equipment and gas meter."
+        url: https://www.sanjoseca.gov/?NavID=8957
+        page: null
+      - item: "Electrical plan showing panels served, wiring methods, conductor sizing, overcurrent devices, grounding and bonding, and load calculations"
+        section: one_line
+        quote: "Panels served by the generator. Wiring methods and conductor sizing. Rating and location of overcurrent devices. Grounding and bonding details. Load calculations."
+        url: https://www.sanjoseca.gov/?NavID=8957
+        page: null
+      - item: "Electrical plan and manufacturer installation instructions available at inspection"
+        section: equipment
+        quote: "Be ready to provide an electrical plan and manufacturer installation instructions. Adhere to all relevant adopted building codes."
+        url: https://www.sanjoseca.gov/?NavID=8957
+        page: null
+      - item: "Special Use Permit from Planning (for generator installations that do not qualify as Safety Assessment projects)"
+        section: other
+        quote: "Special Use Permit - Obtain from Planning. This is for generator installations that do not qualify as Safety Assessment projects through the Simple Projects Service."
+        url: https://www.sanjoseca.gov/?NavID=8957
+        page: null
+  solar_storage:
+    permit_required:
+      value: yes
+      quote: "A building permit is required before installing solar photovoltaic (PV) panels and/or energy storage batteries. For qualifying projects, it is easy to get the permit online."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/solar-storage-battery-projects
+    plans_required_single_family:
+      value: yes
+      conditions: "Qualifying rooftop solar/battery installations on single-family, duplex, or townhouse properties (non-ballasted, <5 psf, <40 lb concentrated load, <=18 in height) can obtain an online permit at SJPermits.org with field review of plans; nonqualifying projects require Standard Plan Review."
+      quote: "Some, such as solar installations and earthquake retrofits, require plans that the City Inspector will review in the field during inspection of the project."
+      url: https://www.sanjoseca.gov/business/development-services-permit-center/online-permits-at-sjpermits-org/building-online-permits
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Online permit at SJPermits.org for qualifying projects; apply at SJPermits and upload documents through SJePlans for nonqualifying projects"
+      signature_or_stamp: "not_stated"
+      quote: "You will first apply at SJPermits and then upload documents through SJePlans."
+      url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/solar-storage-battery-projects
+    requirements:
+      - item: "Site plan showing building footprint, PV panels and/or battery equipment, and photovoltaic and utility interconnection point"
+        section: site_plan
+        quote: "Site Plan - Show the building footprint, location of the PV panels and/or battery equipment, and locations of photovoltaic and utility interconnection point."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/solar-storage-battery-projects
+        page: null
+      - item: "Building plans including framing plan, anchorage and weatherproofing details, and structural calculations"
+        section: other
+        quote: "Framing plan that shows and specifies existing and new framing/support. Details of anchorage, interconnection of elements, and weather proofing of roof perforations. Structural calculations verifying capacity of proposed systems to resist vertical and lateral loads."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/solar-storage-battery-projects
+        page: null
+      - item: "Electrical plans showing system configuration, Balance of System, conduit sizes/routing, disconnecting means, overcurrent devices, short circuit current, and open circuit voltage"
+        section: one_line
+        quote: "System configuration and location of modules, array, and equipment including location of Balance of System. Conduit sizes and routing; location of disconnecting means; and required overcurrent devices. Short circuit current and show and summarize open circuit voltage."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/solar-storage-battery-projects
+        page: null
+      - item: "Plans and manufacturer instructions available on-site at inspection"
+        section: equipment
+        quote: "Have plans and manufacturer instructions, if any, available. Ensure there is access to all areas of the project work; provide a ladder if one is needed."
+        url: https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/solar-storage-battery-projects
+        page: null
+forms_found:
+  - name: "Building Bulletins & Forms Index (lists Form 311 Owner-Builder Acknowledgement, Bulletin 227 Electronic Plan Review - File Format Requirements, Bulletin 240 Plans That Require an Architect or Engineer, Bulletin 351 Single-Family & Duplex Projects Submittal Checklist, Bulletin 352 Single-Family & Duplex Projects - Plan Set Instructions, and Building Permit Application)"
+    url: https://www.sanjoseca.gov/your-government/departments-offices/planning-building-code-enforcement/building-division/bulletins-forms
+    opened: false
+open_questions:
+  - "Whether San Jose adopted local amendments to the 2025 California Electrical Code (Title 24 Part 3); verify via the Adopted Ordinances / History of Building Code Adoption links on https://www.sanjoseca.gov/your-government/departments-offices/planning-building-code-enforcement/building-division/adopted-building-codes."
+  - "Exact Owner-Builder residency, rental, and resale conditions on Form 311 (Owner-Builder Acknowledgement and Verification of Information Form); open Form 311 directly from https://www.sanjoseca.gov/your-government/departments-offices/planning-building-code-enforcement/building-division/bulletins-forms."
+  - "Exact plan sheet sizes, PDF formatting rules, and architect/engineer stamp thresholds; open Bulletin 227, Bulletin 240, Bulletin 351, and Bulletin 352 directly from https://www.sanjoseca.gov/your-government/departments-offices/planning-building-code-enforcement/building-division/bulletins-forms."
+  - "Full Electrical Permit eligibility table rows (especially Subpanel - New and 240 V appliance circuits) on https://www.sanjoseca.gov/business/development-services-permit-center/online-permits-at-sjpermits-org/building-online-permits were truncated in search snippets."
+  - "Specific online-permit qualification criteria for battery energy storage systems (kWh limits, location, UL 9540/9540A) under 'Battery projects must meet all criteria' on https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/solar-storage-battery-projects were truncated in search snippets."
+  - "Whether portable generator inlets with mechanical interlocks follow the same Simple Projects Service Safety Assessment path as permanently installed standby generators; confirm on https://www.sanjoseca.gov/?NavID=8957."

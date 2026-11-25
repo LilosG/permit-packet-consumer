@@ -2,7 +2,37 @@
   "jurisdiction_key": "phoenix-az",
   "city": "Phoenix",
   "state": "AZ",
-  "checked_on": "2026-11-24",
+  "checked_on": "2026-11-25",
+  "forms_found": [
+    {
+      "name": "Electric Vehicle Chargers – Residential Permitting (TRT/DOC/00311)",
+      "url": "https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00311.pdf",
+      "revision_date": "05/23",
+      "opened": false
+    },
+    {
+      "name": "Residential Over the Counter Permits Guideline (TRT/DOC/00366)",
+      "url": "https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00366.pdf",
+      "revision_date": "06/17",
+      "opened": false
+    },
+    {
+      "name": "Residential - Permit by - Inspector (RPBI) (TRT/DOC/00690)",
+      "url": "https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00690.pdf",
+      "opened": false
+    },
+    {
+      "name": "Pool and Spa Residential Permit Application (TRT/DOC/00916)",
+      "url": "https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00916.pdf",
+      "revision_date": "10/17",
+      "opened": false
+    },
+    {
+      "name": "Electrical Submittal Requirements - Interpretation (TRT/DOC/00574)",
+      "url": "https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf",
+      "opened": false
+    }
+  ],
   "agency": "City of Phoenix Planning & Development Department",
   "portal_url": "https://www.phoenix.gov/administration/departments/pdd/tools-resources/shape-phx.html",
   "code_edition": {
@@ -49,6 +79,9 @@
     ]
   },
   "open_questions": [
+    "Full text of Electric Vehicle Chargers – Residential Permitting (TRT/DOC/00311) at https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00311.pdf is needed to confirm whether existing single-family Level 2 EVSE installations without a service upgrade over 200 amps require plans.",
+    "Residential Over the Counter Permits Guideline (TRT/DOC/00366) at https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00366.pdf lists electric service upgrades not exceeding 200 amps under Express Permits, and Shape PHX Quick Permits issue 200-amp 1-phase upgrades, but a direct official policy quote explicitly stating no plans are required for single-family service upgrades 200 amps or less (and requiring plans above 200 amps) was not retrieved.",
+    "No published City of Phoenix policy document was found explicitly stating whether plans are required for a standalone single-family 240 V appliance circuit or a residential standby generator / transfer switch / interlock installation; Shape PHX records (e.g., CTR-102310087, CTR-102311225) show residential backup generators processed via Electronic Plan Review, but a written city policy page is needed to confirm.",
     "Could not retrieve the full body text of Electric Vehicle Chargers – Residential Permitting (TRT/DOC/00311) at https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00311.pdf to verify whether all existing single-family Level 2 EVSE installations qualify for a Quick Permit or when plan review is triggered.",
     "Could not find a published City of Phoenix master list of all eligible Residential Electrical Quick Permit scopes to confirm whether subpanels or standby generators qualify without plan review.",
     "Could not verify the revision date printed on Electrical Submittal Requirements - Interpretation (TRT/DOC/00574) at https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00574.pdf.",
@@ -56,17 +89,17 @@
   ],
   "jobs": {
     "ev_charger": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Purpose: Establish the process for the review and permit of Electric Vehicle Supply Equipment (EVSE) in new and existing residential applications.",
         "url": "https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00311.pdf",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Quick Permit (60 AMP or Less Single Circuit)",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": true,
       "checklist": {
@@ -138,17 +171,17 @@
       ]
     },
     "service_upgrade": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Electrical updates, rewiring and additions.",
         "url": "https://www.phoenix.gov/administration/departments/pdd/residential-building/resident-plan-reviews.html",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Quick Permit (Upgrade of electrical service to 200 AMP 1 Phase)",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": true,
       "checklist": {
@@ -226,17 +259,18 @@
       ]
     },
     "subpanel": {
+      "plans_required_single_family": {
+        "value": true,
+        "conditions": "Stated for Residential Permit by Inspector (RPBI) projects; Pool and Spa Residential Permit Application (TRT/DOC/00916) separately states pool sub-panels over 60 amps require electrical plans",
+        "quote": "One-line electrical diagram, load calculations and panel schedules (if sub-panel is installed)",
+        "url": "https://www.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00690.pdf",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "Electrical updates, rewiring and additions.",
         "url": "https://www.phoenix.gov/administration/departments/pdd/residential-building/resident-plan-reviews.html",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": true,
       "checklist": {
@@ -301,17 +335,17 @@
       ]
     },
     "appliance_circuit": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Electrical updates, rewiring and additions.",
         "url": "https://www.phoenix.gov/administration/departments/pdd/residential-building/resident-plan-reviews.html",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Quick Permit (60 AMP or Less Single Circuit)",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": true,
       "checklist": {
@@ -375,17 +409,17 @@
       ]
     },
     "generator": {
+      "plans_required_single_family": {
+        "value": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Electrical updates, rewiring and additions.",
         "url": "https://www.phoenix.gov/administration/departments/pdd/residential-building/resident-plan-reviews.html",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "Electronic Plan Review",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": true,
       "checklist": {

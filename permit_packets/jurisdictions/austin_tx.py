@@ -1,14 +1,14 @@
 """Austin, TX: Austin Development Services Department (DSD)"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
 SUBPANEL = "subpanel"
 APPLIANCE_CIRCUIT = "appliance_circuit"
 
-CODE_NOTE = "Austin enforces the 2023 NEC with City of Austin local amendments."
+CODE_NOTE = "Austin enforces the 2026 NEC with City of Austin local amendments, effective September 1, 2026."
 SOURCE_LABEL = "From Austin DSD electrical permitting guidelines"
 
 AUSTIN = Jurisdiction(
@@ -21,7 +21,7 @@ AUSTIN = Jurisdiction(
     portal_url="https://www.austintexas.gov/department/development-services",
     fee_note="Electrical permit fees are based on the city's adopted fee schedule.",
     sources=("https://www.austintexas.gov/department/development-services",),
-    nec_edition="2023 NEC",
+    nec_edition="2026 NEC",
     permit_required={EV_CHARGER: True, SERVICE_UPGRADE: True, SUBPANEL: True, APPLIANCE_CIRCUIT: True},
     permit_notes={
         EV_CHARGER: "A residential electrical permit is required for Level 2 EV charging equipment.",
@@ -43,6 +43,11 @@ AUSTIN = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
+                Requirement("Permit application: address, owner, contractor and valuation", "application"),
+                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
+                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
+                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
+                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
                 Requirement("Registered licensed electrical contractor applies via AB+C Portal (or qualifying homeowner via Homestead Permit)", "application",
                             "https://www.austintexas.gov/development-services/apply-standalone-permit"),
             ),
@@ -55,11 +60,17 @@ AUSTIN = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
+                Requirement("Permit application: address, scope and valuation", "application"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
+                Requirement("Panel and meter base specifications and listing", "equipment"),
+                Requirement("Site plan showing the meter and main panel", "site_plan"),
+                Requirement("Utility service request", "utility"),
+                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
                 Requirement("Registered licensed electrical contractor applies for Stand-Alone Electrical Upgrade permit via AB+C Portal", "application",
                             "https://www.austintexas.gov/development-services/types-permits"),
                 Requirement("Submit Electric Service Planning Application (ESPA) to Austin Energy for service upgrade", "utility",
                             "https://austinenergy.com/contractors/Construction-Renovation/Electric-Service-Planning-Application"),
-                SURGE_PROTECTION,
             ),
             source_url="https://www.austintexas.gov/development-services/types-permits",
             source_label="From the city's published pages",
@@ -71,6 +82,11 @@ AUSTIN = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
+                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Panel specifications and listing", "equipment"),
                 Requirement("Registered licensed electrical contractor applies via AB+C Portal (or qualifying homeowner via Homestead Permit)", "application",
                             "https://www.austintexas.gov/development-services/apply-standalone-permit"),
             ),
@@ -83,6 +99,11 @@ AUSTIN = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the panel and the appliance", "site_plan"),
+                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Manufacturer specifications and listing", "equipment"),
                 Requirement("Registered licensed electrical contractor applies via AB+C Portal (or qualifying homeowner via Homestead Permit)", "application",
                             "https://www.austintexas.gov/development-services/apply-standalone-permit"),
             ),
@@ -95,6 +116,11 @@ AUSTIN = Jurisdiction(
         ),
         "generator": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, generator inlet and feeder route", "site_plan"),
+                Requirement("One-line diagram showing interlock or transfer switch (NEC 702.5)", "one_line"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Interlock kit / transfer switch UL listing and cut sheets", "equipment"),
                 Requirement("Apply for Repair Stand-Alone Permit in AB+C Portal with description 'SB 1202 Home Back Up Installation - Generator'", "application",
                             "https://www.austintexas.gov/development-services/apply-standalone-permit"),
                 Requirement("Upload Third-Party Review Compliance Letter signed by licensed engineer, master electrician, or certified inspector under SB 1202", "by_others",
@@ -110,6 +136,11 @@ AUSTIN = Jurisdiction(
         ),
         "solar_storage": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, inverter/ESS and output route", "site_plan"),
+                Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
+                Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
+                Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
                 Requirement("Distributed Generation Planning Application (DGPA), Wire Diagram, and Equipment Spec Sheets attached in AB+C Portal", "one_line",
                             "https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97"),
                 Requirement("Signed Residential Interconnection Agreement reviewed and approved by Austin Energy prior to permit activation", "by_others",

@@ -201,6 +201,17 @@ def build_document(sections: list[list], *, title: str, block: TitleBlock, sheet
     """Every section is one sheet. `sheet_titles` names each one in its title block."""
     assert len(sections) == len(sheet_titles), "one sheet title per section"
     sheet = current_sheet()
+    continuation = COVER_CONTINUATION.get()
+    LAST_COVER_CONTINUATION.set(continuation)
+    if continuation is not None:
+        # The overflow rows get their own drawing sheet after the last drawing page and before the
+        # closing review page, so no "Page N" checklist reference moves and the review stays last.
+        at = max(1, len(sections) - 1)
+        CONTINUED_SHEET_N.set(at + 1)
+        sections = [*sections[:at], _continued_cover_section(continuation), *sections[at:]]
+        sheet_titles = [*sheet_titles[:at], CONTINUED_TITLE, *sheet_titles[at:]]
+    else:
+        CONTINUED_SHEET_N.set(None)
     story: list = []
     for index, (section, sheet_title) in enumerate(zip(sections, sheet_titles)):
         if index:
@@ -222,7 +233,11 @@ def build_document(sections: list[list], *, title: str, block: TitleBlock, sheet
     def canvas_maker(*args, **kwargs):
         return NumberedCanvas(*args, block=block, sheet=sheet, **kwargs)
 
-    doc.build(story, canvasmaker=canvas_maker)
+    try:
+        doc.build(story, canvasmaker=canvas_maker)
+    finally:
+        COVER_CONTINUATION.set(None)
+        CONTINUED_SHEET_N.set(None)
     return buffer.getvalue()
 
 
@@ -343,6 +358,87 @@ class StampBox(Flowable):
 # cover to the Pre-Submittal Review page (a supplemental 8.5 x 11 in page), so the cover keeps full-size text.
 MOVED_FLAGS: ContextVar[list[str] | None] = ContextVar("moved_flags", default=None)
 
+# A drawing-set city (San Francisco) prints text at least 1/8 in tall. When a long checklist would shrink
+# the cover past that floor, the rows that do not fit move to their own drawing sheet instead.
+CONTINUED_TITLE = "COVER CHECKLIST (CONTINUED)"
+CONTINUED_DOC_STEM = "cover-checklist-continued"
+CONTINUED_DOC_TITLE = "Checklist (continued)"
+COVER_MIN_CAPITAL_IN = 0.125
+COVER_SAFETY = 1.02  # keep the smallest capital a little above the 1/8 in floor
+HELVETICA_CAP_RATIO = 0.718  # cap height / em, what the drawing-set test measures on the page
+
+
+@dataclass
+class CoverContinuation:
+    """Checklist rows that did not fit the cover at the minimum text size, and the table width to reuse."""
+
+    rows: list[tuple[str, str, str]]
+    width: float
+
+
+COVER_CONTINUATION: ContextVar["CoverContinuation | None"] = ContextVar("cover_continuation", default=None)
+CONTINUED_SHEET_N: ContextVar[int | None] = ContextVar("continued_sheet_n", default=None)
+# Set by build_document for the caller: True when the cover moved rows to a continued sheet.
+LAST_COVER_CONTINUATION: ContextVar["CoverContinuation | None"] = ContextVar("last_cover_continuation", default=None)
+
+
+class _DeferredText(Flowable):
+    """A paragraph whose text is read when drawn, for a page number known only after the layout is fixed."""
+
+    def __init__(self, style: ParagraphStyle, text) -> None:
+        super().__init__()
+        self.style = style
+        self._text = text
+
+    def wrap(self, available_width, available_height):
+        self._flow = _p(self._text(), self.style)
+        self._w, self._h = self._flow.wrap(available_width, available_height)
+        return self._w, self._h
+
+    def draw(self):
+        self._flow.drawOn(self.canv, 0, 0)
+
+
+def _wrapped_height(flowables: list, width: float) -> float:
+    from reportlab.platypus.flowables import _listWrapOn
+
+    return _listWrapOn(flowables, width, None)[1]
+
+
+def _cover_scale(flowables: list, width: float, height: float) -> float:
+    """The fraction KeepInFrame would shrink the cover to; 1.0 when it already fits."""
+    content_height = _wrapped_height(flowables, width)
+    return min(1.0, (height - 4) / content_height) if content_height else 1.0
+
+
+def _min_cover_scale() -> float:
+    """The smallest cover shrink that still prints the smallest capital at 1/8 in on the finished sheet."""
+    from permit_packets.core.drawing_sets import COVER_SCALE
+
+    smallest = min((H1, BODY, LABEL, CELL, CELL_BOLD, H2, FLAG), key=lambda style: style.fontSize)
+    capital = smallest.fontSize * HELVETICA_CAP_RATIO * COVER_SCALE / 72.0
+    return COVER_MIN_CAPITAL_IN * COVER_SAFETY / capital
+
+
+def _continuation_row(moved: int) -> list:
+    return [
+        _DeferredText(CELL, lambda: f"Checklist continues on sheet {CONTINUED_SHEET_N.get()}: {moved} more items"),
+        _p(""),
+        _DeferredText(CELL_BOLD, lambda: f"See sheet {CONTINUED_SHEET_N.get()}"),
+    ]
+
+
+def _continued_cover_section(continuation: CoverContinuation) -> list:
+    width = continuation.width
+    rows = [[_p(item), _p(where), _p(status, CELL_BOLD)] for item, where, status in continuation.rows]
+    return [
+        _p("Checklist (continued)", H1),
+        _p("The city checklist continues from the cover, in the same order.", SMALL),
+        Spacer(1, 10),
+        _table([_heads("Required", "In this packet", "Status")] + rows,
+               [width * 0.5, width - width * 0.5 - 0.65 * inch, 0.65 * inch], extra=TIGHT),
+    ]
+
 
 def cover_page(
     *,
@@ -390,7 +486,7 @@ def cover_page(
          [_p(job_cell), _p(contractor_cell), _p(checklist_cell)]],
         [width / 3] * 3,
     )
-    rows = [[_p(item), _p(where), _p(status, CELL_BOLD)] for item, where, status in checklist_rows]
+    cell_rows = [[_p(item), _p(where), _p(status, CELL_BOLD)] for item, where, status in checklist_rows]
     def check_status(passed: bool, neutral: bool = False, assumed: bool = False) -> str:
         if assumed:
             return "Assumed"  # relies on a default the buyer did not enter
@@ -400,25 +496,25 @@ def cover_page(
                    _p(check_status(passed, *rest), CELL_BOLD)]
                   for name, result, passed, *rest in checks]
 
-    def checklist_table(w):
-        return _table([_heads("Required", "In this packet", "Status")] + rows,
+    def checklist_table(w, table_rows):
+        return _table([_heads("Required", "In this packet", "Status")] + table_rows,
                       [w * 0.5, w - w * 0.5 - 0.65 * inch, 0.65 * inch], extra=TIGHT)
 
     def checks_table(w):
         return _table([_heads("Check", "Result", "Status")] + check_rows,
                       [w * 0.3, w - w * 0.3 - 0.8 * inch, 0.8 * inch], extra=TIGHT)
 
-    if sheet.landscape:
-        left, right = width * 0.56, width * 0.44 - 14
-        body = [Table(
-            [[[_p("Checklist", H2), checklist_table(left)], [_p("Engineering checks", H2), checks_table(right)]]],
-            colWidths=[left + 14, right],
-            style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
-                              ("RIGHTPADDING", (0, 0), (-1, -1), 0), ("TOPPADDING", (0, 0), (-1, -1), 0),
-                              ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]),
-        )]
-    else:
-        body = [_p("Checklist", H2), checklist_table(width), Spacer(1, 6),
+    def cover_body(table_rows):
+        if sheet.landscape:
+            left, right = width * 0.56, width * 0.44 - 14
+            return [Table(
+                [[[_p("Checklist", H2), checklist_table(left, table_rows)], [_p("Engineering checks", H2), checks_table(right)]]],
+                colWidths=[left + 14, right],
+                style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                                  ("RIGHTPADDING", (0, 0), (-1, -1), 0), ("TOPPADDING", (0, 0), (-1, -1), 0),
+                                  ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]),
+            )]
+        return [_p("Checklist", H2), checklist_table(width, table_rows), Spacer(1, 6),
                 _p("Engineering checks", H2), checks_table(width)]
 
     def flag_columns(columns: int, w: float):
@@ -434,12 +530,29 @@ def cover_page(
             ]),
         )
 
-    top = head + [Spacer(1, 8), info, Spacer(1, 8)] + body + [Spacer(1, 6), _p("Flagged for your review", H2)]
+    def cover_content(table_rows):
+        top = head + [Spacer(1, 8), info, Spacer(1, 8)] + cover_body(table_rows) + \
+            [Spacer(1, 6), _p("Flagged for your review", H2)]
+        return top + [flag_columns(3 if sheet.landscape else 2, width)]
+
     # The cover is always one page: a long flag list shrinks to fit rather than pushing every
-    # later page (and every "Page N" reference) back by one.
+    # later page (and every "Page N" reference) back by one. On a drawing set the shrink has a floor:
+    # text may not drop below 1/8 in, so checklist rows that do not fit move to a continued sheet.
     if stamp_box_in is None:
-        columns = 3 if sheet.landscape else 2
-        return [KeepInFrame(width, height - 4, top + [flag_columns(columns, width)], mode="shrink")]
+        table_rows = cell_rows
+        COVER_CONTINUATION.set(None)
+        if sheet.key == "ansi_d" and cell_rows:
+            minimum = _min_cover_scale()
+            if _cover_scale(cover_content(cell_rows), width, height) < minimum:
+                kept = 0
+                for k in range(len(cell_rows) - 1, -1, -1):
+                    trial = cell_rows[:k] + [_continuation_row(len(cell_rows) - k)]
+                    if _cover_scale(cover_content(trial), width, height) >= minimum:
+                        kept = k
+                        break
+                table_rows = cell_rows[:kept] + [_continuation_row(len(cell_rows) - kept)]
+                COVER_CONTINUATION.set(CoverContinuation(rows=list(checklist_rows[kept:]), width=width))
+        return [KeepInFrame(width, height - 4, cover_content(table_rows), mode="shrink")]
     stamp = stamp_box_in * inch
     area = BLANK_AREA.get()
     blank = _blank_size_on_cover(area, stamp) if area else None
@@ -457,6 +570,7 @@ def cover_page(
                           ("RIGHTPADDING", (0, 0), (-1, -1), 0), ("TOPPADDING", (0, 0), (-1, -1), 0),
                           ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]),
     )
+    top = head + [Spacer(1, 8), info, Spacer(1, 8)] + cover_body(cell_rows) + [Spacer(1, 6), _p("Flagged for your review", H2)]
     return [KeepInFrame(width, main_h, top, mode="shrink"), Spacer(1, 4), lower]
 
 

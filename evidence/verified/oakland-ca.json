@@ -2,11 +2,9 @@
   "jurisdiction_key": "oakland-ca",
   "city": "Oakland",
   "state": "CA",
-  "checked_on": "2026-11-24",
-  "agency": "City of Oakland Bureau of Building (Planning and Building Department)",
-  "portal_url": "https://aca-prod.accela.com/OAKLAND/Default.aspx",
+  "checked_on": "2026-11-25",
   "code_edition": {
-    "value": "2025 California Electrical Code with Oakland Amendments (OMC 15.04)",
+    "value": "2023 NEC (2025 California Electrical Code, Title 24 Part 3) with City of Oakland local amendments (OMC 15.04 and 15.06)",
     "effective_date": "2026-01-01",
     "quote": "The Oakland amendments to the 2025 California Building Codes were approved by City Council on September 15,2025.",
     "url": "https://www.oaklandca.gov/Planning-Building/Building-Construction-Permits-Inspections/Building-Codes/Oakland-Adoption-of-2025-California-Building-Codes",
@@ -14,11 +12,40 @@
   },
   "who_may_file": {
     "owner_may_file": true,
-    "conditions": "Property owner (or legal representative) must register an Online Permit Center account with California ID, recorded deed, and completed Owner-Builder User Agreement; SolarAPP+ rooftop solar permits are restricted to California-licensed contractors",
-    "quote": "If you are applying for a permit as the property Owner, you will need to provide the following: A copy of your current California Driver's License or Identification Card. A copy of the recorded deed for the property. A completed Owner-Builder User Agreement",
+    "conditions": "Property owners or their legal representatives may apply for residential electrical permits. To register an Online Permit Center account as an owner, the owner must provide a current California Driver's License or ID Card, a copy of the recorded deed, and a completed Owner-Builder User Agreement. Exception: SolarAPP+ rooftop solar permits are restricted to California Licensed Contractors Only.",
+    "quote": "If you are applying for a permit as the property Owner, you will need to provide the following:",
     "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Permit-Services-Questions-Portal",
     "ok": true
   },
+  "forms_found": [
+    {
+      "name": "Application Worksheet for Mechanical, Electrical, and Plumbing (MEP) Permits",
+      "url": "https://www.oaklandca.gov/files/assets/city/v/3/planning-amp-building/documents/pc/forms-and-apps/application-mep-fillable-online.pdf",
+      "opened": false
+    },
+    {
+      "name": "Residential Inspection Manual (Version 2)",
+      "url": "https://www.oaklandca.gov/files/assets/city/v/1/planning-amp-building/documents/bi/residential-inspection-manual-version-2-2.2.2021.pdf",
+      "opened": false
+    },
+    {
+      "name": "How to Request a Revision to Your Building Permit",
+      "url": "https://www.oaklandca.gov/files/assets/city/v/2/planning-amp-building/documents/pc/forms-and-apps/building-revision-public-user-guide.pdf",
+      "opened": false
+    },
+    {
+      "name": "2025 California Electrical Code (Title 24, Part 3) January 1, 2026 Errata",
+      "url": "https://www.dgs.ca.gov/-/media/Divisions/BSC/02-Codes/Errta-01012026-Pt3-CEC-locked.pdf",
+      "opened": false
+    },
+    {
+      "name": "HCD Initial Statement of Reasons for 2025 California Electrical Code (2023 NEC basis)",
+      "url": "https://www.dgs.ca.gov/-/media/Divisions/BSC/03-Rulemaking/2024-Triennial-Cycle/Public-Comments/PEME-GREEN-45-Day/HCD/HCD-01-23-45-Day-ISOR-PT3.pdf",
+      "opened": false
+    }
+  ],
+  "agency": "City of Oakland Bureau of Building (Planning and Building Department)",
+  "portal_url": "https://aca-prod.accela.com/OAKLAND/Default.aspx",
   "utility": {
     "name": "Pacific Gas and Electric Company (PG&E)",
     "requirements": [
@@ -31,6 +58,9 @@
     ]
   },
   "open_questions": [
+    "The specific Oakland EV charger submittal checklist PDF referenced on https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Electric-Vehicle-Service-Equipment-Charging-Stations is not indexed directly and could not be opened to verify whether Oakland specifies an EV charger load calculation method or service load factor.",
+    "No Oakland-published residential electrical load calculation worksheet or mandatory NEC 220 method (220.82 vs. 220.83) was found on oaklandca.gov; checking the MEP application PDF or contacting the Permit & Services Questions Portal would settle this.",
+    "The full Fire Prevention Bureau energy storage system thresholds beyond the 20 kWh single-battery trigger (item 2 in the truncated list on https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Solar-Energy-Systems-Facilities) could not be read in full.",
     "The specific Oakland EV charger submittal checklist PDF referenced on https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Electric-Vehicle-Service-Equipment-Charging-Stations could not be indexed or opened directly to verify whether Oakland specifies an EV charger load calculation method or service load factor.",
     "The City of Oakland Energy Storage Systems Code Bulletin PDF referenced on https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Solar-Energy-Systems-Facilities could not be opened directly to verify additional Fire Prevention Bureau battery spacing or labeling rules.",
     "No Oakland-published residential electrical load calculation worksheet or mandatory NEC 220 method (220.82 vs. 220.83 vs. 220.87) was found on oaklandca.gov.",
@@ -40,22 +70,31 @@
     "ev_charger": {
       "permit_required": {
         "value": true,
-        "quote": "Electric Vehicle Service Equipment & Charging Stations. Electrical Permits and Building Bureau review are required.",
-        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "depends",
-        "program_name": "Online Permit Center Electrical Permit (Residential 1-2 units)",
-        "quote": "If your project has anchoring work needing structural engineering design review, you will also need a Building Permit. Submit a Building Worksheet to apply. In the Worksheet, upload all structural calculations, engineered plans and associated documents.",
+        "quote": "EV Charger installations are only subject to administrative review for health and safety requirements.",
         "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Electric-Vehicle-Service-Equipment-Charging-Stations",
         "ok": true
       },
-      "checklist_published": true,
-      "checklist": {
-        "title": "Electric Vehicle Service Equipment & Charging Stations",
-        "revision_date": "unknown",
-        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Electric-Vehicle-Service-Equipment-Charging-Stations"
+      "plans_required_single_family": {
+        "value": "not_stated",
+        "conditions": "Structural calculations and engineered plans are required via a Building Worksheet if the project has anchoring work needing structural engineering design review; specific single-family Level 2 electrical plan thresholds are not stated on the webpage.",
+        "quote": "If your project has anchoring work needing structural engineering design review, you will also need a Building Permit.",
+        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Electric-Vehicle-Service-Equipment-Charging-Stations",
+        "ok": true
+      },
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "PDF upload in Online Permit Center (compiled as one file, flattened layers, landscape orientation)",
+        "signature_or_stamp": "Electronic signature with Digital ID (no restriction settings)",
+        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
+        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
+        "ok": true
       },
       "requirements": [
         {
@@ -83,20 +122,11 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "18\" x 24\" (Minimum) - Minor Construction",
-        "copies_or_format": "Plan sets compiled as one flattened PDF file, landscape orientation, unlocked for markup",
-        "signature_or_stamp": "Electronic signature without restriction settings per Oakland Signature Policy",
-        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
-        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
-        "ok": true
+      "checklist_published": true,
+      "checklist": {
+        "title": "Electric Vehicle Service Equipment & Charging Stations",
+        "revision_date": "unknown",
+        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Electric-Vehicle-Service-Equipment-Charging-Stations"
       },
       "local_rules": [
         {
@@ -126,24 +156,49 @@
     "service_upgrade": {
       "permit_required": {
         "value": true,
-        "quote": "You need a permit before you install, change, fix, or replace mechanical, electrical, or plumbing systems.",
-        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Mechanical-Electrical-Plumbing-MEP-Permits",
+        "quote": "New, replacement, or relocated utility meters require Electrical or Plumbing Permits.",
+        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Utility-Meters",
         "ok": true
       },
       "plans_required_single_family": {
         "value": false,
-        "program_name": "Same-Day Digital Permits / Residential Electrical Permit (RE)",
+        "conditions": "Most MEP permits do not require plans and are issued automatically online upon payment. Zoning Review with a site plan is required if relocating a utility meter at or to a street-facing location.",
         "quote": "Most MEP permits do not need plans. But if your project is complex, you can request an optional Plan Review (for an extra cost).",
         "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Mechanical-Electrical-Plumbing-MEP-Permits",
         "ok": true
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
         "url": "unknown"
       },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "PDF upload in Online Permit Center (compiled as one file, flattened layers, landscape orientation)",
+        "signature_or_stamp": "Electronic signature with Digital ID (no restriction settings)",
+        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
+        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
+        "ok": true
+      },
       "requirements": [
+        {
+          "item": "PG&E AIC (Available Interrupting Current) letter for all electrical service releases (required at inspection)",
+          "section": "fault_current",
+          "quote": "AIC letter Required for all electrical service releases (new, like for like replacements, upgrades, disconnect/reconnect) by PG&E.",
+          "url": "https://www.oaklandca.gov/Planning-Building/Building-Construction-Permits-Inspections/Utilities/Requirements-for-Inspection-of-Electric-and-Gas-Utilities",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Site photos, site plan, method of screening, elevations and/or vendor cut sheet (if relocating a meter to a street-facing location)",
+          "section": "site_plan",
+          "quote": "In the Worksheet, upload your all site photos, a site plan, method of screening, elevations and/or a cut sheet for vendor.",
+          "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Utility-Meters",
+          "page": null,
+          "ok": true
+        },
         {
           "item": "Online Residential Electrical Permit (RE) application via Online Permit Center",
           "section": "application",
@@ -161,20 +216,11 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
         "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "18\" x 24\" (Minimum) - Minor Construction",
-        "copies_or_format": "Plan sets compiled as one flattened PDF file, landscape orientation, unlocked for markup",
-        "signature_or_stamp": "Electronic signature without restriction settings per Oakland Signature Policy",
-        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
-        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
-        "ok": true
       },
       "local_rules": [
         {
@@ -204,22 +250,31 @@
       },
       "plans_required_single_family": {
         "value": false,
-        "program_name": "Same-Day Digital Permits / Residential Electrical Permit (RE)",
+        "conditions": "Most MEP permits do not require plans and are issued automatically online upon payment. Zoning Review with a site plan is required if relocating a utility meter at or to a street-facing location.",
         "quote": "Most MEP permits do not need plans. But if your project is complex, you can request an optional Plan Review (for an extra cost).",
         "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Mechanical-Electrical-Plumbing-MEP-Permits",
         "ok": true
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
         "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "PDF upload in Online Permit Center (compiled as one file, flattened layers, landscape orientation)",
+        "signature_or_stamp": "Electronic signature with Digital ID (no restriction settings)",
+        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
+        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
+        "ok": true
       },
       "requirements": [
         {
           "item": "Online Residential Electrical Permit (RE) application via Online Permit Center",
           "section": "application",
-          "quote": "Residential buildings (RM, RE, RP) - only for houses, duplexes, and associated accessory structures.",
+          "quote": "Your permits will be issued right after you submit your application and pay the fees.",
           "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Mechanical-Electrical-Plumbing-MEP-Permits",
           "page": null,
           "ok": true
@@ -233,20 +288,11 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
         "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "18\" x 24\" (Minimum) - Minor Construction",
-        "copies_or_format": "Plan sets compiled as one flattened PDF file, landscape orientation, unlocked for markup",
-        "signature_or_stamp": "Electronic signature without restriction settings per Oakland Signature Policy",
-        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
-        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
-        "ok": true
       },
       "local_rules": [
         {
@@ -269,19 +315,36 @@
         "ok": true
       },
       "plans_required_single_family": {
-        "value": "depends",
-        "program_name": "Same-Day Digital Permits / Residential Electrical Permit (RE) (hot tubs/spas also require Planning Review and Building Permits)",
-        "quote": "New construction or altering/repairing an existing pool requires Planning Review and Building Permits.",
-        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Swimming-Pools-Hot-Tubs",
+        "value": false,
+        "conditions": "Most MEP permits do not require plans and are issued automatically online upon payment. Zoning Review with a site plan is required if relocating a utility meter at or to a street-facing location.",
+        "quote": "Most MEP permits do not need plans. But if your project is complex, you can request an optional Plan Review (for an extra cost).",
+        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Mechanical-Electrical-Plumbing-MEP-Permits",
         "ok": true
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
         "url": "unknown"
       },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "PDF upload in Online Permit Center (compiled as one file, flattened layers, landscape orientation)",
+        "signature_or_stamp": "Electronic signature with Digital ID (no restriction settings)",
+        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
+        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
+        "ok": true
+      },
       "requirements": [
+        {
+          "item": "Online Residential Electrical Permit (RE) application via Online Permit Center",
+          "section": "application",
+          "quote": "Electrical Permits: for wiring, lights, outlets, or circuits. Visit for: Commercial Electrical Permits or Residential Electrical Permits.",
+          "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Mechanical-Electrical-Plumbing-MEP-Permits",
+          "page": null,
+          "ok": true
+        },
         {
           "item": "Online Residential Electrical Permit (RE) application for circuits added or altered",
           "section": "application",
@@ -299,20 +362,11 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
         "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "18\" x 24\" (Minimum) - Minor Construction",
-        "copies_or_format": "Plan sets compiled as one flattened PDF file, landscape orientation, unlocked for markup",
-        "signature_or_stamp": "Electronic signature without restriction settings per Oakland Signature Policy",
-        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
-        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
-        "ok": true
       },
       "local_rules": [
         {
@@ -330,24 +384,49 @@
     "generator": {
       "permit_required": {
         "value": true,
-        "quote": "Installed generators require Zoning Review. Electrical, and Plumbing Permits (for natural gas generators) are required. For large generators, a Building Permit is also required.",
+        "quote": "Installed generators require Zoning Review. Electrical, and Plumbing Permits (for natural gas generators) are required.",
         "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Generators",
         "ok": true
       },
       "plans_required_single_family": {
         "value": true,
-        "program_name": "Zoning Worksheet (ZW) + Residential Electrical Permit (RE) (+ Building Worksheet for large generators)",
-        "quote": "In the Worksheet, upload your completed Basic Application for Development Review(PDF, 5MB) including all site photos, a site plan, elevations and/or a cut sheet for vendor.",
+        "conditions": "Zoning Review requires a site plan, site photos, elevations and/or vendor cut sheet. Large generators also require a Building Permit with structural calculations and plans for equipment anchorage.",
+        "quote": "Upload structural calculations, plans, and all associated documents to the Worksheet.",
         "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Generators",
         "ok": true
       },
-      "checklist_published": false,
-      "checklist": {
-        "title": "none",
-        "revision_date": "unknown",
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
         "url": "unknown"
       },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "PDF upload in Online Permit Center (compiled as one file, flattened layers, landscape orientation)",
+        "signature_or_stamp": "Electronic signature with Digital ID (no restriction settings)",
+        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
+        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
+        "ok": true
+      },
       "requirements": [
+        {
+          "item": "Zoning Worksheet with Basic Application for Development Review, site photos, site plan, elevations and/or vendor cut sheet",
+          "section": "site_plan",
+          "quote": "In the Worksheet, upload your completed Basic Application for Development Review(PDF, 5MB) including all site photos, a site plan, elevations and/or a cut sheet for vendor.",
+          "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Generators",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Noise compliance documentation or test per Planning Code OMC 17.120.050 (may be requested at final inspection)",
+          "section": "other",
+          "quote": "An inspector may request a noise test or documentation of this before your permit is finaled.",
+          "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Generators",
+          "page": null,
+          "ok": true
+        },
         {
           "item": "Zoning Worksheet with Basic Application for Development Review, site photos, site plan, elevations, and vendor cut sheet",
           "section": "site_plan",
@@ -373,20 +452,11 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
         "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "18\" x 24\" (Minimum) - Minor Construction",
-        "copies_or_format": "Plan sets compiled as one flattened PDF file, landscape orientation, unlocked for markup",
-        "signature_or_stamp": "Electronic signature without restriction settings per Oakland Signature Policy",
-        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
-        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
-        "ok": true
       },
       "local_rules": [
         {
@@ -416,24 +486,49 @@
     "solar_storage": {
       "permit_required": {
         "value": true,
-        "quote": "Main electrical service panel replacement, subpanels, and energy storage systems installed as part of the solar installation may now be included as part of the solar permit application.",
+        "quote": "Input the SolarAPP+ approval number and attach the SolarAPP+ Approval Document to proceed.",
         "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Solar-Energy-Systems-Facilities",
         "ok": true
       },
       "plans_required_single_family": {
-        "value": "depends",
-        "program_name": "SolarAPP+ (instant online permit for eligible rooftop PV with battery backup) / Online Permit Center Solar Permit",
-        "quote": "Current system and applicant requirements: Main dwelling rooftop, permitted, residential structures only. No ballasted systems. Battery backup allowed. Electrical work related to the solar installation is allowed. No building-integrated photovoltaic systems (BIPV) California Licensed Contractors Only.",
+        "value": true,
+        "conditions": "Main dwelling rooftop residential PV with battery backup may apply via SolarAPP+ (California Licensed Contractors Only). Energy storage systems require Fire Prevention Bureau approval where a single battery has a capacity greater than 20 kWh.",
+        "quote": "Energy storage systems will require approval from the Fire Prevention Bureau where: 1.) a single battery has a capacity greater than 20 kWh; 2.)",
         "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Solar-Energy-Systems-Facilities",
         "ok": true
       },
-      "checklist_published": true,
-      "checklist": {
-        "title": "Solar Energy Systems & Facilities",
-        "revision_date": "unknown",
-        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Solar-Energy-Systems-Facilities"
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "PDF upload in Online Permit Center (compiled as one file, flattened layers, landscape orientation)",
+        "signature_or_stamp": "Electronic signature with Digital ID (no restriction settings)",
+        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
+        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
+        "ok": true
       },
       "requirements": [
+        {
+          "item": "SolarAPP+ Approval Document and approval number",
+          "section": "application",
+          "quote": "Input the SolarAPP+ approval number and attach the SolarAPP+ Approval Document to proceed.",
+          "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Solar-Energy-Systems-Facilities",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "SolarAPP+ Spec Sheet and Contractors Declaration Form",
+          "section": "equipment",
+          "quote": "Attach the SolarAPP+ Spec Sheet. Attach your Contractors Declaration Form.",
+          "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Solar-Energy-Systems-Facilities",
+          "page": null,
+          "ok": true
+        },
         {
           "item": "SolarAPP+ approval number, SolarAPP+ Approval Document, Spec Sheet, and Contractors Declaration Form (for SolarAPP+)",
           "section": "application",
@@ -467,20 +562,11 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
-      "sheet_requirements": {
-        "sheet_size": "18\" x 24\" (Minimum) - Minor Construction",
-        "copies_or_format": "Plan sets compiled as one flattened PDF file, landscape orientation, unlocked for markup",
-        "signature_or_stamp": "Electronic signature without restriction settings per Oakland Signature Policy",
-        "quote": "Plan sets shall be compiled as one file. Plan sets that are not compiled will not be accepted.",
-        "url": "https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Electronic-Plan-and-Document-Submittal-Guidelines",
-        "ok": true
+      "checklist_published": true,
+      "checklist": {
+        "title": "Solar Energy Systems & Facilities",
+        "revision_date": "unknown",
+        "url": "https://www.oaklandca.gov/My-Household/Building-and-Remodeling/Homeowner-Projects-Permits/Solar-Energy-Systems-Facilities"
       },
       "local_rules": [
         {

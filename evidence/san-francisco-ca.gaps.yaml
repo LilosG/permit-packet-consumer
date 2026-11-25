@@ -1,0 +1,68 @@
+jurisdiction_key: san-francisco-ca
+city: San Francisco
+state: CA
+checked_on: 2026-11-25
+who_may_file:
+  owner_may_file: true
+  conditions: "Single-family dwelling only; homeowner must perform the electrical work themselves and sign the declaration not to hire a contractor (SFEC Section 89.120(E)); LLCs are not eligible; must present ID to prove ownership (plus proof of ownership if recently purchased, or proof of authorized signatory status if owned by a trust). If work fails to comply with SFEC and corrections are not made as required by DBI, deficiencies must be corrected by a State licensed electrical contractor under a separate permit. Note: Solar PV and energy storage permits are restricted to California-licensed contractors (C-10, or C-46 without battery storage)."
+  quote: "Permits for electrical work in or about a single-family dwelling may be issued to the homeowner, provided the work will be performed by the homeowner."
+  url: https://www.sf.gov/sites/default/files/2023-11/IS%20E-03.pdf
+jobs:
+  service_upgrade:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+  subpanel:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+  appliance_circuit:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+  generator:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+  solar_storage:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+forms_found:
+  - name: "Information Sheet E-03: License Requirements for Electrical Permit Issuance and Installations"
+    revision_date: "2023-11-15"
+    url: https://www.sf.gov/sites/default/files/2023-11/IS%20E-03.pdf
+    opened: true
+  - name: "Homeowner's Electrical Permit Application"
+    url: https://www.sf.gov/file/homeowners-electrical-permit-application
+    opened: false
+  - name: "Department of Building Inspection Worksheet for Electrical Permit"
+    url: https://media.api.sf.gov/documents/DBI_Worksheet_for_Electrical_Permits.pdf
+    opened: false
+  - name: "2025 San Francisco Electrical Code"
+    url: https://media.api.sf.gov/documents/2025_SF_Electrical_Code.pdf
+    opened: false
+  - name: "2025 San Francisco Building Code Amendments"
+    url: https://media.api.sf.gov/documents/2025_SFBC_Amendments.pdf
+    opened: false
+  - name: "Information Sheet E-02: Electric Vehicle Charger Permitting Checklist"
+    url: https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf
+    opened: false
+open_questions:
+  - "No San Francisco DBI page or PDF specifies a mandatory NEC/CEC Article 220 residential load calculation method (e.g., 220.82 vs. 220.83), a downloadable residential load calculation worksheet, or an EV charger load factor percentage for service upgrades, subpanels, 240 V appliance circuits, standby generators, or solar-plus-storage; Information Sheet E-02 (https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf) only cites 'Electrical load calculation and panel schedule (CEC 220)' for EVSE installations, and SFBC Section 106A.1.15 (https://media.api.sf.gov/documents/2025_SFBC_Amendments.pdf) references 'a completed Department service load calculation form' for expedited small residential rooftop solar without publishing a standalone form PDF on sf.gov."
+  - "Full text of SFEC Section 89.120(E) in https://media.api.sf.gov/documents/2025_SF_Electrical_Code.pdf should be checked in a browser to confirm whether any owner-occupancy duration or rental restriction beyond the single-family dwelling, self-performance, and non-LLC rules is stated."

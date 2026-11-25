@@ -1,0 +1,55 @@
+jurisdiction_key: san-antonio-tx
+city: San Antonio
+state: TX
+checked_on: 2026-11-25
+who_may_file:
+  owner_may_file: false
+  conditions: "Homeowners may only pull a plumbing permit for an existing homestead residence where they personally perform the work; electrical permits require a City- or State-licensed trade contractor registered with the City."
+  quote: "A homeowner can only apply for a plumbing permit for an existing residence provided that it is their homestead and they will personally be doing the work."
+  url: https://www.sa.gov/Directory/Departments/DSD/Constructing/Residential/Permits
+jobs:
+  ev_charger:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "unknown"
+      url: unknown
+  service_upgrade:
+    load_calculation:
+      same_as: ev_charger
+  subpanel:
+    load_calculation:
+      same_as: ev_charger
+  appliance_circuit:
+    load_calculation:
+      same_as: ev_charger
+  generator:
+    load_calculation:
+      method: "2023 NEC Article 220"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "The electric load calculation shall comply with the applicable provisions of 2023 NEC Article 220 and shall include the load information necessary to charge batteries or other energy storage"
+      url: https://docsonline.sanantonio.gov/FileUploads/DSD/IB250.pdf
+  solar_storage:
+    load_calculation:
+      same_as: generator
+forms_found:
+  - name: "IB 250 - Backup System 3rd Party Review Inspections"
+    url: https://docsonline.sanantonio.gov/FileUploads/DSD/IB250.pdf
+    revision_date: 2025-11-01
+    opened: false
+  - name: "Electrical Permit Application"
+    url: https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf
+    revision_date: 2026-09
+    opened: false
+  - name: "Plumbing Affidavit for Homeowner's Permit"
+    url: https://docsonline.sanantonio.gov/FileUploads/dsd/PLUMBINGHOMEOWNERAFFIDAVIT.pdf
+    revision_date: 2026-10
+    opened: false
+  - name: "MEP Trade Permit Application Training Guide"
+    url: https://docsonline.sanantonio.gov/DSDUploads/MEPTradeTraining.pdf
+    opened: false
+open_questions:
+  - "MEPTradeTraining.pdf (https://docsonline.sanantonio.gov/DSDUploads/MEPTradeTraining.pdf) states broadly that residential property owners may apply for a 'MEP Trade permit' for an existing homestead residence when personally performing the work, whereas https://www.sa.gov/Directory/Departments/DSD/Constructing/Residential/Permits and https://www.sa.gov/Directory/Departments/DSD/Resources/Getting-Started explicitly state a homeowner can only apply for a plumbing permit (and Chapter 10 in https://docsonline.sanantonio.gov/DSDUploads/2024Ch10Building-RelatedCodesFinal.pdf only lists a homestead homeowner exemption for plumbing). Full review of Sec. 10-113 of 2024Ch10Building-RelatedCodesFinal.pdf would confirm whether any electrical homestead exemption exists in City Code."
+  - "IB 250 (https://docsonline.sanantonio.gov/FileUploads/DSD/IB250.pdf) specifies 2023 NEC Article 220 for residential electrical back-up systems (generators, ESS/batteries, roof-mounted solar PV) under third-party review, without specifying NEC 220.82 vs. 220.83; no official City of San Antonio or CPS Energy document was found specifying a mandatory NEC 220 sub-method, city load calculation worksheet, or EV charger load factor for standalone residential EV chargers, service upgrades, subpanels, or 240 V appliance circuits."

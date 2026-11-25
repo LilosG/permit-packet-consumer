@@ -60,12 +60,26 @@ def build_on_sheet(request: JobRequestBase, build):
         # Laid out on letter, then the drawing sheets go onto 22 x 34 in sheets with the city's blank
         # area on the cover, so no separate blank sheet is added.
         from permit_packets.core.drawing_sets import drawing_set
-        from permit_packets.core.pdf_base import collect_page_titles
+        from permit_packets.core.pdf_base import (
+            CONTINUED_DOC_STEM,
+            CONTINUED_DOC_TITLE,
+            LAST_COVER_CONTINUATION,
+            collect_page_titles,
+        )
 
         with use_sheet(sheet), use_blank_area(None), collect_page_titles() as titles:
             result = build(request)
+        continuation = LAST_COVER_CONTINUATION.get()
+        LAST_COVER_CONTINUATION.set(None)
         pdf = drawing_set(result.pdf, titles, city.title_sheet_blank_area_in)
-        return PacketResult(pdf=pdf, body={**result.body, "sheet_size": sheet.key})
+        body = {**result.body, "sheet_size": sheet.key}
+        if continuation is not None:
+            # The cover moved rows to a continued drawing sheet: keep the documents list in step with pages.
+            documents = list(body.get("documents", []))
+            documents.insert(max(1, len(documents) - 1),
+                             {"file_stem": CONTINUED_DOC_STEM, "title": CONTINUED_DOC_TITLE})
+            body["documents"] = documents
+        return PacketResult(pdf=pdf, body=body)
     with use_sheet(sheet), use_blank_area(city.title_sheet_blank_area_in):
         result = build(request)
         body = {**result.body, "sheet_size": sheet.key}

@@ -1,19 +1,13 @@
-from permit_packets.jurisdictions import Checklist, Requirement
 from dataclasses import replace
+from permit_packets.jurisdictions import Checklist, Requirement
 from permit_packets.jurisdictions.general import make_city
-HENDERSON = make_city(*('henderson-nv', 'Henderson', 'NV', 'NEC', 'NV licensed electrical contractors or homeowner-occupants.', 'https://www.cityofhenderson.com/government/departments/building-and-fire-safety', 'Fees based on the City of Henderson fee schedule.', '2017 NEC', 'EV charger circuits require a residential electrical permit.', 'Service upgrades require NV Energy coordination.', (-115.1762, 35.9189, -114.9325, 36.0792), (-114.9817, 36.0395), 'Henderson Building and Fire Safety', '(702) 267-3600', 'dschelp@cityofhenderson.com', 'https://dsconline.cityofhenderson.com/', 'Henderson DSC Online', 'Apply and upload plans online via Henderson DSC Online.', 108, 'https://ashrae-meteo.info/v3.0/index.php?wmo=723860', 'NV Energy', 'NV Energy', 'Henderson enforces the 2017 National Electrical Code with Southern Nevada amendments.'))
-
-# Verified from evidence/verified/ by tools/import_evidence.py.
-HENDERSON = replace(
-    HENDERSON,
-    permit_rules_verified="",
-)
+HENDERSON = make_city(*('henderson-nv', 'Henderson', 'NV', 'NEC', 'NV licensed electrical contractors or homeowner-occupants.', 'https://www.cityofhenderson.com/government/departments/building-and-fire-safety', 'Fees based on the City of Henderson fee schedule.', '2023 NEC', 'EV charger circuits require a residential electrical permit.', 'Service upgrades require NV Energy coordination.', (-115.1762, 35.9189, -114.9325, 36.0792), (-114.9817, 36.0395), 'Henderson Building and Fire Safety', '(702) 267-3600', 'dschelp@cityofhenderson.com', 'https://dsconline.cityofhenderson.com/', 'Henderson DSC Online', 'Apply and upload plans online via Henderson DSC Online.', 108, 'https://ashrae-meteo.info/v3.0/index.php?wmo=723860', 'NV Energy', 'NV Energy', 'Henderson enforces the 2023 National Electrical Code with Southern Nevada amendments, for submittals received on or after January 2, 2026.'))
 
 # Verified from evidence/verified/ by tools/import_evidence.py.
 HENDERSON = replace(
     HENDERSON,
     owner_may_file=True,
-    who_may_pull="Owner building or improving a residential structure on their primary Nevada residence for their own occupancy (not intended for sale or lease) must submit the Nevada State Contractors Board Owner Builder Affidavit of Exemption per NRS 624.031 and sign each page of homeowner-drawn plans.",
+    who_may_pull="Primary Nevada residence for owner's own occupancy and not intended for sale or lease; requires Nevada State Contractors Board Owner Builder Affidavit of Exemption per NRS 624.031 and Owner/Builder Sub-Contractor Voucher specifying Electrical work.",
     permit_rules_verified="2026-11-25",
     last_verified="2026-11-25",
     checklists={

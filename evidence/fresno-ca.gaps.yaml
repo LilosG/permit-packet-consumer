@@ -1,0 +1,85 @@
+jurisdiction_key: fresno-ca
+city: Fresno
+state: CA
+checked_on: 2026-11-25
+code_edition:
+  value: 2023 NEC (2025 California Electrical Code, Title 24, Part 3; adopted by Fresno Ordinance 2025-40)
+  effective_date: 2026-01-01
+  quote: The 2025 CEC proposal is based on the 2023 National Electrical Code (NEC), which will be effective on January 1, 2026.
+  url: https://www.dgs.ca.gov/-/media/Divisions/BSC/03-Rulemaking/2024-Triennial-Cycle/Public-Comments/PEME-GREEN-45-Day/HCD/HCD-01-23-45-Day-ISOR-PT3.pdf
+jobs:
+  ev_charger:
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+  service_upgrade:
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+  subpanel:
+    permit_required:
+      value: true
+      quote: Except as herein provided, no person shall do, install, alter, reconstruct or repair any electric wiring regulated by this Electrical Code or cause or permit the same to be done without a permit therefor from the Department.
+      url: https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+  appliance_circuit:
+    permit_required:
+      same_as: subpanel
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+  generator:
+    permit_required:
+      same_as: subpanel
+    plans_required_single_family:
+      value: not_stated
+      conditions: none
+      quote: unknown
+      url: unknown
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+  solar_storage:
+    load_calculation:
+      method: not_stated
+      city_worksheet: none
+      ev_charger_load_factor: not_stated
+      quote: unknown
+      url: unknown
+forms_found:
+- name: Building Permit Application Form (Updated 2.20.26)
+  url: https://www.fresno.gov/wp-content/uploads/2026/02/Building-Permit-Application-Updated-2.20.26-10w1355.pdf
+  opened: false
+- name: Addendum/Deferred Submittal Application Form (02.20.26)
+  url: https://www.fresno.gov/wp-content/uploads/2026/02/Addendum-Form-02.20.26-10w1357.pdf
+  opened: false
+- name: Event Permit Application
+  url: https://www.fresno.gov/wp-content/uploads/2024/08/Building-Safety-Event-Permit-App-10w71-1.pdf
+  opened: false
+- name: Ordinance No. 2025-40 (Adoption and Amendment of 2025 California Building Standards Code)
+  url: https://documents.fresno.gov/WebLink/DocView.aspx?id=21170101&dbid=0&repo=LF-Repository
+  opened: false
+- name: Ordinance No. 1991-002 (Electrical Permits and Competency Certification)
+  url: https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository
+  opened: false
+open_questions:
+- Whether Fresno's Ordinance 2025-40 (https://documents.fresno.gov/WebLink/DocView.aspx?id=21170101&dbid=0&repo=LF-Repository) adds local amendments to Section 11-104 (2025 California Electrical Code) or adopts it as-is could not be confirmed from the indexed snippet; opening the full Ordinance 2025-40 PDF would settle it.
+- Whether Fresno still enforces the 1991 homeowner written electrical examination requirement in Ordinance 1991-002 could not be confirmed; opening the Owner Builder Checklist PDF linked on https://www.fresno.gov/planning/building-and-safety/building-permit-center/ would settle it.
+- No City of Fresno residential electrical load calculation worksheet, EV charger load factor, or single-family standby generator plan-check threshold was found in indexed PDFs; opening the Electric Vehicle Charging Submittal Checklist and Electric Vehicle Charging Stations Handout on https://www.fresno.gov/planning/applications-forms-fees/ and Page 2 of https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf would settle EV and solar/storage load calculation requirements.

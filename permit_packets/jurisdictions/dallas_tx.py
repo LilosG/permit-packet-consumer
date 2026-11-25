@@ -1,7 +1,7 @@
 """Dallas, TX: City of Dallas Development Services"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -13,8 +13,7 @@ SOURCE_LABEL = "From Dallas Development Services electrical rules"
 
 DALLAS = Jurisdiction(
     key="dallas-tx", name="Dallas", state="TX", known=True,
-    last_verified="2026-11-24",
-    permit_rules_verified="",
+    permit_rules_verified="2026-11-21",
     who_may_pull="Residential homesteaded property only; homeowner must reside in the property, perform all work without hired assistance, pass a homeowner's exam, and have the district electrical inspector witness the exemption form at the field office",
     owner_may_file=True,
     portal_url="https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection",
@@ -42,6 +41,11 @@ DALLAS = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
+                Requirement("Permit application: address, owner, contractor and valuation", "application"),
+                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
+                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
+                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
+                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
                 Requirement("If electrical plans are submitted, include service diagram, conductor/pipe sizes, grounding electrode diagram, overcurrent protection, and power layout", "one_line",
                             "https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/pdf/building/ElectricalPermit.pdf"),
             ),
@@ -54,9 +58,15 @@ DALLAS = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
+                Requirement("Permit application: address, scope and valuation", "application"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
+                Requirement("Panel and meter base specifications and listing", "equipment"),
+                Requirement("Site plan showing the meter and main panel", "site_plan"),
+                Requirement("Utility service request", "utility"),
+                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
                 Requirement("If electrical plans are submitted, include service diagram, conductor/pipe sizes, grounding electrode diagram, overcurrent protection, and power layout", "one_line",
                             "https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/pdf/building/ElectricalPermit.pdf"),
-                SURGE_PROTECTION,
             ),
             source_url="https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/pdf/building/ElectricalPermit.pdf",
             source_label="From the city's published pages",
@@ -68,6 +78,11 @@ DALLAS = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
+                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Panel specifications and listing", "equipment"),
                 Requirement("If electrical plans are submitted, include service diagram, conductor/pipe sizes, grounding electrode diagram, overcurrent protection, and power layout", "one_line",
                             "https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/pdf/building/ElectricalPermit.pdf"),
             ),
@@ -80,6 +95,11 @@ DALLAS = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the panel and the appliance", "site_plan"),
+                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
+                Requirement("Load calculation", "load"),
+                Requirement("Manufacturer specifications and listing", "equipment"),
                 Requirement("If electrical plans are submitted, include service diagram, conductor/pipe sizes, grounding electrode diagram, overcurrent protection, and power layout", "one_line",
                             "https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/pdf/building/ElectricalPermit.pdf"),
             ),
@@ -92,6 +112,11 @@ DALLAS = Jurisdiction(
         ),
         "generator": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, generator inlet and feeder route", "site_plan"),
+                Requirement("One-line diagram showing interlock or transfer switch (NEC 702.5)", "one_line"),
+                Requirement("Load calculation (NEC 220)", "load"),
+                Requirement("Interlock kit / transfer switch UL listing and cut sheets", "equipment"),
                 Requirement("Scaled and dimensioned site plan showing property lines, buildings, and easements (or floor plan if interior)", "site_plan",
                             "https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/pdf/BI_Backup%20Generator%20Permit_Rev%2009-11-2018.pdf"),
                 Requirement("One-line electrical drawings and electrical load analysis", "one_line",
@@ -107,6 +132,11 @@ DALLAS = Jurisdiction(
         ),
         "solar_storage": Checklist(
             items=(
+                Requirement("Permit application", "application"),
+                Requirement("Site plan showing the main panel, inverter/ESS and output route", "site_plan"),
+                Requirement("One-line diagram with rapid shutdown (NEC 690.12) and ESS disconnect (NEC 706.15)", "one_line"),
+                Requirement("Load calculation and NEC 705.12 120% busbar calculation", "load"),
+                Requirement("Inverter UL 1741 and battery UL 9540 specification cut sheets", "equipment"),
                 Requirement("Three-line electrical diagram complete with conductor calculations (including correction, adjustment, and duty factors)", "one_line",
                             "https://dallascityhall.com/departments/sustainabledevelopment/DCH%20documents/SOLARPANELWATERHEATEROROTHERSYSTEM.pdf"),
                 Requirement("Roof plan showing existing condition and proposed equipment location, plus building elevations", "site_plan",

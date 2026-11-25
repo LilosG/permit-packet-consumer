@@ -1,0 +1,40 @@
+jurisdiction_key: portland-or
+city: Portland
+state: OR
+checked_on: 2026-11-25
+jobs:
+  ev_charger:
+    load_calculation:
+      method: "not_stated"
+      city_worksheet: "none"
+      ev_charger_load_factor: "not_stated"
+      quote: "Load calculations as per the Electrical Code. If adding load to an existing service or sub-distribution, show the existing load and the new load to be added."
+      url: https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download
+  service_upgrade:
+    load_calculation:
+      same_as: ev_charger
+  subpanel:
+    load_calculation:
+      same_as: ev_charger
+  appliance_circuit:
+    load_calculation:
+      same_as: ev_charger
+  generator:
+    load_calculation:
+      same_as: ev_charger
+  solar_storage:
+    load_calculation:
+      same_as: ev_charger
+forms_found:
+  - name: "Electrical Plan Review Program Guide"
+    url: https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download
+    opened: true
+  - name: "Electrical Renewable Energy Permit Application"
+    url: https://www.portland.gov/ppd/documents/electrical-renewable-energy-permit-application/download
+    opened: true
+  - name: "Statewide Alternate Method No. 09-01 (Calculating Electrical Vehicle Charging Station Loads)"
+    url: https://www.oregon.gov/bcd/codes-stand/Documents/sam-09-01-calcelectricalvehiclecharge.pdf
+    opened: true
+open_questions:
+  - "Portland Permitting & Development (PP&D) does not publish a city-specific residential electrical load calculation worksheet or specify whether NEC 220.82 or 220.83 is required; confirming whether standard single-family trade permits without plan review require submitting a load calculation would require contacting PP&D Electrical Inspections directly."
+  - "No Portland-specific single-family Level 2 EV charger load factor (e.g., 100% vs. 125%) is stated on portland.gov; Oregon BCD Statewide Alternate Method 09-01 addresses demand factors for multiple charging stations rather than a single residential EV charger."

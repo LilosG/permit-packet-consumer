@@ -2,16 +2,43 @@
   "jurisdiction_key": "fresno-ca",
   "city": "Fresno",
   "state": "CA",
-  "checked_on": "2026-11-24",
-  "agency": "City of Fresno Planning and Development Department, Building and Safety Services Division",
-  "portal_url": "https://aca-prod.accela.com/FRESNO",
+  "checked_on": "2026-11-25",
   "code_edition": {
-    "value": "2025 California Electrical Code (adopted via Ordinance No. 2025-40 amending FMC Chapter 11, Article 1)",
+    "value": "2023 NEC (2025 California Electrical Code, Title 24, Part 3; adopted by Fresno Ordinance 2025-40)",
     "effective_date": "2026-01-01",
-    "quote": "SECTION 11-104. CALIFORNIA ELECTRICAL CODE. The California Electrical Code 2025 Edition. which may be referred to in the Code as the CEC.",
-    "url": "https://documents.fresno.gov/WebLink/DocView.aspx?id=21170101&dbid=0&repo=LF-Repository",
+    "quote": "The 2025 CEC proposal is based on the 2023 National Electrical Code (NEC), which will be effective on January 1, 2026.",
+    "url": "https://www.dgs.ca.gov/-/media/Divisions/BSC/03-Rulemaking/2024-Triennial-Cycle/Public-Comments/PEME-GREEN-45-Day/HCD/HCD-01-23-45-Day-ISOR-PT3.pdf",
     "ok": true
   },
+  "forms_found": [
+    {
+      "name": "Building Permit Application Form (Updated 2.20.26)",
+      "url": "https://www.fresno.gov/wp-content/uploads/2026/02/Building-Permit-Application-Updated-2.20.26-10w1355.pdf",
+      "opened": false
+    },
+    {
+      "name": "Addendum/Deferred Submittal Application Form (02.20.26)",
+      "url": "https://www.fresno.gov/wp-content/uploads/2026/02/Addendum-Form-02.20.26-10w1357.pdf",
+      "opened": false
+    },
+    {
+      "name": "Event Permit Application",
+      "url": "https://www.fresno.gov/wp-content/uploads/2024/08/Building-Safety-Event-Permit-App-10w71-1.pdf",
+      "opened": false
+    },
+    {
+      "name": "Ordinance No. 2025-40 (Adoption and Amendment of 2025 California Building Standards Code)",
+      "url": "https://documents.fresno.gov/WebLink/DocView.aspx?id=21170101&dbid=0&repo=LF-Repository",
+      "opened": false
+    },
+    {
+      "name": "Ordinance No. 1991-002 (Electrical Permits and Competency Certification)",
+      "url": "https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository",
+      "opened": false
+    }
+  ],
+  "agency": "City of Fresno Planning and Development Department, Building and Safety Services Division",
+  "portal_url": "https://aca-prod.accela.com/FRESNO",
   "who_may_file": {
     "owner_may_file": "unknown",
     "conditions": "unknown",
@@ -48,6 +75,9 @@
     ]
   },
   "open_questions": [
+    "Whether Fresno's Ordinance 2025-40 (https://documents.fresno.gov/WebLink/DocView.aspx?id=21170101&dbid=0&repo=LF-Repository) adds local amendments to Section 11-104 (2025 California Electrical Code) or adopts it as-is could not be confirmed from the indexed snippet; opening the full Ordinance 2025-40 PDF would settle it.",
+    "Whether Fresno still enforces the 1991 homeowner written electrical examination requirement in Ordinance 1991-002 could not be confirmed; opening the Owner Builder Checklist PDF linked on https://www.fresno.gov/planning/building-and-safety/building-permit-center/ would settle it.",
+    "No City of Fresno residential electrical load calculation worksheet, EV charger load factor, or single-family standby generator plan-check threshold was found in indexed PDFs; opening the Electric Vehicle Charging Submittal Checklist and Electric Vehicle Charging Stations Handout on https://www.fresno.gov/planning/applications-forms-fees/ and Page 2 of https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf would settle EV and solar/storage load calculation requirements.",
     "The agency name in the prompt ('Development and Resource Management Department') has been renamed on fresno.gov to 'Planning and Development Department, Building and Safety Services Division' (https://www.fresno.gov/planning/building-and-safety/), though some older contact emails still use DARM.building@fresno.gov.",
     "The Owner Builder Checklist PDF linked on https://www.fresno.gov/planning/building-and-safety/building-permit-center/ could not be opened directly to verify whether Fresno still enforces the 1991 homeowner written electrical examination requirement from Ordinance 1991-002 (https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository).",
     "The Electric Vehicle Charging Submittal Checklist and Electric Vehicle Charging Stations Handout PDFs linked on https://www.fresno.gov/planning/applications-forms-fees/ could not be opened directly to confirm whether they apply to single-family residential Level 2 chargers or only commercial/multifamily installations.",
@@ -56,6 +86,13 @@
   ],
   "jobs": {
     "ev_charger": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Once you obtain approval from the Planning Division and comply with the conditions, submit plans to the Building Division for building permits.",
@@ -93,13 +130,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
@@ -122,6 +152,13 @@
       ]
     },
     "service_upgrade": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Electrical-Main Panels, Mechanical- Heating Ventilation and Air Cond., Plumbing-Water Heater, & Re-Roofs.",
@@ -159,13 +196,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
@@ -193,6 +223,13 @@
         "quote": "unknown",
         "url": "unknown"
       },
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "plans_required_single_family": {
         "value": false,
         "program_name": "Same day express permits for Electrical, Mechanical, & Plumbing / Level 1 Project (2-3 business days via ACA)",
@@ -224,13 +261,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
@@ -258,6 +288,13 @@
         "quote": "unknown",
         "url": "unknown"
       },
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "plans_required_single_family": {
         "value": false,
         "program_name": "Same day express permits for Electrical, Mechanical, & Plumbing / Level 1 Project (2-3 business days via ACA)",
@@ -289,13 +326,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
@@ -325,7 +355,14 @@
       },
       "plans_required_single_family": {
         "value": "unknown",
-        "program_name": "unknown",
+        "conditions": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
         "quote": "unknown",
         "url": "unknown"
       },
@@ -353,13 +390,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "not_stated",
         "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
@@ -382,6 +412,13 @@
       ]
     },
     "solar_storage": {
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
       "permit_required": {
         "value": true,
         "quote": "Use this checklist to assemble the materials required for your application when submitting in Accela.",
@@ -435,13 +472,6 @@
           "ok": true
         }
       ],
-      "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
-      },
       "sheet_requirements": {
         "sheet_size": "11\" x 17\" minimum and 30\" x 42\" maximum (calculations and product sheets may be 8.5\" x 11\")",
         "copies_or_format": "Digital submittal in Accela; file size limited to 200MB",
