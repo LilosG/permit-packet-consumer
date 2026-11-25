@@ -42,8 +42,9 @@ LOS_ANGELES = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Electrical plans and calculations signed and stamped by registered Electrical Engineer when required", "other",
-                            "https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Station%20Applications.pdf"),
+                Requirement("Electrical plans and calculations signed and stamped by registered Electrical Engineer when required", "by_others",
+                            "https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Station%20Applications.pdf",
+                            who="A registered electrical engineer, only when LADBS requires stamped plans"),
                 Requirement("Site plan and floor plan if inside a building for plan check submittals", "site_plan",
                             "https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Station%20Applications.pdf"),
             ),

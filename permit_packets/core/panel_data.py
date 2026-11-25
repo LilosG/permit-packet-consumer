@@ -151,4 +151,11 @@ def checklist_row(job, section: str, page: int, *, burial: tuple[int, str] | Non
         if burial is None:
             return "Not in this packet: add it by hand", "Open"
         return f"Page {burial[0]}: {burial[1]}", "Ready"
+    if section == "utility_id":
+        name = job.jurisdiction.utility_short
+        if not name:
+            return f"Page {page}: add the serving utility", "Open"
+        return f"Page {page}: serving utility {name} on the one-line", "Ready"
+    if section == "packet_gap":
+        return "Not in this packet yet: add it before you submit", "Open"
     return None

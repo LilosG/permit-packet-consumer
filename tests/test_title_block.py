@@ -123,10 +123,25 @@ def test_last_verified_prints_only_where_set():
     from permit_packets.jurisdictions import KNOWN
 
     verified = {j.key: j.last_verified for j in KNOWN.values() if j.last_verified}
-    imported = ("austin-tx dallas-tx denver-co fresno-ca houston-tx irvine-ca phoenix-az portland-or sacramento-ca "
-                "san-antonio-tx san-diego-ca san-francisco-ca seattle-wa").split()  # evidence import
-    assert verified == {"el-cajon-ca": "2026-11-16", "oro-valley-az": "2026-11-16",
-                        **dict.fromkeys(imported, "2026-11-24")}
+    assert verified == {
+        "irvine-ca": "2026-11-24",
+        "fresno-ca": "2026-11-24",
+        "henderson-nv": "2026-11-25",
+        "oro-valley-az": "2026-11-16",
+        "el-cajon-ca": "2026-11-16",
+        "san-francisco-ca": "2026-11-24",
+        "san-diego-ca": "2026-11-24",
+        "seattle-wa": "2026-11-24",
+        "portland-or": "2026-11-25",
+        "austin-tx": "2026-11-25",
+        "dallas-tx": "2026-11-24",
+        "denver-co": "2026-11-24",
+        "phoenix-az": "2026-11-24",
+        "sacramento-ca": "2026-11-24",
+        "oakland-ca": "2026-11-25",
+        "houston-tx": "2026-11-24",
+        "san-antonio-tx": "2026-11-25",
+    }
     el_cajon = {**_model_sample("ev_charger"), "jurisdiction_key": "el-cajon-ca", "city": "El Cajon", "state": "CA"}
     assert "City checklist last verified: 2026-11-16" in " ".join(packet_pages(build("ev_charger", el_cajon).pdf)[0].split())
     mesa = {**_model_sample("ev_charger"), "jurisdiction_key": "mesa-az", "city": "Mesa", "state": "AZ"}

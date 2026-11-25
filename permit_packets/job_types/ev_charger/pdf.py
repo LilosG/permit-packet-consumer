@@ -294,8 +294,12 @@ def _checklist_row(packet: EvPacket, section: str) -> tuple[str, str]:
 def checklist_rows(packet) -> list[tuple[str, str, str]]:
     """Every checklist line: the city's, then the panel schedule every packet carries."""
     job = packet.job
-    rows = [(requirement.item, *_checklist_row(packet, requirement.section))
-            for requirement in job.jurisdiction.checklist_for("ev_charger").items]
+    rows = []
+    for requirement in job.jurisdiction.checklist_for("ev_charger").items:
+        if requirement.section == "by_others":
+            rows.append((requirement.item, f"By others: {requirement.who}", "By others"))
+        else:
+            rows.append((requirement.item, *_checklist_row(packet, requirement.section)))
     return rows + [(PANEL_SCHEDULE_ITEM, *panel_schedule_row(job, SECTION_PAGES["panel_schedule"]))]
 
 

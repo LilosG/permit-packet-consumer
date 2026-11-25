@@ -213,7 +213,10 @@ class OneLine(Flowable):
                 c.drawCentredString(bx + box_w / 2, mid + 8 - i * 10, line)
 
         xs = [0, 120, CONTENT - box_w]
-        box(xs[0], "UTILITY METER", ["Existing", "120/240 V", "1-phase"])
+        meter_lines = ["Existing", "120/240 V", "1-phase"]
+        if job.jurisdiction.utility_short:
+            meter_lines.append(job.jurisdiction.utility_short)
+        box(xs[0], "UTILITY METER", meter_lines)
         box(xs[1], f"MAIN PANEL {job.service_amps} A",
             [f"{job.service_amps} A service", f"New {job.feeder_breaker_amps} A, 2-pole",
              f"{job.open_breaker_spaces} spaces open"], SOFT)
@@ -277,8 +280,12 @@ def _checklist_row(packet: SubpanelPacket, section: str) -> tuple[str, str]:
 def checklist_rows(packet) -> list[tuple[str, str, str]]:
     """Every checklist line: the city's, then the panel schedule every packet carries."""
     job = packet.job
-    rows = [(requirement.item, *_checklist_row(packet, requirement.section))
-            for requirement in job.jurisdiction.checklist_for("subpanel").items]
+    rows = []
+    for requirement in job.jurisdiction.checklist_for("subpanel").items:
+        if requirement.section == "by_others":
+            rows.append((requirement.item, f"By others: {requirement.who}", "By others"))
+        else:
+            rows.append((requirement.item, *_checklist_row(packet, requirement.section)))
     return rows + [(PANEL_SCHEDULE_ITEM, *panel_schedule_row(job, SECTION_PAGES["panel_schedule"]))]
 
 

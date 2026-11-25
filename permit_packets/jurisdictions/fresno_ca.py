@@ -78,3 +78,77 @@ FRESNO = replace(
             code_note=FRESNO.code_note),
     },
 )
+
+# Verified from evidence/verified/ by tools/import_evidence.py.
+FRESNO = replace(
+    FRESNO,
+    checklists={
+        **FRESNO.checklists,
+        "ev_charger": replace(
+            FRESNO.checklists["ev_charger"],
+            items=(
+                Requirement("Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information", "application",
+                            "https://www.fresno.gov/planning/building-and-safety/building-permit-center/"),
+                Requirement("Electric Vehicle Charging Submittal Checklist (Planning Division)", "application",
+                            "https://www.fresno.gov/planning/applications-forms-fees/"),
+            ),
+            source_url="https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+            source_label="From the city's published pages"),
+        "service_upgrade": replace(
+            FRESNO.checklists["service_upgrade"],
+            items=(
+                Requirement("Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information", "application",
+                            "https://www.fresno.gov/planning/building-and-safety/building-permit-center/"),
+                Requirement("Payment of all applicable permit fees prior to permit issuance", "application",
+                            "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf"),
+                SURGE_PROTECTION,
+            ),
+            source_url="https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+            source_label="From the city's published pages"),
+        "subpanel": replace(
+            FRESNO.checklists["subpanel"],
+            items=(
+                Requirement("Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information", "application",
+                            "https://www.fresno.gov/planning/building-and-safety/building-permit-center/"),
+                Requirement("Payment of all applicable permit fees prior to permit issuance", "application",
+                            "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf"),
+            ),
+            source_url="https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+            source_label="From the city's published pages"),
+        "appliance_circuit": replace(
+            FRESNO.checklists["appliance_circuit"],
+            items=(
+                Requirement("Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information", "application",
+                            "https://www.fresno.gov/planning/building-and-safety/building-permit-center/"),
+                Requirement("Payment of all applicable permit fees prior to permit issuance", "application",
+                            "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf"),
+            ),
+            source_url="https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+            source_label="From the city's published pages"),
+        "generator": replace(
+            FRESNO.checklists["generator"],
+            items=(
+                Requirement("Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information", "application",
+                            "https://www.fresno.gov/planning/building-and-safety/building-permit-center/"),
+                Requirement("Payment of all applicable permit fees prior to permit issuance", "application",
+                            "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf"),
+            ),
+            source_url="https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+            source_label="From the city's published pages"),
+        "solar_storage": replace(
+            FRESNO.checklists["solar_storage"],
+            items=(
+                Requirement("Complete scaled plan set with preparer name, signature, address, phone, and license stamp/number on each sheet", "application",
+                            "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf"),
+                Requirement("Site plan showing building footprint, lot dimensions, setbacks, PV panel locations, and point of service connections", "site_plan",
+                            "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf"),
+                Requirement("Complete set of manufacturer product cut-sheets for all equipment used in the installation", "equipment",
+                            "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf"),
+                Requirement("Structural calculations for ground-mount and reverse-tilt installations over 24 inches at tall side", "by_others",
+                            "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+                            who="A licensed engineer, only for ground-mount or reverse-tilt arrays over 24 inches at the tall side"),
+            ),
+            source_url="https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+            source_label="From the city's published pages"),
+    },
+)

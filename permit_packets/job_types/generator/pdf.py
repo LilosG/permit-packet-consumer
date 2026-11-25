@@ -145,7 +145,10 @@ class OneLine(Flowable):
                 c.drawCentredString(bx + box_w / 2, mid + 9 - i * 10, line)
 
         xs = [0, 180, CONTENT - box_w]
-        box(xs[0], "UTILITY METER", ["Existing", "120/240 V", "1-phase"])
+        meter_lines = ["Existing", "120/240 V", "1-phase"]
+        if job.jurisdiction.utility_short:
+            meter_lines.append(job.jurisdiction.utility_short)
+        box(xs[0], "UTILITY METER", meter_lines)
         box(xs[1], "MAIN PANEL & INTERLOCK", [f"{job.service_amps} A service", f"{packet.breaker} A backfeed / transfer", "NEC 702.5 listed"], SOFT)
         box(xs[2], "GENERATOR / INLET", [f"{display_number(job.generator_kw)} kW ({display_number(job.generator_amps)} A)", f"{packet.breaker} A, 120/240 V", f"{job.neutral_type.capitalize()} neutral"])
 
@@ -170,7 +173,9 @@ def checklist_rows(packet: GeneratorPacket) -> list[tuple[str, str, str]]:
     rows = []
     for req in job.jurisdiction.checklist_for("generator").items:
         sec = req.section
-        if sec == "application":
+        if sec == "by_others":
+            rows.append((req.item, f"By others: {req.who}", "By others"))
+        elif sec == "application":
             missing = job.jurisdiction.needs_parcel_number and not (plan and plan.parcel_number)
             rows.append((req.item, "Page 2: add the parcel number" if missing else "Page 2: fields ready", "Open" if missing else "Ready"))
         elif sec == "site_plan":
@@ -180,7 +185,12 @@ def checklist_rows(packet: GeneratorPacket) -> list[tuple[str, str, str]]:
             rows.append((req.item, "Page 7 + data sheet attached" if has_doc else "Page 7: attach interlock/generator cut sheet", "Ready" if has_doc else "Attach"))
         else:
             shown = panel_row(job, sec, SECTION_PAGES["one_line"], burial=None)
-            rows.append((req.item, *(shown or (f"Page {SECTION_PAGES.get(sec, 4)}", "Ready"))))
+            if shown:
+                rows.append((req.item, *shown))
+            elif sec in SECTION_PAGES:
+                rows.append((req.item, f"Page {SECTION_PAGES[sec]}", "Ready"))
+            else:
+                rows.append((req.item, "Not in this packet: add it by hand", "Open"))  # never shown as done
     return rows + [(PANEL_SCHEDULE_ITEM, *panel_schedule_row(job, SECTION_PAGES["panel_schedule"]))]
 
 

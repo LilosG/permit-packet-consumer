@@ -13,14 +13,21 @@
     "ok": true
   },
   "who_may_file": {
-    "owner_may_file": "unknown",
-    "conditions": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "owner_may_file": false,
+    "conditions": "Electrical permits can only be obtained by licensed electrical contractors registered with the City (homeowners may only pull plumbing permits for an existing homestead)",
+    "quote": "Separate permits are required for trade work and can only be obtained by licensed contractors (mechanical, electrical, plumbing).",
+    "url": "https://www.sa.gov/Directory/Departments/DSD/Resources/Getting-Started",
+    "ok": true
   },
   "utility": {
     "name": "CPS Energy",
     "requirements": [
+      {
+        "item": "Submit new or modified electric service requests through the CPS Energy Customer Engineering Web Portal",
+        "quote": "CPS Energy has a Customer Engineering Web Portal to request new electric or gas services, security lights or to change an existing service.",
+        "url": "https://www.sa.gov/Directory/Departments/DSD/Resources/Getting-Started",
+        "ok": true
+      },
       {
         "item": "Exterior service disconnect required by CPS Energy for one- and two-family dwellings",
         "quote": "(Note: CPS Energy requires exterior service disconnect for dwellings).",
@@ -111,6 +118,12 @@
       },
       "local_rules": [
         {
+          "rule": "Every permit expires within 180 days if no proof of work or progress is shown",
+          "quote": "Every permit application and permit will expire within 180 days if no proof of work or progress has been shown.",
+          "url": "https://www.sa.gov/Directory/Departments/DSD/Constructing/Business-Commercial/Permit-Process",
+          "ok": true
+        },
+        {
           "rule": "Applicant is responsible for verifying any applicable CC&Rs (see Information Bulletin 234)",
           "quote": "It is imperative and incumbent upon you the applicant to verify the existence of any CC&Rs that may be applicable to your project. See Information Bulletin 234 for additional information.",
           "url": "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf",
@@ -189,6 +202,12 @@
           "quote": "(Note: CPS Energy requires exterior service disconnect for dwellings).",
           "url": "https://docsonline.sanantonio.gov/DSDUploads/20221109DSD_GSABA_ElectricalCode.pdf",
           "ok": true
+        },
+        {
+          "rule": "Every permit expires within 180 days if no proof of work or progress is shown",
+          "quote": "Every permit application and permit will expire within 180 days if no proof of work or progress has been shown.",
+          "url": "https://www.sa.gov/Directory/Departments/DSD/Constructing/Business-Commercial/Permit-Process",
+          "ok": true
         }
       ],
       "searched": [
@@ -258,6 +277,12 @@
         "ok": true
       },
       "local_rules": [
+        {
+          "rule": "Every permit expires within 180 days if no proof of work or progress is shown",
+          "quote": "Every permit application and permit will expire within 180 days if no proof of work or progress has been shown.",
+          "url": "https://www.sa.gov/Directory/Departments/DSD/Constructing/Business-Commercial/Permit-Process",
+          "ok": true
+        },
         {
           "rule": "Applicant is responsible for verifying any applicable CC&Rs (see Information Bulletin 234)",
           "quote": "It is imperative and incumbent upon you the applicant to verify the existence of any CC&Rs that may be applicable to your project. See Information Bulletin 234 for additional information.",
@@ -333,6 +358,12 @@
       },
       "local_rules": [
         {
+          "rule": "Every permit expires within 180 days if no proof of work or progress is shown",
+          "quote": "Every permit application and permit will expire within 180 days if no proof of work or progress has been shown.",
+          "url": "https://www.sa.gov/Directory/Departments/DSD/Constructing/Business-Commercial/Permit-Process",
+          "ok": true
+        },
+        {
           "rule": "Applicant is responsible for verifying any applicable CC&Rs (see Information Bulletin 234)",
           "quote": "It is imperative and incumbent upon you the applicant to verify the existence of any CC&Rs that may be applicable to your project. See Information Bulletin 234 for additional information.",
           "url": "https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf",
@@ -406,6 +437,12 @@
         "ok": true
       },
       "local_rules": [
+        {
+          "rule": "Every permit expires within 180 days if no proof of work or progress is shown",
+          "quote": "Every permit application and permit will expire within 180 days if no proof of work or progress has been shown.",
+          "url": "https://www.sa.gov/Directory/Departments/DSD/Constructing/Business-Commercial/Permit-Process",
+          "ok": true
+        },
         {
           "rule": "Applicant is responsible for verifying any applicable CC&Rs (see Information Bulletin 234)",
           "quote": "It is imperative and incumbent upon you the applicant to verify the existence of any CC&Rs that may be applicable to your project. See Information Bulletin 234 for additional information.",

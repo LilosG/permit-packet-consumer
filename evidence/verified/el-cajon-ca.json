@@ -63,8 +63,9 @@
       "plans_required_single_family": {
         "value": "unknown",
         "program_name": "Project Assistance Center Online (PACO)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The Project Assistance Center Online (PACO) is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -72,7 +73,16 @@
         "revision_date": "unknown",
         "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-2878/-toggle-all/-sortn-EDate/-folder-39/-npage-3"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -81,13 +91,21 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "signature_or_stamp": "not_stated",
+        "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Addresses not found in PACO may be in unincorporated San Diego County rather than City of El Cajon",
+          "quote": "If you cannot find an address in PACO, then it is likely not within the City of El Cajon. Many unincorporated San Diego County addresses have El Cajon listed as the city.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:elcajon.gov \"EV Charging Checklist\" OR \"EV Charging\" pdf",
         "site:elcajon.gov \"electric vehicle\" OR \"EVCS\" OR \"EV charger\" permit"
@@ -102,8 +120,9 @@
       "plans_required_single_family": {
         "value": "unknown",
         "program_name": "Project Assistance Center Online (PACO)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The Project Assistance Center Online (PACO) is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -111,7 +130,16 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -120,13 +148,21 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "signature_or_stamp": "not_stated",
+        "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Addresses not found in PACO may be in unincorporated San Diego County rather than City of El Cajon",
+          "quote": "If you cannot find an address in PACO, then it is likely not within the City of El Cajon. Many unincorporated San Diego County addresses have El Cajon listed as the city.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:elcajon.gov \"panel upgrade\" OR \"service upgrade\" OR \"subpanel\" OR \"generator\" OR \"hot tub\" OR \"spa\"",
         "site:elcajon.gov \"electrical\" \"permit\" \"panel\" OR \"subpanel\" OR \"generator\" OR \"spa\""
@@ -141,8 +177,9 @@
       "plans_required_single_family": {
         "value": "unknown",
         "program_name": "Project Assistance Center Online (PACO)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The Project Assistance Center Online (PACO) is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -150,7 +187,16 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -159,13 +205,21 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "signature_or_stamp": "not_stated",
+        "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Addresses not found in PACO may be in unincorporated San Diego County rather than City of El Cajon",
+          "quote": "If you cannot find an address in PACO, then it is likely not within the City of El Cajon. Many unincorporated San Diego County addresses have El Cajon listed as the city.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:elcajon.gov \"panel upgrade\" OR \"service upgrade\" OR \"subpanel\" OR \"generator\" OR \"hot tub\" OR \"spa\"",
         "site:elcajon.gov \"electrical\" \"permit\" \"panel\" OR \"subpanel\" OR \"generator\" OR \"spa\""
@@ -180,8 +234,9 @@
       "plans_required_single_family": {
         "value": "unknown",
         "program_name": "Project Assistance Center Online (PACO)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The Project Assistance Center Online (PACO) is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -189,7 +244,16 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -198,13 +262,21 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "signature_or_stamp": "not_stated",
+        "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Addresses not found in PACO may be in unincorporated San Diego County rather than City of El Cajon",
+          "quote": "If you cannot find an address in PACO, then it is likely not within the City of El Cajon. Many unincorporated San Diego County addresses have El Cajon listed as the city.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:elcajon.gov \"panel upgrade\" OR \"service upgrade\" OR \"subpanel\" OR \"generator\" OR \"hot tub\" OR \"spa\"",
         "site:elcajon.gov \"electrical\" \"permit\" \"panel\" OR \"subpanel\" OR \"generator\" OR \"spa\""
@@ -219,8 +291,9 @@
       "plans_required_single_family": {
         "value": "unknown",
         "program_name": "Project Assistance Center Online (PACO)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The Project Assistance Center Online (PACO) is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -228,7 +301,16 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -237,13 +319,21 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "signature_or_stamp": "not_stated",
+        "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Addresses not found in PACO may be in unincorporated San Diego County rather than City of El Cajon",
+          "quote": "If you cannot find an address in PACO, then it is likely not within the City of El Cajon. Many unincorporated San Diego County addresses have El Cajon listed as the city.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:elcajon.gov \"panel upgrade\" OR \"service upgrade\" OR \"subpanel\" OR \"generator\" OR \"hot tub\" OR \"spa\"",
         "site:elcajon.gov \"electrical\" \"permit\" \"panel\" OR \"subpanel\" OR \"generator\" OR \"spa\""
@@ -251,15 +341,17 @@
     },
     "solar_storage": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Developed by the National Renewable Energy Laboratory with support from the U.S. Department of Energy, SolarAPP+ provides a web-based portal that streamlines and automates permit reviews.",
+        "url": "https://www.elcajon.gov/Home/Components/News/News/5754/18?arch=1&npage=4",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": "depends",
         "program_name": "SolarAPP+ (automated solar plan review) / Project Assistance Center Online (PACO)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Developed by the National Renewable Energy Laboratory with support from the U.S. Department of Energy, SolarAPP+ provides a web-based portal that streamlines and automates permit reviews.",
+        "url": "https://www.elcajon.gov/Home/Components/News/News/5754/18?arch=1&npage=4",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -267,7 +359,16 @@
         "revision_date": "unknown",
         "url": "https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)",
+          "section": "application",
+          "quote": "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -276,13 +377,21 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Online upload via Project Assistance Center Online (PACO)",
+        "signature_or_stamp": "not_stated",
+        "quote": "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections.",
+        "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Addresses not found in PACO may be in unincorporated San Diego County rather than City of El Cajon",
+          "quote": "If you cannot find an address in PACO, then it is likely not within the City of El Cajon. Many unincorporated San Diego County addresses have El Cajon listed as the city.",
+          "url": "https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:elcajon.gov \"solar\" OR \"SolarAPP\" OR \"battery\" OR \"energy storage\"",
         "site:elcajon.gov/your-government/departments/community-development/building-fire-safety/photovoltaic"

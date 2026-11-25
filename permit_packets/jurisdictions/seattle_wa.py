@@ -107,8 +107,9 @@ SEATTLE = Jurisdiction(
                             "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf"),
                 Requirement("Fault current calculations and listed interrupting rating of all feeder and service equipment (when plan review required)", "load",
                             "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf"),
-                Requirement("Service inspection required before energizing the electrical service", "utility",
-                            "https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf"),
+                Requirement("Service inspection required before energizing the electrical service", "by_others",
+                            "https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf",
+                            who="Seattle City Light and the city inspector: schedule the inspection before energizing"),
             ),
             source_url="https://www.seattle.gov/construction-and-inspections/permits/permits-we-issue-(a-z)/electrical-permit",
             source_label="From the city's published pages",
@@ -116,8 +117,9 @@ SEATTLE = Jurisdiction(
         ),
         "solar_storage": Checklist(
             items=(
-                Requirement("SDCI electrical plan review required for all new installations of Energy Storage Systems (ESS)", "other",
-                            "https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf"),
+                Requirement("SDCI electrical plan review required for all new installations of Energy Storage Systems (ESS)", "by_others",
+                            "https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf",
+                            who="SDCI: electrical plan review for the energy storage system"),
             ),
             source_url="https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf",
             source_label="From the city's published pages",

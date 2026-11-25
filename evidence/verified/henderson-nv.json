@@ -6,16 +6,18 @@
   "agency": "City of Henderson Department of Building and Fire Safety (Development Services Center)",
   "portal_url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/building-online-services",
   "code_edition": {
-    "value": "unknown",
-    "effective_date": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "value": "2023 National Electrical Code (NEC) with Southern Nevada Amendments",
+    "effective_date": "2026-01-02",
+    "quote": "2024 Codes (Effective on submittals received on or after January 2, 2026)",
+    "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+    "ok": true
   },
   "who_may_file": {
-    "owner_may_file": "unknown",
-    "conditions": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "owner_may_file": true,
+    "conditions": "Owner building or improving a residential structure on their primary Nevada residence for their own occupancy (not intended for sale or lease) must submit the Nevada State Contractors Board Owner Builder Affidavit of Exemption per NRS 624.031 and sign each page of homeowner-drawn plans.",
+    "quote": "A legal document from the Nevada State Contractors Board that is required per NRS 624.031 for an owner of a property who is building or improving a residential structure on the property for his own occupancy and not intended for sale or lease.",
+    "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+    "ok": true
   },
   "utility": {
     "name": "NV Energy",
@@ -55,15 +57,17 @@
   "jobs": {
     "ev_charger": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Electrical permit - A separate permit required for most electrical work.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": "depends",
         "program_name": "Virtual Counter (Over-the-Counter Review) via DSC Online",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Individual Trade Permits - Mechanical, Plumbing, Electrical.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -71,20 +75,39 @@
         "revision_date": "unknown",
         "url": "https://www.cityofhenderson.com/business/development-services-center/submittal-checklist"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Apply online via DSC Online and schedule a Virtual Counter appointment if eligible for over-the-counter review",
+          "section": "application",
+          "quote": "Customers will apply for one of the above virtual counter approved permits through DSC Online and then schedule a Virtual Counter appointment through our Booking Portal.",
+          "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Single family residential load calculation worksheet (COHBFS)",
+          "section": "load",
+          "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+          "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "city_worksheet",
+        "city_worksheet": "Residential Electrical Load Calculation Worksheet (COHBFS), https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+        "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ok": true
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF upload via DSC Online",
+        "signature_or_stamp": "Wet-sealed/stamped by licensed professional, or each page signed by homeowner if homeowner-drawn",
+        "quote": "Plans must be “wet-sealed” or stamped by the licensed professional that prepared the drawings. If the plans are drawn by the homeowner each page must be signed by the homeowner.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "local_rules": [],
       "searched": [
@@ -94,15 +117,17 @@
     },
     "service_upgrade": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Electrical permit - A separate permit required for most electrical work.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": "depends",
         "program_name": "Virtual Counter (Over-the-Counter Review) via DSC Online",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Individual Trade Permits - Mechanical, Plumbing, Electrical.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -110,20 +135,39 @@
         "revision_date": "unknown",
         "url": "https://www.cityofhenderson.com/business/development-services-center/submittal-checklist"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Apply online via DSC Online and schedule a Virtual Counter appointment if eligible for over-the-counter review",
+          "section": "application",
+          "quote": "Customers will apply for one of the above virtual counter approved permits through DSC Online and then schedule a Virtual Counter appointment through our Booking Portal.",
+          "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Single family residential load calculation worksheet (COHBFS)",
+          "section": "load",
+          "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+          "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "city_worksheet",
+        "city_worksheet": "Residential Electrical Load Calculation Worksheet (COHBFS), https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+        "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ok": true
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF upload via DSC Online",
+        "signature_or_stamp": "Wet-sealed/stamped by licensed professional, or each page signed by homeowner if homeowner-drawn",
+        "quote": "Plans must be “wet-sealed” or stamped by the licensed professional that prepared the drawings. If the plans are drawn by the homeowner each page must be signed by the homeowner.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "local_rules": [],
       "searched": [
@@ -133,15 +177,17 @@
     },
     "subpanel": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Electrical permit - A separate permit required for most electrical work.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": "depends",
         "program_name": "Virtual Counter (Over-the-Counter Review) via DSC Online",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Individual Trade Permits - Mechanical, Plumbing, Electrical.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -149,20 +195,39 @@
         "revision_date": "unknown",
         "url": "https://www.cityofhenderson.com/business/development-services-center/submittal-checklist"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Apply online via DSC Online and schedule a Virtual Counter appointment if eligible for over-the-counter review",
+          "section": "application",
+          "quote": "Customers will apply for one of the above virtual counter approved permits through DSC Online and then schedule a Virtual Counter appointment through our Booking Portal.",
+          "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Single family residential load calculation worksheet (COHBFS)",
+          "section": "load",
+          "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+          "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "city_worksheet",
+        "city_worksheet": "Residential Electrical Load Calculation Worksheet (COHBFS), https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+        "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ok": true
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF upload via DSC Online",
+        "signature_or_stamp": "Wet-sealed/stamped by licensed professional, or each page signed by homeowner if homeowner-drawn",
+        "quote": "Plans must be “wet-sealed” or stamped by the licensed professional that prepared the drawings. If the plans are drawn by the homeowner each page must be signed by the homeowner.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "local_rules": [],
       "searched": [
@@ -171,15 +236,17 @@
     },
     "appliance_circuit": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Electrical permit - A separate permit required for most electrical work.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": "depends",
         "program_name": "Virtual Counter (Over-the-Counter Review) via DSC Online",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Individual Trade Permits - Mechanical, Plumbing, Electrical.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -187,20 +254,39 @@
         "revision_date": "unknown",
         "url": "https://www.cityofhenderson.com/business/development-services-center/submittal-checklist"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Apply online via DSC Online and schedule a Virtual Counter appointment if eligible for over-the-counter review",
+          "section": "application",
+          "quote": "Customers will apply for one of the above virtual counter approved permits through DSC Online and then schedule a Virtual Counter appointment through our Booking Portal.",
+          "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Single family residential load calculation worksheet (COHBFS)",
+          "section": "load",
+          "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+          "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "city_worksheet",
+        "city_worksheet": "Residential Electrical Load Calculation Worksheet (COHBFS), https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+        "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ok": true
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF upload via DSC Online",
+        "signature_or_stamp": "Wet-sealed/stamped by licensed professional, or each page signed by homeowner if homeowner-drawn",
+        "quote": "Plans must be “wet-sealed” or stamped by the licensed professional that prepared the drawings. If the plans are drawn by the homeowner each page must be signed by the homeowner.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "local_rules": [],
       "searched": [
@@ -209,15 +295,17 @@
     },
     "generator": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Electrical permit - A separate permit required for most electrical work.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": "depends",
         "program_name": "Virtual Counter (Over-the-Counter Review) via DSC Online",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Individual Trade Permits - Mechanical, Plumbing, Electrical.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -225,20 +313,39 @@
         "revision_date": "unknown",
         "url": "https://www.cityofhenderson.com/business/development-services-center/submittal-checklist"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Apply online via DSC Online and schedule a Virtual Counter appointment if eligible for over-the-counter review",
+          "section": "application",
+          "quote": "Customers will apply for one of the above virtual counter approved permits through DSC Online and then schedule a Virtual Counter appointment through our Booking Portal.",
+          "url": "https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Single family residential load calculation worksheet (COHBFS)",
+          "section": "load",
+          "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+          "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "city_worksheet",
+        "city_worksheet": "Residential Electrical Load Calculation Worksheet (COHBFS), https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+        "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ok": true
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF upload via DSC Online",
+        "signature_or_stamp": "Wet-sealed/stamped by licensed professional, or each page signed by homeowner if homeowner-drawn",
+        "quote": "Plans must be “wet-sealed” or stamped by the licensed professional that prepared the drawings. If the plans are drawn by the homeowner each page must be signed by the homeowner.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "local_rules": [],
       "searched": [
@@ -248,15 +355,17 @@
     },
     "solar_storage": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Electrical permit - A separate permit required for most electrical work.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": true,
         "program_name": "DSC Online (Residential Photovoltaic)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Residential Photovoltaic (Solar)",
+        "url": "https://www.cityofhenderson.com/business/development-services-center/submittal-checklist",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -264,20 +373,31 @@
         "revision_date": "unknown",
         "url": "https://www.cityofhenderson.com/business/development-services-center/submittal-checklist"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Submit Residential Photovoltaic (Solar) plans and checklist items via DSC Online",
+          "section": "site_plan",
+          "quote": "Use the checklist to ensure applications include all of the information necessary for a timely review.",
+          "url": "https://www.cityofhenderson.com/business/development-services-center/submittal-checklist",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "city_worksheet",
+        "city_worksheet": "Residential Electrical Load Calculation Worksheet (COHBFS), https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Load Calculations. Single family residential load calculation work sheet. COHBFS.",
+        "url": "https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information",
+        "ok": true
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF upload via DSC Online",
+        "signature_or_stamp": "Wet-sealed/stamped by licensed professional, or each page signed by homeowner if homeowner-drawn",
+        "quote": "Plans must be “wet-sealed” or stamped by the licensed professional that prepared the drawings. If the plans are drawn by the homeowner each page must be signed by the homeowner.",
+        "url": "https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained",
+        "ok": true
       },
       "local_rules": [],
       "searched": [

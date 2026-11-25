@@ -207,7 +207,7 @@ SAN_FRANCISCO = Jurisdiction(
                             "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
                 Requirement("Current PDF manufacturer data sheets for all major system components", "equipment",
                             "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
-                Requirement("Warning label and signage sheets for service personnel and emergency responders", "other",
+                Requirement("Warning label and signage sheets for service personnel and emergency responders", "packet_gap",
                             "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
             ),
             source_url="https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system",
