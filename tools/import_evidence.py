@@ -32,6 +32,7 @@ OUT = EVIDENCE / "verified"
 CACHE = ROOT / ".cache" / "evidence_fetch"
 MODULES = ROOT / "permit_packets" / "jurisdictions"
 TODAY = datetime.date.today().isoformat()
+VERIFIED_MARKER = "# Verified from evidence/verified/ by tools/import_evidence.py."
 JOBS = ("ev_charger", "service_upgrade", "subpanel", "appliance_circuit", "generator", "solar_storage")
 BLOCKS = ("permit_required", "plans_required_single_family", "load_calculation", "sheet_requirements")
 LISTS = ("requirements", "local_rules")
@@ -502,6 +503,11 @@ def rewrite_literal(source: str, fields: dict, checklists: dict) -> str:
 
 def rewrite_factory(source: str, name: str, city, fields: dict, checklists: dict) -> str:
     """A make_city(...) module: layer the verified values over it with dataclasses.replace."""
+    lines = source.splitlines(keepends=True)
+    for index, line in enumerate(lines):
+        if line.rstrip("\r\n") == VERIFIED_MARKER:
+            source = "".join(lines[:index]).rstrip()
+            break
     args = [f"    {k}={lit(v) if isinstance(v, str) else repr(v)}," for k, v in fields.items()]
     if checklists:
         args.append(f"    checklists={{\n        **{name}.checklists,")
@@ -514,7 +520,7 @@ def rewrite_factory(source: str, name: str, city, fields: dict, checklists: dict
             else:
                 args.append(f"{head}Checklist(\n            {body},\n            code_note={name}.code_note),")
         args.append("    },")
-    return source.rstrip("\n") + f"\n\n# Verified from evidence/verified/ by tools/import_evidence.py.\n{name} = replace(\n    {name},\n" \
+    return source.rstrip("\n") + f"\n\n{VERIFIED_MARKER}\n{name} = replace(\n    {name},\n" \
         + "\n".join(args) + "\n)\n"
 
 
@@ -598,8 +604,17 @@ def main() -> None:
     for key in sorted(cities):
         subprocess.run(["git", "checkout", args.base, "--",
                         f"permit_packets/jurisdictions/{key.replace('-', '_')}.py"], check=True, cwd=ROOT)
-    from permit_packets.jurisdictions import KNOWN
+    from permit_packets.jurisdictions import KNOWN, Jurisdiction
     modules = {j.key: j for j in KNOWN.values()}
+    for key in sorted(cities):
+        path = MODULES / (key.replace("-", "_") + ".py")
+        source = path.read_text()
+        if VERIFIED_MARKER not in source:
+            continue
+        base = source.split(VERIFIED_MARKER, 1)[0].rstrip()
+        namespace = {}
+        exec(compile(base, str(path), "exec"), namespace)
+        modules[key] = next(value for value in namespace.values() if isinstance(value, Jurisdiction))
 
     missing = sorted(set(cities) - set(modules))
     if missing:
