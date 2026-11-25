@@ -63,8 +63,17 @@ def test_a_complete_packet_shows_every_checklist_item_ready(jurisdiction, key):
     cities = {r.item for r in jurisdiction.checklist_for(key).items}
     shown = {row["item"]: row for row in body["checklist_status"]}
     assert cities <= set(shown), "the cover lists every requirement the city has"
+    sections = {r.item: r.section for r in jurisdiction.checklist_for(key).items}
     for item, row in shown.items():
-        allowed = {"Ready", "Send"} if item in utility else {"Ready"}
+        section = sections.get(item)
+        if section == "packet_gap":
+            allowed = {"Open"}  # tracked gap the packet doesn't produce yet
+        elif section == "by_others":
+            allowed = {"By others"}
+        elif item in utility:
+            allowed = {"Ready", "Send"}
+        else:
+            allowed = {"Ready"}
         assert row["status"] in allowed, f"{jurisdiction.key}/{key}: '{item}' is {row['status']} ({row['where']})"
 
 
@@ -255,3 +264,16 @@ def test_attached_data_sheets_sit_on_the_packets_own_sheet_size(key):
     finally:
         document.close()
     assert sizes == {SHEET_POINTS["letter"]}
+
+
+@pytest.mark.parametrize("key", sorted(REGISTRY))
+def test_an_item_the_packet_has_no_page_for_is_never_ready(key, monkeypatch):
+    from dataclasses import replace
+    from permit_packets.jurisdictions import Requirement
+    base = KNOWN[("san diego", "CA")]
+    odd = Requirement("Something this packet cannot produce", "no_such_section")
+    city = replace(base, checklists={**base.checklists, key: replace(base.checklist_for(key), items=(odd,))})
+    monkeypatch.setitem(KNOWN, ("san diego", "CA"), city)
+    body = build(key, complete_inputs(key, city)).body
+    row = next(r for r in body["checklist_status"] if r["item"] == odd.item)
+    assert row["status"] == "Open", row

@@ -7,6 +7,7 @@ letters and digits only, in the text of a fetched page. Needs pyyaml, httpx and 
 """
 from __future__ import annotations
 
+import argparse
 import ast
 import copy
 import datetime
@@ -34,6 +35,21 @@ TODAY = datetime.date.today().isoformat()
 JOBS = ("ev_charger", "service_upgrade", "subpanel", "appliance_circuit", "generator", "solar_storage")
 BLOCKS = ("permit_required", "plans_required_single_family", "load_calculation", "sheet_requirements")
 LISTS = ("requirements", "local_rules")
+COMMON_SECTIONS = {"fault_current", "panel_details", "egc_size", "burial", "by_others", "utility_id", "packet_gap"}
+ALLOWED_SECTIONS = {
+    "ev_charger": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
+                                     "site_plan", "hoa", "ventilation"},
+    "service_upgrade": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
+                                          "site_plan", "utility", "gec", "surge", "emergency_disconnect"},
+    "subpanel": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
+                                   "site_plan", "feeder"},
+    "appliance_circuit": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
+                                            "site_plan"},
+    "generator": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
+                                    "site_plan"},
+    "solar_storage": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
+                                        "site_plan"},
+}
 UNKNOWN = "unknown"
 SKIP_QUOTES = {"", UNKNOWN, "not_stated"}
 HEADERS = {
@@ -65,6 +81,8 @@ def resolve_same_as(jobs: dict) -> dict:
 def load() -> dict[str, list[tuple[str, dict]]]:
     cities = defaultdict(list)
     for path in sorted(EVIDENCE.glob("*.yaml")):
+        if path.name == "section_overrides.yaml":
+            continue
         data = yaml.safe_load(path.read_text()) or {}
         key = data.get("jurisdiction_key") or path.name.split(".")[0]
         data["jobs"] = resolve_same_as(data.get("jobs") or {})
@@ -198,20 +216,34 @@ def merge(files: list[tuple[str, dict]]) -> dict:
         verified = [v for v in present if ok(v)]
         return copy.deepcopy((verified or present or [next((v for v in values if v is not None), None)])[0])
 
+    def every_verified(values) -> list:
+        """The ok=True entries from every file, in file order, de-duplicated by their item text."""
+        out, seen = [], set()
+        for entries in values:
+            for entry in entries or []:
+                if not isinstance(entry, dict) or not entry.get("ok"):
+                    continue
+                text = str(entry.get("item") or entry.get("rule") or "")
+                key = " ".join(text.lower().split())
+                if key and key not in seen:
+                    seen.add(key)
+                    out.append(copy.deepcopy(entry))
+        return out
+
     out = {}
     for name in dict.fromkeys(k for d in docs for k in d):
         if name not in ("jobs", "utility", "open_questions"):
             out[name] = pick([d.get(name) for d in docs])
     utilities = [d.get("utility") or {} for d in docs]
     out["utility"] = {"name": pick([u.get("name") for u in utilities]),
-                      "requirements": pick([u.get("requirements") for u in utilities]) or []}
+                      "requirements": every_verified([u.get("requirements") for u in utilities])}
     out["open_questions"] = list(dict.fromkeys(q for d in docs for q in d.get("open_questions") or []))
     out["jobs"] = {}
     for job in dict.fromkeys(j for d in docs for j in d["jobs"]):
         blocks = [d["jobs"].get(job) or {} for d in docs]
         merged = {name: pick([b.get(name) for b in blocks]) for name in dict.fromkeys(k for b in blocks for k in b)}
         for name in LISTS:
-            merged[name] = merged.get(name) or []
+            merged[name] = every_verified([b.get(name) for b in blocks])
         out["jobs"][job] = merged
     return out
 
@@ -280,26 +312,65 @@ def lit(value) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def requirements_for(job: str, block: dict) -> list[tuple[str, str, str]]:
+def normalized(text: str) -> str:
+    return " ".join(str(text).lower().split())
+
+
+def load_overrides() -> dict[tuple[str, str, str], tuple[str, str]]:
+    path = EVIDENCE / "section_overrides.yaml"
+    if not path.exists():
+        return {}
+    out = {}
+    for entry in yaml.safe_load(path.read_text()) or []:
+        out[(entry["city"], entry["job"], entry["item"])] = (entry["section"], entry.get("who") or "")
+    return out
+
+
+def requirements_for(job: str, block: dict) -> list:
+    from permit_packets.jurisdictions import Requirement
+
     rows, seen = [], set()
     for entry in block.get("requirements") or []:
         item = " ".join(str(entry.get("item", "")).split())
-        if item and item.lower() not in seen:
-            seen.add(item.lower())
-            rows.append((item, str(entry.get("section") or "other"), entry["url"]))
+        key = normalized(item)
+        if item and key not in seen:
+            seen.add(key)
+            rows.append(Requirement(item, str(entry.get("section") or "other"), entry.get("url") or ""))
     return rows
 
 
+def requirement_source(req, indent: str) -> str:
+    head = f"{indent}    Requirement({lit(req.item)}, {lit(req.section)}"
+    if req.source and req.who:
+        return (f"{head},\n{indent}                {lit(req.source)},\n"
+                f"{indent}                who={lit(req.who)}),")
+    if req.source:
+        return f"{head},\n{indent}                {lit(req.source)}),"
+    if req.who:
+        return f"{head}, who={lit(req.who)}),"
+    return f"{head}),"
+
+
 def items_source(job: str, rows: list, indent: str) -> str:
-    lines = [f"{indent}    Requirement({lit(item)}, {lit(section)},\n{indent}                {lit(url)}),"
-             for item, section, url in rows]
-    if job == "service_upgrade" and not any(section == "surge" for _, section, _ in rows):
+    from permit_packets.jurisdictions import SURGE_PROTECTION
+
+    lines = []
+    for req in rows:
+        if req.item == SURGE_PROTECTION.item and req.section == SURGE_PROTECTION.section:
+            lines.append(f"{indent}    SURGE_PROTECTION,")
+        else:
+            lines.append(requirement_source(req, indent))
+    if job == "service_upgrade" and not any(req.section == "surge" for req in rows):
         lines.append(f"{indent}    SURGE_PROTECTION,")
     return "(\n" + "\n".join(lines) + f"\n{indent})"
 
 
-def plan_changes(city, data: dict) -> tuple[dict, dict, list[str]]:
-    """(keyword -> new value, job -> verified requirement rows, report lines for replaced values)."""
+def plan_changes(city, data: dict, overrides: dict | None = None) -> tuple[dict, dict, list[str]]:
+    """(keyword -> new value, job -> checklist requirements, report lines for replaced values)."""
+    from dataclasses import replace as dataclass_replace
+
+    from permit_packets.jurisdictions import SURGE_PROTECTION
+
     fields, replaced = {}, []
     who = data.get("who_may_file") or {}
     owner = who.get("owner_may_file") if ok(who) else None
@@ -318,11 +389,29 @@ def plan_changes(city, data: dict) -> tuple[dict, dict, list[str]]:
                 no_plan.pop(job, None)
     fields["no_plan_jobs"] = no_plan
 
-    fields["permit_rules_verified"] = TODAY if rules_verified(data) else ""
-    # last_verified prints on the packet cover as "City checklist last verified", so it is set only when no
-    # checklist in the module is left over from before this import.
-    if city.checklists and all(requirements_for(job, data["jobs"].get(job) or {}) for job in city.checklists):
-        fields["last_verified"] = TODAY
+    checklists = {}
+    for job in JOBS:
+        verified = requirements_for(job, data["jobs"].get(job) or {})
+        if not verified:
+            continue
+        base = list(city.checklist_for(job).items)
+        base_keys = {normalized(req.item) for req in base}
+        added = [req for req in verified if normalized(req.item) not in base_keys]
+        combined = base + added
+        if job == "service_upgrade" and not any(req.section == "surge" for req in combined):
+            combined.append(SURGE_PROTECTION)
+        for index, req in enumerate(combined):
+            found = (overrides or {}).get((city.key, job, req.item))
+            if found:
+                combined[index] = dataclass_replace(req, section=found[0], who=found[1])
+        checklists[job] = combined
+        replaced.append(f"`checklists[{job}]` ({len(base)} base items + {len(added)} verified city items)")
+
+    # Dates never get erased: set them only when this import verified what they stand for.
+    if rules_verified(data):
+        fields["permit_rules_verified"] = TODAY
+        if all(requirements_for(job, data["jobs"].get(job) or {}) for job in JOBS):
+            fields["last_verified"] = TODAY
 
     for name, value in list(fields.items()):
         old = getattr(city, name)
@@ -331,19 +420,6 @@ def plan_changes(city, data: dict) -> tuple[dict, dict, list[str]]:
         elif old not in (None, "", {}):
             replaced.append(f"`{name}`: {old!r} -> {value!r}")
 
-    checklists = {}
-    for job in JOBS:
-        rows = requirements_for(job, data["jobs"].get(job) or {})
-        if not rows:
-            continue
-        checklists[job] = rows
-        if job in city.checklists:
-            old_items = "; ".join(r.item for r in city.checklists[job].items)
-            new_items = "; ".join(r[0] for r in rows)
-            replaced.append(f"`checklists[{job}]` ({len(city.checklists[job].items)} items -> {len(rows)} verified)"
-                            f"\n  - old: {old_items}\n  - new: {new_items}")
-        else:
-            replaced.append(f"`checklists[{job}]`: general NEC checklist -> {len(rows)} verified city items")
     return fields, checklists, replaced
 
 
@@ -358,6 +434,10 @@ def add_import(source: str, module: str, names: list[str]) -> str:
 
 
 SOURCE_LABEL = "From the city's published pages"
+
+
+def checklist_source(rows) -> str:
+    return next((req.source for req in rows if req.source), "")
 
 
 def rewrite_literal(source: str, fields: dict, checklists: dict) -> str:
@@ -403,13 +483,13 @@ def rewrite_literal(source: str, fields: dict, checklists: dict) -> str:
             if job in entries:
                 parts = {k.arg: k for k in entries[job].keywords}
                 edits.append((*span(parts["items"].value), items_source(job, rows, " " * 12)))
-                for name, text in (("source_url", lit(rows[0][2])), ("source_label", lit(SOURCE_LABEL))):
+                for name, text in (("source_url", lit(checklist_source(rows))), ("source_label", lit(SOURCE_LABEL))):
                     if name in parts:
                         edits.append((*span(parts[name].value), text))
             else:
                 code = "\n            code_note=CODE_NOTE," if "CODE_NOTE" in constants else ""
                 new.append(f"\n        {lit(job)}: Checklist(\n            items={items_source(job, rows, ' ' * 12)},"
-                           f"\n            source_url={lit(rows[0][2])},"
+                           f"\n            source_url={lit(checklist_source(rows))},"
                            f"\n            source_label={lit(SOURCE_LABEL)},{code}\n        ),")
         if new:
             start, end, comma = before_close(table)
@@ -427,7 +507,7 @@ def rewrite_factory(source: str, name: str, city, fields: dict, checklists: dict
         args.append(f"    checklists={{\n        **{name}.checklists,")
         for job, rows in checklists.items():
             head = f"        {lit(job)}: "
-            body = (f"items={items_source(job, rows, ' ' * 12)},\n            source_url={lit(rows[0][2])},"
+            body = (f"items={items_source(job, rows, ' ' * 12)},\n            source_url={lit(checklist_source(rows))},"
                     f"\n            source_label={lit(SOURCE_LABEL)}")
             if job in city.checklists:
                 args.append(f"{head}replace(\n            {name}.checklists[{lit(job)}],\n            {body}),")
@@ -438,10 +518,9 @@ def rewrite_factory(source: str, name: str, city, fields: dict, checklists: dict
         + "\n".join(args) + "\n)\n"
 
 
-def update_module(city, data: dict) -> list[str]:
-    fields, checklists, replaced = plan_changes(city, data)
+def update_module(city, fields: dict, checklists: dict) -> None:
     if not fields and not checklists:
-        return replaced
+        return
     path = MODULES / (city.key.replace("-", "_") + ".py")
     source = path.read_text()
     name = city.key.rsplit("-", 1)[0].replace("-", "_").upper()
@@ -453,25 +532,75 @@ def update_module(city, data: dict) -> list[str]:
         needed.append("Requirement")
         if any(job not in city.checklists for job in checklists):
             needed.append("Checklist")
-        if "service_upgrade" in checklists and "surge" not in [r[1] for r in checklists["service_upgrade"]]:
-            needed.append("SURGE_PROTECTION")
+        if "service_upgrade" in checklists:
+            from permit_packets.jurisdictions import SURGE_PROTECTION
+
+            if any(req.item == SURGE_PROTECTION.item and req.section == SURGE_PROTECTION.section
+                   for req in checklists["service_upgrade"]):
+                needed.append("SURGE_PROTECTION")
     if needed:
         updated = add_import(updated, "permit_packets.jurisdictions", needed)
     if factory:
         updated = add_import(updated, "dataclasses", ["replace"])
     ast.parse(updated)
     path.write_text(updated)
-    return replaced
 
 
 # ---------------------------------------------------------------- run
 
+def retry_blocked(pages: dict) -> None:
+    """Retry every URL that failed in the thread pool, one at a time, in a real browser."""
+    failed = [url for url, result in pages.items() if result["error"]]
+    if not failed:
+        print("0 blocked URLs retried in a browser, 0 recovered")
+        return
+    recovered = 0
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception:
+        print(f"{len(failed)} blocked URLs retried in a browser, 0 recovered")
+        return
+    with sync_playwright() as p:
+        try:
+            browser = p.chromium.launch(channel="chrome", headless=False)
+        except Exception:
+            browser = p.chromium.launch(headless=False)
+        context = browser.new_context(user_agent=HEADERS["User-Agent"])
+        for url in failed:
+            try:
+                response = context.request.get(url, timeout=60000)
+                if response.ok and ("pdf" in response.headers.get("content-type", "")
+                                    or response.body()[:5] == b"%PDF"):
+                    body, ctype = response.body(), response.headers.get("content-type", "")
+                else:
+                    page = context.new_page()
+                    page.goto(url, wait_until="networkidle", timeout=60000)
+                    body, ctype = page.content().encode(), "text/html"
+                    page.close()
+                result = {"text": to_text(body, ctype), "error": ""}
+                cached = CACHE / (hashlib.sha256(url.encode()).hexdigest() + ".json")
+                cached.write_text(json.dumps(result))
+                pages[url] = result
+                recovered += 1
+            except Exception:  # keep the original error
+                continue
+        browser.close()
+    print(f"{len(failed)} blocked URLs retried in a browser, {recovered} recovered")
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--base", default="origin/main")
+    args = parser.parse_args()
+
     sys.path.insert(0, str(ROOT))
+    cities = load()
+    for key in sorted(cities):
+        subprocess.run(["git", "checkout", args.base, "--",
+                        f"permit_packets/jurisdictions/{key.replace('-', '_')}.py"], check=True, cwd=ROOT)
     from permit_packets.jurisdictions import KNOWN
     modules = {j.key: j for j in KNOWN.values()}
 
-    cities = load()
     missing = sorted(set(cities) - set(modules))
     if missing:
         raise SystemExit(f"No module for: {', '.join(missing)}")
@@ -483,9 +612,11 @@ def main() -> None:
     with ThreadPoolExecutor(max_workers=8) as pool:
         pages = dict(zip(wanted, pool.map(fetch, wanted)))
     print(f"{len(wanted)} URLs, {sum(not p['error'] for p in pages.values())} fetched")
+    retry_blocked(pages)
 
     OUT.mkdir(exist_ok=True)
-    rows, details = [], []
+    section_overrides = load_overrides()
+    planned, invalid = {}, []
     for key, files in sorted(cities.items()):
         stats = {"seen": set(), "good": set(), "rewrites": set()}
         refused = sorted({n["url"] for _, d in files for n in walk(d)
@@ -501,17 +632,38 @@ def main() -> None:
             if pages[url]["error"]:
                 blocked[urlsplit(url).hostname].add(pages[url]["error"])
         (OUT / f"{key}.json").write_text(json.dumps(merged, indent=2, ensure_ascii=False, default=str) + "\n")
-        replaced = update_module(modules[key], merged)
-        hosts = ", ".join(f"{h} ({'/'.join(sorted(e))})" for h, e in sorted(blocked.items())) or "none"
-        rows.append(f"| {key} | {len(stats['good'])}/{len(stats['seen'])} | {len(unknown)} | "
-                    f"{len(stats['rewrites'])} | {hosts} | {verified} |")
-        section = [f"## {key}", "", f"Fields set unknown: {', '.join(unknown) or 'none'}", "", "URL rewrites:"]
-        section += [f"- {old} -> {new}" for old, new in sorted(stats["rewrites"])] or ["- none"]
-        if refused:
-            section += ["", "Rejected search URLs:", *[f"- {u}" for u in refused]]
-        if applied:
-            section += ["", "Overrides:", *[f"- {n}" for n in applied]]
-        section += ["", "Replaced module values:", *([f"- {r}" for r in replaced] or ["- none"])]
+        fields, checklists, replaced = plan_changes(modules[key], merged, section_overrides)
+        for job, requirements in checklists.items():
+            for req in requirements:
+                if req.section not in ALLOWED_SECTIONS[job] or (req.section == "by_others" and not req.who):
+                    invalid.append((key, job, req.section, req.item))
+        planned[key] = {
+            "city": modules[key], "fields": fields, "checklists": checklists, "replaced": replaced,
+            "stats": stats, "refused": refused, "applied": applied, "unknown": unknown,
+            "verified": verified, "blocked": blocked,
+        }
+
+    if invalid:
+        print("Add these to evidence/section_overrides.yaml")
+        for city_key, job, section, item in invalid:
+            print(f"{city_key} | {job} | {section} | {item}")
+        raise SystemExit(1)
+
+    rows, details = [], []
+    for key, found in planned.items():
+        update_module(found["city"], found["fields"], found["checklists"])
+        hosts = ", ".join(f"{h} ({'/'.join(sorted(e))})" for h, e in sorted(found["blocked"].items())) or "none"
+        rows.append(f"| {key} | {len(found['stats']['good'])}/{len(found['stats']['seen'])} | "
+                    f"{len(found['unknown'])} | {len(found['stats']['rewrites'])} | {hosts} | "
+                    f"{found['verified']} |")
+        section = [f"## {key}", "", f"Fields set unknown: {', '.join(found['unknown']) or 'none'}", "",
+                   "URL rewrites:"]
+        section += [f"- {old} -> {new}" for old, new in sorted(found["stats"]["rewrites"])] or ["- none"]
+        if found["refused"]:
+            section += ["", "Rejected search URLs:", *[f"- {u}" for u in found["refused"]]]
+        if found["applied"]:
+            section += ["", "Overrides:", *[f"- {n}" for n in found["applied"]]]
+        section += ["", "Replaced module values:", *([f"- {r}" for r in found["replaced"]] or ["- none"])]
         details.append("\n".join(section))
 
     table = ["| City | Quotes verified/total | Fields set unknown | URL rewrites | Blocked hosts | permit_rules_verified |",

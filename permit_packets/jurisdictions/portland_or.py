@@ -14,8 +14,8 @@ SOURCE_LABEL = "From Portland BDS residential electrical guidelines"
 PORTLAND = Jurisdiction(
     key="portland-or", name="Portland", state="OR", known=True,
     no_plan_jobs={'ev_charger': 'https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download', 'service_upgrade': 'https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download', 'subpanel': 'https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download', 'appliance_circuit': 'https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download', 'generator': 'https://www.portland.gov/ppd/documents/electrical-plan-review-program-guide/download'},
-    last_verified="2026-11-24",
-    permit_rules_verified="2026-11-24",
+    last_verified="2026-11-25",
+    permit_rules_verified="2026-11-25",
     who_may_pull="Recorded property owner (not an LLC) who owns and lives in the single-family home or duplex side as their primary residence, not intended for sale, lease, or rent; work done by homeowner or immediate family member only",
     owner_may_file=True,
     portal_url="https://www.portland.gov/bds/residential-permitting/residential-electrical-permits",
@@ -116,8 +116,9 @@ PORTLAND = Jurisdiction(
             items=(
                 Requirement("Solar Permit Request submitted online via DevHub with scaled PDF plan set (max 100MB; no sketches)", "application",
                             "https://www.portland.gov/ppd/solar-permit-app-guide"),
-                Requirement("Structural Design Criteria on sheet 1 stamped by an Oregon Registered Design Professional (min 20 psf snow, 98 mph wind, dead load)", "other",
-                            "https://www.portland.gov/ppd/solar-development/solar-permits"),
+                Requirement("Structural Design Criteria on sheet 1 stamped by an Oregon Registered Design Professional (min 20 psf snow, 98 mph wind, dead load)", "by_others",
+                            "https://www.portland.gov/ppd/solar-development/solar-permits",
+                            who="An Oregon registered design professional (stamped structural criteria)"),
                 Requirement("Solar Worksheet for Prescriptive Path Eligibility (for Prescriptive Path projects)", "application",
                             "https://www.portland.gov/ppd/solar-permit-app-guide"),
                 Requirement("Email address and phone number for the property owner and designer or technical lead", "application",

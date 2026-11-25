@@ -17,6 +17,7 @@ class Requirement:
     item: str
     section: str
     source: str = ""  # URL of the page or form this item comes from
+    who: str = ""  # for section "by_others": who supplies this item
 
 
 # NEC 230.67 (2020 NEC and later, so every city here): a dwelling service that is replaced or upgraded gets a

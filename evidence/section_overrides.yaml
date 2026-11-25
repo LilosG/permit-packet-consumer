@@ -1,0 +1,190 @@
+- city: los-angeles-ca
+  job: ev_charger
+  item: Electrical plans and calculations signed and stamped by registered Electrical Engineer when required
+  section: by_others
+  who: A registered electrical engineer, only when LADBS requires stamped plans
+- city: phoenix-az
+  job: ev_charger
+  item: Identify serving electrical utility company (APS or SRP) on electrical plans
+  section: utility_id
+- city: phoenix-az
+  job: ev_charger
+  item: Show size, length, and location of branch circuits over 20 amps on electrical plans
+  section: one_line
+- city: san-antonio-tx
+  job: ev_charger
+  item: Indication of whether work with CPS Energy is required
+  section: application
+- city: phoenix-az
+  job: subpanel
+  item: Grounding and bonding details and sizes for services and equipment grounding conductors
+  section: egc_size
+- city: phoenix-az
+  job: subpanel
+  item: Identify serving electrical utility company (APS or SRP)
+  section: utility_id
+- city: sacramento-ca
+  job: subpanel
+  item: Commitment letter from SMUD for new or upgraded services
+  section: by_others
+  who: 'SMUD, only for a new or upgraded service: request the commitment letter from SMUD'
+- city: san-antonio-tx
+  job: subpanel
+  item: Indication of whether work with CPS Energy is required
+  section: application
+- city: san-diego-ca
+  job: subpanel
+  item: Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)
+  section: by_others
+  who: You or your electrician, filled in on the city's Circuit Card (DS-1779)
+- city: phoenix-az
+  job: appliance_circuit
+  item: Grounding and bonding details for pools on electrical plans
+  section: packet_gap
+- city: san-antonio-tx
+  job: appliance_circuit
+  item: Indication of whether work with CPS Energy is required
+  section: application
+- city: san-diego-ca
+  job: appliance_circuit
+  item: Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)
+  section: by_others
+  who: You or your electrician, filled in on the city's Circuit Card (DS-1779)
+- city: austin-tx
+  job: generator
+  item: Upload Third-Party Review Compliance Letter signed by licensed engineer, master electrician, or certified inspector under SB 1202
+  section: by_others
+  who: A licensed engineer, master electrician or certified inspector (SB 1202 third-party review)
+- city: austin-tx
+  job: generator
+  item: Interconnected spinning generators require an Auxiliary Power Electrical Permit and Austin Energy DGPA/Transformer Capacity Review
+  section: by_others
+  who: Austin Energy, only for a generator interconnected with the grid
+- city: dallas-tx
+  job: generator
+  item: Fuel type listed on plans (separate plumbing permit for natural gas; flammable liquid permit for propane)
+  section: packet_gap
+- city: phoenix-az
+  job: generator
+  item: Grounding and bonding details and sizes for generators and equipment grounding conductors
+  section: egc_size
+- city: phoenix-az
+  job: generator
+  item: Complete floor plan showing equipment layout, working space, wire and conduit sizes, and circuit numbers
+  section: packet_gap
+- city: phoenix-az
+  job: generator
+  item: Identify serving electrical utility company (APS or SRP)
+  section: utility_id
+- city: san-antonio-tx
+  job: generator
+  item: Indication of whether work with CPS Energy is required
+  section: application
+- city: san-diego-ca
+  job: generator
+  item: Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)
+  section: by_others
+  who: You or your electrician, filled in on the city's Circuit Card (DS-1779)
+- city: seattle-wa
+  job: generator
+  item: Service inspection required before energizing the electrical service
+  section: by_others
+  who: 'Seattle City Light and the city inspector: schedule the inspection before energizing'
+- city: austin-tx
+  job: solar_storage
+  item: Signed Residential Interconnection Agreement reviewed and approved by Austin Energy prior to permit activation
+  section: by_others
+  who: 'Austin Energy: signed interconnection agreement before the permit is activated'
+- city: austin-tx
+  job: solar_storage
+  item: Residential Plan Review with Building Permit required for residential solar shingles or ground-mounted systems
+  section: by_others
+  who: City of Austin building permit, only for solar shingles or ground-mounted systems
+- city: austin-tx
+  job: solar_storage
+  item: All associated permitted work must be in 'Final' status before scheduling Final Solar Inspection
+  section: by_others
+  who: 'Your contractor: every related permit must be in Final status before the final solar inspection'
+- city: dallas-tx
+  job: solar_storage
+  item: Engineered construction documents sealed by a licensed PE for structural connection and framing
+  section: by_others
+  who: A Texas-licensed professional engineer (sealed structural documents)
+- city: fresno-ca
+  job: solar_storage
+  item: Structural calculations for ground-mount and reverse-tilt installations over 24 inches at tall side
+  section: by_others
+  who: A licensed engineer, only for ground-mount or reverse-tilt arrays over 24 inches at the tall side
+- city: phoenix-az
+  job: solar_storage
+  item: Separate Phoenix Fire Department permit required for photovoltaic and battery energy storage systems
+  section: by_others
+  who: 'Phoenix Fire Department: separate permit for PV and battery storage'
+- city: phoenix-az
+  job: solar_storage
+  item: Utility interconnection application via PowerClerk (APS or SRP) with battery spec sheets if applicable
+  section: by_others
+  who: 'APS or SRP: interconnection application through PowerClerk'
+- city: portland-or
+  job: solar_storage
+  item: Structural Design Criteria on sheet 1 stamped by an Oregon Registered Design Professional (min 20 psf snow, 98 mph wind, dead load)
+  section: by_others
+  who: An Oregon registered design professional (stamped structural criteria)
+- city: sacramento-ca
+  job: solar_storage
+  item: Submit SMUD interconnection application via PowerClerk with one-time fee
+  section: by_others
+  who: 'SMUD: interconnection application through PowerClerk'
+- city: sacramento-ca
+  job: solar_storage
+  item: Interconnected energy storage must follow SMUD Rule 21 interconnection requirements
+  section: by_others
+  who: 'SMUD: Rule 21 interconnection review for the battery'
+- city: san-antonio-tx
+  job: solar_storage
+  item: Texas-licensed PE structural calculations if roof array >6 lbs/sq ft on <4:12 pitch, >=2 roof coverings, or new support structure
+  section: by_others
+  who: A Texas-licensed professional engineer, only when the city's structural thresholds apply
+- city: san-antonio-tx
+  job: solar_storage
+  item: 'CPS Energy preconstruction package: One-Line Diagram, Site Layout/Plan, Photos, Equipment Specs, and DER Application'
+  section: by_others
+  who: 'CPS Energy: DER application and preconstruction package (use this packet''s one-line and site plan)'
+- city: san-diego-ca
+  job: solar_storage
+  item: Plans stamped and signed by CA Civil/Electrical Engineer or C-10, B, or C-46 contractor
+  section: by_others
+  who: A California licensed engineer or a C-10, B or C-46 contractor signs the plans
+- city: san-francisco-ca
+  job: solar_storage
+  item: Warning label and signage sheets for service personnel and emergency responders
+  section: packet_gap
+- city: seattle-wa
+  job: solar_storage
+  item: SDCI electrical plan review required for all new installations of Energy Storage Systems (ESS)
+  section: by_others
+  who: 'SDCI: electrical plan review for the energy storage system'
+- city: miami-fl
+  job: solar_storage
+  item: "Two copies of a signed and sealed Florida P.E. structural letter for normal and hurricane FBC wind conditions"
+  section: by_others
+  who: "A Florida-licensed professional engineer (signed and sealed structural letter, two copies)"
+- city: oakland-ca
+  job: ev_charger
+  item: "Building Worksheet with structural calculations and engineered plans if anchoring requires structural review"
+  section: by_others
+  who: "A licensed engineer, only if the charger's anchoring needs structural review (City of Oakland Building Worksheet)"
+- city: oakland-ca
+  job: ev_charger
+  item: "Approved Recycling Plan if a Building Permit is required"
+  section: by_others
+  who: "You or your contractor, only if a building permit is also required: get an approved recycling plan from the City of Oakland"
+- city: oakland-ca
+  job: generator
+  item: "Building Worksheet with structural calculations and plans for large generators (>400 lbs and center of gravity above 4 ft)"
+  section: by_others
+  who: "A licensed engineer, only for generators over 400 lbs with a center of gravity above 4 ft (City of Oakland Building Worksheet)"
+- city: san-diego-ca
+  job: solar_storage
+  item: "Incorporate Residential Solar PV Project Plan Template elements into design"
+  section: packet_gap

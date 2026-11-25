@@ -51,6 +51,36 @@
         "quote": "Applications can be submitted and tracked through the DIIS Online Application Portal.",
         "url": "https://www.sdge.com/solar/solar-and-battery-installation-center",
         "ok": true
+      },
+      {
+        "item": "Set up billing account and complete local AHJ inspections prior to energization",
+        "quote": "Be sure the billing account is set up and local inspections are completed so your project will be ready for service.",
+        "url": "https://www.sdge.com/myprojectcenter",
+        "ok": true
+      },
+      {
+        "item": "SDG&E performs final inspection, testing, and meter set before energization",
+        "quote": "We'll do a final inspection, complete testing, and set the meter.",
+        "url": "https://www.sdge.com/myprojectcenter",
+        "ok": true
+      },
+      {
+        "item": "Apply for Change to Existing Service for renovations or upgrades changing electrical power needs",
+        "quote": "Change to Existing Service. The property already has a meter. You're doing a renovation or upgrade that significantly changes the electrical or gas power needs.",
+        "url": "https://www.sdge.com/apply-service",
+        "ok": true
+      },
+      {
+        "item": "Submit online service request with current and proposed panel size and additional loads",
+        "quote": "For electric service, current and proposed panel size and additional loads.",
+        "url": "https://www.sdge.com/businesses/savings-center/services/service-planning-for-expansion-relocation",
+        "ok": true
+      },
+      {
+        "item": "Obtain SDG&E approval before energizing solar PV systems after City final inspection",
+        "quote": "After receiving final inspection approval for all related City of San Diego Approvals (permits), San Diego Gas and Electric (SDG&E) will be notified. The system is not approved to energize until SDG&E approval is obtained.",
+        "url": "https://www.sandiego.gov/sites/default/files/solar_pv.pdf",
+        "ok": true
       }
     ]
   },
@@ -116,6 +146,38 @@
           "url": "https://www.sandiego.gov/development-services/permits/simple-permits",
           "page": null,
           "ok": true
+        },
+        {
+          "item": "Completed City of San Diego Circuit Card DS-1779A on site for inspection",
+          "section": "panel_schedule",
+          "quote": "In lieu of plans, a completed City of San Diego Circuit Card (DS- 1779A) will be required for residential private garages (inside/outside).",
+          "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Load calculations included on Circuit Card DS-1779A",
+          "section": "load",
+          "quote": "Load calculations must be included on the Circuit Card. The Circuit Card must be provided at the site for the inspection staff with listing equipment.",
+          "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "EVCS manufacturer installation instructions provided on site",
+          "section": "equipment",
+          "quote": "In addition to all plans and calculations, the EVCS manufacturer's installation instructions shall be provided on site.",
+          "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Owner-Builder Verification form DS-3042 if owner performs work",
+          "section": "application",
+          "quote": "If the property owner is doing the work, a separate Owner-Builder Verification form (DS-3042) must be completed and signed by the owner.",
+          "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
+          "page": null,
+          "ok": true
         }
       ],
       "load_calculation": {
@@ -151,6 +213,18 @@
           "rule": "Historic designated resources and historic districts do not qualify for Simple Permits and require plans",
           "quote": "Note that historical designated resources and projects in historic districts do not qualify for Simple Permits-MEP and must be submitted as a Standalone MEP permit with plans.",
           "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103",
+          "ok": true
+        },
+        {
+          "rule": "EVCS load entered on DS-1779A at 7200 VA or nameplate per 220-57",
+          "quote": "9. EVCS Load (220-57) at 7200 VA or name plate",
+          "url": "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf",
+          "ok": true
+        },
+        {
+          "rule": "Enclosures and connectors mounted 36 to 48 inches above ground unless manufacturer specifies otherwise",
+          "quote": "All enclosures shall have a mounting height between 36\" and 48\". Connector height shall be between 36\" and 48\" from the ground (CEC 625.29) unless otherwise indicated by the manufacturer.",
+          "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
           "ok": true
         }
       ],
@@ -210,6 +284,22 @@
           "quote": "The electrical plan and calculations shall be stamped and signed in accordance with the California Business and Professional Code.",
           "url": "https://www.sandiego.gov/development-services/permits/electrical-permit/plan",
           "page": null,
+          "ok": true
+        },
+        {
+          "item": "Project Contacts Information DS-345 for plan-required electrical permits",
+          "section": "application",
+          "quote": "Project Contacts Information (DS-345).",
+          "url": "https://www.sandiego.gov/development-services/permits/electrical-permit/plan",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electrical Circuit Card DS-1779 available on job site for rough inspection",
+          "section": "panel_schedule",
+          "quote": "This card must be filled out and available on the job site for the rough inspection.",
+          "url": "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf",
+          "page": 1,
           "ok": true
         }
       ],
@@ -306,6 +396,22 @@
           "url": "https://www.sandiego.gov/development-services/permits/electrical-permit/plan",
           "page": null,
           "ok": true
+        },
+        {
+          "item": "Project Contacts Information DS-345 for plan-required electrical permits",
+          "section": "application",
+          "quote": "Project Contacts Information (DS-345).",
+          "url": "https://www.sandiego.gov/development-services/permits/electrical-permit/plan",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electrical Circuit Card DS-1779 available on job site for rough inspection",
+          "section": "panel_schedule",
+          "quote": "This card must be filled out and available on the job site for the rough inspection.",
+          "url": "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf",
+          "page": 1,
+          "ok": true
         }
       ],
       "load_calculation": {
@@ -387,6 +493,14 @@
           "section": "one_line",
           "quote": "The electrical plan and calculations shall be stamped and signed in accordance with the California Business and Professional Code.",
           "url": "https://www.sandiego.gov/development-services/permits/electrical-permit/plan",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electrical Circuit Card DS-1779 used to plan simple no-plan electrical projects",
+          "section": "panel_schedule",
+          "quote": "To plan your project, use the Electrical Circuit Card, DS-1779.",
+          "url": "https://www.sandiego.gov/development-services/permits/electrical-permit/simple",
           "page": null,
           "ok": true
         }
@@ -483,6 +597,14 @@
           "url": "https://www.sandiego.gov/development-services/permits/electrical-permit/plan",
           "page": null,
           "ok": true
+        },
+        {
+          "item": "Project Contacts Information DS-345 for plan-required electrical permits",
+          "section": "application",
+          "quote": "Project Contacts Information (DS-345).",
+          "url": "https://www.sandiego.gov/development-services/permits/electrical-permit/plan",
+          "page": null,
+          "ok": true
         }
       ],
       "load_calculation": {
@@ -559,6 +681,22 @@
           "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301",
           "page": null,
           "ok": true
+        },
+        {
+          "item": "Incorporate Residential Solar PV Project Plan Template elements into design",
+          "section": "other",
+          "quote": "Review the Residential Solar PV Project Plan Template and incorporate all elements outlined within the template into your design.",
+          "url": "https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Upload Building Construction Plans and specifications in PDF format",
+          "section": "equipment",
+          "quote": "All applicants are required to upload Building Construction Plans and specifications. NOTE: The documents must be in PDF format.",
+          "url": "https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit",
+          "page": null,
+          "ok": true
         }
       ],
       "load_calculation": {
@@ -587,6 +725,12 @@
           "rule": "System is not approved to energize until SDG&E approval is obtained after City final inspection",
           "quote": "After receiving final inspection approval for all related City of San Diego Approvals (permits), San Diego Gas and Electric (SDG&E) will be notified. The system is not approved to energize until SDG&E approval is obtained.",
           "url": "https://www.sandiego.gov/sites/default/files/solar_pv.pdf",
+          "ok": true
+        },
+        {
+          "rule": "PV permit scope may include panel upgrade up to 320A and ESS up to 38.4 kWh",
+          "quote": "The scope can include the following scope of work in addition to PV installation: * Panel upgrades up to 320 amps. * An energy storage system up to 38.4 kWh with each unit no greater than 20 kWh.",
+          "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301",
           "ok": true
         }
       ],

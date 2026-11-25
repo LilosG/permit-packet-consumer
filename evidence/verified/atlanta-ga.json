@@ -14,9 +14,10 @@
   },
   "who_may_file": {
     "owner_may_file": "unknown",
-    "conditions": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "conditions": "Contractors Exception and Contractors Affidavit forms are listed on the Applications, Forms, and Checklists page, but the PDFs could not be opened directly to verify homeowner electrical permit eligibility",
+    "quote": "Contractor (Reference Material) * A2L REFRIGERANT PRESSURE TEST AFFIDAVIT. * Contractors Exception. * Contractors Affidavit. * Agent Affidavit Authorization.",
+    "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+    "ok": true
   },
   "utility": {
     "name": "Georgia Power",
@@ -55,15 +56,17 @@
   "jobs": {
     "ev_charger": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": false,
         "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -71,7 +74,32 @@
         "revision_date": "unknown",
         "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal",
+          "section": "application",
+          "quote": "Residential Trades (Electrical, Gas Pressure Test, HVAC, Low Voltage, Plumbing, Temporary Power, Water Heater)",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "EV Charger Affidavit Form",
+          "section": "application",
+          "quote": "EV Charger Affidavit Form.",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Documents uploaded using DCP naming convention and document details",
+          "section": "application",
+          "quote": "Step 2 - Upload documents using DCP naming convention and the document details.",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -80,13 +108,27 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Digital submission via Accela Citizen Access (ACA) portal using DCP naming convention",
+        "signature_or_stamp": "not_stated",
+        "quote": "Step 2 - Upload documents using DCP naming convention and the document details.",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Expired trade permits (including electrical) cannot use the building permit renewal process and must be reissued online",
+          "quote": "It does not apply to trade permits, including electrical, plumbing, or mechanical permits. Expired trade permits must be reissued online.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        },
+        {
+          "rule": "Complete all required forms before having them notarized immediately prior to submitting the application",
+          "quote": "Complete all forms first, then have them notarized immediately before submitting your application.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:atlantaga.gov \"EV Charger Affidavit Form\" OR \"Description of Electrical Permits\"",
         "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
@@ -94,15 +136,17 @@
     },
     "service_upgrade": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": false,
         "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -110,7 +154,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal",
+          "section": "application",
+          "quote": "Residential Trades (Electrical, Gas Pressure Test, HVAC, Low Voltage, Plumbing, Temporary Power, Water Heater)",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electrical Permit Application",
+          "section": "application",
+          "quote": "Electrical Permit Application.",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -119,13 +180,27 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Digital submission via Accela Citizen Access (ACA) portal using DCP naming convention",
+        "signature_or_stamp": "not_stated",
+        "quote": "Step 2 - Upload documents using DCP naming convention and the document details.",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Expired trade permits (including electrical) cannot use the building permit renewal process and must be reissued online",
+          "quote": "It does not apply to trade permits, including electrical, plumbing, or mechanical permits. Expired trade permits must be reissued online.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        },
+        {
+          "rule": "Complete all required forms before having them notarized immediately prior to submitting the application",
+          "quote": "Complete all forms first, then have them notarized immediately before submitting your application.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical",
         "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
@@ -133,15 +208,17 @@
     },
     "subpanel": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": false,
         "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -149,7 +226,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal",
+          "section": "application",
+          "quote": "Residential Trades (Electrical, Gas Pressure Test, HVAC, Low Voltage, Plumbing, Temporary Power, Water Heater)",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electrical Permit Application",
+          "section": "application",
+          "quote": "Electrical Permit Application.",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -158,13 +252,27 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Digital submission via Accela Citizen Access (ACA) portal using DCP naming convention",
+        "signature_or_stamp": "not_stated",
+        "quote": "Step 2 - Upload documents using DCP naming convention and the document details.",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Expired trade permits (including electrical) cannot use the building permit renewal process and must be reissued online",
+          "quote": "It does not apply to trade permits, including electrical, plumbing, or mechanical permits. Expired trade permits must be reissued online.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        },
+        {
+          "rule": "Complete all required forms before having them notarized immediately prior to submitting the application",
+          "quote": "Complete all forms first, then have them notarized immediately before submitting your application.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical",
         "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
@@ -172,15 +280,17 @@
     },
     "appliance_circuit": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": false,
         "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -188,7 +298,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal",
+          "section": "application",
+          "quote": "Residential Trades (Electrical, Gas Pressure Test, HVAC, Low Voltage, Plumbing, Temporary Power, Water Heater)",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electrical Permit Application",
+          "section": "application",
+          "quote": "Electrical Permit Application.",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -197,13 +324,27 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Digital submission via Accela Citizen Access (ACA) portal using DCP naming convention",
+        "signature_or_stamp": "not_stated",
+        "quote": "Step 2 - Upload documents using DCP naming convention and the document details.",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Expired trade permits (including electrical) cannot use the building permit renewal process and must be reissued online",
+          "quote": "It does not apply to trade permits, including electrical, plumbing, or mechanical permits. Expired trade permits must be reissued online.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        },
+        {
+          "rule": "Complete all required forms before having them notarized immediately prior to submitting the application",
+          "quote": "Complete all forms first, then have them notarized immediately before submitting your application.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical",
         "site:atlantaga.gov \"EV Charger Affidavit Form\" OR \"Description of Electrical Permits\""
@@ -211,15 +352,17 @@
     },
     "generator": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": false,
         "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)",
+        "url": "https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -227,7 +370,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal",
+          "section": "application",
+          "quote": "Residential Trades (Electrical, Gas Pressure Test, HVAC, Low Voltage, Plumbing, Temporary Power, Water Heater)",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electrical Permit Application",
+          "section": "application",
+          "quote": "Electrical Permit Application.",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -236,13 +396,27 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Digital submission via Accela Citizen Access (ACA) portal using DCP naming convention",
+        "signature_or_stamp": "not_stated",
+        "quote": "Step 2 - Upload documents using DCP naming convention and the document details.",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Expired trade permits (including electrical) cannot use the building permit renewal process and must be reissued online",
+          "quote": "It does not apply to trade permits, including electrical, plumbing, or mechanical permits. Expired trade permits must be reissued online.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        },
+        {
+          "rule": "Complete all required forms before having them notarized immediately prior to submitting the application",
+          "quote": "Complete all forms first, then have them notarized immediately before submitting your application.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical",
         "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
@@ -250,15 +424,17 @@
     },
     "solar_storage": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Single and Two-Family (additions, alterations, conversions, demolitions, land development, new construction, pools and solar PV)",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": true,
         "program_name": "Single and Two-Family Solar PV / Express Permitting (Submittal Info-Solar Roof Install - Express)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Solar * Building Permit Packet - (Express) * PV - Inspection Checklist. * Solar Roof In Historic Districts. * Submittal Info-Solar Roof Install - Express. * Submittal Info-Solar Roof Install - Lt Com^ * Submittal Info-Solar Roof Install - Res.",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -266,7 +442,24 @@
         "revision_date": "unknown",
         "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Single and Two-Family Solar PV online application via Accela Citizen Access (ACA) portal",
+          "section": "application",
+          "quote": "Single and Two-Family (additions, alterations, conversions, demolitions, land development, new construction, pools and solar PV)",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Submittal Info-Solar Roof Install - Res (or Express) packet and PV - Inspection Checklist",
+          "section": "application",
+          "quote": "Solar * Building Permit Packet - (Express) * PV - Inspection Checklist. * Solar Roof In Historic Districts. * Submittal Info-Solar Roof Install - Express. * Submittal Info-Solar Roof Install - Lt Com^ * Submittal Info-Solar Roof Install - Res.",
+          "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -275,13 +468,27 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "not_stated",
+        "copies_or_format": "Digital submission via Accela Citizen Access (ACA) portal using DCP naming convention",
+        "signature_or_stamp": "not_stated",
+        "quote": "Step 2 - Upload documents using DCP naming convention and the document details.",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Expired trade permits (including electrical) cannot use the building permit renewal process and must be reissued online",
+          "quote": "It does not apply to trade permits, including electrical, plumbing, or mechanical permits. Expired trade permits must be reissued online.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        },
+        {
+          "rule": "Complete all required forms before having them notarized immediately prior to submitting the application",
+          "quote": "Complete all forms first, then have them notarized immediately before submitting your application.",
+          "url": "https://www.atlantaga.gov/i-want-to/obtain-a-building-permit",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:atlantaga.gov \"Submittal Info-Solar Roof Install - Res\" OR \"PV - Inspection Checklist\"",
         "site:atlantaga.gov filetype:pdf \"solar\" OR \"photovoltaic\" residential"

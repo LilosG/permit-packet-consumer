@@ -6,16 +6,18 @@
   "agency": "City of Miami Building Department",
   "portal_url": "https://www.miami.gov/Permits-Construction/Apply-for-or-Manage-Building-Permits-iBuild",
   "code_edition": {
-    "value": "unknown",
-    "effective_date": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "value": "2020 National Electrical Code (NFPA 70), adopted by the Florida Building Code 8th Edition (2023)",
+    "effective_date": "2023-12-31",
+    "quote": "National Electrical Code (NEC) / (NFPA 70) / 2020 Edition.",
+    "url": "https://www.miami.gov/My-Government/Departments/Building/Building-Services/State-of-Florida-Applicable-Codes",
+    "ok": true
   },
   "who_may_file": {
-    "owner_may_file": "unknown",
-    "conditions": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "owner_may_file": true,
+    "conditions": "Strictly limited to owner-occupied one- and two-family residential work; requires in-person interview, written test, proof of residency (ID + utility bill), and signed/notarized Owner-Builder disclosure statement at MRC 444 SW 2nd Ave",
+    "quote": "Please note that the City of Miami strictly limits Owner-Builder permits to owner-occupied One-family and Two-family residential work only.",
+    "url": "https://www.miami.gov/Permits-Construction/Remodeling-and-Construction/Become-an-Owner-Builder",
+    "ok": true
   },
   "utility": {
     "name": "Florida Power & Light (FPL)",
@@ -54,15 +56,17 @@
   "jobs": {
     "ev_charger": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Certain work valued at less than $7,500 on a single-family dwelling may be exempt from the requirement to obtain a building permit. This exemption does not apply to: * Work on property located partially or entirely in a flood hazard area. * Electrical work.",
+        "url": "https://www.miami.gov/My-Government/Departments/Building/Building-Updates/Legislative-Updates-Building",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
         "program_name": "iBuild / ePlan (ProjectDox)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "To apply for a Building permit, access iBuild portal.",
+        "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -70,7 +74,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online building/electrical permit application submitted through the iBuild portal",
+          "section": "application",
+          "quote": "To apply for a Building permit, access iBuild portal.",
+          "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Documents and plans uploaded to ProjectDox (ePlan) if plan review is required",
+          "section": "application",
+          "quote": "ProjectDox serves as an integral component of this process, providing a platform for uploading required documents and plans, as well as for reviewing and responding to comments from City of Miami staff.",
+          "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -79,17 +100,24 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "8.5x11 (2x2 blank corner), 11x17 (3x3 blank corner), or 24x36/30x42/36x48 (4.5x4.5 blank corner)",
+        "copies_or_format": "Unencrypted PDF uploaded to ProjectDox (max 1 GB/file); one file per drawing sheet, landscape only, uppercase naming",
+        "signature_or_stamp": "not_stated",
+        "quote": "Each drawing page must be uploaded as a separate file. (i.e. If there at 20 pages that makes up your MEP drawings, each page should be named and uploaded individually).",
+        "url": "https://www.miami.gov/Permits-Construction/Digital-Permitting/Standard-Naming-Convention-for-Drawings-Documents",
+        "ok": true
       },
       "local_rules": [
         {
           "rule": "Job site printed plans must match the original sheet size submitted to ProjectDox",
           "quote": "All permitted plans used as job site copy must be printed the same size as originally submitted to the City. Inspection may be rejected if original sizes are not provided at job site.",
           "url": "https://www.miami.gov/files/sharedassets/public/v/7/eplan/eplanhelp/eplan-review-standard-naming-conventions-remediated.pdf",
+          "ok": true
+        },
+        {
+          "rule": "Owner-builders cannot request trade sub-permit inspections; electrical sub-contractors must request their own inspections",
+          "quote": "All sub-contractors (plumbing, electrical, mechanical) must request the inspections for their sub-permits themselves.",
+          "url": "https://www.miami.gov/Permits-Construction/Inspections/Schedule-a-Building-Inspection",
           "ok": true
         }
       ],
@@ -100,15 +128,17 @@
     },
     "service_upgrade": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Certain work valued at less than $7,500 on a single-family dwelling may be exempt from the requirement to obtain a building permit. This exemption does not apply to: * Work on property located partially or entirely in a flood hazard area. * Electrical work.",
+        "url": "https://www.miami.gov/My-Government/Departments/Building/Building-Updates/Legislative-Updates-Building",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": "depends",
         "program_name": "Easy Permit (Residential Service Repair only; qualified contractors, no plan review) / iBuild + ePlan",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Electrical Easy Permits: * LIGHT SOCKET. * LOW VOLTAGE COMPUTER/ TV CABLE/PHONE TERMINAL/DATA COMMUNICATION. * MOTOR-GATES/DOOR/SHUTTERS ETC. * SERVICE REPAIR (Residential Only)",
+        "url": "https://www.miami.gov/Permits-Construction/Get-an-Easy-Permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -116,7 +146,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Easy Permit application in iBuild with property location, project cost, trade items, and contractor qualifier number (for eligible service repair)",
+          "section": "application",
+          "quote": "Choose Easy Permit Application from the Start Building Application Menu or button on Main Page and complete the brief permit application: * Agree to Notices & Compliance. * Search for the property.",
+          "url": "https://www.miami.gov/Permits-Construction/Get-an-Easy-Permit",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Print and keep the emailed permit card on-site at all times",
+          "section": "application",
+          "quote": "You will receive your permit card via Email. Please print & keep card on-site at all times.",
+          "url": "https://www.miami.gov/Permits-Construction/Get-an-Easy-Permit",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -125,13 +172,20 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "8.5x11 (2x2 blank corner), 11x17 (3x3 blank corner), or 24x36/30x42/36x48 (4.5x4.5 blank corner)",
+        "copies_or_format": "Unencrypted PDF uploaded to ProjectDox (max 1 GB/file); one file per drawing sheet, landscape only, uppercase naming",
+        "signature_or_stamp": "not_stated",
+        "quote": "Each drawing page must be uploaded as a separate file. (i.e. If there at 20 pages that makes up your MEP drawings, each page should be named and uploaded individually).",
+        "url": "https://www.miami.gov/Permits-Construction/Digital-Permitting/Standard-Naming-Convention-for-Drawings-Documents",
+        "ok": true
       },
       "local_rules": [
+        {
+          "rule": "Easy Permits cannot be used if work is associated with an existing master building permit application",
+          "quote": "To be eligible for an Easy Permit, the proposed work should not be associated with an existing master building permit application.",
+          "url": "https://www.miami.gov/Permits-Construction/Get-an-Easy-Permit",
+          "ok": true
+        },
         {
           "rule": "Job site printed plans must match the original sheet size submitted to ProjectDox",
           "quote": "All permitted plans used as job site copy must be printed the same size as originally submitted to the City. Inspection may be rejected if original sizes are not provided at job site.",
@@ -146,15 +200,17 @@
     },
     "subpanel": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Certain work valued at less than $7,500 on a single-family dwelling may be exempt from the requirement to obtain a building permit. This exemption does not apply to: * Work on property located partially or entirely in a flood hazard area. * Electrical work.",
+        "url": "https://www.miami.gov/My-Government/Departments/Building/Building-Updates/Legislative-Updates-Building",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
         "program_name": "iBuild / ePlan (ProjectDox)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "To apply for a Building permit, access iBuild portal.",
+        "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -162,7 +218,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online building/electrical permit application submitted through the iBuild portal",
+          "section": "application",
+          "quote": "To apply for a Building permit, access iBuild portal.",
+          "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Documents and plans uploaded to ProjectDox (ePlan) if plan review is required",
+          "section": "application",
+          "quote": "ProjectDox serves as an integral component of this process, providing a platform for uploading required documents and plans, as well as for reviewing and responding to comments from City of Miami staff.",
+          "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -171,17 +244,24 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "8.5x11 (2x2 blank corner), 11x17 (3x3 blank corner), or 24x36/30x42/36x48 (4.5x4.5 blank corner)",
+        "copies_or_format": "Unencrypted PDF uploaded to ProjectDox (max 1 GB/file); one file per drawing sheet, landscape only, uppercase naming",
+        "signature_or_stamp": "not_stated",
+        "quote": "Each drawing page must be uploaded as a separate file. (i.e. If there at 20 pages that makes up your MEP drawings, each page should be named and uploaded individually).",
+        "url": "https://www.miami.gov/Permits-Construction/Digital-Permitting/Standard-Naming-Convention-for-Drawings-Documents",
+        "ok": true
       },
       "local_rules": [
         {
           "rule": "Job site printed plans must match the original sheet size submitted to ProjectDox",
           "quote": "All permitted plans used as job site copy must be printed the same size as originally submitted to the City. Inspection may be rejected if original sizes are not provided at job site.",
           "url": "https://www.miami.gov/files/sharedassets/public/v/7/eplan/eplanhelp/eplan-review-standard-naming-conventions-remediated.pdf",
+          "ok": true
+        },
+        {
+          "rule": "Owner-builders cannot request trade sub-permit inspections; electrical sub-contractors must request their own inspections",
+          "quote": "All sub-contractors (plumbing, electrical, mechanical) must request the inspections for their sub-permits themselves.",
+          "url": "https://www.miami.gov/Permits-Construction/Inspections/Schedule-a-Building-Inspection",
           "ok": true
         }
       ],
@@ -192,15 +272,17 @@
     },
     "appliance_circuit": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Certain work valued at less than $7,500 on a single-family dwelling may be exempt from the requirement to obtain a building permit. This exemption does not apply to: * Work on property located partially or entirely in a flood hazard area. * Electrical work.",
+        "url": "https://www.miami.gov/My-Government/Departments/Building/Building-Updates/Legislative-Updates-Building",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": "depends",
         "program_name": "Easy Permit (A/C Change Out and Water Heater Replacement Only) / iBuild + ePlan",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Electrical Easy Permits: * LIGHT SOCKET. * LOW VOLTAGE COMPUTER/ TV CABLE/PHONE TERMINAL/DATA COMMUNICATION. * MOTOR-GATES/DOOR/SHUTTERS ETC. * SERVICE REPAIR (Residential Only) * WATER HEATER-REPLACEMENT ONLY. * A/C CHANGE OUT.",
+        "url": "https://www.miami.gov/Permits-Construction/Get-an-Easy-Permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -208,7 +290,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Easy Permit application in iBuild with property location, project cost, trade items, and contractor qualifier number (for eligible service repair)",
+          "section": "application",
+          "quote": "Choose Easy Permit Application from the Start Building Application Menu or button on Main Page and complete the brief permit application: * Agree to Notices & Compliance. * Search for the property.",
+          "url": "https://www.miami.gov/Permits-Construction/Get-an-Easy-Permit",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Print and keep the emailed permit card on-site at all times",
+          "section": "application",
+          "quote": "You will receive your permit card via Email. Please print & keep card on-site at all times.",
+          "url": "https://www.miami.gov/Permits-Construction/Get-an-Easy-Permit",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -217,13 +316,20 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "8.5x11 (2x2 blank corner), 11x17 (3x3 blank corner), or 24x36/30x42/36x48 (4.5x4.5 blank corner)",
+        "copies_or_format": "Unencrypted PDF uploaded to ProjectDox (max 1 GB/file); one file per drawing sheet, landscape only, uppercase naming",
+        "signature_or_stamp": "not_stated",
+        "quote": "Each drawing page must be uploaded as a separate file. (i.e. If there at 20 pages that makes up your MEP drawings, each page should be named and uploaded individually).",
+        "url": "https://www.miami.gov/Permits-Construction/Digital-Permitting/Standard-Naming-Convention-for-Drawings-Documents",
+        "ok": true
       },
       "local_rules": [
+        {
+          "rule": "Easy Permits cannot be used if work is associated with an existing master building permit application",
+          "quote": "To be eligible for an Easy Permit, the proposed work should not be associated with an existing master building permit application.",
+          "url": "https://www.miami.gov/Permits-Construction/Get-an-Easy-Permit",
+          "ok": true
+        },
         {
           "rule": "Job site printed plans must match the original sheet size submitted to ProjectDox",
           "quote": "All permitted plans used as job site copy must be printed the same size as originally submitted to the City. Inspection may be rejected if original sizes are not provided at job site.",
@@ -238,15 +344,17 @@
     },
     "generator": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Certain work valued at less than $7,500 on a single-family dwelling may be exempt from the requirement to obtain a building permit. This exemption does not apply to: * Work on property located partially or entirely in a flood hazard area. * Electrical work.",
+        "url": "https://www.miami.gov/My-Government/Departments/Building/Building-Updates/Legislative-Updates-Building",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
         "program_name": "iBuild / ePlan (ProjectDox)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "To apply for a Building permit, access iBuild portal.",
+        "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -254,7 +362,24 @@
         "revision_date": "unknown",
         "url": "unknown"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Online building/electrical permit application submitted through the iBuild portal",
+          "section": "application",
+          "quote": "To apply for a Building permit, access iBuild portal.",
+          "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Documents and plans uploaded to ProjectDox (ePlan) if plan review is required",
+          "section": "application",
+          "quote": "ProjectDox serves as an integral component of this process, providing a platform for uploading required documents and plans, as well as for reviewing and responding to comments from City of Miami staff.",
+          "url": "https://www.miami.gov/Services/Guide-to-Getting-a-Permit",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
         "method": "unknown",
         "city_worksheet": "unknown",
@@ -263,17 +388,24 @@
         "url": "unknown"
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "8.5x11 (2x2 blank corner), 11x17 (3x3 blank corner), or 24x36/30x42/36x48 (4.5x4.5 blank corner)",
+        "copies_or_format": "Unencrypted PDF uploaded to ProjectDox (max 1 GB/file); one file per drawing sheet, landscape only, uppercase naming",
+        "signature_or_stamp": "not_stated",
+        "quote": "Each drawing page must be uploaded as a separate file. (i.e. If there at 20 pages that makes up your MEP drawings, each page should be named and uploaded individually).",
+        "url": "https://www.miami.gov/Permits-Construction/Digital-Permitting/Standard-Naming-Convention-for-Drawings-Documents",
+        "ok": true
       },
       "local_rules": [
         {
           "rule": "Job site printed plans must match the original sheet size submitted to ProjectDox",
           "quote": "All permitted plans used as job site copy must be printed the same size as originally submitted to the City. Inspection may be rejected if original sizes are not provided at job site.",
           "url": "https://www.miami.gov/files/sharedassets/public/v/7/eplan/eplanhelp/eplan-review-standard-naming-conventions-remediated.pdf",
+          "ok": true
+        },
+        {
+          "rule": "Owner-builders cannot request trade sub-permit inspections; electrical sub-contractors must request their own inspections",
+          "quote": "All sub-contractors (plumbing, electrical, mechanical) must request the inspections for their sub-permits themselves.",
+          "url": "https://www.miami.gov/Permits-Construction/Inspections/Schedule-a-Building-Inspection",
           "ok": true
         }
       ],
@@ -284,15 +416,17 @@
     },
     "solar_storage": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Select \"start application\" and then \"building application\". [You'll then need to select standalone, electrical permit, then \"solar panel\"].",
+        "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
+        "value": true,
         "program_name": "Standalone Electrical Permit (Solar Panel) via iBuild + ePlan (expedited and free)",
-        "quote": "unknown",
-        "url": "unknown"
+        "quote": "Get a Solar Permit. Solar permits are both expedited and free!",
+        "url": "https://www.miami.gov/My-Government/Climate-Change-in-the-City-of-Miami/Solar",
+        "ok": true
       },
       "checklist_published": true,
       "checklist": {
@@ -300,22 +434,70 @@
         "revision_date": "unknown",
         "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels"
       },
-      "requirements": [],
+      "requirements": [
+        {
+          "item": "Permit application signed by both owner and contractor and notarized for both signatures",
+          "section": "application",
+          "quote": "Permit application, signed by owner & contractor and notarized for both signatures. This application will be printed after you apply online, below.",
+          "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Plans with riser diagram, OCP/equipment sizes, inverter/PV specs, NEC 705.12(D) (120%) compliance, labels, and mounting details",
+          "section": "one_line",
+          "quote": "Riser diagram showing existing equipment sizes and OCP size. DC/AC inverter specifications and photovoltaic panel specifications. Diagram of both systems integrated/interconnected. Show all labels required on equipment.",
+          "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Two copies of a signed and sealed Florida P.E. structural letter for normal and hurricane FBC wind conditions",
+          "section": "other",
+          "quote": "Provide 2 copies of a letter signed and sealed by a Florida P.E. stating that the installation of the Photovoltaic system will not adversely affect the building structure under normal conditions and during a hurricane event of the Florida Building Code specified intensity.",
+          "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Manufacturer equipment specs, battery size/type/location (if used), and manual/automatic transfer switch details",
+          "section": "equipment",
+          "quote": "If storage batteries are used, indicate size, type and location. Indicate transfer switch, manual or automatic. Detail to be shown for all switching equipment and methods from and to public utility electrical system.",
+          "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+          "page": null,
+          "ok": true
+        }
+      ],
       "load_calculation": {
-        "method": "unknown",
-        "city_worksheet": "unknown",
-        "ev_charger_load_factor": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "method": "not_stated",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Verify existing service to qualify for panel installation.",
+        "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+        "ok": true
       },
       "sheet_requirements": {
-        "sheet_size": "unknown",
-        "copies_or_format": "unknown",
-        "signature_or_stamp": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "sheet_size": "8.5x11 (2x2 blank corner), 11x17 (3x3 blank corner), or 24x36/30x42/36x48 (4.5x4.5 blank corner)",
+        "copies_or_format": "Electronic PDF upload via ePlan (ProjectDox) or in-person submittal at 444 SW 2nd Ave, 4th Floor",
+        "signature_or_stamp": "Signed and sealed by a Florida licensed Engineer (or prepared by a qualifying EC or CVC contractor for projects < $50,000)",
+        "quote": "One set of plans signed and sealed by a Florida licensed Engineer. For projects less than $50,000 plans may be prepared by a qualifying contractor with an EC or CVC license.",
+        "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+        "ok": true
       },
-      "local_rules": [],
+      "local_rules": [
+        {
+          "rule": "Qualified solar contractor must hold an EC or CVC license; residential solar does not need a separate roofing permit",
+          "quote": "A qualified contractor is one who holds an EC or CVC license only. Reminder: if you're applying for a residential project you do not need a separate roofing permit",
+          "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+          "ok": true
+        },
+        {
+          "rule": "Solar plans must show compliance with NEC 705.12D (120%) and all components/PV cables must be UL Listed",
+          "quote": "Compliance with NEC 705.12D (120%) Provide support and mounting detail. All components and PV cables shall be UL Listed.",
+          "url": "https://www.miami.gov/Permits-Construction/Permit-Catalog/Get-a-Permit-to-Install-Solar-Panels",
+          "ok": true
+        }
+      ],
       "searched": [
         "site:miami.gov \"Get a Permit to Install Solar Panels\" OR \"solar\" permit",
         "site:miami.gov \"ePlan\" OR \"ProjectDox\" sheet size OR PDF OR \"digital signature\""

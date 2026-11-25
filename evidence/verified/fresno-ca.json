@@ -6,10 +6,11 @@
   "agency": "City of Fresno Planning and Development Department, Building and Safety Services Division",
   "portal_url": "https://aca-prod.accela.com/FRESNO",
   "code_edition": {
-    "value": "unknown",
-    "effective_date": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "value": "2025 California Electrical Code (adopted via Ordinance No. 2025-40 amending FMC Chapter 11, Article 1)",
+    "effective_date": "2026-01-01",
+    "quote": "SECTION 11-104. CALIFORNIA ELECTRICAL CODE. The California Electrical Code 2025 Edition. which may be referred to in the Code as the CEC.",
+    "url": "https://documents.fresno.gov/WebLink/DocView.aspx?id=21170101&dbid=0&repo=LF-Repository",
+    "ok": true
   },
   "who_may_file": {
     "owner_may_file": "unknown",
