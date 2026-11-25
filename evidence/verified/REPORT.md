@@ -31,13 +31,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 3 verified city items)
-- `checklists[service_upgrade]` (7 base items + 4 verified city items)
-- `checklists[subpanel]` (5 base items + 2 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 2 verified city items)
-- `checklists[generator]` (5 base items + 3 verified city items)
-- `checklists[solar_storage]` (5 base items + 5 verified city items)
-- `who_may_pull`: 'Georgia licensed electrical contractors.' -> 'Contractors Exception and Contractors Affidavit forms are listed on the Applications, Forms, and Checklists page, but the PDFs could not be opened directly to verify homeowner electrical permit eligibility'
+- `checklists[ev_charger]` (8 base items + 0 verified city items)
+- `checklists[service_upgrade]` (11 base items + 0 verified city items)
+- `checklists[subpanel]` (7 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (7 base items + 0 verified city items)
+- `checklists[generator]` (8 base items + 0 verified city items)
+- `checklists[solar_storage]` (10 base items + 0 verified city items)
 
 ## austin-tx
 
@@ -47,14 +46,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 1 verified city items)
-- `checklists[service_upgrade]` (7 base items + 2 verified city items)
-- `checklists[subpanel]` (5 base items + 1 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 1 verified city items)
-- `checklists[generator]` (5 base items + 3 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `who_may_pull`: 'Registered electrical contractors (Master Electricians) and homestead owners.' -> 'Homeowner must have a homestead exemption filed with county tax appraisal district, own/occupy property as of Jan 1, apply in person with affidavit and photo ID, not pull another homestead permit within 12 months, and work cannot include the main electric service.'
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
+- `checklists[ev_charger]` (6 base items + 0 verified city items)
+- `checklists[service_upgrade]` (9 base items + 0 verified city items)
+- `checklists[subpanel]` (6 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (6 base items + 0 verified city items)
+- `checklists[generator]` (8 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## dallas-tx
 
@@ -64,13 +61,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 1 verified city items)
-- `checklists[service_upgrade]` (7 base items + 1 verified city items)
-- `checklists[subpanel]` (5 base items + 1 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 1 verified city items)
-- `checklists[generator]` (5 base items + 4 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `who_may_pull`: 'Registered electrical contractors (Master Electricians) or verified homestead owners.' -> "Residential homesteaded property only; homeowner must reside in the property, perform all work without hired assistance, pass a homeowner's exam, and have the district electrical inspector witness the exemption form at the field office"
+- `checklists[ev_charger]` (6 base items + 0 verified city items)
+- `checklists[service_upgrade]` (8 base items + 0 verified city items)
+- `checklists[subpanel]` (6 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (6 base items + 0 verified city items)
+- `checklists[generator]` (9 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## denver-co
 
@@ -80,13 +76,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 2 verified city items)
-- `checklists[service_upgrade]` (7 base items + 2 verified city items)
-- `checklists[subpanel]` (5 base items + 2 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 2 verified city items)
-- `checklists[generator]` (5 base items + 1 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `who_may_pull`: 'Licensed electrical contractors and qualifying owner-occupants of single-family homes.' -> 'Homeowner (owner-occupier) must pass the Electrical exam (or hold a state electrical license) and submit Quick Permit applications by email to planreview@denvergov.org; homeowners are not eligible to apply for Quick Permits through E-permits.'
+- `checklists[ev_charger]` (7 base items + 0 verified city items)
+- `checklists[service_upgrade]` (9 base items + 0 verified city items)
+- `checklists[subpanel]` (7 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (7 base items + 0 verified city items)
+- `checklists[generator]` (6 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## el-cajon-ca
 
@@ -96,12 +91,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (7 base items + 2 verified city items)
-- `checklists[service_upgrade]` (7 base items + 3 verified city items)
-- `checklists[subpanel]` (5 base items + 2 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 2 verified city items)
-- `checklists[generator]` (5 base items + 2 verified city items)
-- `checklists[solar_storage]` (5 base items + 3 verified city items)
+- `checklists[ev_charger]` (9 base items + 0 verified city items)
+- `checklists[service_upgrade]` (10 base items + 0 verified city items)
+- `checklists[subpanel]` (7 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (7 base items + 0 verified city items)
+- `checklists[generator]` (7 base items + 0 verified city items)
+- `checklists[solar_storage]` (8 base items + 0 verified city items)
 
 ## fresno-ca
 
@@ -111,12 +106,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 2 verified city items)
-- `checklists[service_upgrade]` (7 base items + 2 verified city items)
-- `checklists[subpanel]` (5 base items + 2 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 2 verified city items)
-- `checklists[generator]` (5 base items + 2 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
+- `checklists[ev_charger]` (7 base items + 0 verified city items)
+- `checklists[service_upgrade]` (9 base items + 0 verified city items)
+- `checklists[subpanel]` (7 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (7 base items + 0 verified city items)
+- `checklists[generator]` (7 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## henderson-nv
 
@@ -126,14 +121,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 2 verified city items)
-- `checklists[service_upgrade]` (7 base items + 2 verified city items)
-- `checklists[subpanel]` (5 base items + 2 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 2 verified city items)
-- `checklists[generator]` (5 base items + 2 verified city items)
-- `checklists[solar_storage]` (5 base items + 1 verified city items)
-- `who_may_pull`: 'NV licensed electrical contractors or homeowner-occupants.' -> "Primary Nevada residence for owner's own occupancy and not intended for sale or lease; requires Nevada State Contractors Board Owner Builder Affidavit of Exemption per NRS 624.031 and Owner/Builder Sub-Contractor Voucher specifying Electrical work."
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
+- `checklists[ev_charger]` (7 base items + 0 verified city items)
+- `checklists[service_upgrade]` (9 base items + 0 verified city items)
+- `checklists[subpanel]` (7 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (7 base items + 0 verified city items)
+- `checklists[generator]` (7 base items + 0 verified city items)
+- `checklists[solar_storage]` (6 base items + 0 verified city items)
 
 ## houston-tx
 
@@ -148,13 +141,11 @@ Rejected search URLs:
 - https://search.houstontx.gov/texis/search/mlt.html?query=plan&pr=all&prox=page&rorder=500&rprox=500&rdfreq=500&rwfreq=500&rlead=500&rdepth=0&sufs=0&order=r&cmd=mlt&id=6af2cf6916&m=0&p=5
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 1 verified city items)
-- `checklists[service_upgrade]` (7 base items + 1 verified city items)
-- `checklists[subpanel]` (5 base items + 1 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 1 verified city items)
-- `checklists[generator]` (5 base items + 1 verified city items)
-- `owner_may_file`: True -> None
-- `who_may_pull`: 'Texas licensed Master Electricians registered with the City of Houston or qualifying homestead owners.' -> "State law exempts homeowners who own and reside in a dwelling from state electrician licensing (Tex. Occ. Code 1305.003(a)(6)), unless regulated by city ordinance; Houston Permitting Center electrical permit pages state 'Registered electrical contractors' must apply."
+- `checklists[ev_charger]` (6 base items + 0 verified city items)
+- `checklists[service_upgrade]` (8 base items + 0 verified city items)
+- `checklists[subpanel]` (6 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (6 base items + 0 verified city items)
+- `checklists[generator]` (6 base items + 0 verified city items)
 
 ## irvine-ca
 
@@ -164,12 +155,11 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 4 verified city items)
-- `checklists[service_upgrade]` (7 base items + 3 verified city items)
-- `checklists[subpanel]` (5 base items + 3 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 2 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `who_may_pull`: 'California C-10 contractors or occupant owner-builders.' -> 'Property owner must read, initial, sign, and return the Owner-Builder Acknowledgment and Information Verification Form (Form 66-18); same-day rooftop solar/battery permits via PermitsDIRECT! are restricted to licensed contractors'
+- `checklists[ev_charger]` (9 base items + 0 verified city items)
+- `checklists[service_upgrade]` (10 base items + 0 verified city items)
+- `checklists[subpanel]` (8 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (7 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## los-angeles-ca
 
@@ -179,11 +169,10 @@ URL rewrites:
 - https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Applications.pdf -> https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Station%20Applications.pdf
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 2 verified city items)
-- `checklists[service_upgrade]` (7 base items + 1 verified city items)
-- `checklists[generator]` (5 base items + 1 verified city items)
-- `checklists[solar_storage]` (5 base items + 2 verified city items)
-- `who_may_pull`: 'State-licensed electrical contractors (C-10) or owner-builders of single-family homes may apply.' -> 'Perform the work prior to sale of the dwelling. Be a homeowner that has resided in the residence for at least 12 months prior to the completion of the work.'
+- `checklists[ev_charger]` (7 base items + 0 verified city items)
+- `checklists[service_upgrade]` (8 base items + 0 verified city items)
+- `checklists[generator]` (6 base items + 0 verified city items)
+- `checklists[solar_storage]` (7 base items + 0 verified city items)
 
 ## miami-fl
 
@@ -193,13 +182,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 2 verified city items)
-- `checklists[service_upgrade]` (7 base items + 2 verified city items)
-- `checklists[subpanel]` (5 base items + 2 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 2 verified city items)
-- `checklists[generator]` (5 base items + 2 verified city items)
-- `checklists[solar_storage]` (5 base items + 9 verified city items)
-- `who_may_pull`: 'Florida state-licensed electrical contractors (EC/ER) or qualifying owner-builders.' -> 'Strictly limited to owner-occupied one-family and two-family residential work only; requires in-person interview and test at Miami Riverside Center (444 SW 2nd Ave, 1st Floor), proof of residency (ID with property address and utility bill), and a signed and notarized Owner-Builder disclosure statement.'
+- `checklists[ev_charger]` (7 base items + 0 verified city items)
+- `checklists[service_upgrade]` (9 base items + 0 verified city items)
+- `checklists[subpanel]` (7 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (7 base items + 0 verified city items)
+- `checklists[generator]` (7 base items + 0 verified city items)
+- `checklists[solar_storage]` (14 base items + 0 verified city items)
 
 ## oakland-ca
 
@@ -209,14 +197,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 3 verified city items)
-- `checklists[service_upgrade]` (7 base items + 4 verified city items)
-- `checklists[subpanel]` (5 base items + 2 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 3 verified city items)
-- `checklists[generator]` (5 base items + 5 verified city items)
-- `checklists[solar_storage]` (5 base items + 6 verified city items)
-- `who_may_pull`: 'California C-10 licensed electrical contractors or qualifying owner-builders.' -> "Property owners or their legal representatives may apply for residential electrical permits. To register an Online Permit Center account as an owner, the owner must provide a current California Driver's License or ID Card, a copy of the recorded deed, and a completed Owner-Builder User Agreement. Exception: SolarAPP+ rooftop solar permits are restricted to California Licensed Contractors Only."
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
+- `checklists[ev_charger]` (8 base items + 0 verified city items)
+- `checklists[service_upgrade]` (11 base items + 0 verified city items)
+- `checklists[subpanel]` (7 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (8 base items + 0 verified city items)
+- `checklists[generator]` (10 base items + 0 verified city items)
+- `checklists[solar_storage]` (11 base items + 0 verified city items)
 
 ## phoenix-az
 
@@ -226,13 +212,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 4 verified city items)
-- `checklists[service_upgrade]` (7 base items + 4 verified city items)
-- `checklists[subpanel]` (5 base items + 4 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 3 verified city items)
-- `checklists[generator]` (5 base items + 3 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `who_may_pull`: 'Arizona ROC-licensed electrical contractors or qualifying owner-occupants of single-family homes.' -> 'Owner must occupy the building and act as general contractor; per A.R.S. 32-1121.A(5), property may not be for sale or rent within one year after Certificate of Occupancy.'
+- `checklists[ev_charger]` (9 base items + 0 verified city items)
+- `checklists[service_upgrade]` (11 base items + 0 verified city items)
+- `checklists[subpanel]` (9 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (8 base items + 0 verified city items)
+- `checklists[generator]` (8 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## portland-or
 
@@ -242,14 +227,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 2 verified city items)
-- `checklists[service_upgrade]` (7 base items + 3 verified city items)
-- `checklists[subpanel]` (5 base items + 2 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 2 verified city items)
-- `checklists[generator]` (5 base items + 2 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `who_may_pull`: 'Oregon licensed electrical contractors and qualifying resident homeowners.' -> 'Recorded property owner (not an LLC) who owns and lives in the single-family home or duplex side as their primary residence, not intended for sale, lease, or rent; work done by homeowner or immediate family member only'
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
+- `checklists[ev_charger]` (7 base items + 0 verified city items)
+- `checklists[service_upgrade]` (10 base items + 0 verified city items)
+- `checklists[subpanel]` (7 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (7 base items + 0 verified city items)
+- `checklists[generator]` (7 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## sacramento-ca
 
@@ -259,12 +242,11 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 4 verified city items)
-- `checklists[service_upgrade]` (7 base items + 4 verified city items)
-- `checklists[subpanel]` (5 base items + 4 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 3 verified city items)
-- `checklists[solar_storage]` (5 base items + 3 verified city items)
-- `who_may_pull`: 'California C-10 licensed contractors or owner-builders of single-family dwellings.' -> "Owner must personally perform work or assume contractor responsibility, complete Owner-Builder Acknowledgment and Information Verification Form (CDD-0220), and verify signature with driver's license or notarization."
+- `checklists[ev_charger]` (9 base items + 0 verified city items)
+- `checklists[service_upgrade]` (11 base items + 0 verified city items)
+- `checklists[subpanel]` (9 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (8 base items + 0 verified city items)
+- `checklists[solar_storage]` (8 base items + 0 verified city items)
 
 ## san-antonio-tx
 
@@ -274,15 +256,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 3 verified city items)
-- `checklists[service_upgrade]` (7 base items + 3 verified city items)
-- `checklists[subpanel]` (5 base items + 3 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 3 verified city items)
-- `checklists[generator]` (5 base items + 3 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `owner_may_file`: True -> False
-- `who_may_pull`: 'Texas licensed electrical contractors or verified homestead owners occupying the property.' -> 'Homeowners may only pull a plumbing permit for an existing homestead residence where they personally perform the work; electrical permits require a City- or State-licensed trade contractor registered with the City.'
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
+- `checklists[ev_charger]` (8 base items + 0 verified city items)
+- `checklists[service_upgrade]` (10 base items + 0 verified city items)
+- `checklists[subpanel]` (8 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (8 base items + 0 verified city items)
+- `checklists[generator]` (8 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## san-diego-ca
 
@@ -295,14 +274,12 @@ Overrides:
 - service_upgrade and subpanel sheet_size forced to not_stated
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 8 verified city items)
-- `checklists[service_upgrade]` (7 base items + 6 verified city items)
-- `checklists[subpanel]` (5 base items + 6 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 5 verified city items)
-- `checklists[generator]` (5 base items + 5 verified city items)
-- `checklists[solar_storage]` (5 base items + 6 verified city items)
-- `who_may_pull`: 'Property owners of single-family dwellings or state-licensed electrical contractors (C-10) may pull permits.' -> 'Property owner or lessee may be issued an electrical permit; property owner doing the work or hiring different contractors must sign and upload Owner-Builder Verification Form (DS-3042) before permit issuance.'
-- `no_plan_jobs`: {'ev_charger': 'https://sandiego.gov/development-services/forms-publications/information-bulletins/187'} -> {'ev_charger': 'https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187'}
+- `checklists[ev_charger]` (13 base items + 0 verified city items)
+- `checklists[service_upgrade]` (13 base items + 0 verified city items)
+- `checklists[subpanel]` (11 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (10 base items + 0 verified city items)
+- `checklists[generator]` (10 base items + 0 verified city items)
+- `checklists[solar_storage]` (11 base items + 0 verified city items)
 
 ## san-francisco-ca
 
@@ -312,13 +289,12 @@ URL rewrites:
 - none
 
 Replaced module values:
-- `checklists[ev_charger]` (9 base items + 4 verified city items)
-- `checklists[service_upgrade]` (7 base items + 4 verified city items)
-- `checklists[subpanel]` (5 base items + 4 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 3 verified city items)
-- `checklists[generator]` (5 base items + 4 verified city items)
-- `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `owner_may_file`: True -> None
+- `checklists[ev_charger]` (13 base items + 0 verified city items)
+- `checklists[service_upgrade]` (11 base items + 0 verified city items)
+- `checklists[subpanel]` (9 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (8 base items + 0 verified city items)
+- `checklists[generator]` (9 base items + 0 verified city items)
+- `checklists[solar_storage]` (9 base items + 0 verified city items)
 
 ## san-jose-ca
 
@@ -331,13 +307,12 @@ Overrides:
 - subpanel plans_required_single_family forced to unknown
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 5 verified city items)
-- `checklists[service_upgrade]` (7 base items + 3 verified city items)
-- `checklists[subpanel]` (5 base items + 3 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 4 verified city items)
-- `checklists[generator]` (5 base items + 9 verified city items)
-- `checklists[solar_storage]` (5 base items + 7 verified city items)
-- `who_may_pull`: 'Licensed contractors (C-10) and qualifying owner-builders.' -> 'Property owner must submit Form 311 (Owner-Builder Acknowledgement and Verification of Information Form) when signing as Owner-Builder; specific occupancy or rental limits inside Form 311 were not opened.'
+- `checklists[ev_charger]` (10 base items + 0 verified city items)
+- `checklists[service_upgrade]` (10 base items + 0 verified city items)
+- `checklists[subpanel]` (8 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (9 base items + 0 verified city items)
+- `checklists[generator]` (14 base items + 0 verified city items)
+- `checklists[solar_storage]` (12 base items + 0 verified city items)
 
 ## seattle-wa
 
@@ -351,10 +326,9 @@ Overrides:
 - solar plans_required_single_family stated 12 kW: set unknown
 
 Replaced module values:
-- `checklists[ev_charger]` (5 base items + 2 verified city items)
-- `checklists[service_upgrade]` (7 base items + 4 verified city items)
-- `checklists[subpanel]` (5 base items + 1 verified city items)
-- `checklists[appliance_circuit]` (5 base items + 1 verified city items)
-- `checklists[generator]` (5 base items + 4 verified city items)
-- `checklists[solar_storage]` (5 base items + 1 verified city items)
-- `who_may_pull`: 'Washington licensed electrical contractors and qualifying owner-occupiers.' -> 'Homeowner must perform their own work; if not doing the work, must hire an electrical contractor.'
+- `checklists[ev_charger]` (7 base items + 0 verified city items)
+- `checklists[service_upgrade]` (11 base items + 0 verified city items)
+- `checklists[subpanel]` (6 base items + 0 verified city items)
+- `checklists[appliance_circuit]` (6 base items + 0 verified city items)
+- `checklists[generator]` (9 base items + 0 verified city items)
+- `checklists[solar_storage]` (6 base items + 0 verified city items)

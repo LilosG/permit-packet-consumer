@@ -50,9 +50,9 @@ def print_magnification(sheet: "Sheet | None" = None) -> float:
     return PRINT_MAGNIFICATION.get((sheet or current_sheet()).key, 1.0)
 
 
-def resolve_sheet(asked: str | None, jurisdiction) -> Sheet:
-    """The sheet the request asked for, else the city's preference."""
-    return SHEETS.get(asked or "") or SHEETS.get(jurisdiction.sheet_size, LETTER)
+def resolve_sheet(asked: str | None, jurisdiction, sheet_size: str | None = None) -> Sheet:
+    """The sheet the request asked for, else the city's preference (or the job's own override)."""
+    return SHEETS.get(asked or "") or SHEETS.get(sheet_size or jurisdiction.sheet_size, LETTER)
 
 _CURRENT: ContextVar[Sheet] = ContextVar("sheet", default=LETTER)
 

@@ -148,4 +148,4 @@ def _build_response(request: BaseModel) -> PacketResult:
 
 
 def build_response(request: BaseModel) -> PacketResult:
-    return build_on_sheet(request, _build_response)
+    return build_on_sheet(request, _build_response, JOB_TYPE_KEY)

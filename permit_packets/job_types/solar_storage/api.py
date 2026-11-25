@@ -32,7 +32,9 @@ DOCUMENTS = (
     Document("06-panel-schedule", "Panel schedule"),
     Document("07-equipment-data", "Equipment data"),
     Document("08-pre-submittal-review", "Pre-submittal review"),
+    Document("09-pv-warning-labels-and-signage", "PV warning labels and signage"),
 )
+GENERAL_NOTES_DOCUMENT = Document("10-general-notes", "General notes")
 
 
 def to_job(request: SolarStorageRequest) -> SolarStorageJob:
@@ -81,7 +83,8 @@ def _build_response(request: BaseModel) -> PacketResult:
             *({"label": label, "value": value} for label, value in application_fields(packet)),
             {"label": "Scope of work", "value": scope_of_work(packet)},
         ],
-        "documents": [{"file_stem": d.file_stem, "title": d.title} for d in DOCUMENTS],
+        "documents": [{"file_stem": d.file_stem, "title": d.title}
+                      for d in (*DOCUMENTS, *((GENERAL_NOTES_DOCUMENT,) if packet.job.jurisdiction.solar_general_notes else ()))],
         "feature_page": FEATURE_PAGE,
         "summary": [
             {"label": "Solar / ESS", "value": f"{display_number(packet.job.pv_kw_dc)} kW" + (f" / {display_number(packet.job.battery_kwh)} kWh" if packet.job.battery_kwh > 0 else "")},
@@ -110,4 +113,4 @@ def _build_response(request: BaseModel) -> PacketResult:
 
 
 def build_response(request: BaseModel) -> PacketResult:
-    return build_on_sheet(request, _build_response)
+    return build_on_sheet(request, _build_response, JOB_TYPE_KEY)

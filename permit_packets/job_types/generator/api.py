@@ -32,6 +32,7 @@ DOCUMENTS = (
     Document("06-panel-schedule", "Panel schedule"),
     Document("07-equipment-data", "Equipment data"),
     Document("08-pre-submittal-review", "Pre-submittal review"),
+    Document("09-equipment-layout-and-working-space", "Equipment layout and working space"),
 )
 
 
@@ -110,4 +111,4 @@ def _build_response(request: BaseModel) -> PacketResult:
 
 
 def build_response(request: BaseModel) -> PacketResult:
-    return build_on_sheet(request, _build_response)
+    return build_on_sheet(request, _build_response, JOB_TYPE_KEY)

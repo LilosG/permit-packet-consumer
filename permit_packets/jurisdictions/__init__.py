@@ -87,6 +87,10 @@ class Jurisdiction:
     utility: str = ""
     utility_short: str = ""
     sheet_size: str = "letter"  # "tabloid" for 11" x 17" sheets; "ansi_d" for a 22" x 34" drawing set
+    # Job type -> a sheet size for that job alone, over the city's sheet_size (e.g. SF PV plans on 11 x 17).
+    sheet_size_by_job: dict[str, str] = field(default_factory=dict)
+    # City-published general notes printed on solar packets (e.g. San Diego's PV plan template notes).
+    solar_general_notes: tuple[str, ...] = ()
     # The largest site plan scale the city accepts, in feet per inch as drawn on letter. None: any.
     max_plan_scale_ft_per_in: int | None = None
     # Side, in inches, of the empty square the city reserves for its stamp on the cover sheet.

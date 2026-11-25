@@ -4,7 +4,8 @@ from fastapi.testclient import TestClient
 import app as app_module
 from permit_packets.job_types.solar_storage.calc import SolarStorageJob, build_solar_storage_packet
 from permit_packets.core.load_calculation import HomeLoads
-from tests.packet_helpers import sample
+from permit_packets.jurisdictions import KNOWN, jurisdiction_by_key
+from tests.packet_helpers import build, complete_inputs, packet_pages, sample
 
 
 @pytest.fixture(scope="module")
@@ -31,3 +32,27 @@ def test_solar_120_percent_busbar_and_ac_coupled_validation(client):
     assert pkt.ready is False
     bad = client.post("/api/jobs/solar-battery/packet", json={**sample("solar_storage"), "coupling": "ac_coupled", "battery_breaker_amps": 0})
     assert bad.status_code == 422
+
+
+def test_every_solar_packet_has_the_warning_labels_sheet():
+    cities = [j for j in KNOWN.values() if "solar_storage" in j.checklists]
+    assert cities
+    for jurisdiction in cities:
+        pages = packet_pages(build("solar_storage", complete_inputs("solar_storage", jurisdiction)).pdf)
+        assert any("PV Warning Labels and Signage" in page for page in pages), jurisdiction.key
+        assert any("reflective, weather-resistant material" in page for page in pages), jurisdiction.key
+
+
+def test_only_san_diego_solar_packets_carry_the_general_notes_sheet():
+    san_diego = jurisdiction_by_key("san-diego-ca")
+    assert san_diego.solar_general_notes
+    pages = packet_pages(build("solar_storage", complete_inputs("solar_storage", san_diego)).pdf)
+    notes_page = next(page for page in pages if "General Notes" in page)
+    flat = " ".join(notes_page.split())
+    assert "General notes (City of San Diego Residential Solar PV Project Plan Template)" in flat
+    for number, note in enumerate(san_diego.solar_general_notes, start=1):
+        assert f"{number}. {note}" in flat, number
+
+    other = jurisdiction_by_key("phoenix-az")
+    other_pages = packet_pages(build("solar_storage", complete_inputs("solar_storage", other)).pdf)
+    assert not any("General Notes" in page for page in other_pages)

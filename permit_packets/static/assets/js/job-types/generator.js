@@ -26,6 +26,7 @@
     jobFields(data) {
       return {
         transfer_type: data.get('gen_transfer_type'),
+        fuel_type: data.get('gen_fuel') || null,
         generator_kw: Number(data.get('gen_kw')),
         inlet_amps: Number(data.get('gen_inlet_amps')),
         generator_model: data.get('gen_model').trim(),

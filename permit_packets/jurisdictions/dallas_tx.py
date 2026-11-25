@@ -123,7 +123,7 @@ DALLAS = Jurisdiction(
                             "https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/pdf/BI_Backup%20Generator%20Permit_Rev%2009-11-2018.pdf"),
                 Requirement("Generator, transfer equipment, and fuel tank component specifications", "equipment",
                             "https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/pdf/BI_Backup%20Generator%20Permit_Rev%2009-11-2018.pdf"),
-                Requirement("Fuel type listed on plans (separate plumbing permit for natural gas; flammable liquid permit for propane)", "packet_gap",
+                Requirement("Fuel type listed on plans (separate plumbing permit for natural gas; flammable liquid permit for propane)", "fuel",
                             "https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/pdf/BI_Backup%20Generator%20Permit_Rev%2009-11-2018.pdf"),
             ),
             source_url="https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/pdf/BI_Backup%20Generator%20Permit_Rev%2009-11-2018.pdf",
