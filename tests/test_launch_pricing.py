@@ -168,11 +168,13 @@ def test_checkout_acknowledgement(client):
     assert "I'm responsible for confirming who can sign and submit in my city." in text_of(client.get("/start/"))
 
 
-def test_header_no_longer_links_tools_guides_or_documents(client):
+def test_header_links_calculators_but_not_guides_or_documents(client):
     page = client.get("/pricing/").text
     header = page[page.index('<header class="site-header">'):page.index("</header>")]
-    for path in ("/tools/", "/guides/", "/permit-documents/", "/faq/"):
+    for path in ("/guides/", "/permit-documents/", "/faq/"):
         assert f'href="{path}"' not in header
+    # The Calculators dropdown links the /tools/ hub and its calculators; guides and documents stay in the footer.
+    assert 'href="/tools/"' in header and "Calculators" in header
     for path in ("/sample-packet/", "/pricing/", "/start/"):
         assert f'href="{path}"' in header
     assert "Who it's for" in header and "Permits" in header

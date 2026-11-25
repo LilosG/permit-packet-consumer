@@ -119,5 +119,21 @@ NAV_PERMITS = [
     ("Solar & Battery (ESS)", "/solar-battery-permit/"),
     ("All cities", "/permits/"),
 ]
-# Tools, Guides, Permit Documents and FAQ are linked from the footer only.
+# The calculators get their own header dropdown, grouped in two sections and closed by a link to the hub.
+# Guides, Permit Documents and FAQ are linked from the footer only.
+NAV_CALCS = [
+    ("Load & Capacity", [
+        ("EV Charger Load", "/tools/ev-charger-load-calculator/"),
+        ("Residential Load", "/tools/residential-load-calculator/"),
+        ("Solar 120% Rule", "/tools/solar-120-percent-rule-calculator/"),
+    ]),
+    ("Wire, Conduit & Sizing", [
+        ("EV Charger Wire & Breaker", "/tools/ev-charger-wire-breaker-size/"),
+        ("Subpanel Feeder", "/tools/subpanel-feeder-calculator/"),
+        ("Hot Tub Wire & GFCI", "/tools/hot-tub-breaker-wire-size/"),
+        ("Conduit Fill & Trench", "/tools/conduit-fill-trench-depth-calculator/"),
+        ("Generator Interlock", "/tools/generator-interlock-wire-calculator/"),
+    ]),
+]
+NAV_CALCS_ALL = ("All 8 Free Calculators", "/tools/")
 NAV_LINKS = [("Sample Packet", "/sample-packet/"), ("Pricing", "/pricing/")]

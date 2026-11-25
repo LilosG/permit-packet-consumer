@@ -5,6 +5,8 @@
       <ul class="dd-menu" id="dd-who">{% for label, url in nav_who %}<li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}</ul></div>
     <div class="dd"><button type="button" class="dd-toggle" aria-expanded="false" aria-controls="dd-permits">Permits<svg class="ic dd-caret" aria-hidden="true"><use href="#i-caret"/></svg></button>
       <ul class="dd-menu" id="dd-permits">{% for label, url in nav_permits %}<li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}</ul></div>
+    <div class="dd dd-calc"><button type="button" class="dd-toggle" aria-expanded="false" aria-controls="dd-calcs">Calculators<svg class="ic dd-caret" aria-hidden="true"><use href="#i-caret"/></svg></button>
+      <ul class="dd-menu dd-menu-calc" id="dd-calcs">{% for heading, items in nav_calcs %}<li class="dd-sec"><p class="dd-head">{{ heading }}</p><ul>{% for label, url in items %}<li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}</ul></li>{% endfor %}<li class="dd-all"><a href="{{ nav_calcs_all[1] }}">{{ nav_calcs_all[0] }} <span aria-hidden="true">&rarr;</span></a></li></ul></div>
     {%- for label, url in nav_links %}<a href="{{ url }}">{{ label }}</a>{% endfor %}
   </nav>
   <div class="bar-end">
@@ -15,6 +17,7 @@
 <nav class="mobile-menu" id="mobile-menu" aria-label="Main" hidden>
   <p class="mm-head">Who it's for</p>{% for label, url in nav_who %}<a href="{{ url }}">{{ label }}</a>{% endfor %}
   <p class="mm-head">Permits</p>{% for label, url in nav_permits %}<a href="{{ url }}">{{ label }}</a>{% endfor %}
+  <p class="mm-head">Calculators</p>{% for heading, items in nav_calcs %}<p class="mm-sub">{{ heading }}</p>{% for label, url in items %}<a href="{{ url }}">{{ label }}</a>{% endfor %}{% endfor %}<a href="{{ nav_calcs_all[1] }}">{{ nav_calcs_all[0] }} <span aria-hidden="true">&rarr;</span></a>
   <p class="mm-head">More</p>{% for label, url in nav_links %}<a href="{{ url }}">{{ label }}</a>{% endfor %}
   <a class="btn-primary full" href="/start/">Start Free Preview <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
 </nav>

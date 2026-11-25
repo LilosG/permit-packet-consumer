@@ -35,7 +35,8 @@ LAST_REVIEWED = datetime.date.fromisoformat(CONTENT_DATE).strftime("%B %-d, %Y")
 
 env = Environment(loader=FileSystemLoader(TEMPLATES), autoescape=select_autoescape(["html"]), trim_blocks=False)
 env.globals.update(
-    nav_who=sitedata.NAV_WHO, nav_links=sitedata.NAV_LINKS,
+    nav_who=sitedata.NAV_WHO, nav_links=sitedata.NAV_LINKS, nav_calcs=sitedata.NAV_CALCS,
+    nav_calcs_all=sitedata.NAV_CALCS_ALL,
     jobs=list(sitedata.JOBS.values()), sample_address=SAMPLE_ADDRESS, asset_version="")
 
 

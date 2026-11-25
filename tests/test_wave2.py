@@ -142,3 +142,40 @@ def test_comparisons_state_date_and_source(client):
     for path in ("/compare/fiverr-drafters/", "/compare/cad-drafter/"):
         text = client.get(path).text
         assert "Category comparison" in text and "better choice" in text and "/start/?job=" in text
+
+
+def test_header_calculators_dropdown_lists_all_eight(client):
+    html = client.get("/pricing/").text
+    assert 'aria-expanded="false" aria-controls="dd-calcs"' in html
+    assert 'class="dd-menu dd-menu-calc" id="dd-calcs"' in html
+    assert "Calculators" in html and "Load &amp; Capacity" in html and "Wire, Conduit &amp; Sizing" in html
+    for path in CALC_PATHS:
+        assert f'href="{path}"' in html
+    assert 'href="/tools/"' in html and "All 8 Free Calculators" in html
+    assert html.count('id="dd-calcs"') == 1  # one desktop dropdown
+    assert html.count("All 8 Free Calculators") == 2  # desktop dropdown and mobile menu
+
+
+def test_calculator_shared_link_populates_form_and_runs(client):
+    page = client.get("/tools/ev-charger-load-calculator/?sq_ft=2000&service_amps=200&charger_amps=48").text
+    assert 'name="sq_ft" value="2000"' in page
+    assert 'value="200" selected' in page and 'value="48" selected' in page
+    assert 'data-used="1"' in page and "Your result" in page
+    assert 'class="calc-result-actions"' in page and "Copy link to calculation" in page
+    # the canonical stays the bare path with the query present
+    assert f'href="{seo.absolute(wave2.calc_path("ev-charger-load-calculator"))}"' in page
+
+
+def test_calculator_result_cta_preselects_the_job(client):
+    ev = client.get("/tools/ev-charger-load-calculator/?sq_ft=2000&charger_amps=48").text
+    assert 'href="/start/?job=ev-charger&amp;role=diy' in ev
+    load = client.get("/tools/residential-load-calculator/?sq_ft=2400").text
+    assert 'href="/start/?job=panel-upgrade&amp;role=diy' in load
+    assert 'data-start="/start/?job=panel-upgrade&amp;role=diy' in load
+
+
+def test_calculator_script_syncs_url_and_copies_link(client):
+    js = (app_module.STATIC / "assets" / "js" / "calculator.js").read_text()
+    assert "history.replaceState" in js and "data-copy-link" in js and "Copy link to calculation" in js
+    assert "syncStartLinks" in js and "prefill" in js
+
