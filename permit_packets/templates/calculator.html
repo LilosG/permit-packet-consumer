@@ -8,6 +8,9 @@
 <h3>NEC sections applied</h3>
 <ul class="check-list">{% for ref, text in r.nec_rows %}<li><b>{{ ref }}</b>: {{ text }}</li>{% endfor %}</ul>
 {% if r.notes %}<ul class="check-list">{% for n in r.notes %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
+{%- if r.guidance %}<div class="calc-guidance"><h3>Your options</h3><p>{{ r.guidance.summary }}</p>
+<ul class="check-list">{% for o in r.guidance.options %}<li>{{ o }}</li>{% endfor %}</ul>
+<p class="cta-row">{% for href, text in r.guidance.links %}<a class="link" href="{{ href }}">{{ text }}</a>{% endfor %}</p></div>{% endif %}
 {%- endmacro %}
 {% macro report_cta(href) -%}
 <p class="calc-report-cta">Need it on paper for your electrician or the city? <a class="calc-report-link" href="{{ href }}">Get a Panel Capacity Report</a> with your address and parcel for {{ "{price:load_calc}"|fill }}, credited toward your full packet.</p>
@@ -31,7 +34,7 @@
   {%- if f.choice_labels %}<select name="{{ f.name }}">{% for v in f.choices %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ f.choice_labels[v] }}</option>{% endfor %}</select>
   {%- elif f.name == "detached" %}<select name="detached">{% for v, text in detached_labels.items() %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ text }}</option>{% endfor %}</select>
   {%- elif f.choices %}<select name="{{ f.name }}">{% for v in f.choices %}<option value="{{ v }}"{% if values[f.name] == v %} selected{% endif %}>{{ v }}{% if f.name in ("charger_amps", "service_amps", "breaker_amps", "bus_amps", "main_amps", "pv_breaker_amps", "load_amps") %} A{% endif %}</option>{% endfor %}</select>
-  {%- else %}<input type="number" name="{{ f.name }}" value="{{ values[f.name] }}" min="{{ f.min }}" max="{{ f.max }}" step="1" inputmode="numeric">{% endif %}
+  {%- else %}<input type="number" name="{{ f.name }}" value="{{ values[f.name] }}" min="{{ f.min }}" max="{{ f.max }}" step="{{ "any" if f.decimal else 1 }}" inputmode="{{ "decimal" if f.decimal else "numeric" }}">{% endif %}
   {%- if f.hint %}<small class="note-line">{{ f.hint }}</small>{% endif %}</label>
 {%- endfor %}
   <button class="btn-primary" type="submit">Calculate</button>

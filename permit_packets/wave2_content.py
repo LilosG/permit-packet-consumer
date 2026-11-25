@@ -35,8 +35,8 @@ CALCS: dict[str, Calc] = {c.slug: c for c in (
         sections=(
             ("How does the EV charger load calculation work?", (
                 "A building department reviewing an EV charger permit wants to know the existing home plus the new charger does not exceed the main service. "
-                "This calculator uses the optional dwelling method in NEC 220.82. It adds 3 VA per square foot of living area, two small appliance circuits and a laundry circuit at 1,500 VA each, and the nameplate of each fixed appliance you enter.",
-                "The first 10,000 VA of that total counts at 100% and the rest at 40%. Heating and air conditioning do not run together, so only the larger one is added. The charger is then added at its full rating: amps times 240 V. The total divided by 240 V is the computed service current, which is compared to your main breaker.")),
+                "This calculator uses the optional dwelling method in NEC 220.82, which applies to services of 100 A or more. It adds 3 VA per square foot of living area, two small appliance circuits and a laundry circuit at 1,500 VA each, and the nameplate of each fixed appliance you enter.",
+                "The first 10,000 VA of that total counts at 100% and the rest at 40%. Heating and air conditioning do not run together, so only the larger one is added, with heating counted as NEC 220.82(C) sets out for the type you pick. The charger is then added at its full rating: amps times 240 V. The total divided by 240 V is the computed service current, which is compared to your main breaker.")),
             ("Which NEC sections does it apply?", (
                 "NEC 220.82 sets the calculation. NEC 625.41 treats EV charging as a continuous load, which matters when you size the circuit (see the wire and breaker calculator). "
                 "If the result is over capacity, NEC 220.87 allows 12 months of utility demand data, at 125%, to stand in for the calculated existing load. That is the usual route for homes that look full on paper.",)),
@@ -65,7 +65,7 @@ CALCS: dict[str, Calc] = {c.slug: c for c in (
                 "Permit reviewers ask for a formal NEC load calculation form or load letter with panel upgrades, subpanels, EV chargers and any new large 240 V circuit. For an existing dwelling, NEC 220.82 gives an optional method that is shorter than the standard Article 220 calculation.",)),
             ("How does the calculation work?", (
                 "General lighting is 3 VA per square foot. Two small appliance circuits and one laundry circuit are 1,500 VA each. Fixed appliances such as a range, dryer, water heater, dishwasher and hot tub are added at nameplate VA. "
-                "The first 10,000 VA of the subtotal counts at 100% and the remainder at 40%. Then the larger of heating or air conditioning is added in full. The total divided by 240 V is the computed amps.",)),
+                "The first 10,000 VA of the subtotal counts at 100% and the remainder at 40%. Then the larger of heating or air conditioning is added. Cooling and heat pumps count in full; resistance space heat and heat pump backup heat have their own NEC 220.82(C) percentages. The total divided by 240 V is the computed amps.",)),
             ("When is the result not enough?", (
                 "The method is for dwelling units. It does not replace an engineer's calculation for unusual loads, and some cities want additional items such as a load management device or measured demand. "
                 "When the answer comes out over your service rating, NEC 220.87 lets you use 12 months of utility maximum demand at 125% for the existing load. Confirm with your building department which approach it accepts.",)),
@@ -91,7 +91,7 @@ CALCS: dict[str, Calc] = {c.slug: c for c in (
                 "EV charging is a continuous load, so the circuit must carry 125% of the charger's current (NEC 625.41 and 210.19(A)(1)). For example, a 48 amp EV charger wire size must carry 60 A of capacity, which means a 60 A breaker. "
                 "The breaker comes from the next standard size at or above that value, and the wire must be rated for the breaker at its terminal temperature.",)),
             ("How is the wire size chosen?", (
-                "The tool picks the smallest listed copper conductor whose 75°C ampacity (NEC 310.16) covers the breaker, then checks voltage drop over your run. If drop is above 3%, it steps up the wire size. "
+                "The tool picks the smallest listed copper conductor whose ampacity (NEC 310.16, at the 75°C or 60°C terminal rating you pick) covers the breaker, then checks voltage drop over your run. If drop is above 3%, it steps up the wire size. "
                 "When the hot wire is upsized, the equipment ground is upsized in proportion (NEC 250.122(B)). Small conductors also have a breaker limit under NEC 240.4(D).",)),
             ("What about conduit and a disconnect?", (
                 "Conduit is the smallest EMT trade size whose 40% fill area holds two hots and the ground. A disconnect is flagged for a detached garage or a breaker over 60 A, as in the packet. "
@@ -159,7 +159,7 @@ CALCS["solar-120-percent-rule-calculator"] = _replace(
         ("How much solar can I put on a 200A panel?", "With a 200 A busbar and 200 A main breaker, the 120% rule allows up to a 40 A solar backfeed breaker (200 + 40 = 240 A). With a 225 A busbar, up to 70 A is allowed."),
         ("Where must the solar breaker be installed?", "NEC 705.12(B)(3)(2) requires the solar PV backfeed breaker to be positioned at the opposite (far) end of the busbar from the main service breaker."),
         ("Can I downsize my main breaker to fit more solar?", "Yes, if an NEC Article 220 load calculation shows your home's calculated demand is below the smaller main breaker rating (for example 150 A or 175 A)."),
-        ("What if my panel is a center-fed main breaker panel?", "Center-fed panels cannot use the opposite-end 120% rule and are typically limited to 100% of the busbar rating unless engineered otherwise."),
+        ("What if my panel is a center-fed main breaker panel?", "This calculator holds center-fed panels to 100% of the busbar rating. The 2023 NEC allows the 120% rule at one end (not both) of a center-fed panelboard in a dwelling, so check which edition your city enforces."),
     ),
 )
 
@@ -171,7 +171,7 @@ CALCS["hot-tub-breaker-wire-size"] = Calc(
     card="GFCI breaker, copper conductors, insulated ground and PVC conduit for a spa or sauna.",
     answer="Select your hot tub or sauna nameplate amps, wire run length and terminal temperature rating to get the GFCI breaker size, copper wire gauge, insulated ground and PVC conduit size. It uses the same NEC Article 680 sizing logic as our 240V appliance circuit permit packets.",
     sections=(
-        ("How are hot tub and sauna circuits sized?", ("Hot tubs and electric sauna heaters operate as continuous loads (3 hours or more), so the breaker and conductors must be sized at 125% of the nameplate current under NEC 680 and 424.4(B). A 36 A to 40 A spa requires a 50 A, 2-pole GFCI breaker and #6 AWG copper (or #8 AWG THWN-2 at 75°C).",)),
+        ("How are hot tub and sauna circuits sized?", ("Hot tubs and electric sauna heaters operate as continuous loads (3 hours or more), so the breaker and conductors must be sized at 125% of the nameplate current under NEC 680 and 424.4(B). A 40 A spa computes to a 50 A, 2-pole GFCI breaker: #6 AWG copper at 60°C, or #8 AWG THWN-2 at 75°C. A 36 A spa computes to 45 A. The nameplate's breaker and circuit ampacity limits govern.",)),
         ("What GFCI and disconnect rules apply to hot tubs?", ("NEC 680.44 requires Class A GFCI protection for all residential hot tubs and spas. Under NEC 680.13, the maintenance disconnect must be within sight of the spa and at least 5 feet horizontally from the inside wall of the water.",)),
     ),
     example_label="Worked example", faqs=(),
@@ -319,7 +319,7 @@ CALCS["conduit-fill-trench-depth-calculator"] = Calc(
             "Under NEC Chapter 9 Table 1, any raceway containing three or more conductors is limited to 40% of its internal cross-sectional area so wires can be pulled without damaging insulation and heat can dissipate safely. "
             "Each THWN-2 conductor area is summed from NEC Chapter 9 Table 5—including the equipment grounding conductor—and matched against Table 4.",)),
         ("What are the NEC Table 300.5 underground burial depths?", (
-            "For residential 240V EV charger, subpanel, and hot tub runs to a detached garage or yard, NEC Table 300.5 requires 18 inches of soil cover above Schedule 40 or 80 PVC conduit, 6 inches above Rigid Metal Conduit (RMC), and 24 inches above direct-burial UF-B cable. "
+            "For residential 240V EV charger, subpanel, and hot tub runs to a detached garage or yard, NEC Table 300.5 requires, in general locations such as a yard, 18 inches of soil cover above Schedule 40 or 80 PVC conduit, 6 inches above Rigid Metal Conduit (RMC), and 24 inches above direct-burial UF-B cable. Driveways, streets, concrete slabs and areas under buildings have different figures. "
             "Cover is measured from finished grade to the top of the pipe, so dig trenches 20 to 21 inches deep for PVC.",)),
         ("When do cities restrict PVC or outdoor cable?", (
             "While the national NEC permits Schedule 80 PVC for above-grade protection, cities such as San Francisco amend NEC 352.10 to allow PVC only underground or in concrete, requiring metallic raceway (RMC, IMC, or EMT) above grade.",)),
@@ -327,7 +327,7 @@ CALCS["conduit-fill-trench-depth-calculator"] = Calc(
     example_label="Worked example",
     faqs=(
         ("What size conduit do I need for #6 AWG EV charger wires?", "Two #6 AWG THWN-2 hots plus one #10 AWG ground total 0.1225 sq in, which fits inside 3/4-inch PVC (0.203 sq in max) or 3/4-inch EMT (0.213 sq in max) at 40% fill."),
-        ("How deep must PVC electrical conduit be buried?", "18 inches of cover from finished grade to the top of the PVC pipe under NEC Table 300.5."),
+        ("How deep must PVC electrical conduit be buried?", "In a yard or other general location, 18 inches of cover from finished grade to the top of the PVC pipe under NEC Table 300.5. Under streets and non-dwelling driveways and parking lots it is 24 inches; some slab locations allow less."),
         ("Can I put Romex (NM-B) inside underground PVC conduit?", "No. The interior of underground conduit is a wet location under NEC 300.5(B), requiring wet-rated THWN-2 or XHHW-2 individual conductors."),
         ("Does the ground wire count toward conduit fill?", "Yes. Every conductor inside the raceway—including the equipment grounding conductor—counts toward the 40% NEC Chapter 9 fill limit."),
     ),
@@ -344,10 +344,10 @@ CALCS["generator-interlock-wire-calculator"] = Calc(
     sections=(
         ("What wire size does a 30A or 50A generator inlet need?", (
             "A 30 A generator inlet (NEMA L14-30P, up to 7.2 kW) requires 4-wire #10 AWG copper conductors (two hots, one insulated neutral, and one equipment ground) in 3/4-inch PVC or EMT conduit. "
-            "A 50 A generator inlet (NEMA SS2-50P, up to 12 kW) requires 4-wire #6 AWG copper conductors (or #8 AWG THWN-2 when all terminals are rated 75°C) with a #10 AWG ground.",)),
+            "A 50 A generator inlet (NEMA SS2-50P, up to 12 kW) requires 4-wire #6 AWG copper conductors (or #8 AWG THWN-2 when all terminals are rated 75°C) with a #10 AWG ground. The calculator starts at 60°C until you confirm 75°C.",)),
         ("Floating neutral vs. bonded neutral on portable generators", (
             "When feeding a main panel through a 2-pole main-breaker interlock kit, the neutral conductor remains solidly connected to your home's main neutral-ground bond. "
-            "Under NEC 250.30, a portable generator connected to a 2-pole interlock must have a floating neutral (bonding jumper lifted) so return current does not flow on the equipment grounding conductor.",)),
+            "A portable generator connected through a 2-pole interlock, or a transfer switch that does not switch the neutral, must not bond neutral to ground at the generator, so return current does not flow on the equipment grounding conductor. A transfer switch that switches the neutral makes it a separately derived system, bonded under NEC 250.30.",)),
         ("Mandatory NEC 702.5 interlock listing and NEC 702.7 signage", (
             "Every generator interlock bracket must be UL-listed for the exact main panel model (NEC 702.5), and a permanent weatherproof plaque must be installed at the service entrance and meter alerting utility workers to the standby power source (NEC 702.7).",)),
     ),

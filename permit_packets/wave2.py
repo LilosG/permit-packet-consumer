@@ -3,6 +3,7 @@ Imported at the bottom of pages.py's page definitions, which own the router, ren
 from __future__ import annotations
 
 import datetime
+from urllib.parse import urlencode
 
 from fastapi.responses import JSONResponse, Response
 from starlette.requests import Request
@@ -119,16 +120,22 @@ def _result_view(result: dict | None) -> dict | None:
     return None if result is None else {**result, "nec_rows": calc_math.nec_rows(result["nec"])}
 
 
-def _start_cta(job: str, slug: str, params) -> str:
+def _start_cta(job: str, slug: str, params, overrides: dict | None = None) -> str:
+    """The packet builder link, pre-filled with the calculator's own inputs. Only values that pass validation are
+    carried, URL-encoded; unknown parameters are dropped."""
+    fields = {f.name: f for f in CALC_RUN[slug][0]}
+    carried = {k: v for k, v in params.items()
+               if k in fields and v.strip() and not calc_math.parse((fields[k],), {k: v})[1]}
+    carried.update({k: str(v) for k, v in (overrides or {}).items()})
     extra = []
-    for k, v in params.items():
+    for k, v in carried.items():
         if slug == "subpanel-feeder-calculator" and k == "breaker_amps":
-            extra.extend([f"sp_breaker_amps={v}", f"sp_subpanel_amps={v}"])
+            extra.extend([("sp_breaker_amps", v), ("sp_subpanel_amps", v)])
         elif slug == "hot-tub-breaker-wire-size" and k == "load_amps":
-            extra.append(f"ac_nameplate_amps={v}")
+            extra.append(("ac_nameplate_amps", v))
         else:
-            extra.append(f"{k}={v}")
-    return f"/start/?job={job}&role=diy" + ("&" + "&".join(extra) if extra else "")
+            extra.append((k, v))
+    return f"/start/?job={job}&role=diy" + ("&" + urlencode(extra) if extra else "")
 
 
 def _calculator(slug: str):
@@ -149,7 +156,8 @@ def _calculator(slug: str):
                       c=c, path=path, slug=slug, fields=fields, values=values, errors=errors,
                       result=_result_view(result), used=used, example=example,
                       example_nec=calc_math.nec_rows(example["result"]["nec"]), faqs=faqs, disclaimer=w2.DISCLAIMER,
-                      detached_labels=calc_math.DETACHED_LABELS, cta_href=_start_cta(c.job, slug, request.query_params),
+                      detached_labels=calc_math.DETACHED_LABELS,
+                      cta_href=_start_cta(c.job, slug, request.query_params, (result or {}).get("prefill")),
                       report_href="/start/?tier=39&role=hiring" + (f"&job={c.job}" if c.job else ""))
 
     router.add_api_route(path, handler, methods=["GET", "HEAD"], include_in_schema=False)

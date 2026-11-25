@@ -17,13 +17,17 @@
     const actions = `<div class="calc-result-actions"><a class="btn-primary" href="${esc(form.dataset.start || '/start/')}">Build the permit packet `
       + '<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>'
       + '<button type="button" class="copy calc-copy" data-copy-link>Copy link to calculation</button></div>';
+    const g = r.guidance;
+    const guidance = g ? `<div class="calc-guidance"><h3>Your options</h3><p>${esc(g.summary)}</p>`
+      + `<ul class="check-list">${g.options.map((o) => `<li>${esc(o)}</li>`).join('')}</ul>`
+      + `<p class="cta-row">${g.links.map(([href, text]) => `<a class="link" href="${esc(href)}">${esc(text)}</a>`).join('')}</p></div>` : '';
     return `<h2>Your result</h2><p class="calc-headline calc-${esc(r.status)}">${esc(r.headline)}</p>`
       + `<div class="table-wrap"><table class="compare"><tbody>${rows}</tbody></table></div>`
-      + `<h3>NEC sections applied</h3><ul class="check-list">${nec}</ul>${notes}${form.dataset.reportCta || ''}${actions}`;
+      + `<h3>NEC sections applied</h3><ul class="check-list">${nec}</ul>${notes}${guidance}${form.dataset.reportCta || ''}${actions}`;
   }
 
   /* Every /start/ link carries the job type and the current inputs, so the packet builder opens pre-filled. */
-  function syncStartLinks() {
+  function syncStartLinks(overrides = {}) {
     document.querySelectorAll('a[href^="/start/"]').forEach((a) => {
       const u = new URL(a.getAttribute('href'), location.origin);
       new FormData(form).forEach((v, k) => {
@@ -31,6 +35,7 @@
         else if (slug === 'hot-tub-breaker-wire-size' && k === 'load_amps') { u.searchParams.set('ac_nameplate_amps', v); }
         else { u.searchParams.set(k, v); }
       });
+      Object.entries(overrides).forEach(([k, v]) => u.searchParams.set(k, v));
       a.setAttribute('href', u.pathname + u.search);
     });
   }
@@ -45,7 +50,7 @@
         return;
       }
       box.innerHTML = render(data.result);
-      syncStartLinks();
+      syncStartLinks(data.result.prefill || {});
       history.replaceState(null, '', `${location.pathname}?${query}`);
       report();
       if (scroll) box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
