@@ -1,0 +1,188 @@
+jurisdiction_key: henderson-nv
+city: Henderson
+state: NV
+checked_on: 2026-11-24
+agency: City of Henderson Department of Building and Fire Safety (Development Services Center)
+portal_url: https://www.cityofhenderson.com/government/departments/building-and-fire-safety/building-online-services
+code_edition:
+  value: "2023 National Electrical Code (NEC) with Southern Nevada Amendments"
+  effective_date: 2026-01-02
+  quote: "2024 Codes (Effective on submittals received on or after January 2, 2026)"
+  url: https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information
+who_may_file:
+  owner_may_file: true
+  conditions: "Owner building or improving a residential structure on their primary Nevada residence for their own occupancy (not intended for sale or lease) must submit the Nevada State Contractors Board Owner Builder Affidavit of Exemption per NRS 624.031 and sign each page of homeowner-drawn plans."
+  quote: "A legal document from the Nevada State Contractors Board that is required per NRS 624.031 for an owner of a property who is building or improving a residential structure on the property for his own occupancy and not intended for sale or lease."
+  url: https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained
+utility:
+  name: "NV Energy"
+  requirements:
+    - item: "Installations must comply with the 2026 NV Energy Electric Service Requirements (ESR) Book (Southern Nevada)"
+      quote: "The Information and instructions contained in the Electric Service Requirements (ESR) Book represents the manner in which the distribution system is to be constructed in order to provide safe, reliable and cost effective electrical service to our customers."
+      url: https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/account-services/building-and-new-construction/electric-service-standards-south/ESR-MASTER-EDITION.pdf
+    - item: "Local Building Inspector approval required prior to NV Energy connecting service or setting meter"
+      quote: "Customer installations must be approved by the local 'Building Inspector' in all areas, prior to the connection of service or setting of meter."
+      url: https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/account-services/building-and-new-construction/electric-service-standards-north/section-7/OS0001U.pdf
+    - item: "Submit solar PV and energy storage interconnection applications online via NV Energy PowerClerk with application fee"
+      quote: "Applications are submitted through the online application portal, PowerClerk. Applications will be considered incomplete until the application fee has been paid."
+      url: https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/cleanenergy/handbooks/SolarGenerations-Handbook.pdf
+    - item: "Solar/ESS interconnections must be permitted locally and performed by a Nevada licensed C-2 or C-2g electrical contractor"
+      quote: "Installations must be permitted through the local building authority and interconnections must be performed by a Nevada licensed C-2 or C-2g electrical contractor."
+      url: https://www.nvenergy.com/publish/content/dam/nvenergy/brochures_arch/cleanenergy/handbooks/SolarGenerations-Handbook.pdf
+jobs:
+  ev_charger:
+    permit_required:
+      value: yes
+      quote: "Electrical permit - A separate permit required for most electrical work."
+      url: https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained
+    plans_required_single_family:
+      value: depends
+      program_name: "Virtual Counter (Over-the-Counter Review) via DSC Online"
+      quote: "Individual Trade Permits - Mechanical, Plumbing, Electrical."
+      url: https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter
+    checklist_published: true
+    checklist:
+      title: "Electrical Permits Submittal Checklist"
+      revision_date: "unknown"
+      url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+    requirements:
+      - item: "Apply online via DSC Online and schedule a Virtual Counter appointment if eligible for over-the-counter review"
+        section: application
+        quote: "Customers will apply for one of the above virtual counter approved permits through DSC Online and then schedule a Virtual Counter appointment through our Booking Portal."
+        url: https://www.cityofhenderson.com/government/departments/development-services-center/virtualcounter
+        page: null
+      - item: "Single family residential load calculation worksheet (COHBFS)"
+        section: load
+        quote: "Load Calculations. Single family residential load calculation work sheet. COHBFS."
+        url: https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information
+        page: null
+      - item: "Owner Builder Affidavit of Exemption (NRS 624.031) if property owner pulls the permit"
+        section: application
+        quote: "Owner Builder Affidavit of Exemption. Owner Builder Subcontractor Registration."
+        url: https://www.cityofhenderson.com/residents/advanced-components/custom-pages/custom-documents-images-calendar/-item-3506/-sortn-EName/-folder-22/-toggle-next30days
+        page: null
+    load_calculation:
+      method: city_worksheet
+      city_worksheet: "Residential Electrical Load Calculation Worksheet (COHBFS), https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information"
+      ev_charger_load_factor: not_stated
+      quote: "Load Calculations. Single family residential load calculation work sheet. COHBFS."
+      url: https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Electronic PDF upload via DSC Online"
+      signature_or_stamp: "Wet-sealed/stamped by licensed professional, or each page signed by homeowner if homeowner-drawn"
+      quote: "Plans must be “wet-sealed” or stamped by the licensed professional that prepared the drawings. If the plans are drawn by the homeowner each page must be signed by the homeowner."
+      url: https://www.cityofhenderson.com/government/departments/development-services-center/dsc-help/reference-forms-explained
+    local_rules: []
+    searched:
+      - "site:cityofhenderson.com \"Electrical Permits\" \"checklist\" OR \"Electric Vehicle\" OR \"EV\""
+      - "site:cityofhenderson.com \"showpublisheddocument\" \"Electrical\" OR \"Load Calculation\""
+  service_upgrade:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: true
+    checklist:
+      same_as: ev_charger
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules: []
+    searched:
+      - "site:cityofhenderson.com \"electrical permit\" OR \"service upgrade\""
+      - "site:cityofhenderson.com \"showpublisheddocument\" \"Electrical\""
+  subpanel:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: true
+    checklist:
+      same_as: ev_charger
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules: []
+    searched:
+      - "site:cityofhenderson.com \"electrical permit\" OR \"residential\""
+  appliance_circuit:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: true
+    checklist:
+      same_as: ev_charger
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules: []
+    searched:
+      - "site:cityofhenderson.com \"electrical permit\" OR \"residential\""
+  generator:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: true
+    checklist:
+      title: "Residential Standby Generator Submittal Checklist"
+      revision_date: "unknown"
+      url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules: []
+    searched:
+      - "site:cityofhenderson.com \"Residential Standby Generator\""
+      - "site:cityofhenderson.com \"showpublisheddocument\" \"Generator\""
+  solar_storage:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      value: yes
+      program_name: "DSC Online (Residential Photovoltaic)"
+      quote: "Residential Photovoltaic (Solar)"
+      url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+    checklist_published: true
+    checklist:
+      title: "Residential Photovoltaic (Solar) Submittal Checklist"
+      revision_date: "unknown"
+      url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+    requirements:
+      - item: "Photovoltaic System Permit Authorization form"
+        section: application
+        quote: "Photovoltaic System Permit Authorization."
+        url: https://www.cityofhenderson.com/residents/advanced-components/custom-pages/custom-documents-images-calendar/-item-3506/-sortn-EName/-folder-22/-toggle-next30days
+        page: null
+      - item: "Submit Residential Photovoltaic (Solar) plans and checklist items via DSC Online"
+        section: site_plan
+        quote: "Use the checklist to ensure applications include all of the information necessary for a timely review."
+        url: https://www.cityofhenderson.com/business/development-services-center/submittal-checklist
+        page: null
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules: []
+    searched:
+      - "site:cityofhenderson.com \"Residential Photovoltaic\" \"checklist\" OR \"SolarAPP\" OR \"battery\""
+      - "site:cityofhenderson.com \"showpublisheddocument\" \"Photovoltaic\""
+open_questions:
+  - "City of Henderson publishes PDF checklists for 'Electrical Permits', 'Residential Photovoltaic (Solar)', and 'Residential Standby Generator' on https://www.cityofhenderson.com/business/development-services-center/submittal-checklist, as well as the 'Residential Electrical Load Calculation Worksheet' on https://www.cityofhenderson.com/government/departments/building-and-fire-safety/standard-designs/electrical-information; these PDFs were not indexed in full in search results and must be opened directly to extract exact drawing/submittal line items, EV charger load factor, and revision dates."
+  - "Confirm the exact effective date of the 2023 NEC adopting ordinance (Title 15) on https://www.cityofhenderson.com/government/departments/building-and-fire-safety/building-codes/national-electric-code; the Electrical Information page states 2024 Codes took effect January 2, 2026."
+  - "Confirm whether City of Henderson offers instant/no-plan online permits via DSC Online for single-family EV chargers, panel upgrades, or subpanels, or if all require a Virtual Counter / plan check review."
+  - "Confirm whether City of Henderson accepts SolarAPP+ for residential rooftop solar PV and battery storage."

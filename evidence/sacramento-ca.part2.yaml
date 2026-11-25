@@ -1,0 +1,119 @@
+jobs:
+  appliance_circuit:
+    permit_required:
+      value: depends
+      quote: "The following criteria must be provided for a proposed Residential Swimming Pool to meet minimum submittal requirements:"
+      url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf
+    plans_required_single_family:
+      value: depends
+      program_name: "unknown"
+      quote: "All plan review submittals and resubmittals must be submitted electronically at https://aca-prod.accela.com/sacramento/Default.aspx."
+      url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf
+    checklist_published: true
+    checklist:
+      title: "Residential Swimming Pool Plan Review Submittal Requirements (CDD-0282)"
+      revision_date: "01-01-2026"
+      url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf
+    requirements:
+      - item: "Completed Building Permit Application CDD-0200 and Owner-Builder form CDD-0220 if applicable"
+        section: application
+        quote: "Completed application form. ( CDD-0200)"
+        url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf
+        page: 1
+      - item: "Completed Electrical Load Calculation Worksheet CDD-0213"
+        section: load
+        quote: "Completed electrical load calculation worksheet. ( CDD-0213)"
+        url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf
+        page: 1
+      - item: "Scaled site plan showing equipment location and electrical features"
+        section: site_plan
+        quote: "Scaled site plan dimensioning the location of pool/pool equipment in relationship to the main dwelling, adjacent property line(s), and the landside toe of any flood control levee, along with any plumbing, electrical or landscape features as applicable."
+        url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf
+        page: 1
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: service_upgrade
+    local_rules:
+      - rule: "Pools and spas must follow current edition of California Electrical Code"
+        quote: "For plumbing and electrical requirements applicable to swimming pools see the current edition of the California Plumbing Code & the California Electrical Code."
+        url: https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0257_Swimming-Pool-Requirements.pdf
+    searched: ["site:cityofsacramento.gov \"hot tub\" OR \"spa\" OR \"heat pump\" electrical permit", "site:cityofsacramento.gov \"Web Minor Permits\" OR \"Minor Electrical\""]
+  generator:
+    permit_required:
+      value: unknown
+      quote: "unknown"
+      url: unknown
+    plans_required_single_family:
+      value: unknown
+      program_name: "unknown"
+      quote: "unknown"
+      url: unknown
+    checklist_published: false
+    checklist:
+      title: "unknown"
+      revision_date: "unknown"
+      url: unknown
+    requirements: []
+    load_calculation:
+      method: not_stated
+      city_worksheet: "none"
+      ev_charger_load_factor: not_stated
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      same_as: service_upgrade
+    local_rules: []
+    searched: ["site:cityofsacramento.gov \"generator\" \"transfer switch\" OR \"standby\" permit", "site:cityofsacramento.gov \"residential\" \"generator\" electrical permit"]
+  solar_storage:
+    permit_required:
+      value: yes
+      quote: "Customers can submit their SB379 – SolarAPP+ Applications online and are able to monitor the progress of their project status, with greater transparency and ease than through emails."
+      url: https://www.cityofsacramento.gov/content/dam/portal/it/digitalstrategy/Residential%20SolarApp.pdf
+    plans_required_single_family:
+      value: depends
+      program_name: "SolarAPP+"
+      quote: "SolarAPP+, short for Solar Automated Permit Processing, automates the residential"
+      url: https://www.cityofsacramento.gov/community-development/building/permit-services/residential-solar
+    checklist_published: false
+    checklist:
+      title: "unknown"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      - item: "Submit eligible residential solar applications online through SolarAPP+"
+        section: application
+        quote: "Customers can submit their SB379 – SolarAPP+ Applications online and are able to monitor the progress of their project status, with greater transparency and ease than through emails."
+        url: https://www.cityofsacramento.gov/content/dam/portal/it/digitalstrategy/Residential%20SolarApp.pdf
+        page: 1
+      - item: "Submit SMUD interconnection application via PowerClerk with one-time fee"
+        section: utility
+        quote: "Visit PowerClerk for all solar and distributed generation projects."
+        url: https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information
+        page: null
+      - item: "Interconnected energy storage must follow SMUD Rule 21 interconnection requirements"
+        section: utility
+        quote: "Note: Interconnected energy storage will be treated as distributed generation and fall under Rule 21 interconnection requirements."
+        url: https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information
+        page: null
+    load_calculation:
+      method: not_stated
+      city_worksheet: "none"
+      ev_charger_load_factor: not_stated
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      same_as: service_upgrade
+    local_rules:
+      - rule: "SMUD uses Rule 21 or Advanced Inverter Functions settings for interconnection"
+        quote: "SMUD uses either Rule 21 or Advanced Inverter Functions (AIF) settings as part of the Interconnection application process."
+        url: https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information
+      - rule: "Battery storage must be charged with on-site renewable energy to qualify for NEM"
+        quote: "To qualify for Net Energy Metering (NEM), all storage must be charged with renewable energy on site."
+        url: https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information
+    searched: ["site:cityofsacramento.gov \"SolarAPP+\" OR \"Energy Storage\" OR \"Battery\" permit checklist", "site:cityofsacramento.gov/community-development/building/permit-services/residential-solar"]
+open_questions:
+  - "Could not retrieve the full list of eligible scopes under Web Minor Permits / Residential Minor Electrical permits (e.g., whether like-for-like panel changeouts, subpanels, or 240V appliance circuits qualify without plans) from https://www.cityofsacramento.gov/community-development/building/building-forms/minor-permit-application-form-bundles"
+  - "Could not retrieve the full text of https://www.cityofsacramento.gov/community-development/building/permit-services/residential-solar to verify whether standalone battery storage or non-SolarAPP+ residential PV has a published city submittal checklist."
+  - "No City of Sacramento single-family residential standby/portable generator or transfer switch electrical permit checklist or submittal guide was found on cityofsacramento.gov."
+  - "Could not verify the exact EV charger load factor percentage (100% vs 125%) printed inside CDD-0213 from search snippets of https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0213_Electrical-Load-Calculation-Worksheet.pdf"

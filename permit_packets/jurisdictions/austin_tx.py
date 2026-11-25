@@ -1,7 +1,7 @@
 """Austin, TX: Austin Development Services Department (DSD)"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -13,8 +13,10 @@ SOURCE_LABEL = "From Austin DSD electrical permitting guidelines"
 
 AUSTIN = Jurisdiction(
     key="austin-tx", name="Austin", state="TX", known=True,
-    permit_rules_verified="2026-11-21",
-    who_may_pull="Registered electrical contractors (Master Electricians) and homestead owners.",
+    no_plan_jobs={'ev_charger': 'https://www.austintexas.gov/development-services/types-permits', 'service_upgrade': 'https://www.austintexas.gov/development-services/types-permits', 'subpanel': 'https://www.austintexas.gov/development-services/types-permits', 'appliance_circuit': 'https://www.austintexas.gov/development-services/types-permits'},
+    last_verified="2026-11-24",
+    permit_rules_verified="2026-11-24",
+    who_may_pull="Homeowner must have a homestead exemption filed with county tax appraisal district, own/occupy property as of Jan 1, apply in person with affidavit and photo ID, not pull another homestead permit within 12 months, and work cannot include the main electric service.",
     owner_may_file=True,
     portal_url="https://www.austintexas.gov/department/development-services",
     fee_note="Electrical permit fees are based on the city's adopted fee schedule.",
@@ -41,14 +43,11 @@ AUSTIN = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Permit application: address, owner, contractor and valuation", "application"),
-                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
-                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
-                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
-                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
+                Requirement("Registered licensed electrical contractor applies via AB+C Portal (or qualifying homeowner via Homestead Permit)", "application",
+                            "https://www.austintexas.gov/development-services/apply-standalone-permit"),
             ),
-            source_url="https://www.austintexas.gov/department/development-services",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.austintexas.gov/development-services/apply-standalone-permit",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Review all local Austin municipal amendments prior to installation."),
@@ -56,16 +55,14 @@ AUSTIN = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
-                Requirement("Permit application: address, scope and valuation", "application"),
-                Requirement("Load calculation (NEC 220)", "load"),
-                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
-                Requirement("Panel and meter base specifications and listing", "equipment"),
-                Requirement("Site plan showing the meter and main panel", "site_plan"),
-                Requirement("Utility service request", "utility"),
-                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
+                Requirement("Registered licensed electrical contractor applies for Stand-Alone Electrical Upgrade permit via AB+C Portal", "application",
+                            "https://www.austintexas.gov/development-services/types-permits"),
+                Requirement("Submit Electric Service Planning Application (ESPA) to Austin Energy for service upgrade", "utility",
+                            "https://austinenergy.com/contractors/Construction-Renovation/Electric-Service-Planning-Application"),
+                SURGE_PROTECTION,
             ),
-            source_url="https://www.austintexas.gov/department/development-services",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.austintexas.gov/development-services/types-permits",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Check Austin Energy approved meter-main combo lists before purchasing equipment."),
@@ -74,14 +71,11 @@ AUSTIN = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
-                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Panel specifications and listing", "equipment"),
+                Requirement("Registered licensed electrical contractor applies via AB+C Portal (or qualifying homeowner via Homestead Permit)", "application",
+                            "https://www.austintexas.gov/development-services/apply-standalone-permit"),
             ),
-            source_url="https://www.austintexas.gov/department/development-services",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.austintexas.gov/development-services/apply-standalone-permit",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Keep neutral and ground bars separate in the subpanel (NEC 250.24(A)(5))."),
@@ -89,18 +83,43 @@ AUSTIN = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the panel and the appliance", "site_plan"),
-                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Manufacturer specifications and listing", "equipment"),
+                Requirement("Registered licensed electrical contractor applies via AB+C Portal (or qualifying homeowner via Homestead Permit)", "application",
+                            "https://www.austintexas.gov/development-services/apply-standalone-permit"),
             ),
-            source_url="https://www.austintexas.gov/department/development-services",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.austintexas.gov/development-services/apply-standalone-permit",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Ensure disconnects are located within sight of motor-driven appliances (NEC 422.31)."),
             ),
+        ),
+        "generator": Checklist(
+            items=(
+                Requirement("Apply for Repair Stand-Alone Permit in AB+C Portal with description 'SB 1202 Home Back Up Installation - Generator'", "application",
+                            "https://www.austintexas.gov/development-services/apply-standalone-permit"),
+                Requirement("Upload Third-Party Review Compliance Letter signed by licensed engineer, master electrician, or certified inspector under SB 1202", "other",
+                            "https://www.austintexas.gov/development-services/apply-standalone-permit"),
+                Requirement("Interconnected spinning generators require an Auxiliary Power Electrical Permit and Austin Energy DGPA/Transformer Capacity Review", "utility",
+                            "https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97"),
+            ),
+            source_url="https://www.austintexas.gov/development-services/apply-standalone-permit",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
+        ),
+        "solar_storage": Checklist(
+            items=(
+                Requirement("Distributed Generation Planning Application (DGPA), Wire Diagram, and Equipment Spec Sheets attached in AB+C Portal", "one_line",
+                            "https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97"),
+                Requirement("Signed Residential Interconnection Agreement reviewed and approved by Austin Energy prior to permit activation", "utility",
+                            "https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97"),
+                Requirement("Residential Plan Review with Building Permit required for residential solar shingles or ground-mounted systems", "other",
+                            "https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97"),
+                Requirement("All associated permitted work must be in 'Final' status before scheduling Final Solar Inspection", "other",
+                            "https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97"),
+            ),
+            source_url="https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
         ),
     },
 )

@@ -1,7 +1,7 @@
 """Denver, CO: Denver Community Planning and Development"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -13,8 +13,9 @@ SOURCE_LABEL = "From Denver CPD electrical permit guidelines"
 
 DENVER = Jurisdiction(
     key="denver-co", name="Denver", state="CO", known=True,
-    permit_rules_verified="2026-11-21",
-    who_may_pull="Licensed electrical contractors and qualifying owner-occupants of single-family homes.",
+    last_verified="2026-11-24",
+    permit_rules_verified="",
+    who_may_pull="Homeowner (owner-occupier) must pass the Electrical exam (or hold a state electrical license) and submit Quick Permit applications by email to planreview@denvergov.org; homeowners are not eligible to apply for Quick Permits through E-permits.",
     owner_may_file=True,
     portal_url="https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Permits-and-Licenses",
     fee_note="Fees are calculated per the Denver CPD fee schedule.",
@@ -41,14 +42,13 @@ DENVER = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Permit application: address, owner, contractor and valuation", "application"),
-                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
-                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
-                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
-                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
+                Requirement("Contractors apply electronically through E-permits under Quick Permits; homeowners email Quick Permit application to planreview@denvergov.org", "application",
+                            "https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf"),
+                Requirement("Homeowner (owner-occupier) must pass the Electrical exam (or hold a state license) and submit passing documentation", "application",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/How-to-Apply/Homeowner-Permits"),
             ),
-            source_url="https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Permits-and-Licenses",
-            source_label=SOURCE_LABEL,
+            source_url="https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Review all local Denver municipal amendments prior to installation."),
@@ -56,16 +56,14 @@ DENVER = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
-                Requirement("Permit application: address, scope and valuation", "application"),
-                Requirement("Load calculation (NEC 220)", "load"),
-                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
-                Requirement("Panel and meter base specifications and listing", "equipment"),
-                Requirement("Site plan showing the meter and main panel", "site_plan"),
-                Requirement("Utility service request", "utility"),
-                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
+                Requirement("Contractors apply electronically through E-permits under Quick Permits; homeowners email Quick Permit application to planreview@denvergov.org", "application",
+                            "https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf"),
+                Requirement("Homeowner (owner-occupier) must pass the Electrical exam (or hold a state license) and submit passing documentation", "application",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/How-to-Apply/Homeowner-Permits"),
+                SURGE_PROTECTION,
             ),
-            source_url="https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Permits-and-Licenses",
-            source_label=SOURCE_LABEL,
+            source_url="https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Check Xcel Energy approved meter-main combo lists before purchasing equipment."),
@@ -74,14 +72,13 @@ DENVER = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
-                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Panel specifications and listing", "equipment"),
+                Requirement("Contractors apply electronically through E-permits under Quick Permits; homeowners email Quick Permit application to planreview@denvergov.org", "application",
+                            "https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf"),
+                Requirement("Homeowner (owner-occupier) must pass the Electrical exam (or hold a state license) and submit passing documentation", "application",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/How-to-Apply/Homeowner-Permits"),
             ),
-            source_url="https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Permits-and-Licenses",
-            source_label=SOURCE_LABEL,
+            source_url="https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Keep neutral and ground bars separate in the subpanel (NEC 250.24(A)(5))."),
@@ -89,18 +86,41 @@ DENVER = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the panel and the appliance", "site_plan"),
-                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Manufacturer specifications and listing", "equipment"),
+                Requirement("Contractors apply electronically through E-permits under Quick Permits; homeowners email Quick Permit application to planreview@denvergov.org", "application",
+                            "https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf"),
+                Requirement("Homeowner (owner-occupier) must pass the Electrical exam (or hold a state license) and submit passing documentation", "application",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/How-to-Apply/Homeowner-Permits"),
             ),
-            source_url="https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Permits-and-Licenses",
-            source_label=SOURCE_LABEL,
+            source_url="https://denvergov.org/files/assets/public/v/6/community-planning-and-development/documents/ds/building-codes/policies/admin-131a.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Ensure disconnects are located within sight of motor-driven appliances (NEC 422.31)."),
             ),
+        ),
+        "generator": Checklist(
+            items=(
+                Requirement("Zoning permit required if generator is located on the ground / exterior of the structure", "site_plan",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/Solar-Permits"),
+            ),
+            source_url="https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/Solar-Permits",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
+        ),
+        "solar_storage": Checklist(
+            items=(
+                Requirement("For SolarAPP+, upload unique SolarAPP+ ID number and approval documents under Quick Permits > Electrical Permit", "application",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/Solar-Permits"),
+                Requirement("Non-SolarAPP+ systems <10 kW require review of non-engineered electrical plans via Building Log", "one_line",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/Solar-Permits"),
+                Requirement("Non-SolarAPP+ systems >=10 kW require stamped and signed engineered electrical plans via Building Log", "one_line",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/Solar-Permits"),
+                Requirement("Zoning permit required if solar panels are installed on the ground", "site_plan",
+                            "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/Solar-Permits"),
+            ),
+            source_url="https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Community-Planning-and-Development/Plan-Review-Permits-and-Inspections/Single-Family-and-Duplex-Projects/Solar-Permits",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
         ),
     },
 )

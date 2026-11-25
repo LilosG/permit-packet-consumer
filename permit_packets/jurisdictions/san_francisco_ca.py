@@ -7,7 +7,7 @@ electrical trade permit for an EV charger instantly. Utility is PG&E.
 """
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -40,9 +40,11 @@ CODE_NOTE = (
 
 SAN_FRANCISCO = Jurisdiction(
     key="san-francisco-ca", name="San Francisco", state="CA", known=True,
-    permit_rules_verified="2026-11-17",
+    no_plan_jobs={'service_upgrade': 'https://www.sf.gov/apply-electrical-permit', 'subpanel': 'https://www.sf.gov/apply-electrical-permit', 'appliance_circuit': 'https://www.sf.gov/apply-electrical-permit', 'generator': 'https://www.sf.gov/apply-electrical-permit'},
+    last_verified="2026-11-24",
+    permit_rules_verified="",
     who_may_pull="Contractors must hold a B, C7, C10, C45, C46, C61 or D34 license (a C7 covers only low-voltage work). Only owners of a stand-alone single-family dwelling (R-3 occupancy) may apply to do the work themselves; staff may direct an owner to hire a licensed contractor.",
-    owner_may_file=True,
+    owner_may_file=None,
     portal_url="https://sf.gov/apply-electrical-permit",
     fee_note="San Francisco permit fees depend on the scope of work. DBI publishes a fee schedule (Table 1A-E, 2026) that the permit page links.",
     sources=(PERMIT_PAGE_URL, E02_URL, SFBC_EVSE_URL, SFEC_URL),
@@ -106,18 +108,17 @@ SAN_FRANCISCO = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Application: address, block/lot, owner, contractor, license number and phone", "application", E02_URL),
-                Requirement("Existing load, electrical service and equipment documented", "load", E02_URL),
-                Requirement("Load calculation (CEC 220), unless the registered contractor verifies one charger fits the panel", "load", E02_URL),
-                Requirement("One-line diagram: charger, panel, raceway, wire types and sizes, main breaker and service voltage", "one_line", E02_URL),
-                Requirement("Site plan, approximately to scale: panel, meter and charger", "site_plan", E02_URL),
-                Requirement("Charger manufacturer specifications and installation guidelines", "equipment", E02_URL),
-                Requirement("NRTL listing mark on all equipment (UL 2594 / UL 2202)", "equipment", E02_URL),
-                Requirement("Mechanical ventilation, only if the manufacturer requires it", "ventilation", E02_URL),
-                Requirement("Panel schedule (CEC 220)", "panel_schedule", E02_URL),
+                Requirement("Project address, parcel number, owner/contractor contact details, and valid contractor license", "application",
+                            "https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf"),
+                Requirement("EVSE manufacturer specifications and installation guidelines", "equipment",
+                            "https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf"),
+                Requirement("Electrical load calculation and panel schedule per CEC Article 220", "load",
+                            "https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf"),
+                Requirement("Details documenting existing load, electrical service, and equipment", "panel_schedule",
+                            "https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf"),
             ),
-            source_url=E02_URL,
-            source_label="From DBI Information Sheet E-02",
+            source_url="https://media.api.sf.gov/documents/IS_E-02.EV.Charging_Final_Signed.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "DBI's plan-prep pages ask for an empty 8.5 x 11 in area on the title sheet for agency "
@@ -138,6 +139,80 @@ SAN_FRANCISCO = Jurisdiction(
                 Note("trench", "DBI E-02: when trenching is required, all work complies with CEC 225 and CEC 300.",
                      E02_URL),
             ),
+        ),
+        "service_upgrade": Checklist(
+            items=(
+                Requirement("Building occupancy type and floor where electrical work is performed", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Category 3 electrical work declaration for services or distribution equipment", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Service size in amps of any service distribution and utilization equipment", "equipment",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Estimated valuation of electrical work including all materials and labor", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                SURGE_PROTECTION,
+            ),
+            source_url="https://www.sf.gov/apply-electrical-permit",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
+        ),
+        "subpanel": Checklist(
+            items=(
+                Requirement("Building occupancy type and floor where electrical work is performed", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Category 3 electrical work declaration for services or distribution equipment", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Service size in amps of any service distribution and utilization equipment", "equipment",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Estimated valuation of electrical work including all materials and labor", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+            ),
+            source_url="https://www.sf.gov/apply-electrical-permit",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
+        ),
+        "appliance_circuit": Checklist(
+            items=(
+                Requirement("Number of devices or outlets being installed", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Building occupancy type and floor where electrical work is performed", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Estimated valuation of electrical work including all materials and labor", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+            ),
+            source_url="https://www.sf.gov/apply-electrical-permit",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
+        ),
+        "generator": Checklist(
+            items=(
+                Requirement("Building occupancy type and floor where electrical work is performed", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Category 3 electrical work declaration for services or distribution equipment", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Service size in amps of any service distribution and utilization equipment", "equipment",
+                            "https://www.sf.gov/apply-electrical-permit"),
+                Requirement("Estimated valuation of electrical work including all materials and labor", "application",
+                            "https://www.sf.gov/apply-electrical-permit"),
+            ),
+            source_url="https://www.sf.gov/apply-electrical-permit",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
+        ),
+        "solar_storage": Checklist(
+            items=(
+                Requirement("Roof plan showing modules, conduit routing, disconnects, inverters, service, and subpanels", "site_plan",
+                            "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
+                Requirement("Single-line or multi-line wiring diagram with wire/conduit sizes and ampacity calculations", "one_line",
+                            "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
+                Requirement("Current PDF manufacturer data sheets for all major system components", "equipment",
+                            "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
+                Requirement("Warning label and signage sheets for service personnel and emergency responders", "other",
+                            "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
+            ),
+            source_url="https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
         ),
     },
 )

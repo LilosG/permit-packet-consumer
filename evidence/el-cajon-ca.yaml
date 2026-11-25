@@ -1,0 +1,189 @@
+jurisdiction_key: el-cajon-ca
+city: El Cajon
+state: CA
+checked_on: 2026-11-24
+agency: City of El Cajon Community Development, Building Safety (Building Division)
+portal_url: https://www.elcajon.gov/PACO
+code_edition:
+  value: "2025 California Electrical Code (adopted by reference in Title 15 of the El Cajon Municipal Code)"
+  effective_date: unknown
+  quote: "California Electrical Code, 2025 Edition—Adopted by reference. The California Electrical Code, 2025 Edition, as published by the International Code Council"
+  url: https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf
+who_may_file:
+  owner_may_file: unknown
+  conditions: "Owner Builder Form is listed in Building Division Document Central, but the PDF could not be opened to verify electrical permit conditions"
+  quote: "Owner Builder Form; application/pdf Permit Application; application/pdf Photovoltaic - Fire Code Installation standards; application/pdf"
+  url: https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2
+utility:
+  name: San Diego Gas & Electric (SDG&E)
+  requirements:
+    - item: "Online service request application with current and proposed panel size and additional loads"
+      quote: "For electric service, current and proposed panel size and additional loads."
+      url: https://www.sdge.com/businesses/savings-center/services/service-planning-for-expansion-relocation
+    - item: "Express Program available for residential service upgrades up to 400A with no added load and 3'x3' workspace"
+      quote: "Project Size: Residential projects (up to 400Amps) & Commercial projects (up to 200Amps) Location: Panel location must meet all Clearances & Standards. - There must be an existing 3' x 3' clear and level workspace in front of the meter panel."
+      url: https://www.sdge.com/sites/default/files/documents/2025-02/BSP%20Fact%20Sheet%20--%20Express%20Program%20v2.pdf?nid=27556
+    - item: "Solar and battery interconnection application via DIIS Online Application Portal with Electrical One-Line Diagram"
+      quote: "Applications can be submitted and tracked through the DIIS Online Application Portal."
+      url: https://www.sdge.com/solar/solar-and-battery-installation-center
+    - item: "SDG&E Permission to Operate (PTO) required after generating facilities are installed and tested"
+      quote: "Permission to Operate (PTO) – when all facilities are installed, tested, and declared ready for service, SDG&E will issue the customer a PTO."
+      url: https://www.sdge.com/sites/default/files/Generation%20Interconnection%20101%20-%20as%20of%20October%202024.pdf
+jobs:
+  ev_charger:
+    permit_required:
+      value: unknown
+      quote: "unknown"
+      url: unknown
+    plans_required_single_family:
+      value: unknown
+      program_name: "Project Assistance Center Online (PACO)"
+      quote: "The Project Assistance Center Online (PACO) is your online portal to submit for permits and plans, pay fees, and request inspections."
+      url: https://www.elcajon.gov/your-government/departments/engineering-services/contractor-resources
+    checklist_published: true
+    checklist:
+      title: "Residential EV Charging Checklist"
+      revision_date: "unknown"
+      url: https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-2878/-toggle-all/-sortn-EDate/-folder-39/-npage-3
+    requirements:
+      - item: "Online application, required forms, and plans uploaded through Project Assistance Center Online (PACO)"
+        section: application
+        quote: "Follow the prompts to select the location of the subject property, enter in required information, identify any required forms, upload required forms and plans, and submit."
+        url: https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs
+        page: null
+    load_calculation:
+      method: not_stated
+      city_worksheet: "none"
+      ev_charger_load_factor: not_stated
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Online upload via Project Assistance Center Online (PACO)"
+      signature_or_stamp: "not_stated"
+      quote: "The Project Assistance Center Online is your online portal to submit for permits and plans, pay fees, and request inspections."
+      url: https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs
+    local_rules:
+      - rule: "Addresses not found in PACO may be in unincorporated San Diego County rather than City of El Cajon"
+        quote: "If you cannot find an address in PACO, then it is likely not within the City of El Cajon. Many unincorporated San Diego County addresses have El Cajon listed as the city."
+        url: https://www.elcajon.gov/your-government/departments/community-development/project-assistance-center/paco-faqs
+    searched:
+      - "site:elcajon.gov \"EV Charging Checklist\" OR \"EV Charging\" pdf"
+      - "site:elcajon.gov \"electric vehicle\" OR \"EVCS\" OR \"EV charger\" permit"
+  service_upgrade:
+    permit_required:
+      value: unknown
+      quote: "unknown"
+      url: unknown
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:elcajon.gov \"panel upgrade\" OR \"service upgrade\" OR \"subpanel\" OR \"generator\" OR \"hot tub\" OR \"spa\""
+      - "site:elcajon.gov \"electrical\" \"permit\" \"panel\" OR \"subpanel\" OR \"generator\" OR \"spa\""
+  subpanel:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:elcajon.gov \"panel upgrade\" OR \"service upgrade\" OR \"subpanel\" OR \"generator\" OR \"hot tub\" OR \"spa\""
+      - "site:elcajon.gov \"electrical\" \"permit\" \"panel\" OR \"subpanel\" OR \"generator\" OR \"spa\""
+  appliance_circuit:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:elcajon.gov \"panel upgrade\" OR \"service upgrade\" OR \"subpanel\" OR \"generator\" OR \"hot tub\" OR \"spa\""
+      - "site:elcajon.gov \"electrical\" \"permit\" \"panel\" OR \"subpanel\" OR \"generator\" OR \"spa\""
+  generator:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:elcajon.gov \"panel upgrade\" OR \"service upgrade\" OR \"subpanel\" OR \"generator\" OR \"hot tub\" OR \"spa\""
+      - "site:elcajon.gov \"electrical\" \"permit\" \"panel\" OR \"subpanel\" OR \"generator\" OR \"spa\""
+  solar_storage:
+    permit_required:
+      value: yes
+      quote: "Developed by the National Renewable Energy Laboratory with support from the U.S. Department of Energy, SolarAPP+ provides a web-based portal that streamlines and automates permit reviews."
+      url: https://www.elcajon.gov/Home/Components/News/News/5754/18?arch=1&npage=4
+    plans_required_single_family:
+      value: depends
+      program_name: "SolarAPP+ (automated solar plan review) / Project Assistance Center Online (PACO)"
+      quote: "Developed by the National Renewable Energy Laboratory with support from the U.S. Department of Energy, SolarAPP+ provides a web-based portal that streamlines and automates permit reviews."
+      url: https://www.elcajon.gov/Home/Components/News/News/5754/18?arch=1&npage=4
+    checklist_published: true
+    checklist:
+      title: "Photovoltaic - Fire Code Installation standards"
+      revision_date: "unknown"
+      url: https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:elcajon.gov \"solar\" OR \"SolarAPP\" OR \"battery\" OR \"energy storage\""
+      - "site:elcajon.gov/your-government/departments/community-development/building-fire-safety/photovoltaic"
+open_questions:
+  - "El Cajon's Building Permits, Photovoltaic Permits, and Forms subpages linked from https://www.elcajon.gov/your-government/departments/community-development/building-fire-safety-division (including https://www.elcajon.gov/your-government/departments/community-development/building-fire-safety/photovoltaic) were not indexed or accessible to extract verbatim job-specific submittal checklists or over-the-counter eligibility rules."
+  - "The PDFs listed in Building Division Document Central—including 'Residential EV Charging Checklist' (https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-2878/-toggle-all/-sortn-EDate/-folder-39/-npage-3), 'Owner Builder Form', 'Permit Application', and 'Photovoltaic - Fire Code Installation standards' (https://www.elcajon.gov/discover-el-cajon/advanced-components/custom-documents-images-calendar/-item-526/-sortn-EDate/-toggle-all/-folder-39/-sortd-asc/-npage-2)—could not be opened directly to verify their contents, revision dates, or load calculation requirements."
+  - "The exact effective date of the 2025 California Electrical Code adoption ordinance in the October 14, 2025 City Council agenda (https://public.destinyhosted.com/elcajdocs/2025/CC/20251014_271/270_10-14-25%20agenda%20full%20-%203PM.pdf) could not be verified verbatim from the indexed excerpt."
+  - "No City of El Cajon-published residential electrical load calculation worksheet, mandatory NEC 220 method, EV charger service load factor, or plan sheet size standard was found on elcajon.gov."

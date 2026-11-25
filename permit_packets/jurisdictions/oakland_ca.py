@@ -14,9 +14,9 @@ SOURCE_LABEL = "From Oakland Planning & Building electrical permit rules"
 OAKLAND = Jurisdiction(
     key="oakland-ca", name="Oakland", state="CA", known=True,
     code_name="CEC",
-    permit_rules_verified="2026-11-21",
+    permit_rules_verified="",
     who_may_pull="California C-10 licensed electrical contractors or qualifying owner-builders.",
-    owner_may_file=True,
+    owner_may_file=None,
     portal_url="https://www.oaklandca.gov/services/apply-for-an-electrical-permit",
     fee_note="Fees are assessed according to the City of Oakland Master Fee Schedule.",
     sources=("https://www.oaklandca.gov/services/apply-for-an-electrical-permit",),

@@ -1,0 +1,279 @@
+{
+  "jurisdiction_key": "san-jose-ca",
+  "city": "San Jose",
+  "state": "CA",
+  "checked_on": "2026-11-24",
+  "agency": "Building Division (Planning, Building and Code Enforcement)",
+  "portal_url": "https://www.sjpermits.org/",
+  "code_edition": {
+    "value": "unknown",
+    "effective_date": "unknown",
+    "quote": "unknown",
+    "url": "unknown"
+  },
+  "who_may_file": {
+    "owner_may_file": "unknown",
+    "conditions": "unknown",
+    "quote": "unknown",
+    "url": "unknown"
+  },
+  "utility": {
+    "name": "Pacific Gas and Electric Company",
+    "requirements": [
+      {
+        "item": "Submit online interconnection application for solar or renewable energy systems",
+        "quote": "Apply easily with our online interconnection tool. Our online tool can help you complete the latest documents that are required for interconnection.",
+        "url": "https://www.pge.com/en/about/doing-business-with-pge/interconnections/net-energy-metering-program.html",
+        "ok": true
+      },
+      {
+        "item": "Follow PG&E Electric and Gas Service Requirements Greenbook for service work",
+        "quote": "The 2026 Greenbook was posted on April 24, 2026. Use the bulletin below with the 2026 Greenbook.",
+        "url": "https://www.pge.com/en/account/service-requests/building-and-renovation/project-resources.html",
+        "ok": true
+      }
+    ]
+  },
+  "open_questions": [
+    "City of San Jose lists Bulletin #351 (Single-Family & Duplex Projects Submittal Checklist), Bulletin #352 (Single-Family & Duplex Projects - Plan Set Instructions), and Bulletin #240 (Plans That Require an Architect or Engineer) on https://www.sanjoseca.gov/your-government/departments-offices/planning-building-code-enforcement/building-division/bulletins-forms, but full document contents/dates were not returned in search snippets; verify exact submittal items and sheet dimensions in those bulletins.",
+    "Specific subpanel/feeder, sauna, and hot tub/spa 240 V circuit load calculation methods and standalone electrical checklists were not returned in search snippets; verify against https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/electrical-projects and https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties/swimming-pools-spas-hot-tubs.",
+    "Standby generator page (https://www.sanjoseca.gov/?NavID=8957) shows electrical plan requirements for residential standby generators while the Single-Family & Duplex overview page (https://www.sanjoseca.gov/businesses/development-services-permit-center/start-your-project/single-family-duplex-properties) mentions Permit Center issuance for qualifying simple projects; confirm exact plan-check vs. counter/online eligibility for standby generators and portable generator transfer switches/interlocks."
+  ],
+  "jobs": {
+    "ev_charger": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Building Permits",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:sanjoseca.gov \"EV\" OR \"electric vehicle\" charger permit",
+        "site:sanjoseca.gov \"Single-Family & Duplex Projects Submittal Checklist\"",
+        "site:sanjoseca.gov \"SJePlans\" \"sheet size\" OR \"11x17\" OR \"PDF\" OR \"submittal checklist\""
+      ]
+    },
+    "service_upgrade": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Building Permits",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:sanjoseca.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical",
+        "site:sanjoseca.gov \"Single-Family & Duplex Projects Submittal Checklist\""
+      ]
+    },
+    "subpanel": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Building Permits",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:sanjoseca.gov \"subpanel\" OR \"spa\" OR \"hot tub\" OR \"sauna\" single-family permit",
+        "site:sanjoseca.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical"
+      ]
+    },
+    "appliance_circuit": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "none",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:sanjoseca.gov \"subpanel\" OR \"spa\" OR \"hot tub\" OR \"sauna\" single-family permit",
+        "site:sanjoseca.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical"
+      ]
+    },
+    "generator": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Simple Projects Service",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:sanjoseca.gov \"Generators\" residential OR \"transfer switch\" OR \"standby\"",
+        "site:sanjoseca.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical"
+      ]
+    },
+    "solar_storage": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Building Permits",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "unknown",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:sanjoseca.gov \"solar\" OR \"battery\" OR \"energy storage\" single-family permit",
+        "site:sanjoseca.gov \"load calculation\" OR \"220.82\" OR \"220.83\" OR \"220.87\" electrical"
+      ]
+    }
+  }
+}

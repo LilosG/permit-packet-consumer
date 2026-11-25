@@ -1,7 +1,7 @@
 """Sacramento, CA: City of Sacramento Community Development Department"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -13,9 +13,10 @@ SOURCE_LABEL = "From Sacramento Community Development electrical permit guidelin
 
 SACRAMENTO = Jurisdiction(
     key="sacramento-ca", name="Sacramento", state="CA", known=True,
+    last_verified="2026-11-24",
     code_name="CEC",
-    permit_rules_verified="2026-11-21",
-    who_may_pull="California C-10 licensed contractors or owner-builders of single-family dwellings.",
+    permit_rules_verified="",
+    who_may_pull="Owner must personally perform work or assume contractor responsibility, complete Owner-Builder Acknowledgment and Information Verification Form (CDD-0220), and verify signature with driver's license or notarization.",
     owner_may_file=True,
     portal_url="https://www.cityofsacramento.gov/community-development/building",
     fee_note="Permit fees are set by the City of Sacramento Community Development fee schedule.",
@@ -42,14 +43,17 @@ SACRAMENTO = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Permit application: address, owner, contractor and valuation", "application"),
-                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
-                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
-                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
-                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
+                Requirement("Completed Building Permit Application form CDD-0200 as PDF#1", "application",
+                            "https://cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0154_EVSE-Installations-Submission-Checklist.pdf"),
+                Requirement("Site plan showing house on lot, service, and EVSE", "site_plan",
+                            "https://cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0154_EVSE-Installations-Submission-Checklist.pdf"),
+                Requirement("One-line diagram showing service size, EV breaker, conductors, and EVSE", "one_line",
+                            "https://cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0154_EVSE-Installations-Submission-Checklist.pdf"),
+                Requirement("Load calculation worksheet CDD-0213 and manufacturer cut sheets for hardwired chargers", "load",
+                            "https://cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0154_EVSE-Installations-Submission-Checklist.pdf"),
             ),
-            source_url="https://www.cityofsacramento.gov/community-development/building",
-            source_label=SOURCE_LABEL,
+            source_url="https://cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0154_EVSE-Installations-Submission-Checklist.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Review all local Sacramento municipal amendments prior to installation."),
@@ -57,16 +61,18 @@ SACRAMENTO = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
-                Requirement("Permit application: address, scope and valuation", "application"),
-                Requirement("Load calculation (NEC 220)", "load"),
-                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
-                Requirement("Panel and meter base specifications and listing", "equipment"),
-                Requirement("Site plan showing the meter and main panel", "site_plan"),
-                Requirement("Utility service request", "utility"),
-                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
+                Requirement("Complete set of Electrical Plans and Building Permit Application CDD-0200", "application",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"),
+                Requirement("Single-line drawings showing main service size, conductors, OCPDs, AIC, and grounding", "one_line",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"),
+                Requirement("Complete CEC load calculations and complete panel schedules", "load",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"),
+                Requirement("Commitment letter from SMUD for new or upgraded services", "utility",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"),
+                SURGE_PROTECTION,
             ),
-            source_url="https://www.cityofsacramento.gov/community-development/building",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Check SMUD approved meter-main combo lists before purchasing equipment."),
@@ -75,14 +81,17 @@ SACRAMENTO = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
-                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Panel specifications and listing", "equipment"),
+                Requirement("Complete set of Electrical Plans and Building Permit Application CDD-0200", "application",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"),
+                Requirement("Single-line drawings showing main service size, conductors, OCPDs, AIC, and grounding", "one_line",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"),
+                Requirement("Complete CEC load calculations and complete panel schedules", "load",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"),
+                Requirement("Commitment letter from SMUD for new or upgraded services", "utility",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"),
             ),
-            source_url="https://www.cityofsacramento.gov/community-development/building",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Keep neutral and ground bars separate in the subpanel (NEC 250.24(A)(5))."),
@@ -90,18 +99,32 @@ SACRAMENTO = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the panel and the appliance", "site_plan"),
-                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Manufacturer specifications and listing", "equipment"),
+                Requirement("Completed Building Permit Application CDD-0200 and Owner-Builder form CDD-0220 if applicable", "application",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf"),
+                Requirement("Completed Electrical Load Calculation Worksheet CDD-0213", "load",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf"),
+                Requirement("Scaled site plan showing equipment location and electrical features", "site_plan",
+                            "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf"),
             ),
-            source_url="https://www.cityofsacramento.gov/community-development/building",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0282_Swimming-Pool-Plan-Review-Guidelines-Residential.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Ensure disconnects are located within sight of motor-driven appliances (NEC 422.31)."),
             ),
+        ),
+        "solar_storage": Checklist(
+            items=(
+                Requirement("Submit eligible residential solar applications online through SolarAPP+", "application",
+                            "https://www.cityofsacramento.gov/content/dam/portal/it/digitalstrategy/Residential%20SolarApp.pdf"),
+                Requirement("Submit SMUD interconnection application via PowerClerk with one-time fee", "utility",
+                            "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information"),
+                Requirement("Interconnected energy storage must follow SMUD Rule 21 interconnection requirements", "utility",
+                            "https://www.smud.org/Business-Solutions-and-Rebates/Interconnection-Information"),
+            ),
+            source_url="https://www.cityofsacramento.gov/content/dam/portal/it/digitalstrategy/Residential%20SolarApp.pdf",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
         ),
     },
 )

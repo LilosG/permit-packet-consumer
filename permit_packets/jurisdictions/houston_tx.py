@@ -1,7 +1,7 @@
 """Houston, TX: Houston Permitting Center (Department of Public Works)"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -13,10 +13,11 @@ SOURCE_LABEL = "From Houston Permitting Center electrical code guidelines"
 
 HOUSTON = Jurisdiction(
     key="houston-tx", name="Houston", state="TX", known=True,
+    last_verified="2026-11-24",
     code_name="NEC",
-    permit_rules_verified="2026-11-21",
-    who_may_pull="Texas licensed Master Electricians registered with the City of Houston or qualifying homestead owners.",
-    owner_may_file=True,
+    permit_rules_verified="",
+    who_may_pull="State law exempts homeowners who own and reside in a dwelling from state electrician licensing (Tex. Occ. Code 1305.003(a)(6)), unless regulated by city ordinance; Houston Permitting Center electrical permit pages state 'Registered electrical contractors' must apply.",
+    owner_may_file=None,
     portal_url="https://www.houstonpermittingcenter.org/",
     fee_note="Permit fees are calculated per the Houston Permitting Center fee schedule.",
     sources=("https://www.houstonpermittingcenter.org/",),
@@ -42,14 +43,11 @@ HOUSTON = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Permit application: address, owner, contractor and valuation", "application"),
-                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
-                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
-                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
-                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
+                Requirement("Log in or register for an iPermits account and complete an electrical permit application", "application",
+                            "https://www.houstonpermittingcenter.org/hpwcode1050"),
             ),
-            source_url="https://www.houstonpermittingcenter.org/",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.houstonpermittingcenter.org/hpwcode1050",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Review all local Houston municipal amendments prior to installation."),
@@ -57,16 +55,12 @@ HOUSTON = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
-                Requirement("Permit application: address, scope and valuation", "application"),
-                Requirement("Load calculation (NEC 220)", "load"),
-                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
-                Requirement("Panel and meter base specifications and listing", "equipment"),
-                Requirement("Site plan showing the meter and main panel", "site_plan"),
-                Requirement("Utility service request", "utility"),
-                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
+                Requirement("Log in or register for an iPermits account and complete an electrical permit application", "application",
+                            "https://www.houstonpermittingcenter.org/hpwcode1050"),
+                SURGE_PROTECTION,
             ),
-            source_url="https://www.houstonpermittingcenter.org/",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.houstonpermittingcenter.org/hpwcode1050",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Check CenterPoint approved meter-main combo lists before purchasing equipment."),
@@ -75,14 +69,11 @@ HOUSTON = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
-                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Panel specifications and listing", "equipment"),
+                Requirement("Log in or register for an iPermits account and complete an electrical permit application", "application",
+                            "https://www.houstonpermittingcenter.org/hpwcode1050"),
             ),
-            source_url="https://www.houstonpermittingcenter.org/",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.houstonpermittingcenter.org/hpwcode1050",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Keep neutral and ground bars separate in the subpanel (NEC 250.24(A)(5))."),
@@ -90,18 +81,24 @@ HOUSTON = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the panel and the appliance", "site_plan"),
-                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Manufacturer specifications and listing", "equipment"),
+                Requirement("Log in or register for an iPermits account and complete an electrical permit application", "application",
+                            "https://www.houstonpermittingcenter.org/hpwcode1050"),
             ),
-            source_url="https://www.houstonpermittingcenter.org/",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.houstonpermittingcenter.org/hpwcode1050",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Ensure disconnects are located within sight of motor-driven appliances (NEC 422.31)."),
             ),
+        ),
+        "generator": Checklist(
+            items=(
+                Requirement("Log in or register for an iPermits account and complete an electrical permit application", "application",
+                            "https://www.houstonpermittingcenter.org/hpwcode1050"),
+            ),
+            source_url="https://www.houstonpermittingcenter.org/hpwcode1050",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
         ),
     },
 )

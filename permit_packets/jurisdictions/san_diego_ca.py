@@ -1,7 +1,7 @@
 """San Diego, CA: City of San Diego Development Services"""
 from __future__ import annotations
 
-from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement
+from permit_packets.jurisdictions import Checklist, Jurisdiction, Note, Requirement, SURGE_PROTECTION
 
 EV_CHARGER = "ev_charger"
 SERVICE_UPGRADE = "service_upgrade"
@@ -13,13 +13,14 @@ SOURCE_LABEL = "From San Diego Development Services and the San Diego Municipal 
 
 SAN_DIEGO = Jurisdiction(
     key="san-diego-ca", name="San Diego", state="CA", known=True,
-    permit_rules_verified="2026-11-21",
-    who_may_pull="Property owners of single-family dwellings or state-licensed electrical contractors (C-10) may pull permits.",
+    last_verified="2026-11-24",
+    permit_rules_verified="",
+    who_may_pull="Property owner or lessee may be issued an electrical permit; property owner doing the work or hiring different contractors must sign and upload Owner-Builder Verification Form (DS-3042) before permit issuance.",
     owner_may_file=True,
     portal_url="https://www.sandiego.gov/development-services/permits/electrical-permit",
     fee_note="Fees are calculated based on the scope of work per the published Information Bulletin 501.",
     sources=("https://www.sandiego.gov/development-services", "https://sandiego.gov/development-services/forms-publications/information-bulletins/187"),
-    no_plan_jobs={"ev_charger": "https://sandiego.gov/development-services/forms-publications/information-bulletins/187"},
+    no_plan_jobs={'ev_charger': 'https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187'},
     nec_edition="2023 NEC (2025 California Electrical Code base)",
     permit_required={EV_CHARGER: True, SERVICE_UPGRADE: True, SUBPANEL: True, APPLIANCE_CIRCUIT: True},
     permit_notes={
@@ -42,14 +43,17 @@ SAN_DIEGO = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Permit application: address, owner, contractor and valuation", "application"),
-                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
-                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
-                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
-                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
+                Requirement("Completed Circuit Card (DS-1779A) with load calculations provided on site for inspection", "load",
+                            "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187"),
+                Requirement("EVCS manufacturer's installation instructions provided on site for inspection", "equipment",
+                            "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187"),
+                Requirement("EVSE listed and labeled by a Nationally Recognized Testing Laboratory", "equipment",
+                            "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187"),
+                Requirement("Owner-Builder Verification Form (DS-3042) uploaded if property owner pulls the permit", "application",
+                            "https://www.sandiego.gov/development-services/permits/simple-permits"),
             ),
-            source_url="https://www.sandiego.gov/development-services/permits/electrical-permit",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Review all local San Diego municipal amendments prior to installation."),
@@ -57,16 +61,18 @@ SAN_DIEGO = Jurisdiction(
         ),
         SERVICE_UPGRADE: Checklist(
             items=(
-                Requirement("Permit application: address, scope and valuation", "application"),
-                Requirement("Load calculation (NEC 220)", "load"),
-                Requirement("Riser diagram with service conductors, grounding and bonding", "one_line"),
-                Requirement("Panel and meter base specifications and listing", "equipment"),
-                Requirement("Site plan showing the meter and main panel", "site_plan"),
-                Requirement("Utility service request", "utility"),
-                Requirement("Surge protective device, Type 1 or 2 (NEC 230.67)", "surge"),
+                Requirement("Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection", "panel_schedule",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
+                Requirement("Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)", "gec",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
+                Requirement("Branch-circuit, feeder, and service load calculations on Supplemental Circuit Card (DS-1779A)", "load",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf"),
+                Requirement("Stamped and signed electrical plan and calculations when plans are required", "one_line",
+                            "https://www.sandiego.gov/development-services/permits/electrical-permit/plan"),
+                SURGE_PROTECTION,
             ),
-            source_url="https://www.sandiego.gov/development-services/permits/electrical-permit",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Check SDG&E approved meter-main combo lists before purchasing equipment."),
@@ -75,14 +81,17 @@ SAN_DIEGO = Jurisdiction(
         ),
         SUBPANEL: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the main panel, subpanel and feeder route", "site_plan"),
-                Requirement("One-line diagram with feeder conductors, EGC and grounding", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Panel specifications and listing", "equipment"),
+                Requirement("Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection", "panel_schedule",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
+                Requirement("Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)", "gec",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
+                Requirement("Branch-circuit, feeder, and service load calculations on Supplemental Circuit Card (DS-1779A)", "load",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf"),
+                Requirement("Stamped and signed electrical plan and calculations when plans are required", "one_line",
+                            "https://www.sandiego.gov/development-services/permits/electrical-permit/plan"),
             ),
-            source_url="https://www.sandiego.gov/development-services/permits/electrical-permit",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Keep neutral and ground bars separate in the subpanel (NEC 250.24(A)(5))."),
@@ -90,18 +99,51 @@ SAN_DIEGO = Jurisdiction(
         ),
         APPLIANCE_CIRCUIT: Checklist(
             items=(
-                Requirement("Permit application", "application"),
-                Requirement("Site plan showing the panel and the appliance", "site_plan"),
-                Requirement("One-line diagram with conductors, breaker and disconnect", "one_line"),
-                Requirement("Load calculation", "load"),
-                Requirement("Manufacturer specifications and listing", "equipment"),
+                Requirement("Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection", "panel_schedule",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
+                Requirement("Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)", "gec",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
+                Requirement("Branch-circuit, feeder, and service load calculations on Supplemental Circuit Card (DS-1779A)", "load",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf"),
+                Requirement("Stamped and signed electrical plan and calculations when plans are required", "one_line",
+                            "https://www.sandiego.gov/development-services/permits/electrical-permit/plan"),
             ),
-            source_url="https://www.sandiego.gov/development-services/permits/electrical-permit",
-            source_label=SOURCE_LABEL,
+            source_url="https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Ensure disconnects are located within sight of motor-driven appliances (NEC 422.31)."),
             ),
+        ),
+        "generator": Checklist(
+            items=(
+                Requirement("Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection", "panel_schedule",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
+                Requirement("Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)", "gec",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf"),
+                Requirement("Branch-circuit, feeder, and service load calculations on Supplemental Circuit Card (DS-1779A)", "load",
+                            "https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf"),
+                Requirement("Stamped and signed electrical plan and calculations when plans are required", "one_line",
+                            "https://www.sandiego.gov/development-services/permits/electrical-permit/plan"),
+            ),
+            source_url="https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
+        ),
+        "solar_storage": Checklist(
+            items=(
+                Requirement("Building Construction Plans incorporating all elements of the Residential Solar PV Project Plan Template", "site_plan",
+                            "https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit"),
+                Requirement("Single-Line Diagram showing complete rating information of the existing electrical system", "one_line",
+                            "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301"),
+                Requirement("Manufacturer's specifications for PV modules, racking, inverters, batteries/ESS, and meter", "equipment",
+                            "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301"),
+                Requirement("Plans stamped and signed by CA Civil/Electrical Engineer or C-10, B, or C-46 contractor", "other",
+                            "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301"),
+            ),
+            source_url="https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
         ),
     },
 )

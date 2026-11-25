@@ -1,0 +1,478 @@
+{
+  "jurisdiction_key": "fresno-ca",
+  "city": "Fresno",
+  "state": "CA",
+  "checked_on": "2026-11-24",
+  "agency": "City of Fresno Planning and Development Department, Building and Safety Services Division",
+  "portal_url": "https://aca-prod.accela.com/FRESNO",
+  "code_edition": {
+    "value": "unknown",
+    "effective_date": "unknown",
+    "quote": "unknown",
+    "url": "unknown"
+  },
+  "who_may_file": {
+    "owner_may_file": "unknown",
+    "conditions": "unknown",
+    "quote": "unknown",
+    "url": "unknown"
+  },
+  "utility": {
+    "name": "Pacific Gas and Electric Company (PG&E)",
+    "requirements": [
+      {
+        "item": "Load evaluation and service application through PG&E Your Projects Portal",
+        "quote": "Any new load addition requires an evaluation and an application submission through PG&E's Your Projects Portal.",
+        "url": "https://www.pge.com/assets/pge/docs/clean-energy/building-electrification/pge-electrical-panel-upgrade.pdf",
+        "ok": true
+      },
+      {
+        "item": "City inspector approval required before PG&E reconnects and energizes upgraded panel",
+        "quote": "After the panel has been replaced and the city inspector approves, PG&E will reconnect and energize your home – typically within one day.",
+        "url": "https://www.pge.com/assets/pge/docs/clean-energy/building-electrification/pge-electrical-panel-upgrade.pdf",
+        "ok": true
+      },
+      {
+        "item": "Meter panel, conduit, and service cables must meet PG&E Greenbook specifications",
+        "quote": "Panel Details – must be found within PG&E's Greenbook Section 6.",
+        "url": "https://www.pge.com/assets/pge/docs/account/service-requests/residential-panel-upgrade-material-list.pdf",
+        "ok": true
+      },
+      {
+        "item": "Online interconnection application via YourProjects portal for residential generating systems up to 30 kW",
+        "quote": "The Interconnection Application is available on the YourProjects portal, making it convenient to complete this entire process.",
+        "url": "https://www.pge.com/en/about/doing-business-with-pge/interconnections/interconnections-and-renewables.html",
+        "ok": true
+      }
+    ]
+  },
+  "open_questions": [
+    "The agency name in the prompt ('Development and Resource Management Department') has been renamed on fresno.gov to 'Planning and Development Department, Building and Safety Services Division' (https://www.fresno.gov/planning/building-and-safety/), though some older contact emails still use DARM.building@fresno.gov.",
+    "The Owner Builder Checklist PDF linked on https://www.fresno.gov/planning/building-and-safety/building-permit-center/ could not be opened directly to verify whether Fresno still enforces the 1991 homeowner written electrical examination requirement from Ordinance 1991-002 (https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository).",
+    "The Electric Vehicle Charging Submittal Checklist and Electric Vehicle Charging Stations Handout PDFs linked on https://www.fresno.gov/planning/applications-forms-fees/ could not be opened directly to confirm whether they apply to single-family residential Level 2 chargers or only commercial/multifamily installations.",
+    "Page 2 of the New Residential Solar Plan Check Submittal Checklist (https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf) was not fully indexed to verify whether single-line diagram or battery storage (ESS) requirements are itemized on page 2.",
+    "No dedicated City of Fresno residential permit checklists were found for standalone standby/portable generators, subpanels, or 240 V appliance circuits (hot tubs, saunas, heat pumps), nor any city-published residential electrical load calculation worksheet or EV charger load factor."
+  ],
+  "jobs": {
+    "ev_charger": {
+      "permit_required": {
+        "value": true,
+        "quote": "Once you obtain approval from the Planning Division and comply with the conditions, submit plans to the Building Division for building permits.",
+        "url": "https://www.fresno.gov/planning/applications-forms-fees/",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Same day express permits for Electrical, Mechanical, & Plumbing / Accela Citizen Access (ACA)",
+        "quote": "Same day express permits for Electrical, Mechanical, & Plumbing.",
+        "url": "https://www.fresno.gov/planning/building-and-safety/",
+        "ok": true
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "Electric Vehicle Charging Submittal Checklist",
+        "revision_date": "unknown",
+        "url": "https://www.fresno.gov/planning/applications-forms-fees/"
+      },
+      "requirements": [
+        {
+          "item": "Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information",
+          "section": "application",
+          "quote": "This could be in the form of a submittal of plans that clearly detail the scope of work to be reviewed by Plan Check staff, or completion of the Permit Affidavit Form with itemized fixture and equipment information.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electric Vehicle Charging Submittal Checklist (Planning Division)",
+          "section": "application",
+          "quote": "Electric Vehicle Charging Submittal Checklist.",
+          "url": "https://www.fresno.gov/planning/applications-forms-fees/",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
+        "signature_or_stamp": "not_stated",
+        "quote": "Skip the line and submit your Planning & Building applications online, 24/7, through the ACA (Accela Citizen Access) portal.",
+        "url": "https://www.fresno.gov/planning/",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Permits expire if work is not commenced within 180 days or is suspended for 180 days",
+          "quote": "Every permit issued shall become invalid unless work on the site authorized by such permit is commenced within 180 days after its issuance, or if the work is suspended or abandoned for a period of 180 days after the time the work is commenced.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:fresno.gov \"Electric Vehicle Charging\" checklist OR handout",
+        "site:fresno.gov \"Electric Vehicle Charging Submittal Checklist\" OR \"Electric Vehicle Charging Stations Handout\" pdf"
+      ]
+    },
+    "service_upgrade": {
+      "permit_required": {
+        "value": true,
+        "quote": "Electrical-Main Panels, Mechanical- Heating Ventilation and Air Cond., Plumbing-Water Heater, & Re-Roofs.",
+        "url": "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Same day express permits for Electrical, Mechanical, & Plumbing / Level 1 Project (2-3 business days via ACA)",
+        "quote": "Simple projects result in faster reviews, some even approved the same day through the online ACA portal.",
+        "url": "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information",
+          "section": "application",
+          "quote": "This could be in the form of a submittal of plans that clearly detail the scope of work to be reviewed by Plan Check staff, or completion of the Permit Affidavit Form with itemized fixture and equipment information.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Payment of all applicable permit fees prior to permit issuance",
+          "section": "application",
+          "quote": "All permit fees must be paid prior to permit issuance and having access to “APPROVED” Stamped Plans.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
+        "signature_or_stamp": "not_stated",
+        "quote": "Skip the line and submit your Planning & Building applications online, 24/7, through the ACA (Accela Citizen Access) portal.",
+        "url": "https://www.fresno.gov/planning/",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Permits expire if work is not commenced within 180 days or is suspended for 180 days",
+          "quote": "Every permit issued shall become invalid unless work on the site authorized by such permit is commenced within 180 days after its issuance, or if the work is suspended or abandoned for a period of 180 days after the time the work is commenced.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:fresno.gov \"panel upgrade\" OR \"service upgrade\" OR \"express permit\" electrical",
+        "site:fresno.gov \"Permit Affidavit\" OR \"Same day express permits\" electrical"
+      ]
+    },
+    "subpanel": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Same day express permits for Electrical, Mechanical, & Plumbing / Level 1 Project (2-3 business days via ACA)",
+        "quote": "Simple projects result in faster reviews, some even approved the same day through the online ACA portal.",
+        "url": "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information",
+          "section": "application",
+          "quote": "This could be in the form of a submittal of plans that clearly detail the scope of work to be reviewed by Plan Check staff, or completion of the Permit Affidavit Form with itemized fixture and equipment information.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Payment of all applicable permit fees prior to permit issuance",
+          "section": "application",
+          "quote": "All permit fees must be paid prior to permit issuance and having access to “APPROVED” Stamped Plans.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
+        "signature_or_stamp": "not_stated",
+        "quote": "Skip the line and submit your Planning & Building applications online, 24/7, through the ACA (Accela Citizen Access) portal.",
+        "url": "https://www.fresno.gov/planning/",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Permits expire if work is not commenced within 180 days or is suspended for 180 days",
+          "quote": "Every permit issued shall become invalid unless work on the site authorized by such permit is commenced within 180 days after its issuance, or if the work is suspended or abandoned for a period of 180 days after the time the work is commenced.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:fresno.gov \"generator\" OR \"subpanel\" OR \"hot tub\" OR \"heat pump\" electrical permit",
+        "site:fresno.gov \"Permit Affidavit\" OR \"Same day express permits\" electrical"
+      ]
+    },
+    "appliance_circuit": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Same day express permits for Electrical, Mechanical, & Plumbing / Level 1 Project (2-3 business days via ACA)",
+        "quote": "Simple projects result in faster reviews, some even approved the same day through the online ACA portal.",
+        "url": "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information",
+          "section": "application",
+          "quote": "This could be in the form of a submittal of plans that clearly detail the scope of work to be reviewed by Plan Check staff, or completion of the Permit Affidavit Form with itemized fixture and equipment information.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Payment of all applicable permit fees prior to permit issuance",
+          "section": "application",
+          "quote": "All permit fees must be paid prior to permit issuance and having access to “APPROVED” Stamped Plans.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
+        "signature_or_stamp": "not_stated",
+        "quote": "Skip the line and submit your Planning & Building applications online, 24/7, through the ACA (Accela Citizen Access) portal.",
+        "url": "https://www.fresno.gov/planning/",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Permits expire if work is not commenced within 180 days or is suspended for 180 days",
+          "quote": "Every permit issued shall become invalid unless work on the site authorized by such permit is commenced within 180 days after its issuance, or if the work is suspended or abandoned for a period of 180 days after the time the work is commenced.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:fresno.gov \"generator\" OR \"subpanel\" OR \"hot tub\" OR \"heat pump\" electrical permit",
+        "site:fresno.gov \"Permit Affidavit\" OR \"Same day express permits\" electrical"
+      ]
+    },
+    "generator": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Permit application via ACA or Permit Affidavit Form with itemized fixture and equipment information",
+          "section": "application",
+          "quote": "This could be in the form of a submittal of plans that clearly detail the scope of work to be reviewed by Plan Check staff, or completion of the Permit Affidavit Form with itemized fixture and equipment information.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Payment of all applicable permit fees prior to permit issuance",
+          "section": "application",
+          "quote": "All permit fees must be paid prior to permit issuance and having access to “APPROVED” Stamped Plans.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic submittal via Accela Citizen Access (ACA) portal",
+        "signature_or_stamp": "not_stated",
+        "quote": "Skip the line and submit your Planning & Building applications online, 24/7, through the ACA (Accela Citizen Access) portal.",
+        "url": "https://www.fresno.gov/planning/",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Permits expire if work is not commenced within 180 days or is suspended for 180 days",
+          "quote": "Every permit issued shall become invalid unless work on the site authorized by such permit is commenced within 180 days after its issuance, or if the work is suspended or abandoned for a period of 180 days after the time the work is commenced.",
+          "url": "https://www.fresno.gov/planning/building-and-safety/building-permit-center/",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:fresno.gov \"generator\" OR \"subpanel\" OR \"hot tub\" OR \"heat pump\" electrical permit",
+        "site:fresno.gov \"Permit Affidavit\" OR \"Same day express permits\" electrical"
+      ]
+    },
+    "solar_storage": {
+      "permit_required": {
+        "value": true,
+        "quote": "Use this checklist to assemble the materials required for your application when submitting in Accela.",
+        "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": "depends",
+        "program_name": "SolarAPP+ (instantly approved online solar permit) / New Residential Solar Plan Check (Accela)",
+        "quote": "Complete an application on the SolarAPP+ website at https://solarapp.nrel.gov/login .",
+        "url": "https://www.fresno.gov/planning/get-an-instantly-approved-solar-permit-through-solar-app/",
+        "ok": true
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "New Residential Solar Plan Check Submittal Checklist",
+        "revision_date": "Updated July 2023",
+        "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf"
+      },
+      "requirements": [
+        {
+          "item": "Complete scaled plan set with preparer name, signature, address, phone, and license stamp/number on each sheet",
+          "section": "application",
+          "quote": "A complete set of plans with Preparers name and signature, address, phone number and license stamp and number (if applicable) on each sheet.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Site plan showing building footprint, lot dimensions, setbacks, PV panel locations, and point of service connections",
+          "section": "site_plan",
+          "quote": "Location and orientation of all PV panels. b. Point of service connections and all necessary equipment locations.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Complete set of manufacturer product cut-sheets for all equipment used in the installation",
+          "section": "equipment",
+          "quote": "A complete set of manufacturer products (“cut-sheets”) to be used throughout the installation.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Structural calculations for ground-mount and reverse-tilt installations over 24 inches at tall side",
+          "section": "other",
+          "quote": "A complete set of Structural calculations for installation of Ground Mount and Reverse Tilt (>24” at tall side).",
+          "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+          "page": 1,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "11\" x 17\" minimum and 30\" x 42\" maximum (calculations and product sheets may be 8.5\" x 11\")",
+        "copies_or_format": "Digital submittal in Accela; file size limited to 200MB",
+        "signature_or_stamp": "Preparer's name and signature, address, phone number, and license stamp and number (if applicable) on each sheet",
+        "quote": "Plan set sheet size to be 11” x 17” minimum and 30” x 42” maximum for plan submittals. Calculations and/or product information sheets may to be submitted as 8½” x 11”.",
+        "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Each solar plan sheet must include a 3\" x 3\" clear space titled 'City use only'",
+          "quote": "Each sheet shall have a clear space 3”x 3” titled “City use only”.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+          "ok": true
+        },
+        {
+          "rule": "Plans marked 'Not for construction' or 'Review purposes only' will not be accepted",
+          "quote": "Plans will NOT be accepted if marked with “Not for construction,” “Review purposes only,” or similar statements.",
+          "url": "https://www.fresno.gov/wp-content/uploads/2023/07/New-Residential-Solar-Plan-Check-Submittal.pdf",
+          "ok": true
+        },
+        {
+          "rule": "Commercial solar installations do not qualify for SolarAPP+ and must use standard Accela submittal",
+          "quote": "NOTE: Commercial solar installations do not qualify to use SolarAPP+ , please apply for a standard solar permit via the City of Fresno's Accela Citizens Access (ACA) electronic permitting system.",
+          "url": "https://www.fresno.gov/planning/get-an-instantly-approved-solar-permit-through-solar-app/",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:fresno.gov \"Solar\" OR \"SolarAPP\" OR \"Battery\" OR \"Energy Storage\" permit residential",
+        "site:fresno.gov \"get-an-instantly-approved-solar-permit-through-solar-app\""
+      ]
+    }
+  }
+}

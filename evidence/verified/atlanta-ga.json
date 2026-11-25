@@ -1,0 +1,291 @@
+{
+  "jurisdiction_key": "atlanta-ga",
+  "city": "Atlanta",
+  "state": "GA",
+  "checked_on": "2026-11-24",
+  "agency": "City of Atlanta Department of City Planning, Office of Buildings",
+  "portal_url": "https://aca-prod.accela.com/atlanta_ga/default.aspx",
+  "code_edition": {
+    "value": "2023 National Electrical Code with no Georgia amendments (statewide mandatory minimum code)",
+    "effective_date": "2025-01-01",
+    "quote": "New Mandatory Code and Amendment Effective January 1, 2025: 2023 National Electrical Code with no amendments.",
+    "url": "https://dca.georgia.gov/announcement/2024-12-02/new-georgia-code-and-amendment-effective-january-1-2025",
+    "ok": true
+  },
+  "who_may_file": {
+    "owner_may_file": "unknown",
+    "conditions": "unknown",
+    "quote": "unknown",
+    "url": "unknown"
+  },
+  "utility": {
+    "name": "Georgia Power",
+    "requirements": [
+      {
+        "item": "Apply for new/upgraded service via Builders Line with phase, voltage, load, and solar/generator details",
+        "quote": "When contacting the Company regarding new service, be prepared to provide all information related to phase requirements, voltage, loading, etc., including any information on specific requirements. ( i.e., solar (PV) or generator)",
+        "url": "https://www.georgiapower.com/content/dam/georgia-power/pdfs/business-pdfs/bluebook_2023.pdf",
+        "ok": true
+      },
+      {
+        "item": "Service entrance and meter socket must meet Georgia Power Blue Book and pass city/county inspection before connection",
+        "quote": "An inspector from the constituted authority (e.g. city or county) inspects all wiring and equipment prior to us connecting service. We set the meter and the job is done!",
+        "url": "https://www.georgiapower.com/business/industry-services/construction/builders.html",
+        "ok": true
+      },
+      {
+        "item": "Submit residential solar/battery interconnection application via PowerClerk with one-line drawing and panel, inverter, and battery specs",
+        "quote": "Facility and technical information, including a one-line drawing and panel and inverter specifications. If battery storage is included, battery specifications must also be provided.",
+        "url": "https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html",
+        "ok": true
+      },
+      {
+        "item": "Pass county/city inspection, sign Interconnection Agreement, complete witness test/meter reprogramming, and receive Permission to Operate",
+        "quote": "Once all steps have been successfully completed, the customer will receive an email from Georgia Power granting permission to turn their system on and begin generating.",
+        "url": "https://www.georgiapower.com/business/products-programs/business-solutions/commercial-solar-solutions/installing-interconnecting.html",
+        "ok": true
+      }
+    ]
+  },
+  "open_questions": [
+    "The PDFs linked on https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists—including 'EV Charger Affidavit Form', 'Electrical Permit Application', 'Description of Electrical Permits & Inspections', 'Contractors Exception', 'Submittal Info-Solar Roof Install - Res', 'Submittal Info-Solar Roof Install - Express', and 'PV - Inspection Checklist'—could not be opened directly to verify their verbatim contents, revision dates, homeowner electrical permit eligibility, or battery energy storage system (ESS) rules.",
+    "Georgia Department of Community Affairs announced 2026 Georgia Amendments to the 2023 National Electrical Code effective January 1, 2027 (https://dca.georgia.gov/announcement/2025-12-09/new-codes-jan-2027); as of 2026-11-24, the 2023 NEC with no Georgia amendments remains in effect.",
+    "No City of Atlanta-published residential electrical load calculation worksheet, mandatory NEC 220 method (220.82 vs. 220.83 vs. 220.87), EV charger service load factor, or minimum plan sheet size was found on atlantaga.gov."
+  ],
+  "jobs": {
+    "ev_charger": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "EV Charger Affidavit Form",
+        "revision_date": "unknown",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:atlantaga.gov \"EV Charger Affidavit Form\" OR \"Description of Electrical Permits\"",
+        "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
+      ]
+    },
+    "service_upgrade": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical",
+        "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
+      ]
+    },
+    "subpanel": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical",
+        "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
+      ]
+    },
+    "appliance_circuit": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical",
+        "site:atlantaga.gov \"EV Charger Affidavit Form\" OR \"Description of Electrical Permits\""
+      ]
+    },
+    "generator": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical",
+        "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
+      ]
+    },
+    "solar_storage": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "Single and Two-Family Solar PV / Express Permitting (Submittal Info-Solar Roof Install - Express)",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "Submittal Info-Solar Roof Install - Res",
+        "revision_date": "unknown",
+        "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "unknown",
+        "copies_or_format": "unknown",
+        "signature_or_stamp": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "local_rules": [],
+      "searched": [
+        "site:atlantaga.gov \"Submittal Info-Solar Roof Install - Res\" OR \"PV - Inspection Checklist\"",
+        "site:atlantaga.gov filetype:pdf \"solar\" OR \"photovoltaic\" residential"
+      ]
+    }
+  }
+}

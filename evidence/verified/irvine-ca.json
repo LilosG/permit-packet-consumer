@@ -1,0 +1,508 @@
+{
+  "jurisdiction_key": "irvine-ca",
+  "city": "Irvine",
+  "state": "CA",
+  "checked_on": "2026-11-24",
+  "agency": "City of Irvine Community Development, Building and Safety",
+  "portal_url": "https://permits.cityofirvine.org/",
+  "code_edition": {
+    "value": "2025 California Building Standards Code (including 2025 California Electrical Code) with Irvine amendments",
+    "effective_date": "2026-01-01",
+    "quote": "All new plan review applications submitted on or after January 1, 2026, are required to comply with the 2025 California Building Standards Code with Irvine amendments.",
+    "url": "https://cityofirvine.gov/community-development/building-codes-and-standards",
+    "ok": true
+  },
+  "who_may_file": {
+    "owner_may_file": true,
+    "conditions": "Property owner must read, initial, sign, and return the Owner-Builder Acknowledgment and Information Verification Form (Form 66-18); same-day rooftop solar/battery permits via PermitsDIRECT! are restricted to licensed contractors",
+    "quote": "We will not issue a building permit until you have read, initialed your understanding of each provision, signed, and returned this form to us at our official address indicated.",
+    "url": "https://cityofirvine.gov/sites/default/files/legacy-documents/civica-28912-propertownerspackage.pdf",
+    "ok": true
+  },
+  "utility": {
+    "name": "Southern California Edison (SCE)",
+    "requirements": [
+      {
+        "item": "Power request application with equipment load requirements or Single Line CAD files via SCE project request portal",
+        "quote": "When you're prepared to submit a power request, you will need to provide an application along with supporting documentation (such as equipment load requirements or Single Line CAD files).",
+        "url": "https://www.sce.com/partners/consulting-services/power-requests",
+        "ok": true
+      },
+      {
+        "item": "Service wiring and equipment must comply with SCE Electrical Service Requirements (ESR) Manual",
+        "quote": "Ensure compliance with the Electrical Service Requirements (ESR) Manual.",
+        "url": "https://www.sce.com/sites/default/files/custom-files/Web%20files/SCE_NEM_Handbook_Version%209.0_2022%201.pdf",
+        "ok": true
+      },
+      {
+        "item": "Interconnection application, Single Line Diagram, Plot Plan, and signed Interconnection Agreement for solar/generation",
+        "quote": "We strongly recommend that you submit the application, Single Line Diagram, Plot Plan, signed Interconnection Agreement.",
+        "url": "https://www.sce.com/detail-page-validation-stand-by-site",
+        "ok": true
+      },
+      {
+        "item": "AHJ final inspection sign-off showing AHJ name, service address, project description, permit number, and inspector signature/date",
+        "quote": "Final Sign-off: The AHJ inspector's sign off (i.e. signature/or initials) with the date of sign off is.",
+        "url": "https://www.sce.com/sites/default/files/inline-files/ApplicationChecklist_SGIPERBProjects.pdf",
+        "ok": true
+      }
+    ]
+  },
+  "open_questions": [
+    "Conflicting EVCS submittal paths: https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family states all EVCS applications must be submitted via IrvineReady!, while https://permits.cityofirvine.org/irvinepermits/ApplyInstrutctions.htm still instructs applicants to use the online self-service WMSR permit for single-family EVCS and panelboards up to 400 amps.",
+    "The EVCS Permit Worksheet (2.0) PDF (Form 66-114, referenced at https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20) could not be opened directly to verify whether it specifies a residential NEC 220 load calculation method or EV charger load factor.",
+    "No dedicated residential standby or portable generator electrical permit webpage or checklist was found on cityofirvine.gov or permits.cityofirvine.org.",
+    "No City of Irvine-published minimum plan sheet size (e.g., 11x17 vs. 18x24) for standalone residential electrical submittals was found on cityofirvine.gov."
+  ],
+  "jobs": {
+    "ev_charger": {
+      "permit_required": {
+        "value": true,
+        "quote": "All EVCS applications will need to be submitted electronically through the IrvineReady! Online Plan Submission Portal.",
+        "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": "depends",
+        "program_name": "IrvineReady! Online Plan Submission Portal / Online Permit - Miscellaneous Residential (wmsr)",
+        "quote": "Choose \"wmsr Online Permit - Miscellaneous Residential\" in the drop down permit selection. In web pages following, enter \"1\" in Outlet / Switches box for EVCS.",
+        "url": "https://permits.cityofirvine.org/irvinepermits/ApplyInstrutctions.htm",
+        "ok": true
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "Electric Vehicle Charging Station (EVCS) Permit Worksheet (2.0) (Form 66-114)",
+        "revision_date": "unknown",
+        "url": "https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20"
+      },
+      "requirements": [
+        {
+          "item": "Residential Electric Vehicle Charging Station Application Package",
+          "section": "application",
+          "quote": "Residential Electric Vehicle Charging Station Application Package.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electric Vehicle Charging Station (EVCS) Permit Worksheet (Form 66-114)",
+          "section": "application",
+          "quote": "Electric Vehicle Charging Station (EVCS) Permit Worksheet.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Manufacturer's Specifications for the EVCS equipment",
+          "section": "equipment",
+          "quote": "Manufacturer's Specifications.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Single Line Diagram",
+          "section": "one_line",
+          "quote": "Single Line Diagram.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
+        "signature_or_stamp": "not_stated",
+        "quote": "Save a copy of your completed forms and upload them to the Attachments tab in your goPost dashboard, leaving only plan sheets in the Plans tab.",
+        "url": "https://cityofirvine.gov/community-development/electronic-submittal-packages-and-news",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "EVCS in a garage cannot intrude on required vehicle parking clear space (10x20x7 ft 1-car; 20x20x7 ft 2-car)",
+          "quote": "If the EVCS is placed in the garage, it cannot intrude on the clear area required for vehicle parking.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family",
+          "ok": true
+        },
+        {
+          "rule": "Exterior EVCS equipment may be screened by landscaping, fencing, or painting it the same color as the house",
+          "quote": "The equipment may be screened by landscaping, fencing, or painting it the same color as the house.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family",
+          "ok": true
+        },
+        {
+          "rule": "Permit holder is responsible for obtaining Homeowners Association (HOA) approval as applicable",
+          "quote": "Additionally, it is the permit holder's responsibility to obtain Homeowner's Association approval for the proposed work, as applicable.",
+          "url": "https://permits.cityofirvine.org/irvinepermits/Default.asp?Build=PM.pmPermit.Apply1",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:cityofirvine.gov \"Electric Vehicle Charging Station (EVCS) Permit Worksheet\"",
+        "site:cityofirvine.gov \"electric vehicle\" OR \"EVCS\" OR \"EV charger\""
+      ]
+    },
+    "service_upgrade": {
+      "permit_required": {
+        "value": true,
+        "quote": "If main electrical panel upgrade is applicable, enter \"1\" Panelboard, 400 amps or less box.",
+        "url": "https://permits.cityofirvine.org/irvinepermits/ApplyInstrutctions.htm",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Online Permit - Miscellaneous Residential (wmsr) / Automated Online Permit system",
+        "quote": "Choose \"wmsr Online Permit - Miscellaneous Residential\" in the drop down permit selection.",
+        "url": "https://permits.cityofirvine.org/irvinepermits/ApplyInstrutctions.htm",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Building Permit Application (when submitting via IrvineReady!)",
+          "section": "application",
+          "quote": "Building Permit Application.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/minor-plumbing-or-electrical-work-or-combination-two-including",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Residential Take-Off Sheet (when submitting via IrvineReady!)",
+          "section": "application",
+          "quote": "Residential Take-Off Sheet.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/minor-plumbing-or-electrical-work-or-combination-two-including",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electronic/Digital Signature Disclosure (when submitting via IrvineReady!)",
+          "section": "application",
+          "quote": "Electronic/Digital Signature Disclosure.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/minor-plumbing-or-electrical-work-or-combination-two-including",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
+        "signature_or_stamp": "not_stated",
+        "quote": "Save a copy of your completed forms and upload them to the Attachments tab in your goPost dashboard, leaving only plan sheets in the Plans tab.",
+        "url": "https://cityofirvine.gov/community-development/electronic-submittal-packages-and-news",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Permit holder is responsible for obtaining Homeowners Association (HOA) approval as applicable",
+          "quote": "Additionally, it is the permit holder's responsibility to obtain Homeowner's Association approval for the proposed work, as applicable.",
+          "url": "https://permits.cityofirvine.org/irvinepermits/Default.asp?Build=PM.pmPermit.Apply1",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:cityofirvine.gov \"panel upgrade\" OR \"service upgrade\"",
+        "site:cityofirvine.org \"electrical permit\" \"panel\" OR \"service upgrade\""
+      ]
+    },
+    "subpanel": {
+      "permit_required": {
+        "value": true,
+        "quote": "If main electrical panel upgrade is applicable, enter \"1\" Panelboard, 400 amps or less box.",
+        "url": "https://permits.cityofirvine.org/irvinepermits/ApplyInstrutctions.htm",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": false,
+        "program_name": "Online Permit - Miscellaneous Residential (wmsr) / Automated Online Permit system",
+        "quote": "Choose \"wmsr Online Permit - Miscellaneous Residential\" in the drop down permit selection.",
+        "url": "https://permits.cityofirvine.org/irvinepermits/ApplyInstrutctions.htm",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Building Permit Application (when submitting via IrvineReady!)",
+          "section": "application",
+          "quote": "Building Permit Application.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/minor-plumbing-or-electrical-work-or-combination-two-including",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Residential Take-Off Sheet (when submitting via IrvineReady!)",
+          "section": "application",
+          "quote": "Residential Take-Off Sheet.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/minor-plumbing-or-electrical-work-or-combination-two-including",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Electronic/Digital Signature Disclosure (when submitting via IrvineReady!)",
+          "section": "application",
+          "quote": "Electronic/Digital Signature Disclosure.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/minor-plumbing-or-electrical-work-or-combination-two-including",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
+        "signature_or_stamp": "not_stated",
+        "quote": "Save a copy of your completed forms and upload them to the Attachments tab in your goPost dashboard, leaving only plan sheets in the Plans tab.",
+        "url": "https://cityofirvine.gov/community-development/electronic-submittal-packages-and-news",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Permit holder is responsible for obtaining Homeowners Association (HOA) approval as applicable",
+          "quote": "Additionally, it is the permit holder's responsibility to obtain Homeowner's Association approval for the proposed work, as applicable.",
+          "url": "https://permits.cityofirvine.org/irvinepermits/Default.asp?Build=PM.pmPermit.Apply1",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:cityofirvine.gov \"subpanel\"",
+        "site:cityofirvine.gov \"electrical\" permit residential"
+      ]
+    },
+    "appliance_circuit": {
+      "permit_required": {
+        "value": true,
+        "quote": "Involves no more than 10 electrical fixtures and/or outlets, indoors or outdoors",
+        "url": "https://cityofirvine.gov/building-permits-and-inspections/minor-plumbing-or-electrical-work-or-combination-two-including",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": "depends",
+        "program_name": "Automated Online Permit system (WMSR) for minor electrical; IrvineReady! plan review for pools/spas",
+        "quote": "After you have completed and gathered all of the required documents, you will need to submit your permit application and plans electronically through the IrvineReady! Online Plan Submission Portal.",
+        "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-or-modifying-residential-swimming-poolspa",
+        "ok": true
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [
+        {
+          "item": "Building Permit Application, Residential Take-Off Sheet, and Electronic/Digital Signature Disclosure",
+          "section": "application",
+          "quote": "Download and fill out the PDF form to submit online (includes Building Permit Application, Residential Take-Off Sheet, and Electronic/Digital Signature Disclosure)",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-or-modifying-residential-swimming-poolspa",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Scaled Site Plan showing pool/spa mechanical equipment distance to property lines and height (for pools/spas)",
+          "section": "site_plan",
+          "quote": "Show the distance between the pool/spa mechanical equipment and the nearest property line. The mechanical equipment must be a minimum of two (2) feet from the nearest property line.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-or-modifying-residential-swimming-poolspa",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
+        "signature_or_stamp": "not_stated",
+        "quote": "Save a copy of your completed forms and upload them to the Attachments tab in your goPost dashboard, leaving only plan sheets in the Plans tab.",
+        "url": "https://cityofirvine.gov/community-development/electronic-submittal-packages-and-news",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Pool/spa mechanical equipment must be at least 2 feet from property line and max 48 inches tall",
+          "quote": "Mechanical equipment must be a minimum of two (2) feet from the nearest property line.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-or-modifying-residential-swimming-poolspa",
+          "ok": true
+        },
+        {
+          "rule": "Visible pool/spa mechanical equipment requires screening by a fence or landscaping",
+          "quote": "If the mechanical equipment is proposed in a location visible from adjacent streets and properties at the same grade, screening will be required. Screening may be achieved by a fence or landscaping.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-or-modifying-residential-swimming-poolspa",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:cityofirvine.gov \"hot tub\" OR \"spa\" OR \"generator\" permit residential",
+        "site:cityofirvine.gov/building-permits-and-inspections \"panel\" OR \"generator\" OR \"spa\" OR \"heat pump\""
+      ]
+    },
+    "generator": {
+      "permit_required": {
+        "value": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "plans_required_single_family": {
+        "value": "unknown",
+        "program_name": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "checklist_published": false,
+      "checklist": {
+        "title": "none",
+        "revision_date": "unknown",
+        "url": "unknown"
+      },
+      "requirements": [],
+      "load_calculation": {
+        "method": "unknown",
+        "city_worksheet": "unknown",
+        "ev_charger_load_factor": "unknown",
+        "quote": "unknown",
+        "url": "unknown"
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
+        "signature_or_stamp": "not_stated",
+        "quote": "Save a copy of your completed forms and upload them to the Attachments tab in your goPost dashboard, leaving only plan sheets in the Plans tab.",
+        "url": "https://cityofirvine.gov/community-development/electronic-submittal-packages-and-news",
+        "ok": true
+      },
+      "local_rules": [],
+      "searched": [
+        "site:cityofirvine.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"service upgrade\"",
+        "site:cityofirvine.org \"energy storage\" OR \"battery\" OR \"generator\" permit residential"
+      ]
+    },
+    "solar_storage": {
+      "permit_required": {
+        "value": true,
+        "quote": "PermitsDIRECT! powered by Symbium is a web-based platform that makes it possible to get permits for residential solar and battery storage systems the same day.",
+        "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-rooftop-solar-energy-system",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": "depends",
+        "program_name": "PermitsDIRECT! powered by Symbium (same-day, <=38.4 kW, max 1 battery, licensed contractor) / IrvineReady! Standard",
+        "quote": "To qualify for same-day permits, the application must be: For a rooftop solar system no larger than 38.4 kilowatts. For no more than one battery storage system. Submitted by a licensed contractor.",
+        "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-rooftop-solar-energy-system",
+        "ok": true
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "Adding a Rooftop Solar Energy System / Battery Storage System",
+        "revision_date": "unknown",
+        "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-rooftop-solar-energy-system"
+      },
+      "requirements": [
+        {
+          "item": "Building Permit Application with kW (DC) size, panel count, and main panel upgrade/battery scope",
+          "section": "application",
+          "quote": "Include kW (DC) system size and number of photovoltaic solar roof panels in the Project Information Description of Work field.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-rooftop-solar-energy-system",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Roof Plan with module layout, setbacks, roof coverage percentage, fire sprinkler note, and roof access points",
+          "section": "site_plan",
+          "quote": "Show module layout with dimensions showing distance from roof edge, hips, and/or valleys. Include percentage of PV panel to roof coverage. Note if home is equipped with fire sprinklers. Show roof access points.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-rooftop-solar-energy-system",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Single Line Electrical Diagram and Signs and Labeling Sheet",
+          "section": "one_line",
+          "quote": "Single Line Electrical Diagram.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-rooftop-solar-energy-system",
+          "page": null,
+          "ok": true
+        },
+        {
+          "item": "Manufacturer specification sheets (UL 9540 for batteries) and anchorage details",
+          "section": "equipment",
+          "quote": "Provide battery manufacturer specification. Battery needs to be listed for UL 9540. Provide manufacturer's anchorage detail.",
+          "url": "https://cityofirvine.gov/community-development/battery-storage-system",
+          "page": null,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "not_stated",
+        "city_worksheet": "none",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Include main electrical load calculations if the main distribution electrical panel OCPD was reduced.",
+        "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-rooftop-solar-energy-system",
+        "ok": true
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic upload via IrvineReady! (forms in Attachments tab, plan sheets in Plans tab; Google Chrome required)",
+        "signature_or_stamp": "not_stated",
+        "quote": "Save a copy of your completed forms and upload them to the Attachments tab in your goPost dashboard, leaving only plan sheets in the Plans tab.",
+        "url": "https://cityofirvine.gov/community-development/electronic-submittal-packages-and-news",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "Battery plans must state that electrical equipment shall be listed by City of Irvine recognized testing laboratory",
+          "quote": "Note on plan: “Electrical equipment shall be listed by City of Irvine recognized testing laboratory.”",
+          "url": "https://cityofirvine.gov/community-development/battery-storage-system",
+          "ok": true
+        },
+        {
+          "rule": "Batteries weighing over 400 pounds require structural calculations and mounting details stamped by a CA Civil/Structural Engineer",
+          "quote": "A battery (or batteries installed at the same location) weighing more than 400 pounds requires structural calculations and mounting details stamped and signed by a CA licensed Civil/Structural Engineer.",
+          "url": "https://cityofirvine.gov/community-development/battery-storage-system",
+          "ok": true
+        },
+        {
+          "rule": "Main electrical load calculations are required on solar plans if the main panel OCPD is reduced",
+          "quote": "Include main electrical load calculations if the main distribution electrical panel OCPD was reduced.",
+          "url": "https://cityofirvine.gov/building-permits-and-inspections/adding-rooftop-solar-energy-system",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:cityofirvine.gov \"solar\" OR \"photovoltaic\" OR \"energy storage\" OR \"battery\"",
+        "site:cityofirvine.gov/building-permits-and-inspections \"panel\" OR \"generator\" OR \"spa\" OR \"heat pump\""
+      ]
+    }
+  }
+}

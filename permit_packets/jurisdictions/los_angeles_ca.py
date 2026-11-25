@@ -13,8 +13,9 @@ SOURCE_LABEL = "From LADBS Information Bulletins and the Los Angeles Electrical 
 
 LOS_ANGELES = Jurisdiction(
     key="los-angeles-ca", name="Los Angeles", state="CA", known=True,
-    permit_rules_verified="2026-11-21",
-    who_may_pull="State-licensed electrical contractors (C-10) or owner-builders of single-family homes may apply.",
+    no_plan_jobs={'ev_charger': 'https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf', 'service_upgrade': 'https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf', 'subpanel': 'https://dbs.lacity.gov/start', 'appliance_circuit': 'https://dbs.lacity.gov/start', 'solar_storage': 'https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf'},
+    permit_rules_verified="",
+    who_may_pull="Perform the work prior to sale of the dwelling. Be a homeowner that has resided in the residence for at least 12 months prior to the completion of the work.",
     owner_may_file=True,
     portal_url="https://www.ladbs.org/services/core-services/plan-check-permit/electrical-permit",
     fee_note="Permit fees are based on the number of items and valuation per the LADBS fee schedule.",
@@ -41,14 +42,13 @@ LOS_ANGELES = Jurisdiction(
     checklists={
         EV_CHARGER: Checklist(
             items=(
-                Requirement("Permit application: address, owner, contractor and valuation", "application"),
-                Requirement("Site plan showing the charger, panel and trench route", "site_plan"),
-                Requirement("Load calculation with the charger at its full nameplate rating (NEC 220), and its branch circuit and breaker sized at 125% of the charger's continuous load (NEC 625)", "load"),
-                Requirement("One-line diagram with breaker, conductors, conduit, and disconnect", "one_line"),
-                Requirement("Charger data sheet and NRTL listing mark (UL 2594)", "equipment"),
+                Requirement("Electrical plans and calculations signed and stamped by registered Electrical Engineer when required", "other",
+                            "https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Station%20Applications.pdf"),
+                Requirement("Site plan and floor plan if inside a building for plan check submittals", "site_plan",
+                            "https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Station%20Applications.pdf"),
             ),
-            source_url="https://www.ladbs.org/services/core-services/plan-check-permit/electrical-permit",
-            source_label=SOURCE_LABEL,
+            source_url="https://dbs.lacity.gov/sites/default/files/efs/pdf/publications/Permitting%20Checklist%20for%20Electric%20Vehicle%20Charging%20Station%20Applications.pdf",
+            source_label="From the city's published pages",
             code_note=CODE_NOTE,
             notes=(
                 Note("always", "Review all local Los Angeles municipal amendments prior to installation."),
@@ -101,6 +101,17 @@ LOS_ANGELES = Jurisdiction(
             notes=(
                 Note("always", "Ensure disconnects are located within sight of motor-driven appliances (NEC 422.31)."),
             ),
+        ),
+        "solar_storage": Checklist(
+            items=(
+                Requirement("Approved plans and related technical specifications available onsite at inspection", "equipment",
+                            "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf"),
+                Requirement("Clear brush-free area of 10 feet required for ground-mounted PV arrays", "site_plan",
+                            "https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf"),
+            ),
+            source_url="https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-027.pdf",
+            source_label="From the city's published pages",
+            code_note=CODE_NOTE,
         ),
     },
 )
