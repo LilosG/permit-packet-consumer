@@ -116,3 +116,30 @@ def test_other_cities_stay_on_their_sheet():
         assert {(round(p.get_width()), round(p.get_height())) for p in (document[i] for i in range(3))} == {(612, 792)}
     finally:
         document.close()
+
+
+def test_san_francisco_solar_pv_plans_are_11x17_with_10pt_notes():
+    """SF's PV Plans protocol: PV plans on 11 x 17 in sheets, notes no smaller than 10-point type."""
+    from permit_packets.core.layout import TABLOID
+
+    sf = jurisdiction_by_key("san-francisco-ca")
+    result = build("solar_storage", complete_inputs("solar_storage", sf))
+    document = pypdfium2.PdfDocument(result.pdf)
+    try:
+        assert {(round(p.get_width()), round(p.get_height())) for p in document} == {(1224, 792)}
+        labels = next(p for p in document
+                      if "PV Warning Labels and Signage" in p.get_textpage().get_text_bounded())
+        textpage = labels.get_textpage()
+        lo, hi = TABLOID.frame_y, TABLOID.height - TABLOID.top_margin
+        fonts = [raw.FPDFText_GetFontSize(textpage, i) for i in range(textpage.count_chars())
+                 if lo < textpage.get_charbox(i)[1] < hi and chr(raw.FPDFText_GetUnicode(textpage, i)).strip()]
+        assert fonts and min(fonts) >= 10, f"smallest note text is {min(fonts):.2f} pt"
+    finally:
+        document.close()
+
+    other = build("ev_charger", complete_inputs("ev_charger", sf))
+    document = pypdfium2.PdfDocument(other.pdf)
+    try:
+        assert (1584, 2448) in {(round(p.get_width()), round(p.get_height())) for p in document}
+    finally:
+        document.close()

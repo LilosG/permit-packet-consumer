@@ -421,6 +421,15 @@ def test_the_review_page_follows_the_appliance(client):
     assert "120 V service receptacle" in _text(_packet(client, **HEAT_PUMP))
 
 
+def test_hot_tub_has_the_spa_bonding_block_and_a_heat_pump_does_not(client):
+    hot_tub = _text(_packet(client))
+    assert "SPA BONDING" in hot_tub
+    assert "Equipotential bonding per NEC 680.26(B) and 680.42(B): bond the spa's metal parts, pump motor and electrical equipment with a solid copper conductor, 8 AWG minimum." in hot_tub
+    assert "Perimeter-surface bonding per NEC 680.26(B)(2) unless 680.42(B) exempts this listed spa." in hot_tub
+    assert "GFCI protection and the disconnect location as shown above (NEC 680.44, 680.13)." in hot_tub
+    assert "SPA BONDING" not in _text(_packet(client, **HEAT_PUMP))
+
+
 def test_the_response_contract_matches_subpanel(client):
     body = _packet(client)
     assert [row["label"] for row in body["summary"]] == ["Service load", "Breaker", "Wire", "Voltage drop"]

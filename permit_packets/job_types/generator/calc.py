@@ -33,6 +33,12 @@ TRANSFER_TITLES = {
     "automatic_transfer_switch": "Standby Generator & ATS",
 }
 LOCATION_LABELS = {"exterior_wall": "exterior wall inlet", "detached_pad": "exterior pad"}
+FUEL_LABELS = {
+    "natural_gas": "Natural gas",
+    "propane": "Propane",
+    "diesel": "Diesel",
+    "gasoline": "Gasoline",
+}
 DEGREE = "\N{DEGREE SIGN}"
 BURIAL_COVER_IN = 18
 
@@ -50,6 +56,7 @@ class GeneratorJob:
     generator_kw: float
     inlet_amps: int
     generator_model: str = ""
+    fuel_type: Literal["natural_gas", "propane", "diesel", "gasoline"] | None = None
     neutral_type: NeutralType = "floating"
     location: GenLocation = "exterior_wall"
     wiring: Wiring = "PVC"

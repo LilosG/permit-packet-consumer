@@ -77,6 +77,8 @@ SAN_FRANCISCO = Jurisdiction(
     # the cover at true size, and a 2 x 2 in stamp area in the same spot on every sheet. Forms, data sheets
     # and the review page are supplemental documents and stay 8.5 x 11 in (PDF_RULES_URL).
     sheet_size="ansi_d",
+    # SF's "Protocol for PV Plans" wants PV plans on 11 x 17 in sheets with notes no smaller than 10 pt.
+    sheet_size_by_job={"solar_storage": "tabloid"},
     max_plan_scale_ft_per_in=20,  # E-01: no smaller than 1/8 in = 1 ft; 1 in = 20 ft prints at 1 in = 8 ft
     stamp_box_in=2.0,
     title_sheet_blank_area_in=(8.5, 11.0),
@@ -250,7 +252,7 @@ SAN_FRANCISCO = Jurisdiction(
                             "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
                 Requirement("Current PDF manufacturer data sheets for all major system components", "equipment",
                             "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
-                Requirement("Warning label and signage sheets for service personnel and emergency responders", "packet_gap",
+                Requirement("Warning label and signage sheets for service personnel and emergency responders", "labels",
                             "https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system"),
             ),
             source_url="https://www.sf.gov/information--prepare-plans-your-solar-panel-or-photovoltaic-pv-system",

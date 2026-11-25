@@ -11,6 +11,31 @@ APPLIANCE_CIRCUIT = "appliance_circuit"
 CODE_NOTE = "San Diego enforces the 2025 California Electrical Code (2023 NEC base), effective January 1, 2026."
 SOURCE_LABEL = "From San Diego Development Services and the San Diego Municipal Code"
 
+# City of San Diego Residential Solar PV Project Plan Template, "General Notes" (PV-3A) and the cover
+# sheet statements, copied word for word.
+# https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/pvplantemplate.pdf
+SOLAR_GENERAL_NOTES = (
+    "ALL PLAQUES AND SIGNAGE REQUIRED BY THE LATEST EDITION OF CALIFORNIA ELECTRICAL CODE AND THE SAN DIEGO AREA ELECTRICAL NEWSLETTER, WILL BE INSTALLED AS REQUIRED.",
+    "ALTERNATE POWER SOURCE PLACARD SHALL BE METALLIC OR PLASTIC, ENGRAVED OR MACHINE PRINTED LETTERS IN A CONTRASTNG COLOR TO THE PLAQUE. THIS PLAQUE WILL BE ATTACHED BY POP RIVETS OR SCREWS OR OTHER APPROVED METHOD. IF EXPOSED TO SUNLIGHT, IT SHALL BE UV RESISTANCE.",
+    "PHOTOVOLTAIC DC CONDUCTORS ENTERING THE BUILDING SHALL BE INSTALLED IN METAL CONDUIT AND THE CONDUIT SHALL BE LABELED, \"CAUTION DC CIRCUIT\" OR EQUIVALENT EVERY 10 FT.\"",
+    "EXPOSED NON-CURRENT CARRYING METAL PARTS OF MODULE FRAMES, EQUIPMENTS, AND CONDUCTOR ENCLOSURES SHALL BE GROUNDED IN ACCORDANCE WITH 250.134 OR 250.136 (A) REGARDLESS OF VOLTAGE.",
+    "EACH MODULE SHALL BE GROUNDED USING THE SUPPLIED CONNECTION POINT IDENTIFIED ON THE MODULE AND THE MANUFACTURER'S INSTRUCTIONS.",
+    "IF THE EXISTING GROUNDING ELECTRODE SYSTEM CAN NOT BE VERIFIED OR IS ONLY METALIC WATER PIPING, IT IS THE CONTRACTOR'S RESPONSIBILITY TO INSTALL A SUPPLEMENTAL GROUNDING ELECTRODE.",
+    "THE INVERTER SHALL BE LISTED AS A UTILITY INTERACTIVE",
+    "UNIT INSTALLED ON THE SAME BUILDING AS THE MODULES BUT NOT ON THE ROOF.",
+    "THE INVERTER OUTPUT CIRCUIT CONDUCTORS SHALL TERMINATE WITHIN THE SERVICE PANEL IN ACCORDANCE WITH CEC 690.64(B)(7).",
+    "BACKFEED BREAKERS IN THE SERVICE PANEL SHALL BE SUITABLE FOR THAT USE.",
+    "ALL EQUIPMENT SHALL BE INSTALLED IN ACCORDANCE WITH THE MANUFACTURER'S APPROVED INSTALLATION INSTRUCTIONS. A COPY OF THESE INSTRUCTIONS ARE INCLUDED AS PART OF THIS PLAN.",
+    "ALL EQUIPMENT AND WIRING SHALL BE LISTED BY NATIONAL RECOGNIZED TESTING AGENCY",
+    "USE MINIMUM 8 AWG EQUIPMENT GROUNDING CONDUCTOR (EGC) WHEN IT IS SUBJECT TO PHYSICAL DAMAGE, OR INSTALL THE EGC IN AN APPROVED RACEWAY.",
+    "ALL WIRING SHALL BE OF COPPER MATERIAL, AND KEPT OUTSIDE OF THE BUILDING.",
+    "ALL ELECTRICAL EQUIPMENT INCLUDING THE SERVICE SHALL HAVE A LEGIBLE, VISIBLE, AND DURABLE MARKING INDICATING THE MANUFACTURER NAME, CURRENT, VOLTAGE, FREQUENCY, AND NUMBER OF PHASES.",
+    "EACH INSTALLED EQUIPMENT, WIRING AND OVERCURRENT PROTECTIVE DEVICE (OCPD) SHALL HAVE A SHORT CIRCUIT RATING NOT LESS THAN THE AVAILABLE SHORT CIRCUIT CURRENT AT THEIR INPUT TERMINALS.",
+    "THE INVERTER SHALL COMPLY ACCORDANCE WITH CEC 690.11.",
+    "PROPER ACCESS AND WORKING CLEARANCE WILL BE PROVIDED AS PER SECTION 110.26 CEC.",
+    "THIS PROJECT HAS BEEN DESIGNED IN COMPLIANCE WITH THE CITY OF SAN DIEGO PROP D & FAA REQUIREMENTS.",
+)
+
 SAN_DIEGO = Jurisdiction(
     key="san-diego-ca", name="San Diego", state="CA", known=True,
     permit_rules_verified="2026-11-21",
@@ -37,6 +62,7 @@ SAN_DIEGO = Jurisdiction(
     design_ambient_f=84,
     design_ambient_source="ASHRAE 2% annual cooling dry-bulb",
     code_note=CODE_NOTE,
+    solar_general_notes=SOLAR_GENERAL_NOTES,
     utility="San Diego Gas & Electric (SDG&E)",
     utility_short="SDG&E",
     checklists={
@@ -194,7 +220,7 @@ SAN_DIEGO = Jurisdiction(
                 Requirement("Plans stamped and signed by CA Civil/Electrical Engineer or C-10, B, or C-46 contractor", "by_others",
                             "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301",
                             who="A California licensed engineer or a C-10, B or C-46 contractor signs the plans"),
-                Requirement("Incorporate Residential Solar PV Project Plan Template elements into design", "packet_gap",
+                Requirement("Incorporate Residential Solar PV Project Plan Template elements into design", "general_notes",
                             "https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit"),
                 Requirement("Upload Building Construction Plans and specifications in PDF format", "equipment",
                             "https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit"),

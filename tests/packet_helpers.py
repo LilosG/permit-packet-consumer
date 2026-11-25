@@ -104,4 +104,6 @@ def complete_inputs(key: str, jurisdiction) -> dict:
         payload.update(subpanel_model=LIBRARY_SUBPANEL, subpanel_amps=225, panel_bus_amps=200)
     else:
         payload.update(appliance_model="Sample Spa 4000", data_sheet_attached=True, panel_bus_amps=200)
+    if key == "generator":
+        payload["fuel_type"] = "natural_gas"
     return payload

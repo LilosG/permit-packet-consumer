@@ -20,10 +20,16 @@ from permit_packets.core.pdf_base import (
 from permit_packets.core.site_plan import PlanMarker, printed_scale, site_plan_page
 from permit_packets.core.title_block import contractor_with_license, title_block_for
 from permit_packets.job_types.generator.calc import (
-    BURIAL_COVER_IN, DEGREE, LOCATION_LABELS, TRANSFER_LABELS, TRANSFER_TITLES, GeneratorPacket,
+    BURIAL_COVER_IN, DEGREE, FUEL_LABELS, LOCATION_LABELS, TRANSFER_LABELS, TRANSFER_TITLES, GeneratorPacket,
 )
 
 SECTION_PAGES = {"application": 2, "site_plan": 3, "one_line": 4, "load": 5, "panel_schedule": 6, "equipment": 7, "review": 8}
+# New sheets go after every existing sheet, so no existing "Page N" reference moves.
+EQUIPMENT_LAYOUT_TITLE = "Equipment Layout and Working Space"
+EQUIPMENT_LAYOUT_PAGE = 9
+WORKING_SPACE_LABEL = ("NEC 110.26 working space: 36 in deep x 30 in wide (or equipment width) "
+                       "x 6.5 ft high")
+EQUIPMENT_LAYOUT_NOTE = "SCHEMATIC - NOT TO SCALE. Field-verify locations and clearances."
 
 
 def _size(packet: GeneratorPacket) -> str:
@@ -150,7 +156,10 @@ class OneLine(Flowable):
             meter_lines.append(job.jurisdiction.utility_short)
         box(xs[0], "UTILITY METER", meter_lines)
         box(xs[1], "MAIN PANEL & INTERLOCK", [f"{job.service_amps} A service", f"{packet.breaker} A backfeed / transfer", "NEC 702.5 listed"], SOFT)
-        box(xs[2], "GENERATOR / INLET", [f"{display_number(job.generator_kw)} kW ({display_number(job.generator_amps)} A)", f"{packet.breaker} A, 120/240 V", f"{job.neutral_type.capitalize()} neutral"])
+        inlet_lines = [f"{display_number(job.generator_kw)} kW ({display_number(job.generator_amps)} A)", f"{packet.breaker} A, 120/240 V", f"{job.neutral_type.capitalize()} neutral"]
+        if job.fuel_type:
+            inlet_lines.append(f"Fuel: {FUEL_LABELS[job.fuel_type]}")
+        box(xs[2], "GENERATOR / INLET", inlet_lines)
 
         c.setStrokeColor(INK)
         c.setLineWidth(1.5)
@@ -165,6 +174,91 @@ class OneLine(Flowable):
         c.drawCentredString(label_x, mid + 15, _wire_text(packet))
         c.drawCentredString(label_x, mid - 12, f"in {_conduit(packet)}")
         c.drawCentredString(label_x, mid - 22, f"{job.run_ft} ft one way")
+
+
+class EquipmentLayout(Flowable):
+    """A plan-view schematic of the generator equipment and its NEC 110.26 working space.
+
+    Not to scale: every value is the one the one-line and panel schedule already carry."""
+
+    def __init__(self, packet: GeneratorPacket) -> None:
+        super().__init__()
+        self.packet = packet
+        self.width = CONTENT
+        self.height = 220
+
+    def wrap(self, available_width, available_height):
+        return self.width, self.height
+
+    def draw(self) -> None:
+        c = self.canv
+        packet = self.packet
+        job = packet.job
+        top = self.height - 14
+
+        c.setFillColor(MUTED)
+        c.setFont("Helvetica-Bold", 7.4)
+        c.drawString(0, top, EQUIPMENT_LAYOUT_NOTE)
+
+        boxes = [
+            (24, "MAIN PANEL", [f"{job.service_amps} A service", "Backfeed breaker landed", "opposite the main"]),
+            (170, "TRANSFER EQUIPMENT", [TRANSFER_LABELS[job.transfer_type].capitalize(), f"{packet.breaker} A", "120/240 V"]),
+        ]
+        if job.location == "exterior_wall":
+            inlet_title, inlet_lines = "GENERATOR INLET", ["Exterior wall", f"{packet.breaker} A inlet", "NEC 702.7 signage"]
+        else:
+            inlet_title, inlet_lines = "GENERATOR", ["Detached pad", f"{display_number(job.generator_kw)} kW", f"{packet.breaker} A"]
+        boxes.append((316, inlet_title, inlet_lines))
+
+        box_w, box_h = 122, 52
+        box_y = 92
+        for bx, title, lines in boxes:
+            c.setFillColor(SOFT)
+            c.setStrokeColor(INK)
+            c.setLineWidth(1.2)
+            c.rect(bx, box_y, box_w, box_h, stroke=1, fill=1)
+            c.setFillColor(INK)
+            c.setFont("Helvetica-Bold", 7.4)
+            c.drawCentredString(bx + box_w / 2, box_y + box_h - 11, title)
+            c.setFont("Helvetica", 6.9)
+            for i, line in enumerate(lines):
+                c.drawCentredString(bx + box_w / 2, box_y + box_h - 23 - i * 9, line)
+
+        # The conduit run between the equipment, with its type, size and length.
+        c.setStrokeColor(COPPER)
+        c.setLineWidth(2.2)
+        c.line(boxes[0][0] + box_w, box_y + box_h / 2, boxes[1][0], box_y + box_h / 2)
+        c.line(boxes[1][0] + box_w, box_y + box_h / 2, boxes[2][0], box_y + box_h / 2)
+        c.setFillColor(INK)
+        c.setFont("Helvetica-Bold", 6.9)
+        mid_x = (boxes[0][0] + box_w + boxes[1][0]) / 2
+        c.drawCentredString(mid_x, box_y + box_h / 2 + 6, _conduit(packet))
+        c.drawCentredString(mid_x, box_y + box_h / 2 - 12, f"{job.run_ft} ft one way")
+        c.setFont("Helvetica", 6.9)
+        c.drawCentredString(mid_x, box_y + box_h / 2 - 22, _wire_text(packet))
+
+        # The generator breaker's circuit number, its row in the panel schedule.
+        c.setFillColor(INK)
+        c.setFont("Helvetica-Bold", 6.9)
+        c.drawCentredString(boxes[1][0] + box_w / 2, box_y - 12, f"Generator circuit: {generator_circuit_number(job)}")
+
+        # The dashed NEC 110.26 working space in front of the panel and the transfer equipment.
+        c.setStrokeColor(GREEN)
+        c.setLineWidth(1.0)
+        c.setDash(5, 3)
+        for bx, _title, _lines in boxes[:2]:
+            c.rect(bx, box_y - 42, box_w, 36, stroke=1, fill=0)
+        c.setDash()
+        c.setFillColor(GREEN)
+        c.setFont("Helvetica", 6.6)
+        c.drawString(24, box_y - 54, WORKING_SPACE_LABEL)
+
+
+def generator_circuit_number(job) -> str:
+    """The generator backfeed's circuit number: its row in the panel schedule, or none for a transfer switch."""
+    if not job.spaces_needed:
+        return "transfer switch, not a panel circuit"
+    return str(len(job.existing_circuits) + 1)
 
 
 def checklist_rows(packet: GeneratorPacket) -> list[tuple[str, str, str]]:
@@ -183,6 +277,13 @@ def checklist_rows(packet: GeneratorPacket) -> list[tuple[str, str, str]]:
         elif sec == "equipment":
             has_doc = bool(find_equipment(job.generator_model, "appliance") or job.data_sheet_attached)
             rows.append((req.item, "Page 7 + data sheet attached" if has_doc else "Page 7: attach interlock/generator cut sheet", "Ready" if has_doc else "Attach"))
+        elif sec == "fuel":
+            if job.fuel_type:
+                rows.append((req.item, f"Page {SECTION_PAGES['one_line']}: fuel type on the one-line", "Ready"))
+            else:
+                rows.append((req.item, "Page 4: add the generator's fuel type", "Open"))
+        elif sec == "equipment_layout":
+            rows.append((req.item, f"Page {EQUIPMENT_LAYOUT_PAGE}: equipment layout and working space", "Ready"))
         else:
             shown = panel_row(job, sec, SECTION_PAGES["one_line"], burial=None)
             if shown:
@@ -197,11 +298,23 @@ def checklist_rows(packet: GeneratorPacket) -> list[tuple[str, str, str]]:
 def scope_of_work(packet: GeneratorPacket) -> str:
     job = packet.job
     model = f" ({job.generator_model})" if job.generator_model else ""
+    fuel = f" Fuel type: {FUEL_LABELS[job.fuel_type].lower()}." if job.fuel_type else ""
     return (
         f"Install one {TRANSFER_LABELS[job.transfer_type]} rated {packet.breaker} A at 120/240 V "
-        f"for a {display_number(job.generator_kw)} kW standby generator{model} at {LOCATION_LABELS[job.location]}. "
+        f"for a {display_number(job.generator_kw)} kW standby generator{model} at {LOCATION_LABELS[job.location]}.{fuel} "
         f"Run {job.run_ft} ft feeder, {_wire_text(packet)}, in {_conduit(packet)}, and install NEC 702.7 warning signage."
     )
+
+
+def equipment_layout_page(packet: GeneratorPacket) -> list:
+    """The equipment layout and NEC 110.26 working space, drawn from the packet's own one-line and schedule data."""
+    return [
+        _p(EQUIPMENT_LAYOUT_TITLE, H1),
+        _p("Plan-view schematic of the main panel, transfer equipment and generator / inlet, with the "
+           "feeder raceway, conductor sizes, circuit number and the NEC 110.26 working space.", SMALL),
+        Spacer(1, 10),
+        diagram(EquipmentLayout(packet), share=0.75),
+    ]
 
 
 def application_fields(packet: GeneratorPacket) -> list[tuple[str, str]]:
@@ -292,11 +405,12 @@ def render_generator_packet_pdf(packet: GeneratorPacket) -> bytes:
         "Permanent backup-power warning signage installed at service entrance (NEC 702.7)",
         "Exterior inlet box mounted away from windows, doors and air intakes",
     ])
+    layout_sec = equipment_layout_page(packet)
     pdf = build_document(
-        [cover, app_sec, site_sec, one_line_sec, load_sec, sched_sec, equip_sec, rev_sec],
+        [cover, app_sec, site_sec, one_line_sec, load_sec, sched_sec, equip_sec, rev_sec, layout_sec],
         title=demo_title(f"{TRANSFER_TITLES[job.transfer_type]} Permit Packet"),
         block=title_block_for(job),
-        sheet_titles=["Checklist and Checks", "Permit Application Data", "Site Plan", "Single-Line Diagram", "Load Calculation", "Panel Schedule", "Equipment Data", "Pre-Submittal Review"],
+        sheet_titles=["Checklist and Checks", "Permit Application Data", "Site Plan", "Single-Line Diagram", "Load Calculation", "Panel Schedule", "Equipment Data", "Pre-Submittal Review", EQUIPMENT_LAYOUT_TITLE],
     )
     sheet = find_equipment(job.generator_model, "appliance")
     return attach_data_sheets(pdf, [sheet] if sheet else [], after_title="Equipment Data")

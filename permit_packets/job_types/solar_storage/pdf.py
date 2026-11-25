@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from reportlab.lib import colors
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import Flowable, Spacer
 
@@ -13,7 +14,7 @@ from permit_packets.core.panel_schedule import (
     PANEL_SCHEDULE_ITEM, ScheduleRow, existing_rows, panel_schedule_page, panel_schedule_row,
 )
 from permit_packets.core.pdf_base import (
-    CONTENT, COPPER, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
+    BODY, CELL, CELL_BOLD, CONTENT, COPPER, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     _heads, _p, _table, application_page, build_document, content_w, cover_page,
     demo_title, diagram, fit_page, heat_block, load_page, review_page,
 )
@@ -24,6 +25,23 @@ from permit_packets.job_types.solar_storage.calc import (
 )
 
 SECTION_PAGES = {"application": 2, "site_plan": 3, "one_line": 4, "load": 5, "panel_schedule": 6, "equipment": 7, "review": 8}
+# New sheets go after every existing sheet, so no existing "Page N" reference moves.
+LABELS_TITLE = "PV Warning Labels and Signage"
+LABELS_PAGE = 9
+GENERAL_NOTES_TITLE = "General Notes"
+GENERAL_NOTES_PAGE = 10
+# The PV plans protocol asks for notes no smaller than 10-point type; the label sheet is set that way.
+LABELS_BODY = ParagraphStyle("labels-body", parent=BODY, fontSize=10, leading=13)
+LABELS_CELL = ParagraphStyle("labels-cell", parent=CELL, fontSize=10, leading=13)
+LABELS_HEAD = ParagraphStyle("labels-head", parent=CELL_BOLD, fontSize=10, leading=13)
+LABELS_NOTE = ("Labels: reflective, weather-resistant material suitable for the environment (UL 969), "
+               "permanently attached. Wording and sizes per the code edition adopted by this city: "
+               "confirm at inspection.")
+RAPID_SHUTDOWN_WORDING = (
+    "\"SOLAR PV SYSTEM IS EQUIPPED WITH RAPID SHUTDOWN. TURN RAPID SHUTDOWN SWITCH TO THE 'OFF' POSITION "
+    "TO SHUT DOWN PV SYSTEM AND REDUCE SHOCK HAZARD IN THE ARRAY.\" Title in capitals at least 3/8 in, "
+    "black on yellow; remaining text at least 3/16 in"
+)
 
 
 def _size(packet: SolarStoragePacket) -> str:
@@ -157,6 +175,74 @@ class OneLine(Flowable):
         c.drawCentredString(label_x, mid - 22, f"{job.run_ft} ft one way")
 
 
+def _labels_rows(packet: SolarStoragePacket) -> list[tuple[str, str, str, str]]:
+    """Every warning label and placard, with its required wording, location and code section (CEC Article 690 Part VI)."""
+    job = packet.job
+    rows = [
+        ("PV system disconnect", '"PV SYSTEM DISCONNECT"',
+         "On each PV system disconnecting means", "690.13(B)"),
+        ("Line and load energized",
+         '"WARNING - ELECTRIC SHOCK HAZARD - TERMINALS ON THE LINE AND LOAD SIDES MAY BE ENERGIZED IN THE '
+         'OPEN POSITION"',
+         "On any PV disconnect whose terminals can be energized when open", "690.13(B)"),
+        ("DC circuit maximum voltage", '"MAXIMUM DC VOLTAGE OF PV SYSTEM: ____ V"',
+         "At the DC PV system disconnect or the inverter", "690.53"),
+        ("Point of interconnection",
+         f'"SOLAR PV SYSTEM - AC OUTPUT CURRENT: {packet.breaker} A - NOMINAL AC VOLTAGE: 240 V"',
+         "At the point of interconnection (service panel)", "690.54"),
+        ("Rapid shutdown type", RAPID_SHUTDOWN_WORDING,
+         "At each service equipment location, or at an approved readily visible location showing where the "
+         "rapid shutdown initiation device is", "690.56(C)(1)"),
+        ("Rapid shutdown initiation device", '"RAPID SHUTDOWN FOR SOLAR PV SYSTEM"',
+         "On or no more than 3 ft from the rapid shutdown initiation device", "690.56(C)(2)"),
+        ("Backfed breaker",
+         '"WARNING: POWER SOURCE OUTPUT CONNECTION - DO NOT RELOCATE THIS OVERCURRENT DEVICE"',
+         "Next to the PV backfed breaker in the service panel", "705.12(B)(3)"),
+        ("Power source directory",
+         '"CAUTION: MULTIPLE SOURCES OF POWER" followed by the location of the utility service disconnect '
+         "and the PV system disconnect",
+         "At the service equipment, a permanent plaque or directory", "705.10, 690.56(B)"),
+    ]
+    if job.battery_kwh > 0:
+        rows.append((
+            "Energy storage disconnect",
+            f'"ENERGY STORAGE SYSTEM DISCONNECT" with its nominal voltage (240 V) and the ESS location '
+            f"({LOCATION_LABELS[job.location]})",
+            "On the ESS disconnecting means", "706.15(C)"))
+    return rows
+
+
+def labels_page(packet: SolarStoragePacket) -> list:
+    """The PV warning labels and signage sheet, on every solar packet (NEC Article 690 Part VI)."""
+    rows = _labels_rows(packet)
+    wording_w = content_w() - 1.2 * inch - 1.8 * inch - 0.9 * inch
+    return fit_page([
+        _p(LABELS_TITLE, H1),
+        _p("Every warning label and placard this PV/ESS system needs, with its wording, location and code section.", LABELS_BODY),
+        Spacer(1, 10),
+        _table([[_p("Label", LABELS_HEAD), _p("Required wording", LABELS_HEAD),
+                 _p("Location", LABELS_HEAD), _p("Code section", LABELS_HEAD)]]
+               + [[_p(a, LABELS_CELL), _p(b, LABELS_CELL), _p(c, LABELS_CELL), _p(d, LABELS_CELL)]
+                  for a, b, c, d in rows],
+               [1.2 * inch, wording_w, 1.8 * inch, 0.9 * inch]),
+        Spacer(1, 8),
+        _p(LABELS_NOTE, LABELS_BODY),
+    ])
+
+
+def general_notes_page(packet: SolarStoragePacket) -> list | None:
+    """The city plan template's general notes, when this city publishes them."""
+    notes = packet.job.jurisdiction.solar_general_notes
+    if not notes:
+        return None
+    return [
+        _p(GENERAL_NOTES_TITLE, H1),
+        _p("General notes (City of San Diego Residential Solar PV Project Plan Template)", H2),
+        Spacer(1, 10),
+        *[_p(f"{number}. {note}", BODY) for number, note in enumerate(notes, start=1)],
+    ]
+
+
 def checklist_rows(packet: SolarStoragePacket) -> list[tuple[str, str, str]]:
     job = packet.job
     plan = job.plan
@@ -173,6 +259,13 @@ def checklist_rows(packet: SolarStoragePacket) -> list[tuple[str, str, str]]:
         elif sec == "equipment":
             has_doc = bool(find_equipment(job.system_model, "appliance") or job.data_sheet_attached)
             rows.append((req.item, "Page 7 + UL cut sheet attached" if has_doc else "Page 7: attach inverter/ESS UL 1741 & UL 9540 sheets", "Ready" if has_doc else "Attach"))
+        elif sec == "labels":
+            rows.append((req.item, f"Page {LABELS_PAGE}: warning labels and signage sheet", "Ready"))
+        elif sec == "general_notes":
+            if job.jurisdiction.solar_general_notes:
+                rows.append((req.item, f"Page {GENERAL_NOTES_PAGE}: city plan template general notes", "Ready"))
+            else:
+                rows.append((req.item, "Not applicable", "N/A"))
         else:
             shown = panel_row(job, sec, SECTION_PAGES["one_line"], burial=None)
             if shown:
@@ -291,11 +384,18 @@ def render_solar_storage_packet_pdf(packet: SolarStoragePacket) -> bytes:
         "NEC 706.15 lockable ESS disconnect and IRC R328 garage spacing / heat detector confirmed",
         "Permanent NEC 690.56(C) & 705.10 solar/ESS directory placards installed at meter and main panel",
     ])
+    labels_sec = labels_page(packet)
+    notes_sec = general_notes_page(packet)
+    sections = [cover, app_sec, site_sec, one_line_sec, load_sec, sched_sec, equip_sec, rev_sec, labels_sec]
+    titles = ["Checklist and Checks", "Permit Application Data", "Site Plan", "Single-Line Diagram", "Load Calculation", "Panel Schedule", "Equipment Data", "Pre-Submittal Review", LABELS_TITLE]
+    if notes_sec is not None:
+        sections.append(notes_sec)
+        titles.append(GENERAL_NOTES_TITLE)
     pdf = build_document(
-        [cover, app_sec, site_sec, one_line_sec, load_sec, sched_sec, equip_sec, rev_sec],
+        sections,
         title=demo_title("Solar PV & Battery Storage Permit Packet"),
         block=title_block_for(job),
-        sheet_titles=["Checklist and Checks", "Permit Application Data", "Site Plan", "Single-Line Diagram", "Load Calculation", "Panel Schedule", "Equipment Data", "Pre-Submittal Review"],
+        sheet_titles=titles,
     )
     sheet = find_equipment(job.system_model, "appliance")
     return attach_data_sheets(pdf, [sheet] if sheet else [], after_title="Equipment Data")

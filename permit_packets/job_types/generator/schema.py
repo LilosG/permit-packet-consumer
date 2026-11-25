@@ -14,6 +14,7 @@ class GeneratorRequest(JobRequestBase):
     generator_kw: float = Field(ge=1.0, le=50.0)
     inlet_amps: Literal[30, 50, 100, 150, 200]
     generator_model: str = Field(default="", max_length=120)
+    fuel_type: Literal["natural_gas", "propane", "diesel", "gasoline"] | None = None
     neutral_type: Literal["floating", "bonded"] = "floating"
     location: Literal["exterior_wall", "detached_pad"] = "exterior_wall"
     wiring: Literal["PVC", "EMT", "cable"] = "PVC"

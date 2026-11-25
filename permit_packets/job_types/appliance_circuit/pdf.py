@@ -15,7 +15,7 @@ from permit_packets.core.panel_schedule import (
 )
 from permit_packets.core.pdf_base import (
     demo_title,
-    CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
+    BODY, CONTENT, COPPER, CREDIT, GREEN, H1, H2, INK, MUTED, PALE, SMALL, SOFT,
     diagram, fit_page, heat_block, _heads, _p, _table, content_w, application_page, build_document, cover_page, load_page, review_page,
 )
 from permit_packets.core.equipment import attach_data_sheets, find_equipment
@@ -273,6 +273,10 @@ def _checklist_row(packet: AppliancePacket, section: str) -> tuple[str, str]:
         if job.data_sheet_attached:
             return f"Page {SECTION_PAGES[section]} + data sheet attached by the electrician", "Ready"
         return f"Page {SECTION_PAGES[section]}: add manufacturer sheets", "Attach"
+    if section == "pool_bonding":
+        if job.appliance == "hot_tub":
+            return f"Page {SECTION_PAGES['one_line']}: spa bonding detail on the one-line", "Ready"
+        return "Not applicable: no pool or spa on this job", "N/A"
     shown = panel_row(job, section, SECTION_PAGES['one_line'], burial=None)
     if shown:
         return shown
@@ -437,6 +441,27 @@ def _circuit_schedule(packet: AppliancePacket) -> list[tuple[str, str, str]]:
     ]
 
 
+SPA_BONDING_NOTE = "SPA BONDING"
+SPA_BONDING_LINES = (
+    "Equipotential bonding per NEC 680.26(B) and 680.42(B): bond the spa's metal parts, pump motor and "
+    "electrical equipment with a solid copper conductor, 8 AWG minimum.",
+    "Perimeter-surface bonding per NEC 680.26(B)(2) unless 680.42(B) exempts this listed spa. Confirm with "
+    "the spa manufacturer's instructions.",
+    "GFCI protection and the disconnect location as shown above (NEC 680.44, 680.13).",
+)
+
+
+def _spa_bonding_block(packet: AppliancePacket) -> list:
+    """The spa bonding detail, only on a hot tub packet (NEC 680.26 / 680.42)."""
+    if packet.job.appliance != "hot_tub":
+        return []
+    return [
+        Spacer(1, 10),
+        _p(SPA_BONDING_NOTE, H2),
+        *[_p(line, BODY) for line in SPA_BONDING_LINES],
+    ]
+
+
 def _one_line(packet: AppliancePacket) -> list:
     job = packet.job
     rows = [["Branch circuit", _wire_text(packet), _conduit(packet), f"{packet.breaker} A, 2-pole"]]
@@ -456,7 +481,7 @@ def _one_line(packet: AppliancePacket) -> list:
                + [[_p(a), _p(b), _p(c)] for a, b, c in _circuit_schedule(packet)],
                [1.5 * inch, content_w() - 4.2 * inch, 2.7 * inch]),
     ]
-    return fit_page(story + heat_block(packet.branch.heat, job.jurisdiction))
+    return fit_page(story + _spa_bonding_block(packet) + heat_block(packet.branch.heat, job.jurisdiction))
 
 
 def _load(packet: AppliancePacket) -> list:

@@ -48,14 +48,15 @@ def display_number(value: float) -> str:
     return str(int(value)) if value == int(value) else str(value)
 
 
-def build_on_sheet(request: JobRequestBase, build):
+def build_on_sheet(request: JobRequestBase, build, job_key: str | None = None):
     """Run a job's build on the sheet the request asked for, else the city's: letter or tabloid.
 
     Every page is drawn natively at that size. The result's body says which sheet it is."""
     from permit_packets.job_types import PacketResult
 
     city = jurisdiction_by_key(request.jurisdiction_key, request.city, request.state)
-    sheet = resolve_sheet(request.sheet_size, city)
+    preferred = city.sheet_size_by_job.get(job_key or "", city.sheet_size)
+    sheet = resolve_sheet(request.sheet_size, city, preferred)
     if sheet.key == "ansi_d":
         # Laid out on letter, then the drawing sheets go onto 22 x 34 in sheets with the city's blank
         # area on the cover, so no separate blank sheet is added.

@@ -68,6 +68,8 @@ def test_a_complete_packet_shows_every_checklist_item_ready(jurisdiction, key):
         section = sections.get(item)
         if section == "packet_gap":
             allowed = {"Open"}  # tracked gap the packet doesn't produce yet
+        elif section in {"pool_bonding", "general_notes"}:
+            allowed = {"Ready", "N/A"}  # not every job has a pool/spa, not every city has template notes
         elif section == "by_others":
             allowed = {"By others"}
         elif item in utility:
@@ -75,6 +77,14 @@ def test_a_complete_packet_shows_every_checklist_item_ready(jurisdiction, key):
         else:
             allowed = {"Ready"}
         assert row["status"] in allowed, f"{jurisdiction.key}/{key}: '{item}' is {row['status']} ({row['where']})"
+
+
+def test_no_city_checklist_still_has_a_packet_gap():
+    """The five tracked gaps were built into sections; nothing may still be a packet_gap."""
+    gaps = [(j.key, key, r.item) for j in KNOWN.values() for key in sorted(j.checklists)
+            for r in j.checklist_for(key).items if r.section == "packet_gap"]
+    assert not gaps, f"still tracked as packet_gap: {gaps}"
+
 
 
 @pytest.mark.parametrize("jurisdiction,key", CASES, ids=IDS)
@@ -116,7 +126,8 @@ def test_the_stamp_box_exists_when_the_city_reserves_one(jurisdiction, key):
     if jurisdiction.stamp_box_in is None:
         assert "Reserved for city stamp" not in cover
         return
-    if jurisdiction.sheet_size == "ansi_d":  # every drawing sheet carries it: tests/test_drawing_sets.py
+    size = jurisdiction.sheet_size_by_job.get(key, jurisdiction.sheet_size)
+    if size == "ansi_d":  # every drawing sheet carries it: tests/test_drawing_sets.py
         assert "Reserved for" in cover and "DBI stamp" in cover
         assert any(abs(w - 144) < 2.5 and abs(h - 144) < 2.5 for w, h in sides), "a true-size 2 in square"
         return
@@ -128,7 +139,8 @@ def test_the_stamp_box_exists_when_the_city_reserves_one(jurisdiction, key):
 @pytest.mark.parametrize("jurisdiction,key", CASES, ids=IDS)
 def test_the_page_size_matches_the_cities_sheet_size(jurisdiction, key):
     result = build(key, complete_inputs(key, jurisdiction))
-    assert result.body["sheet_size"] == jurisdiction.sheet_size
+    size = jurisdiction.sheet_size_by_job.get(key, jurisdiction.sheet_size)
+    assert result.body["sheet_size"] == size
     span = attachment_span(result.pdf)
     document = pypdfium2.PdfDocument(result.pdf)
     try:
@@ -136,10 +148,10 @@ def test_the_page_size_matches_the_cities_sheet_size(jurisdiction, key):
         sizes = {(round(p.get_width()), round(p.get_height())) for i, p in enumerate(document) if i not in attached}
     finally:
         document.close()
-    if jurisdiction.sheet_size == "ansi_d":  # drawing sheets 22 x 34, supplemental pages 8.5 x 11
+    if size == "ansi_d":  # drawing sheets 22 x 34, supplemental pages 8.5 x 11
         assert sizes == {(1584, 2448), SHEET_POINTS["letter"]}
         return
-    assert sizes == {SHEET_POINTS[jurisdiction.sheet_size]}
+    assert sizes == {SHEET_POINTS[size]}
 
 
 @pytest.mark.parametrize("jurisdiction,key", CASES, ids=IDS)

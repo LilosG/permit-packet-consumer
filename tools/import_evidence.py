@@ -44,11 +44,11 @@ ALLOWED_SECTIONS = {
     "subpanel": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
                                    "site_plan", "feeder"},
     "appliance_circuit": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
-                                            "site_plan"},
+                                            "site_plan", "pool_bonding"},
     "generator": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
-                                    "site_plan"},
+                                    "site_plan", "fuel", "equipment_layout"},
     "solar_storage": COMMON_SECTIONS | {"application", "equipment", "load", "one_line", "panel_schedule", "review",
-                                        "site_plan"},
+                                        "site_plan", "labels", "general_notes"},
 }
 UNKNOWN = "unknown"
 SKIP_QUOTES = {"", UNKNOWN, "not_stated"}

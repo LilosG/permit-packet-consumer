@@ -40,7 +40,7 @@
 - city: phoenix-az
   job: appliance_circuit
   item: Grounding and bonding details for pools on electrical plans
-  section: packet_gap
+  section: pool_bonding
 - city: san-antonio-tx
   job: appliance_circuit
   item: Indication of whether work with CPS Energy is required
@@ -63,7 +63,7 @@
 - city: dallas-tx
   job: generator
   item: Fuel type listed on plans (separate plumbing permit for natural gas; flammable liquid permit for propane)
-  section: packet_gap
+  section: fuel
 - city: phoenix-az
   job: generator
   item: Grounding and bonding details and sizes for generators and equipment grounding conductors
@@ -71,7 +71,7 @@
 - city: phoenix-az
   job: generator
   item: Complete floor plan showing equipment layout, working space, wire and conduit sizes, and circuit numbers
-  section: packet_gap
+  section: equipment_layout
 - city: phoenix-az
   job: generator
   item: Identify serving electrical utility company (APS or SRP)
@@ -158,7 +158,7 @@
 - city: san-francisco-ca
   job: solar_storage
   item: Warning label and signage sheets for service personnel and emergency responders
-  section: packet_gap
+  section: labels
 - city: seattle-wa
   job: solar_storage
   item: SDCI electrical plan review required for all new installations of Energy Storage Systems (ESS)
@@ -187,7 +187,7 @@
 - city: san-diego-ca
   job: solar_storage
   item: "Incorporate Residential Solar PV Project Plan Template elements into design"
-  section: packet_gap
+  section: general_notes
 - city: atlanta-ga
   job: service_upgrade
   item: Municipal electrical inspection approval prior to utility meter set
