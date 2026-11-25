@@ -255,7 +255,7 @@ DOCS: dict[str, Doc] = {d.slug: d for d in (
         description="What an NEC 220 electrical load calculation form or utility load letter requires, when cities ask for one, and how to generate a printable PDF sheet.",
         sample="04-load-calc", card="NEC 220 electrical load calculation form, utility load letter, and sample sheet.",
         what=("An electrical load calculation form (also requested by utilities and building departments as an electrical load letter) adds up the demand of a home under NEC Article 220 and compares total computed amps against the main service rating. It answers one question: can the existing service safely carry the home plus the new load.",
-              "For residential dwellings, most city plan reviewers accept the optional dwelling method in NEC 220.82, with continuous loads such as EV chargers calculated at 125% per NEC 625.41."),
+              "For residential dwellings, most city plan reviewers accept the optional dwelling method in NEC 220.82, which adds an EV charger at 100% of nameplate while the branch circuit and breaker are sized at 125% under NEC 625.41. Some plan reviewers, or NEC 220.87 load letters, count continuous loads at 125% in the service calculation too."),
         when=("Building departments and electric utilities ask for a load calculation form or load letter with 200A panel and service upgrades, detached garage subpanels, Level 2 EV chargers, hot tubs, heat pumps, and standby generators.",
               "Utilities such as PG&E, SRP, APS, and Duke Energy also require an itemized load summary before approving a new meter-main socket or service drop upgrade."),
         contains=("Property address, service voltage (120/240 V single-phase), and existing main breaker rating",

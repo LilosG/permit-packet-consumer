@@ -1,0 +1,236 @@
+jurisdiction_key: san-antonio-tx
+city: San Antonio
+state: TX
+checked_on: 2026-11-24
+agency: City of San Antonio Development Services Department (DSD)
+portal_url: https://aca-prod.accela.com/COSA/default.aspx
+code_edition:
+  value: "2023 National Electrical Code (as adopted and amended by City of San Antonio Chapter 10)"
+  effective_date: unknown
+  quote: "2023 National Electrical Code"
+  url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB170.pdf
+who_may_file:
+  owner_may_file: false
+  conditions: "Electrical permits can only be obtained by licensed electrical contractors registered with the City (homeowners may only pull plumbing permits for an existing homestead)"
+  quote: "Separate permits are required for trade work and can only be obtained by licensed contractors (mechanical, electrical, plumbing)."
+  url: https://www.sa.gov/Directory/Departments/DSD/Resources/Getting-Started
+utility:
+  name: CPS Energy
+  requirements:
+    - item: "Submit new or modified electric service requests through the CPS Energy Customer Engineering Web Portal"
+      quote: "CPS Energy has a Customer Engineering Web Portal to request new electric or gas services, security lights or to change an existing service."
+      url: https://www.sa.gov/Directory/Departments/DSD/Resources/Getting-Started
+    - item: "Exterior service disconnect required by CPS Energy for one- and two-family dwellings"
+      quote: "(Note: CPS Energy requires exterior service disconnect for dwellings)."
+      url: https://docsonline.sanantonio.gov/DSDUploads/20221109DSD_GSABA_ElectricalCode.pdf
+    - item: "Submit online registration, One-Line Diagram, Site Layout/Plan, Photos, Equipment Specs, and DER Application to cpsesolar@cpsenergy.com for solar PV"
+      quote: "Step 2: Submit online registration form & preconstruction documentation: One-Line Diagram, Site Layout/Plan and Photos, Equipment Specifications, and the Distributed Energy Resource (DER) Application to cpsesolar@cpsenergy.com."
+      url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+    - item: "City DSD inspection approval must be passed and sent to CPS Energy for utility release"
+      quote: "If appropriate inspections are passed, the approval is manually sent to CPS Energy for the release."
+      url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB104a.pdf
+jobs:
+  ev_charger:
+    permit_required:
+      value: yes
+      quote: "Any owner or authorized agent who intends to construct, enlarge, alter, repair, move, demolish, or change the occupancy of a building or structure, to include a sign or billboard, or to erect, install, enlarge, alter, repair, remove, convert or replace any electrical, gas, mechanical or plumbing."
+      url: https://docsonline.sanantonio.gov/DSDUploads/2024Ch10Building-RelatedCodesFinal.pdf
+    plans_required_single_family:
+      value: no
+      program_name: "BuildSA Online Electrical Permit (General Electrical Permit)"
+      quote: "Professional Engineer sealed electrical drawings and plan review ($100) will be required if answering yes to any of the following questions below: Y N. Is any equipment over 600 amps @ 250 volts or less or over 400amps @ 250 volts or greater?"
+      url: https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      - item: "Electrical Permit Application submitted via BuildSA portal (or in person) with contractor license, address, and work summary"
+        section: application
+        quote: "Property Owner Name: Registration Holder Name: Registration Holder #: Delegate Name (if applicable): Contractor / Company Name: Contractor / Company State License #:"
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf
+        page: 1
+      - item: "Itemized quantities of electrical equipment/circuits to be installed, repaired, or modified for fee calculation"
+        section: equipment
+        quote: "Enter the quantity of items that will be installed, repaired, or modified in an way in the associated permit area(s) below."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf
+        page: 2
+      - item: "Indication of whether work with CPS Energy is required"
+        section: utility
+        quote: "Work With CPS required? YES. NO."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf
+        page: 1
+    load_calculation:
+      method: not_stated
+      city_worksheet: "none"
+      ev_charger_load_factor: not_stated
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Electronic upload via BuildSA Citizen Access Portal"
+      signature_or_stamp: "Professional Engineer sealed electrical drawings required only if equipment >600A at <=250V, >400A at >=250V, >600V, or work area >1 floor or >5,000 sq ft"
+      quote: "Ensure all documentation is available in electronic format to upload to Citizen Access."
+      url: https://docsonline.sanantonio.gov/FileUploads/DSD/BuildSAElectronicDocumentReviewFAQs.pdf
+    local_rules:
+      - rule: "Every permit expires within 180 days if no proof of work or progress is shown"
+        quote: "Every permit application and permit will expire within 180 days if no proof of work or progress has been shown."
+        url: https://www.sa.gov/Directory/Departments/DSD/Constructing/Business-Commercial/Permit-Process
+      - rule: "Applicant is responsible for verifying any applicable CC&Rs (see Information Bulletin 234)"
+        quote: "It is imperative and incumbent upon you the applicant to verify the existence of any CC&Rs that may be applicable to your project. See Information Bulletin 234 for additional information."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/DSD_Electrical_Application.pdf
+    searched:
+      - "site:sa.gov OR site:sanantonio.gov \"EV charger\" OR \"electric vehicle\" electrical permit"
+      - "site:sa.gov OR site:sanantonio.gov \"electrical permit\" residential"
+  service_upgrade:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      - rule: "CPS Energy requires an exterior service disconnect for one- and two-family dwellings"
+        quote: "(Note: CPS Energy requires exterior service disconnect for dwellings)."
+        url: https://docsonline.sanantonio.gov/DSDUploads/20221109DSD_GSABA_ElectricalCode.pdf
+      - rule: "Every permit expires within 180 days if no proof of work or progress is shown"
+        quote: "Every permit application and permit will expire within 180 days if no proof of work or progress has been shown."
+        url: https://www.sa.gov/Directory/Departments/DSD/Constructing/Business-Commercial/Permit-Process
+    searched:
+      - "site:sa.gov OR site:sanantonio.gov \"service upgrade\" OR \"panel\" OR \"subpanel\" electrical permit"
+      - "site:sa.gov OR site:sanantonio.gov \"electrical permit\" residential"
+  subpanel:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:sa.gov OR site:sanantonio.gov \"service upgrade\" OR \"panel\" OR \"subpanel\" electrical permit"
+      - "site:sa.gov OR site:sanantonio.gov \"electrical permit\" residential"
+  appliance_circuit:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:sa.gov OR site:sanantonio.gov \"electrical permit\" residential"
+      - "site:sa.gov OR site:sanantonio.gov \"service upgrade\" OR \"panel\" OR \"subpanel\" electrical permit"
+  generator:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:sa.gov OR site:sanantonio.gov \"generator\" electrical permit residential"
+      - "site:sa.gov OR site:sanantonio.gov \"electrical permit\" residential"
+  solar_storage:
+    permit_required:
+      value: yes
+      quote: "Apply on-line by filling out the electronic application, which includes the address, contact information, and questions related to the solar – PV work."
+      url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+    plans_required_single_family:
+      value: yes
+      program_name: "DSD Photovoltaic Permit Application (BuildSA Building Module; technical plan review goal 3 working days)"
+      quote: "Once files are uploaded, the City of San Antonio receives notice of the application and checks for completeness of the application and documents prior to the start of technical plan review."
+      url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+    checklist_published: true
+    checklist:
+      title: "Information Bulletin 153: Requirements for Solar Photovoltaic Systems (PV) (Commercial/Residential)"
+      revision_date: "May 2025"
+      url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+    requirements:
+      - item: "Online DSD Photovoltaic permit application submitted by a Master Electrician via BuildSA building module"
+        section: application
+        quote: "The master electrician must be the applicant. Others may be added as contacts to the application record. The application is located under the building module tab in the customer portal."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+        page: 3
+      - item: "Site Plan showing existing/proposed structures, setbacks to property/lot lines, and main electrical service wall layout"
+        section: site_plan
+        quote: "1) Site Plan – showing the location of: a) Existing structures on the property. i) Location of any newly proposed structures. ii) Provide set back locations and dimensions to property lines and internal lot lines. b) Main Electrical Service."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+        page: 3
+      - item: "Texas-licensed PE structural calculations if roof array >6 lbs/sq ft on <4:12 pitch, >=2 roof coverings, or new support structure"
+        section: other
+        quote: "Single Family, R-3, duplex, and townhome buildings shall require Engineering calculations from an engineer licensed in the State of Texas for roof-mounted array systems where any of the following occur:"
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+        page: 4
+      - item: "CPS Energy preconstruction package: One-Line Diagram, Site Layout/Plan, Photos, Equipment Specs, and DER Application"
+        section: utility
+        quote: "Step 2: Submit online registration form & preconstruction documentation: One-Line Diagram, Site Layout/Plan and Photos, Equipment Specifications, and the Distributed Energy Resource (DER) Application to cpsesolar@cpsenergy.com."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+        page: 1
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Electronic upload via BuildSA Customer Portal"
+      signature_or_stamp: "Texas-licensed PE stamp required for structural calculations when roof slope <4:12 with >6 lbs/sq ft, >=2 roof coverings, or new structure"
+      quote: "Any revised file or sheet should contain all the information supplied in the original plus indications of corrections made."
+      url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+    local_rules:
+      - rule: "Master Electrician must be the primary applicant on the DSD Photovoltaic permit application"
+        quote: "The master electrician must be the applicant."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+      - rule: "Rough-in and final solar inspections are typically requested at the same time via BuildSA"
+        quote: "Typically, the rough-in and final are called at the same time."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+      - rule: "Systems >=25 kW AC are forwarded to CPS Energy DER Engineering Team for additional review"
+        quote: "(Note: =>25kW AC systems will be forwarded to DER Engineering Team for review)."
+        url: https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf
+    searched:
+      - "site:sa.gov OR site:sanantonio.gov \"solar\" OR \"photovoltaic\" OR \"battery\" permit residential"
+      - "site:sa.gov OR site:sanantonio.gov \"electrical permit\" residential"
+open_questions:
+  - "The exact effective date of City of San Antonio's adoption of the 2023 National Electrical Code could not be confirmed verbatim from the indexed excerpts of https://docsonline.sanantonio.gov/DSDUploads/2024Ch10Building-RelatedCodesFinal.pdf."
+  - "Pages 4–6 of Information Bulletin 153 (https://docsonline.sanantonio.gov/FileUploads/dsd/IB153.pdf) were only partially indexed; specific electrical one-line diagram details and residential battery energy storage system (ESS) submittal items could not be fully verified."
+  - "No dedicated City of San Antonio single-family residential electrical submittal checklist was found for standalone Level 2 EV chargers, main panel/service upgrades, subpanels, 240 V appliance circuits, or standby/portable generators on sa.gov or docsonline.sanantonio.gov."
+  - "No City of San Antonio-published residential electrical load calculation worksheet, mandatory NEC 220 method (220.82 vs. 220.83 vs. 220.87), EV charger service load factor, or minimum plan sheet size was found on sa.gov or docsonline.sanantonio.gov."

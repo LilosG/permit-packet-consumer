@@ -1,0 +1,236 @@
+jurisdiction_key: austin-tx
+city: Austin
+state: TX
+checked_on: 2026-11-24
+agency: City of Austin Development Services Department
+portal_url: https://www.austintexas.gov/development-services/apply-standalone-permit
+code_edition:
+  value: "2026 National Electrical Code (NEC) with City of Austin Local Amendments"
+  effective_date: 2026-09-01
+  quote: "National Electrical Code (NEC) 2023. * 2026 Effective September 1, 2026."
+  url: https://www.austintexas.gov/development-services/building-technical-codes
+who_may_file:
+  owner_may_file: true
+  conditions: "Homeowner must have a homestead exemption filed with county tax appraisal district, own/occupy property as of Jan 1, apply in person with affidavit and photo ID, not pull another homestead permit within 12 months, and work cannot include the main electric service."
+  quote: "The person must have a homestead exemption filed with the tax appraisal district of the county where the property is located. The work is performed in the homestead and principal residence of the person, and the work does not include: * the main electric service."
+  url: https://www.austintexas.gov/development-services/homeowners-permit
+utility:
+  name: "Austin Energy"
+  requirements:
+    - item: "Submit Electric Service Planning Application (ESPA) per main disconnect or distribution enclosure"
+      quote: "Fill out one ESPA per main disconnect or distribution enclosure. Review of this application may result in a request for additional information."
+      url: https://austinenergy.com/-/media/project/websites/austinenergy/commercial/pdfs-and-files/espaformv1.pdf?rev=4f6683646fb24329b451bdd4fcf9e6ab&sc_lang=en&hash=C9CE5E7C7B2A7BC61FF628464E9FE422
+    - item: "Email ESPA to aebspaespa@austinenergy.com for services <=350A single-phase; submit online at Distribution Design Intake if >350A"
+      quote: "a) All services equal to or under 350A. single-phase or 225A three-phase. b) All service over 350A single-phase or 225A three-phase."
+      url: https://austinenergy.com/-/media/project/websites/austinenergy/commercial/pdfs-and-files/espaformv1.pdf?rev=4f6683646fb24329b451bdd4fcf9e6ab&sc_lang=en&hash=C9CE5E7C7B2A7BC61FF628464E9FE422
+    - item: "Submit signed Residential Interconnection Agreement with DGPA for all residential solar/ESS Auxiliary Power permits"
+      quote: "A signed version of this document must be submitted with the Distributed Generation Planning Application (DGPA) for Auxiliary Power Electric Permits."
+      url: https://austinenergy.com/-/media/Project/Websites/AustinEnergy/Green-Power/Solar/Residential-Solar-Interconnection-Agreement.pdf
+    - item: "Austin Energy must conduct a final inspection of solar/ESS prior to interconnection"
+      quote: "Austin Energy must conduct a final inspection of the system prior to interconnection."
+      url: https://austinenergy.com/-/media/Project/Websites/AustinEnergy/Green-Power/Solar/Residential-Solar-Interconnection-Agreement.pdf
+    - item: "SB 1202 third-party review does not override Austin Energy tariff, interconnection, or service policies"
+      quote: "SB 1202 §247.0025. b specifically reserves a municipal utility's right to implement and enforce its tariff and interconnection and service policies."
+      url: https://www.austintexas.gov/development-services/apply-standalone-permit
+jobs:
+  ev_charger:
+    permit_required:
+      value: yes
+      quote: "Except as specified in Section 80.19(C)(3), a person who intends to install, alter, repair, replace, or remodel an electrical system must apply for and obtain a permit before the activity commences."
+      url: https://services.austintexas.gov/edims/document.cfm?id=413971
+    plans_required_single_family:
+      value: no
+      program_name: "Stand-Alone Electrical Permit (AB+C Portal)"
+      quote: "Electrical Upgrade. This stand-alone permit is for electrical upgrade work that does not require a formal review by plan review staff."
+      url: https://www.austintexas.gov/development-services/types-permits
+    checklist_published: false
+    checklist:
+      title: "unknown"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      - item: "Registered licensed electrical contractor applies via AB+C Portal (or qualifying homeowner via Homestead Permit)"
+        section: application
+        quote: "A licensed and registered Trade Contractor is required to request the associated Mechanical, Electrical, or Plumbing Permit and be assigned to it."
+        url: https://www.austintexas.gov/development-services/apply-standalone-permit
+        page: null
+    load_calculation:
+      method: not_stated
+      city_worksheet: "none"
+      ev_charger_load_factor: not_stated
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Online via Austin Build + Connect (AB+C) Portal"
+      signature_or_stamp: "not_stated"
+      quote: "The trade contractor listed on the permit must have an AB+C Portal account."
+      url: https://www.austintexas.gov/development-services/apply-standalone-permit
+    local_rules:
+      - rule: "All 30A, 50A, and 60A receptacles for EV charging must be listed for EVSE use (Art. 625.44(B))"
+        quote: "All 30A, 50A, and 60A receptacles for EV charging must be listed for EVSE use. Art. 625.44(B) Hand Fastened Equipment."
+        url: https://services.austintexas.gov/edims/document.cfm?id=466271
+    searched:
+      - "site:austintexas.gov \"electric vehicle\" OR \"EV charger\" residential electrical permit"
+      - "site:austintexas.gov \"Stand-Alone\" \"Electrical\" residential \"EV\" OR \"charger\""
+  service_upgrade:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "Types of Permits - Electrical Upgrade"
+      revision_date: "unknown"
+      url: https://www.austintexas.gov/development-services/types-permits
+    requirements:
+      - item: "Registered licensed electrical contractor applies for Stand-Alone Electrical Upgrade permit via AB+C Portal"
+        section: application
+        quote: "You must be registered as a contractor before you apply. Go to the Contractor Registration webpage to register. AB+C Portal."
+        url: https://www.austintexas.gov/development-services/types-permits
+        page: null
+      - item: "Submit Electric Service Planning Application (ESPA) to Austin Energy for service upgrade"
+        section: utility
+        quote: "You must submit the Electric Service Planning Application (ESPA) form in different ways depending on the kind of service you need."
+        url: https://austinenergy.com/contractors/Construction-Renovation/Electric-Service-Planning-Application
+        page: null
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      - rule: "Homestead Permit cannot be used for main electric service work; licensed electrical contractor required"
+        quote: "(ii) the electrical work does not include the main electric system;"
+        url: https://services.austintexas.gov/edims/document.cfm?id=466271
+      - rule: "Electrical permit required to remove an Austin Energy meter seal"
+        quote: "In addition an electrical permit shall be required to remove an Austin Energy meter seal."
+        url: https://services.austintexas.gov/edims/document.cfm?id=159607
+    searched:
+      - "site:austintexas.gov \"Stand-Alone\" \"Electrical\" residential \"service\" OR \"panel\""
+  subpanel:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      same_as: service_upgrade
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules: []
+    searched:
+      - "site:austintexas.gov \"Stand-Alone\" \"Electrical\" residential \"service\" OR \"panel\""
+  appliance_circuit:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      same_as: service_upgrade
+    requirements:
+      same_as: ev_charger
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules: []
+    searched:
+      - "site:austintexas.gov \"Stand-Alone\" \"Electrical\" residential"
+  generator:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      value: depends
+      program_name: "Stand-Alone Trade Permit for Backup Power Installations (SB 1202) or Auxiliary Power EP"
+      quote: "It allows third-party professionals to review and inspect home backup power installations, like generators and battery storage, up to 600 volts for one- or two-family homes."
+      url: https://www.austintexas.gov/development-services/apply-standalone-permit
+    checklist_published: false
+    checklist:
+      title: "Apply for a Stand-Alone Trade Permit for Backup Power Installations (SB 1202)"
+      revision_date: "unknown"
+      url: https://www.austintexas.gov/development-services/apply-standalone-permit
+    requirements:
+      - item: "Apply for Repair Stand-Alone Permit in AB+C Portal with description 'SB 1202 Home Back Up Installation - Generator'"
+        section: application
+        quote: "Apply for a Repair Stand-Alone Permit using the Austin Build + Connect (AB+C) Portal. This will serve as your notice to the City of Austin. Enter in the description: SB 1202 Home Back Up Installation - (Generator, Solar, or Battery)"
+        url: https://www.austintexas.gov/development-services/apply-standalone-permit
+        page: null
+      - item: "Upload Third-Party Review Compliance Letter signed by licensed engineer, master electrician, or certified inspector under SB 1202"
+        section: other
+        quote: "The letter must be signed by a licensed engineer, master electrician or certified inspector authorized under SB 1202 §247.002. Provide seal, registration number, license number, or certification number."
+        url: https://www.austintexas.gov/development-services/apply-standalone-permit
+        page: null
+      - item: "Interconnected spinning generators require an Auxiliary Power Electrical Permit and Austin Energy DGPA/Transformer Capacity Review"
+        section: utility
+        quote: "ALL Solar Distributed Generation (DG) Systems, Energy Storage Systems (ESS), and/or Interconnected Spinning Generators in Austin Energy (AE) territory require an Auxiliary Power Electrical Permit (EP)."
+        url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+        page: 1
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      - rule: "SB 1202 permits must be issued within three business days upon third-party approval notice"
+        quote: "Permits must be issued within three business days upon notice from the third-party of associated approval."
+        url: https://www.austintexas.gov/development-services/apply-standalone-permit
+    searched:
+      - "site:austintexas.gov \"generator\" residential electrical permit \"transfer switch\" OR \"SB 1202\""
+  solar_storage:
+    permit_required:
+      value: yes
+      quote: "ALL Solar Distributed Generation (DG) Systems, Energy Storage Systems (ESS), and/or Interconnected Spinning Generators in Austin Energy (AE) territory require an Auxiliary Power Electrical Permit (EP)."
+      url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+    plans_required_single_family:
+      value: depends
+      program_name: "Auxiliary Power Electrical Permit (AB+C Portal) or SB 1202 Home Backup Permit"
+      quote: "Austin Energy Distributed Generation Plan Review (DGPR) applies if/when: a. The proposed DG project includes an Energy Storage System (ESS)"
+      url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+    checklist_published: true
+    checklist:
+      title: "Austin Energy Solar Permitting Manual"
+      revision_date: "May 2026"
+      url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+    requirements:
+      - item: "Distributed Generation Planning Application (DGPA), Wire Diagram, and Equipment Spec Sheets attached in AB+C Portal"
+        section: one_line
+        quote: "These figures should match the attached DGPA (required), Wire Diagram (required), and Equipment Spec Sheets."
+        url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+        page: null
+      - item: "Signed Residential Interconnection Agreement reviewed and approved by Austin Energy prior to permit activation"
+        section: utility
+        quote: "For all Residential DG projects, as well as Commercial DG projects at/over 500 kW-ac, an Interconnection Agreement is required, and will need to be reviewed and approved by AE staff prior to permit activation."
+        url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+        page: null
+      - item: "Residential Plan Review with Building Permit required for residential solar shingles or ground-mounted systems"
+        section: other
+        quote: "Residential solar shingles or Ground-mounted systems. o Residential Plan Review with Building Permit required."
+        url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+        page: 1
+      - item: "All associated permitted work must be in 'Final' status before scheduling Final Solar Inspection"
+        section: other
+        quote: "To ensure safe interconnection, all associated permitted work must be completed (with corresponding permits in 'Final' status) BEFORE scheduling a Final Solar Inspection."
+        url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+        page: null
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      - rule: "Austin Energy DGPA / Transformer Capacity Review applies if proposed Solar + ESS capacity >= 25 kW-ac or on Downtown Network"
+        quote: "a. The proposed DG output (Solar + ESS) capacity is greater than or equal to 25 kW-ac b. The proposed DG project will be interconnected to the Downtown Network (DCM: page 116)"
+        url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+      - rule: "If installing ESS, application must answer 'ESS installed on the solar side of PV meter?' (Yes/No)"
+        quote: "If installing ESS, the question “ESS installed on the solar side of PV meter?” – Yes / No, is required."
+        url: https://austinenergy.com/-/media/project/websites/austinenergy/green-power/solar/austinenergy_solarpermittingmanual.pdf?rev=9ce6cd025f3d4b138da6473b34e7a3c4&sc_lang=en&hash=8F0D5D3B092A56C67FE98BD7F6DBDF97
+    searched:
+      - "site:austintexas.gov \"Solar\" \"Residential\" permit \"battery\" OR \"SolarAPP\" OR \"Auxiliary Power\""
+      - "site:austinenergy.com \"Distributed Generation\" OR \"DGPA\" OR \"interconnection\" residential solar battery"
+open_questions:
+  - "No City of Austin residential electrical load calculation worksheet or EV charger load factor was found on austintexas.gov; confirm whether DSD requires a specific NEC 220 method for single-family stand-alone electrical permits."
+  - "The Qualifications for Stand-Alone Permits section on https://www.austintexas.gov/development-services/apply-standalone-permit was not fully expanded in search snippets; verify directly on the page whether any residential EV charger, subpanel, or 240V appliance circuit scopes trigger Residential Plan Review."
+  - "Confirm whether Austin DSD requires a standard (non-SB 1202) Residential Plan Review for non-interconnected standby generators with manual transfer switches or interlock kits when not using the SB 1202 third-party review path."

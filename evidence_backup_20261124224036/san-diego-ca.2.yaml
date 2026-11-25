@@ -1,0 +1,295 @@
+jurisdiction_key: san-diego-ca
+city: San Diego
+state: CA
+checked_on: 2026-11-24
+agency: City of San Diego Development Services Department
+portal_url: https://aca-prod.accela.com/sandiego/Default.aspx
+code_edition:
+  value: "2025 California Electrical Code (2023 NEC)"
+  effective_date: 2026-01-01
+  quote: "Optional Method: 2025 California Electrical Code Section 220-82 (based on 2023 NEC)"
+  url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf
+who_may_file:
+  owner_may_file: true
+  conditions: "Property owner or lessee may be issued an electrical permit; property owner doing the work or hiring different contractors must sign and upload Owner-Builder Verification Form (DS-3042) before permit issuance."
+  quote: "If the property owner is doing the work or is hiring different contractors, a separate Owner-Builder Verification Form (DS-3042) must be signed by the owner before the permit can be issued."
+  url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103
+utility:
+  name: "San Diego Gas & Electric (SDG&E)"
+  requirements:
+    - item: "Submit service request through SDG&E My Project Center with scope, site plans, and load calculations"
+      quote: "You can begin by submitting a service request through the My Project Center. Make sure to have your detailed project scope, site plans and load calculations ready."
+      url: https://www.sdge.com/myprojectcenter
+    - item: "Provide loads for all existing electric and gas appliances when applying for a change in existing service"
+      quote: "If you are applying for a change in existing service, we will contact you to request the loads for ALL electric and gas appliances that exist."
+      url: https://www.sdge.com/apply-service
+    - item: "Obtain service and meter location from SDG&E for new services, relocations, and service upgrades"
+      quote: "To obtain a service and meter location for new electric services, service relocations, and service upgrades for residential customers up to 400 amps"
+      url: https://www.sdge.com/sites/default/files/SG.pdf
+    - item: "Set up billing account and complete local AHJ inspections prior to energization"
+      quote: "Be sure the billing account is set up and local inspections are completed so your project will be ready for service."
+      url: https://www.sdge.com/myprojectcenter
+    - item: "SDG&E performs final inspection, testing, and meter set before energization"
+      quote: "We'll do a final inspection, complete testing, and set the meter."
+      url: https://www.sdge.com/myprojectcenter
+    - item: "Submit solar/battery interconnection application via SDG&E DIIS Online Application Portal"
+      quote: "Applications can be submitted and tracked through the DIIS Online Application Portal."
+      url: https://www.sdge.com/solar/solar-and-battery-installation-center
+jobs:
+  ev_charger:
+    permit_required:
+      value: yes
+      quote: "An Electrical Permit is required for the installation of an EVCS."
+      url: https://www.sandiego.gov/sites/default/files/2025-04/ib-187-how-to-obtain-a-permit-for-electric-vehicle-charging-systems-city-www.sandiego.gov_.pdf
+    plans_required_single_family:
+      value: no
+      program_name: "Simple Permits (Simple No-Plan Electrical Permit)"
+      quote: "EVCS installed for single dwelling units, duplexes, or townhouses qualify for Simple Permits and do not require plans for review."
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187
+    checklist_published: true
+    checklist:
+      title: "Information Bulletin 187 - How to Obtain a Permit for Electric Vehicle Charging Systems"
+      revision_date: "May 2026"
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187
+    requirements:
+      - item: "Completed Circuit Card (DS-1779A) with load calculations provided on site for inspection"
+        section: load
+        quote: "In lieu of plans, a completed City of San Diego Circuit Card (DS- 1779A) will be required for residential private garages (inside/outside). Load calculations must be included on the Circuit Card."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187
+        page: null
+      - item: "EVCS manufacturer's installation instructions provided on site for inspection"
+        section: equipment
+        quote: "In addition to all plans and calculations, the EVCS manufacturer's installation instructions shall be provided on site."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187
+        page: null
+      - item: "EVSE listed and labeled by a Nationally Recognized Testing Laboratory"
+        section: equipment
+        quote: "Electric Vehicle (EV) supply equipment (EVSE) shall be listed and labeled by a Nationally Recognized Testing Laboratory."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187
+        page: null
+      - item: "Owner-Builder Verification Form (DS-3042) uploaded if property owner pulls the permit"
+        section: application
+        quote: "Owner-Builders must also upload the Owner-Builder Verification Form DS-3042."
+        url: https://www.sandiego.gov/development-services/permits/simple-permits
+        page: null
+    load_calculation:
+      method: nec_220_82
+      city_worksheet: "Form DS-1779A (Circuit Card Supplemental), https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf"
+      ev_charger_load_factor: not_stated
+      quote: "9. EVCS Load (220-57) at 7200 VA or name plate ="
+      url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "not_stated"
+      signature_or_stamp: "not_stated"
+      quote: "EVCS installed for single dwelling units, duplexes, or townhouses qualify for Simple Permits and do not require plans for review."
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187
+    local_rules:
+      - rule: "Circuit Card (DS-1779A) and listing equipment must be provided on site for inspection"
+        quote: "The Circuit Card must be provided at the site for the inspection staff with listing equipment."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187
+      - rule: "Provide access to electrical service equipment at inspection; inspectors do not open energized equipment"
+        quote: "Access shall be provided to all equipment, including the electrical service equipment that supplies power to the EVCS. Inspectors are not authorized to open energized electrical equipment."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187
+      - rule: "Historic designated resources and historic districts do not qualify for Simple Permits and require plans"
+        quote: "Note that historical designated resources and projects in historic districts do not qualify for Simple Permits-MEP and must be submitted as a Standalone MEP permit with plans."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103
+    searched:
+      - "site:sandiego.gov \"DS-1779A\" \"Circuit Card\" load calculation"
+      - "site:sandiego.gov/development-services/forms-publications/information-bulletins/187"
+  service_upgrade:
+    permit_required:
+      value: yes
+      quote: "Applicants must obtain Electrical Permit for all electrical work and shall only be issued to a person, firm, or corporation that holds a valid California State Contractor's License that permits electrical installation or to the property owner or lessee."
+      url: https://www.sandiego.gov/development-services/permits/electrical-permit/plan
+    plans_required_single_family:
+      value: depends
+      program_name: "Simple Permits - MEP"
+      quote: "Items listed in the following tables that qualify for Simple Permits-MEP do not require a plan review and can be applied for through the online portal by selecting 'Simple Permits'."
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103
+    checklist_published: false
+    checklist:
+      title: "Fee Schedule for Mechanical, Electrical, Plumbing/Gas Permits (Information Bulletin 103)"
+      revision_date: "May 2026"
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103
+    requirements:
+      - item: "Completed Electrical Circuit Card (DS-1779) available on the job site for rough inspection"
+        section: panel_schedule
+        quote: "This card must be filled out and available on the job site for the rough inspection."
+        url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf
+        page: 1
+      - item: "Service bond/ground wire size, type, and clamp locations documented on Circuit Card (DS-1779)"
+        section: gec
+        quote: "Service Bond/Ground Information: (a) New OR Existing. (b) Bond/Ground Wire(s): Size(s) ___________ Type: AL OR CU."
+        url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf
+        page: 1
+      - item: "Branch-circuit, feeder, and service load calculations on Supplemental Circuit Card (DS-1779A)"
+        section: load
+        quote: "Branch-Circuit, Feeder, and Service Load Calculations."
+        url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf
+        page: 2
+      - item: "Stamped and signed electrical plan and calculations when plans are required"
+        section: one_line
+        quote: "The electrical plan and calculations shall be stamped and signed in accordance with the California Business and Professional Code."
+        url: https://www.sandiego.gov/development-services/permits/electrical-permit/plan
+        page: null
+    load_calculation:
+      method: nec_220_82
+      city_worksheet: "Form DS-1779A (Circuit Card Supplemental), https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf"
+      ev_charger_load_factor: not_stated
+      quote: "Optional Method: 2025 California Electrical Code Section 220-82 (based on 2023 NEC)"
+      url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779a.pdf
+    sheet_requirements:
+      sheet_size: "11x17 minimum, 36x48 maximum (when plans required)"
+      copies_or_format: "PDF upload, 200MB max (when plans required)"
+      signature_or_stamp: "Stamped and signed per California Business and Professional Code (when plans required)"
+      quote: "However, plans must be at minimum 11- by 17-inches and a maximum of 36- by 48-inches."
+      url: https://www.sandiego.gov/sites/default/files/apply_for_a_discretionary_permit.pdf
+    local_rules:
+      - rule: "Panel replace/upgrade up to 200 amp qualifies for Simple Permits - MEP"
+        quote: "Panel Replace/Upgrade up to 200 amp"
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103
+      - rule: "Circuit breakers exceeding 400 amps require a stand-alone Electrical Permit with building plans"
+        quote: "Circuit breakers exceeding 400 amps require a stand-alone Electrical Permit with building plans."
+        url: https://www.sandiego.gov/development-services/what-permits-do-i-need
+      - rule: "All circuit breakers must be permanently labeled at service and feeder panel dead fronts"
+        quote: "All circuit breakers to be permanently labeled at all service and feeder panel dead fronts."
+        url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf
+    searched:
+      - "site:sandiego.gov \"Simple\" \"service\" \"upgrade\" OR \"panel\" electrical permit"
+      - "site:sandiego.gov/development-services/forms-publications/information-bulletins/103 \"Panel Replace/Upgrade\""
+  subpanel:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      value: depends
+      program_name: "Simple Permits - MEP"
+      quote: "Circuit Breakers (15 – 400 amps) Circuit breakers exceeding 400 amps require a stand-alone Electrical Permit with building plans."
+      url: https://www.sandiego.gov/development-services/what-permits-do-i-need
+    checklist_published: false
+    checklist:
+      same_as: service_upgrade
+    requirements:
+      same_as: service_upgrade
+    load_calculation:
+      same_as: service_upgrade
+    sheet_requirements:
+      same_as: service_upgrade
+    local_rules:
+      - rule: "Limit of 15 current-consuming devices per general use circuit and 4 per 20-amp small appliance circuit"
+        quote: "San Diego Electrical Policy limits current consuming devices to a maximum of 15 per general use circuit and 4 per small appliance (20 amp.) circuit."
+        url: https://www.sandiego.gov/sites/default/files/legacy/development-services/pdf/industry/forms/ds1779.pdf
+    searched:
+      - "site:sandiego.gov \"subpanel\" OR \"sub-panel\" electrical permit"
+      - "site:sandiego.gov/development-services/forms-publications/information-bulletins/103 \"Circuits 50-200 Amps\""
+  appliance_circuit:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      same_as: service_upgrade
+    checklist_published: false
+    checklist:
+      same_as: service_upgrade
+    requirements:
+      same_as: service_upgrade
+    load_calculation:
+      same_as: service_upgrade
+    sheet_requirements:
+      same_as: service_upgrade
+    local_rules:
+      same_as: service_upgrade
+    searched:
+      - "site:sandiego.gov \"hot tub\" OR \"spa\" OR \"heat pump\" \"Simple Permits\" electrical"
+      - "site:sandiego.gov/development-services/forms-publications/information-bulletins/103 \"Spa\" OR \"Hot Tub\""
+  generator:
+    permit_required:
+      same_as: service_upgrade
+    plans_required_single_family:
+      value: unknown
+      program_name: "none"
+      quote: "unknown"
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103
+    checklist_published: false
+    checklist:
+      title: "unknown"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: service_upgrade
+    load_calculation:
+      method: not_stated
+      city_worksheet: "none"
+      ev_charger_load_factor: not_stated
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      same_as: service_upgrade
+    local_rules: []
+    searched:
+      - "site:sandiego.gov \"generator\" electrical permit \"transfer switch\" OR \"standby\""
+      - "site:sandiego.gov \"standby generator\" OR \"backup generator\" permit residential"
+      - "site:sandiego.gov/development-services/forms-publications/information-bulletins/103 \"Generator\" OR \"Transfer\""
+  solar_storage:
+    permit_required:
+      value: yes
+      quote: "An Electrical Permit is required for the installation of photovoltaic (PV), Batteries / ESS (Energy Storage System), PV deferred from another building permit,"
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301
+    plans_required_single_family:
+      value: yes
+      program_name: "Residential Rooftop-Mounted Solar Photovoltaic (PV) Permit"
+      quote: "All applicants are required to upload Building Construction Plans and specifications. NOTE: The documents must be in PDF format."
+      url: https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit
+    checklist_published: true
+    checklist:
+      title: "Information Bulletin 301 - How to Obtain a Permit for the Installation of Solar Photovoltaic (PV) Systems"
+      revision_date: "unknown"
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301
+    requirements:
+      - item: "Building Construction Plans incorporating all elements of the Residential Solar PV Project Plan Template"
+        section: site_plan
+        quote: "Review the Residential Solar PV Project Plan Template and incorporate all elements outlined within the template into your design. All applicants are required to upload Building Construction Plans and specifications."
+        url: https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit
+        page: null
+      - item: "Single-Line Diagram showing complete rating information of the existing electrical system"
+        section: one_line
+        quote: "Show the existing electrical system's complete rating information for the purpose of determining adequate interconnection of the PV system."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301
+        page: null
+      - item: "Manufacturer's specifications for PV modules, racking, inverters, batteries/ESS, and meter"
+        section: equipment
+        quote: "Provide the manufacturer's specifications for the proposed PV modules, racking, inverter(s), batteries/ESS, and meter."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301
+        page: null
+      - item: "Plans stamped and signed by CA Civil/Electrical Engineer or C-10, B, or C-46 contractor"
+        section: other
+        quote: "PV or batteries/ESS plans may be stamped and signed by a California registered Civil or Electrical Engineer or a licensed Electrical Contractor (C-10 License), General Contractor (B License) or Solar Contractor (C-46 License) who is responsible for the design and installation of the system."
+        url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301
+        page: null
+    load_calculation:
+      method: not_stated
+      city_worksheet: "none"
+      ev_charger_load_factor: not_stated
+      quote: "unknown"
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301
+    sheet_requirements:
+      sheet_size: "11x17 minimum, 36x48 maximum"
+      copies_or_format: "PDF format upload"
+      signature_or_stamp: "CA Civil/Electrical Engineer or C-10, B, or C-46 contractor; CA Electrical Engineer or C-10 required if panel upgrade is proposed"
+      quote: "When an electrical panel upgrade is proposed, a California-registered Electrical Engineer or a C-10 must sign and stamp the plans."
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301
+    local_rules:
+      - rule: "Residential rooftop PV permit may include panel upgrade up to 320 amps, ESS up to 38.4 kWh (20 kWh max per unit), and inverter-integrated EV charger"
+        quote: "Along with the PV installation, the following work may be included: A panel upgrade of up to 320 amps. An energy storage system of up to 38.4 kWh, with each unit not exceeding 20 kWh. An Inverter-integrated electric vehicle (EV) charger."
+        url: https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit
+      - rule: "System is not approved to energize until SDG&E approval is obtained after City final inspection"
+        quote: "After receiving final inspection approval for all related City of San Diego Approvals (permits), San Diego Gas and Electric (SDG&E) will be notified. The system is not approved to energize until SDG&E approval is obtained."
+        url: https://www.sandiego.gov/sites/default/files/solar_pv.pdf
+    searched:
+      - "site:sandiego.gov \"Information Bulletin 301\" OR \"IB-301\" solar PV"
+      - "site:sandiego.gov \"SolarAPP+\" OR \"SolarAPP\" permit"
+      - "site:sandiego.gov \"Energy Storage\" OR \"battery storage\" residential permit"
+open_questions:
+  - "Information Bulletin 103 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103) lists 'Generator Only' in its fee table, but the full table row indicating whether it qualifies for Simple Permits - MEP or requires plans was not readable in search snippets; verify directly on IB-103."
+  - "No dedicated City of San Diego Information Bulletin or submittal checklist for residential standby/portable generators with interlocks or transfer switches was found on sandiego.gov; confirm with DSD whether plans are always required."
+  - "Verify whether City of San Diego accepts SolarAPP+ for residential rooftop solar PV and battery storage; no official sandiego.gov page for SolarAPP+ was returned in search results."
+  - "Information Bulletin 301 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301) exact printed revision date should be confirmed directly on the HTML page."

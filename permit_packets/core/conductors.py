@@ -141,6 +141,8 @@ def conduit_with_egc(conductor: Conductor, egc: str, conduit_type: str) -> str:
 
 def solar_fits(bus_amps: int, main_amps: int, pv_breaker_amps: int) -> bool:
     """NEC 705.12(B)(3)(2): main plus PV breaker within 120% of the bus, PV breaker at the far end."""
+    if main_amps > bus_amps:
+        return False
     return main_amps + pv_breaker_amps <= BUS_BACKFEED_FACTOR * bus_amps
 
 

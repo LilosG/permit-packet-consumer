@@ -8,6 +8,8 @@ from fastapi.testclient import TestClient
 import app as app_module
 from permit_packets import calculators as calc
 from permit_packets import wave2
+from permit_packets.core.conductors import solar_fits
+from permit_packets.wave2_content import DOCS
 
 
 @pytest.fixture(scope="module")
@@ -181,6 +183,13 @@ def test_solar_boundaries(bus, main, pv, fits):
 def test_solar_main_larger_than_bus_fails():
     result = run(SOLAR, bus_amps=200, main_amps=225, pv_breaker_amps=15)
     assert result["fits"] is False and result["max_pv_allowed"] == 0 and "408.36" in " ".join(result["notes"])
+
+
+def test_solar_fits_rejects_main_larger_than_bus_and_doc_states_ev_rule():
+    assert solar_fits(200, 225, 20) is False
+    text = " ".join(DOCS["load-calculation"].what)
+    assert "100%" in text and "125%" in text and "625.41" in text
+    assert "branch circuit" in text and "breaker" in text
 
 
 def test_solar_uses_125_percent_of_inverter_output():

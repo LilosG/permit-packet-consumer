@@ -1,0 +1,217 @@
+jurisdiction_key: atlanta-ga
+city: Atlanta
+state: GA
+checked_on: 2026-11-24
+agency: City of Atlanta Department of City Planning, Office of Buildings
+portal_url: https://aca-prod.accela.com/atlanta_ga/default.aspx
+code_edition:
+  value: "2023 National Electrical Code with no Georgia amendments (statewide mandatory minimum code)"
+  effective_date: 2025-01-01
+  quote: "New Mandatory Code and Amendment Effective January 1, 2025: 2023 National Electrical Code with no amendments."
+  url: https://dca.georgia.gov/announcement/2024-12-02/new-georgia-code-and-amendment-effective-january-1-2025
+who_may_file:
+  owner_may_file: unknown
+  conditions: "Contractors Exception and Contractors Affidavit forms are listed on the Applications, Forms, and Checklists page, but the PDFs could not be opened directly to verify homeowner electrical permit eligibility"
+  quote: "Contractor (Reference Material) * A2L REFRIGERANT PRESSURE TEST AFFIDAVIT. * Contractors Exception. * Contractors Affidavit. * Agent Affidavit Authorization."
+  url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists
+utility:
+  name: Georgia Power
+  requirements:
+    - item: "Apply for new/upgraded service via Builders Line with phase, voltage, load, and solar/generator details"
+      quote: "When contacting the Company regarding new service, be prepared to provide all information related to phase requirements, voltage, loading, etc., including any information on specific requirements. ( i.e., solar (PV) or generator)"
+      url: https://www.georgiapower.com/content/dam/georgia-power/pdfs/business-pdfs/bluebook_2023.pdf
+    - item: "Service entrance and meter socket must meet Georgia Power Blue Book and pass city/county inspection before connection"
+      quote: "An inspector from the constituted authority (e.g. city or county) inspects all wiring and equipment prior to us connecting service. We set the meter and the job is done!"
+      url: https://www.georgiapower.com/business/industry-services/construction/builders.html
+    - item: "Submit residential solar/battery interconnection application via PowerClerk with one-line drawing and panel, inverter, and battery specs"
+      quote: "Facility and technical information, including a one-line drawing and panel and inverter specifications. If battery storage is included, battery specifications must also be provided."
+      url: https://www.georgiapower.com/residential/solutions/solar/rooftop-installations/faqs.html
+    - item: "Pass county/city inspection, sign Interconnection Agreement, complete witness test/meter reprogramming, and receive Permission to Operate"
+      quote: "Once all steps have been successfully completed, the customer will receive an email from Georgia Power granting permission to turn their system on and begin generating."
+      url: https://www.georgiapower.com/business/products-programs/business-solutions/commercial-solar-solutions/installing-interconnecting.html
+jobs:
+  ev_charger:
+    permit_required:
+      value: yes
+      quote: "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)"
+      url: https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit
+    plans_required_single_family:
+      value: no
+      program_name: "Online Technical Permit / Residential Trades (Electrical) via Accela Citizen Access (ACA)"
+      quote: "The following do not require plan review and can be submitted online. * Plumbing Permits for new or replacement plumbing for one and two family residences. * Electrical permits (commercial and residential)"
+      url: https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit
+    checklist_published: true
+    checklist:
+      title: "EV Charger Affidavit Form"
+      revision_date: "unknown"
+      url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists
+    requirements:
+      - item: "Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal"
+        section: application
+        quote: "Residential Trades (Electrical, Gas Pressure Test, HVAC, Low Voltage, Plumbing, Temporary Power, Water Heater)"
+        url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting
+        page: null
+      - item: "EV Charger Affidavit Form"
+        section: application
+        quote: "EV Charger Affidavit Form."
+        url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists
+        page: null
+      - item: "Documents uploaded using DCP naming convention and document details"
+        section: application
+        quote: "Step 2 - Upload documents using DCP naming convention and the document details."
+        url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting
+        page: null
+    load_calculation:
+      method: not_stated
+      city_worksheet: "none"
+      ev_charger_load_factor: not_stated
+      quote: "unknown"
+      url: unknown
+    sheet_requirements:
+      sheet_size: "not_stated"
+      copies_or_format: "Digital submission via Accela Citizen Access (ACA) portal using DCP naming convention"
+      signature_or_stamp: "not_stated"
+      quote: "Step 2 - Upload documents using DCP naming convention and the document details."
+      url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting
+    local_rules:
+      - rule: "Expired trade permits (including electrical) cannot use the building permit renewal process and must be reissued online"
+        quote: "It does not apply to trade permits, including electrical, plumbing, or mechanical permits. Expired trade permits must be reissued online."
+        url: https://www.atlantaga.gov/i-want-to/obtain-a-building-permit
+      - rule: "Complete all required forms before having them notarized immediately prior to submitting the application"
+        quote: "Complete all forms first, then have them notarized immediately before submitting your application."
+        url: https://www.atlantaga.gov/i-want-to/obtain-a-building-permit
+    searched:
+      - "site:atlantaga.gov \"EV Charger Affidavit Form\" OR \"Description of Electrical Permits\""
+      - "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
+  service_upgrade:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      - item: "Online Residential Trades (Electrical) application via Accela Citizen Access (ACA) portal"
+        section: application
+        quote: "Residential Trades (Electrical, Gas Pressure Test, HVAC, Low Voltage, Plumbing, Temporary Power, Water Heater)"
+        url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting
+        page: null
+      - item: "Electrical Permit Application"
+        section: application
+        quote: "Electrical Permit Application."
+        url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists
+        page: null
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical"
+      - "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
+  subpanel:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: service_upgrade
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical"
+      - "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
+  appliance_circuit:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: service_upgrade
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical"
+      - "site:atlantaga.gov \"EV Charger Affidavit Form\" OR \"Description of Electrical Permits\""
+  generator:
+    permit_required:
+      same_as: ev_charger
+    plans_required_single_family:
+      same_as: ev_charger
+    checklist_published: false
+    checklist:
+      title: "none"
+      revision_date: "unknown"
+      url: unknown
+    requirements:
+      same_as: service_upgrade
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:atlantaga.gov \"generator\" OR \"subpanel\" OR \"panel upgrade\" OR \"load calculation\" electrical"
+      - "site:atlantaga.gov filetype:pdf \"electrical permit\" OR \"EV charger\""
+  solar_storage:
+    permit_required:
+      value: yes
+      quote: "Single and Two-Family (additions, alterations, conversions, demolitions, land development, new construction, pools and solar PV)"
+      url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting
+    plans_required_single_family:
+      value: yes
+      program_name: "Single and Two-Family Solar PV / Express Permitting (Submittal Info-Solar Roof Install - Express)"
+      quote: "Solar * Building Permit Packet - (Express) * PV - Inspection Checklist. * Solar Roof In Historic Districts. * Submittal Info-Solar Roof Install - Express. * Submittal Info-Solar Roof Install - Lt Com^ * Submittal Info-Solar Roof Install - Res."
+      url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists
+    checklist_published: true
+    checklist:
+      title: "Submittal Info-Solar Roof Install - Res"
+      revision_date: "unknown"
+      url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists
+    requirements:
+      - item: "Single and Two-Family Solar PV online application via Accela Citizen Access (ACA) portal"
+        section: application
+        quote: "Single and Two-Family (additions, alterations, conversions, demolitions, land development, new construction, pools and solar PV)"
+        url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/online-permitting
+        page: null
+      - item: "Submittal Info-Solar Roof Install - Res (or Express) packet and PV - Inspection Checklist"
+        section: application
+        quote: "Solar * Building Permit Packet - (Express) * PV - Inspection Checklist. * Solar Roof In Historic Districts. * Submittal Info-Solar Roof Install - Express. * Submittal Info-Solar Roof Install - Lt Com^ * Submittal Info-Solar Roof Install - Res."
+        url: https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists
+        page: null
+    load_calculation:
+      same_as: ev_charger
+    sheet_requirements:
+      same_as: ev_charger
+    local_rules:
+      same_as: ev_charger
+    searched:
+      - "site:atlantaga.gov \"Submittal Info-Solar Roof Install - Res\" OR \"PV - Inspection Checklist\""
+      - "site:atlantaga.gov filetype:pdf \"solar\" OR \"photovoltaic\" residential"
+open_questions:
+  - "The PDFs linked on https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists—including 'EV Charger Affidavit Form', 'Electrical Permit Application', 'Description of Electrical Permits & Inspections', 'Contractors Exception', 'Submittal Info-Solar Roof Install - Res', 'Submittal Info-Solar Roof Install - Express', and 'PV - Inspection Checklist'—could not be opened directly to verify their verbatim contents, revision dates, homeowner electrical permit eligibility, or battery energy storage system (ESS) rules."
+  - "Georgia Department of Community Affairs announced 2026 Georgia Amendments to the 2023 National Electrical Code effective January 1, 2027 (https://dca.georgia.gov/announcement/2025-12-09/new-codes-jan-2027); as of 2026-11-24, the 2023 NEC with no Georgia amendments remains in effect."
+  - "No City of Atlanta-published residential electrical load calculation worksheet, mandatory NEC 220 method (220.82 vs. 220.83 vs. 220.87), EV charger service load factor, or minimum plan sheet size was found on atlantaga.gov."
