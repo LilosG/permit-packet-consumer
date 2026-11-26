@@ -40,10 +40,11 @@
   "agency": "City of Fresno Planning and Development Department, Building and Safety Services Division",
   "portal_url": "https://aca-prod.accela.com/FRESNO",
   "who_may_file": {
-    "owner_may_file": "unknown",
-    "conditions": "unknown",
-    "quote": "unknown",
-    "url": "unknown"
+    "owner_may_file": true,
+    "conditions": "Owner of a detached single-family dwelling occupied or to be occupied by the owner; historical ordinance (1991-002) also required a written competency examination, while current Building Permit Center lists an Owner Builder Checklist",
+    "quote": "The owner of a single-family dwelling, including the usual accessory buildings, may obtain permits for work in such dwelling or accessory buildings provided",
+    "url": "https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository",
+    "ok": true
   },
   "utility": {
     "name": "Pacific Gas and Electric Company (PG&E)",
@@ -219,9 +220,10 @@
     },
     "subpanel": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Except as herein provided, no person shall do, install, alter, reconstruct or repair any electric wiring regulated by this Electrical Code or cause or permit the same to be done without a permit therefor from the Department.",
+        "url": "https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository",
+        "ok": true
       },
       "load_calculation": {
         "method": "unknown",
@@ -284,9 +286,10 @@
     },
     "appliance_circuit": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Except as herein provided, no person shall do, install, alter, reconstruct or repair any electric wiring regulated by this Electrical Code or cause or permit the same to be done without a permit therefor from the Department.",
+        "url": "https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository",
+        "ok": true
       },
       "load_calculation": {
         "method": "unknown",
@@ -349,9 +352,10 @@
     },
     "generator": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "Except as herein provided, no person shall do, install, alter, reconstruct or repair any electric wiring regulated by this Electrical Code or cause or permit the same to be done without a permit therefor from the Department.",
+        "url": "https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",

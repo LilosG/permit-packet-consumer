@@ -131,6 +131,8 @@ def test_last_verified_prints_only_where_set():
         "oro-valley-az": "2026-11-16",
         "portland-or": "2026-11-25",
         "san-antonio-tx": "2026-11-25",
+        "san-diego-ca": "2026-11-25",
+        "san-francisco-ca": "2026-11-25",
     }
     el_cajon = {**_model_sample("ev_charger"), "jurisdiction_key": "el-cajon-ca", "city": "El Cajon", "state": "CA"}
     assert "City checklist last verified: 2026-11-16" in " ".join(packet_pages(build("ev_charger", el_cajon).pdf)[0].split())

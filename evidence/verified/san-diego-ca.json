@@ -110,14 +110,15 @@
     "Standard plan sheet size and detailed PDF file upload specifications are referenced via a separate link ('View PDF requirements') whose contents were not returned in search snippets (https://www.sandiego.gov/development-services/permits/solar-photovoltaic-permit).",
     "Information Bulletin 103 (May 2026) tables specifying whether single-family service upgrades and subpanels qualify for Simple Permits-MEP were not fully returned in search snippets; verify the electrical fee/eligibility tables directly on https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103.",
     "Information Bulletin 103 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103) lists 'Generator Only, Each. $176.57. Not applicable. No' in its fee table, but the full table row and column headers confirming whether residential standby generators always require plans (i.e., do not qualify for Simple Permits - MEP) should be verified directly on IB-103.",
-    "Information Bulletin 301 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301) specifies structural calculations for roof/PV dead load but does not explicitly state an electrical load calculation method for rooftop solar with battery storage; verify with DSD whether Form DS-1779A is required when a service/panel upgrade or ESS backup load is included."
+    "Information Bulletin 301 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/301) specifies structural calculations for roof/PV dead load but does not explicitly state an electrical load calculation method for rooftop solar with battery storage; verify with DSD whether Form DS-1779A is required when a service/panel upgrade or ESS backup load is included.",
+    "Information Bulletin 103 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103) Table 2 lists 'Generator Only' as 'No' under both Simple Permit—MEP columns (Single Dwelling Unit/Duplex and Non-Residential/MDU), meaning plan review is required; however, no standalone residential generator/interlock submittal bulletin exists on sandiego.gov to specify whether a portable generator inlet with interlock alone qualifies as a standard branch circuit or triggers 'Generator Only' plan review."
   ],
   "jobs": {
     "ev_charger": {
       "permit_required": {
         "value": true,
         "quote": "An Electrical Permit is required for the installation of an EVCS.",
-        "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
+        "url": "https://www.sandiego.gov/sites/default/files/2025-04/ib-187-how-to-obtain-a-permit-for-electric-vehicle-charging-systems-city-www.sandiego.gov_.pdf",
         "ok": true
       },
       "plans_required_single_family": {
@@ -186,7 +187,7 @@
           "item": "EVCS manufacturer installation instructions provided on site",
           "section": "equipment",
           "quote": "In addition to all plans and calculations, the EVCS manufacturer's installation instructions shall be provided on site.",
-          "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
+          "url": "https://www.sandiego.gov/sites/default/files/2025-04/ib-187-how-to-obtain-a-permit-for-electric-vehicle-charging-systems-city-www.sandiego.gov_.pdf",
           "page": null,
           "ok": true
         },
@@ -243,7 +244,7 @@
         {
           "rule": "Enclosures and connectors mounted 36 to 48 inches above ground unless manufacturer specifies otherwise",
           "quote": "All enclosures shall have a mounting height between 36\" and 48\". Connector height shall be between 36\" and 48\" from the ground (CEC 625.29) unless otherwise indicated by the manufacturer.",
-          "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/187",
+          "url": "https://www.sandiego.gov/sites/default/files/2025-04/ib-187-how-to-obtain-a-permit-for-electric-vehicle-charging-systems-city-www.sandiego.gov_.pdf",
           "ok": true
         }
       ],
@@ -573,10 +574,11 @@
         "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "none",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "conditions": "IB 103 Table 2: 'Generator Only' does not qualify for Simple Permit-MEP for Single Family, Duplex, Townhouse (columns: Qualifies for Simple Permit-MEP, Single Family/Duplex/Townhouse = No; Non-Residential or MDU = No). Items that qualify for Simple Permits-MEP do not require plan review, so a generator does.",
+        "quote": "Generator Only View Table 2 Footnote 2 Each $176.57 Not applicable No No",
+        "url": "https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
