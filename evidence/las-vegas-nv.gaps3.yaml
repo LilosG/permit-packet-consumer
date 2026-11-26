@@ -1,0 +1,27 @@
+jurisdiction_key: las-vegas-nv
+checked_on: '2026-11-25'
+city: Las Vegas
+state: NV
+code_edition:
+  value: 2023 NEC with Southern Nevada amendments
+  effective_date: '2026-01-05'
+  quote: 2024 International Swimming Pool and Spa Code  2023 National Electrical Code  2024 Uniform Plumbing Code
+  url: https://files.lasvegasnevada.gov/building-safety/2025/Industry_Notice-2024_Code_Adoption.pdf
+who_may_file:
+  owner_may_file: true
+  conditions: Owner-builder for their own work (Nevada owner-builder exemption).
+  quote: Plans may also be drawn by a Nevada State Licensed Contractor or owner/builder when used for his own work.
+  url: https://files.lasvegasnevada.gov/building-safety/Residential-Submittal-Requirements.pdf
+jobs:
+  appliance_circuit:
+    plans_required_single_family:
+      value: 'yes'
+      conditions: A dedicated circuit to a fixed appliance requires plans.
+      quote: MINOR ELECTRICAL – 12 DEVICES OR LESS (not for dedicated circuit to a fixed appliance (i.e. dryer, dishwasher, etc.) which requires plans)
+      url: https://www.lasvegasnevada.gov/Business/Permits-Licenses/Online-Permits-List
+  service_upgrade:
+    plans_required_single_family:
+      value: depends
+      conditions: Panel changes and service changes are on the online permit list.
+      quote: ELECTRIC METER TAG, PANEL CHANGE OR SERVICE CHANGE (Schedule a 231 inspection for service change)
+      url: https://www.lasvegasnevada.gov/Business/Permits-Licenses/Online-Permits-List

@@ -1,0 +1,48 @@
+jurisdiction_key: houston-tx
+checked_on: '2026-11-25'
+who_may_file:
+  owner_may_file: false
+  conditions: Electrical permits are issued only to registered master electricians; a homeowner cannot pull one.
+  quote: 'Licensed electrical contractors seeking an electrical permit must register their master and contractor licenses with the City of Houston. Note: Electrical permits are only issued to registered master electricians.'
+  url: https://www.houstonpermittingcenter.org/hpwcode1056
+jobs:
+  ev_charger:
+    plans_required_single_family:
+      value: depends
+      conditions: Plans are required for a Level 3 charging outlet; the page does not require them for Level 1 or 2.
+      quote: Conditions & Exceptions Plans are required for a Level 3 charging outlet.
+      url: https://www.houstonpermittingcenter.org/hpwcode1056
+  service_upgrade:
+    plans_required_single_family:
+      value: 'yes'
+      conditions: none
+      quote: 'Plan review fee: May be subject to valuation plan review Additional Information Plan Review: Required Inspection: Required'
+      url: https://www.houstonpermittingcenter.org/hpwcode1055
+  subpanel:
+    plans_required_single_family:
+      value: 'yes'
+      conditions: none
+      quote: 'Plan review fee: May be subject to valuation plan review Additional Information Plan Review: Required Inspection: Required'
+      url: https://www.houstonpermittingcenter.org/hpwcode1062
+  appliance_circuit:
+    plans_required_single_family:
+      value: 'yes'
+      conditions: none
+      quote: 'Plan review fee: May be subject to valuation plan review Additional Information Plan Review: Required Inspection: Required'
+      url: https://www.houstonpermittingcenter.org/hpwcode1053
+  generator:
+    plans_required_single_family:
+      value: 'yes'
+      conditions: none
+      quote: 'Plan review fee: May be subject to valuation plan review Additional Information Plan Review: Required Inspection: Required'
+      url: https://www.houstonpermittingcenter.org/hpwcode1118
+  solar_storage:
+    permit_required:
+      value: 'yes'
+      quote: Solar Panel Permit HPWCODE1119 Permit Description Conditions & Exceptions Plan review required depending on the scope of work.
+      url: https://www.houstonpermittingcenter.org/hpwcode1119
+    plans_required_single_family:
+      value: depends
+      conditions: Plan review depends on the scope of work.
+      quote: Solar Panel Permit HPWCODE1119 Permit Description Conditions & Exceptions Plan review required depending on the scope of work.
+      url: https://www.houstonpermittingcenter.org/hpwcode1119

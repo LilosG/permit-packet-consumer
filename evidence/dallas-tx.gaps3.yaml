@@ -1,0 +1,27 @@
+jurisdiction_key: dallas-tx
+checked_on: '2026-11-25'
+jobs:
+  ev_charger:
+    plans_required_single_family:
+      value: depends
+      conditions: Dallas's electrical permit checklist lists what plans must show when they are submitted; it does not require them for residential electrical work.
+      quote: 'If electrical plans are submitted, they must include: ☐1. Line diagram of electrical service and all panelboards'
+      url: https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/ELECTRICAL%20PERMIT%20APPLICATION%20CHECKLIST-Acc.pdf
+  service_upgrade:
+    plans_required_single_family:
+      value: depends
+      conditions: Dallas's electrical permit checklist lists what plans must show when they are submitted; it does not require them for residential electrical work.
+      quote: 'If electrical plans are submitted, they must include: ☐1. Line diagram of electrical service and all panelboards'
+      url: https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/ELECTRICAL%20PERMIT%20APPLICATION%20CHECKLIST-Acc.pdf
+  subpanel:
+    plans_required_single_family:
+      value: depends
+      conditions: Dallas's electrical permit checklist lists what plans must show when they are submitted; it does not require them for residential electrical work.
+      quote: 'If electrical plans are submitted, they must include: ☐1. Line diagram of electrical service and all panelboards'
+      url: https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/ELECTRICAL%20PERMIT%20APPLICATION%20CHECKLIST-Acc.pdf
+  appliance_circuit:
+    plans_required_single_family:
+      value: depends
+      conditions: Dallas's electrical permit checklist lists what plans must show when they are submitted; it does not require them for residential electrical work.
+      quote: 'If electrical plans are submitted, they must include: ☐1. Line diagram of electrical service and all panelboards'
+      url: https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection/DCH%20documents/ELECTRICAL%20PERMIT%20APPLICATION%20CHECKLIST-Acc.pdf
