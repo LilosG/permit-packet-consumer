@@ -6,8 +6,11 @@ ATLANTA = make_city(*('atlanta-ga', 'Atlanta', 'GA', 'NEC', 'Georgia licensed el
 # Verified from evidence/verified/ by tools/import_evidence.py.
 ATLANTA = replace(
     ATLANTA,
-    who_may_pull="Contractors Exception and Contractors Affidavit forms are listed on the Applications, Forms, and Checklists page, but the PDFs could not be opened directly to verify homeowner electrical permit eligibility",
+    owner_may_file=True,
+    who_may_pull="The homeowner is the legal owner of a single-family home they will live in for at least 12 months after the work, signs the City of Atlanta Homeowner's Affidavit, and personally does the work.",
     no_plan_jobs={'ev_charger': 'https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit', 'service_upgrade': 'https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit', 'subpanel': 'https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit', 'appliance_circuit': 'https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit', 'generator': 'https://www.atlantaga.gov/residents/city-hall/online-services/apply-for-a-technical-permit'},
+    permit_rules_verified="2026-11-25",
+    last_verified="2026-11-25",
     checklists={
         **ATLANTA.checklists,
         "ev_charger": replace(
