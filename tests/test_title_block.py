@@ -124,6 +124,7 @@ def test_last_verified_prints_only_where_set():
 
     verified = {j.key: j.last_verified for j in KNOWN.values() if j.last_verified}
     assert verified == {
+        "atlanta-ga": "2026-11-25",
         "austin-tx": "2026-11-25",
         "dallas-tx": "2026-11-25",
         "el-cajon-ca": "2026-11-16",

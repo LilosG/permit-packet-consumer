@@ -2,7 +2,7 @@
 
 | City | Quotes verified/total | Fields set unknown | URL rewrites | Blocked hosts | permit_rules_verified |
 |---|---|---|---|---|---|
-| atlanta-ga | 22/23 | 6 | 0 | none | False |
+| atlanta-ga | 23/23 | 6 | 0 | none | True |
 | austin-tx | 27/28 | 6 | 0 | none | True |
 | dallas-tx | 25/28 | 5 | 0 | none | True |
 | denver-co | 19/20 | 7 | 0 | none | False |
@@ -39,7 +39,8 @@ Replaced module values:
 - `checklists[appliance_circuit]` (5 base items + 2 verified city items)
 - `checklists[generator]` (5 base items + 3 verified city items)
 - `checklists[solar_storage]` (5 base items + 5 verified city items)
-- `who_may_pull`: 'Georgia licensed electrical contractors.' -> 'Contractors Exception and Contractors Affidavit forms are listed on the Applications, Forms, and Checklists page, but the PDFs could not be opened directly to verify homeowner electrical permit eligibility'
+- `who_may_pull`: 'Georgia licensed electrical contractors.' -> "The homeowner is the legal owner of a single-family home they will live in for at least 12 months after the work, signs the City of Atlanta Homeowner's Affidavit, and personally does the work."
+- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
 
 ## austin-tx
 
@@ -70,7 +71,6 @@ Replaced module values:
 - `checklists[appliance_circuit]` (6 base items + 0 verified city items)
 - `checklists[generator]` (9 base items + 0 verified city items)
 - `checklists[solar_storage]` (9 base items + 0 verified city items)
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
 
 ## denver-co
 
@@ -153,8 +153,6 @@ Replaced module values:
 - `checklists[subpanel]` (6 base items + 0 verified city items)
 - `checklists[appliance_circuit]` (6 base items + 0 verified city items)
 - `checklists[generator]` (6 base items + 0 verified city items)
-- `who_may_pull`: "State law exempts homeowners who own and reside in a dwelling from state electrician licensing (Tex. Occ. Code 1305.003(a)(6)), unless regulated by city ordinance; Houston Permitting Center electrical permit pages state 'Registered electrical contractors' must apply." -> 'Electrical permits are issued only to registered master electricians; a homeowner cannot pull one.'
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
 
 ## irvine-ca
 
@@ -362,5 +360,3 @@ Replaced module values:
 - `checklists[appliance_circuit]` (6 base items + 0 verified city items)
 - `checklists[generator]` (9 base items + 0 verified city items)
 - `checklists[solar_storage]` (6 base items + 0 verified city items)
-- `no_plan_jobs`: {'ev_charger': 'https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf', 'service_upgrade': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'subpanel': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'appliance_circuit': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf'} -> {'ev_charger': 'https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf', 'service_upgrade': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'subpanel': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'appliance_circuit': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'generator': 'https://seattlegov.zendesk.com/hc/en-us/articles/115004979048-Which-Electrical-Permit-Should-I-Choose'}
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'

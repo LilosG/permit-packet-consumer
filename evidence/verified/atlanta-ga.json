@@ -4,10 +4,10 @@
   "state": "GA",
   "checked_on": "2026-11-25",
   "who_may_file": {
-    "owner_may_file": "unknown",
-    "conditions": "Contractors Exception and Contractors Affidavit forms are listed on the Applications, Forms, and Checklists page, but the PDFs could not be opened directly to verify homeowner electrical permit eligibility",
-    "quote": "Contractor (Reference Material) * A2L REFRIGERANT PRESSURE TEST AFFIDAVIT. * Contractors Exception. * Contractors Affidavit. * Agent Affidavit Authorization.",
-    "url": "https://www.atlantaga.gov/government/departments/city-planning/zoning-development-permitting-services/applications-forms-and-checklists",
+    "owner_may_file": true,
+    "conditions": "The homeowner is the legal owner of a single-family home they will live in for at least 12 months after the work, signs the City of Atlanta Homeowner's Affidavit, and personally does the work.",
+    "quote": "He/she further deposes he/she will personally complete all Electrical, Plumbing, HVAC, or Building Construction work authorized on the selected Permit.",
+    "url": "https://atlantaga.gov/home/showpublisheddocument/43020/637145012601370000",
     "ok": true
   },
   "forms_found": [
