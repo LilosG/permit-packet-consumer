@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 EVIDENCE = ROOT / "evidence"
 OUT = EVIDENCE / "verified"
 CACHE = ROOT / ".cache" / "evidence_fetch"
+OCR_SNAPSHOTS = EVIDENCE / "ocr"  # committed OCR text of scanned PDFs, named <sha256 of url>.txt
 MODULES = ROOT / "permit_packets" / "jurisdictions"
 TODAY = datetime.date.today().isoformat()
 VERIFIED_MARKER = "# Verified from evidence/verified/ by tools/import_evidence.py."
@@ -157,7 +158,22 @@ def to_text(body: bytes, content_type: str) -> str:
     return normalize(html.unescape(re.sub(r"<[^>]*>", " ", page)))
 
 
+def with_ocr_snapshot(url: str, result: dict) -> dict:
+    """A scanned PDF has no text layer: use its committed OCR snapshot when one exists."""
+    if len(result.get("text", "")) >= MIN_TEXT_CHARS:
+        return result
+    snapshot = OCR_SNAPSHOTS / (hashlib.sha256(url.encode()).hexdigest() + ".txt")
+    if snapshot.exists():
+        return {"text": result.get("text", "") + "\n" + normalize(snapshot.read_text()), "error": ""}
+    return result
+
+
 def fetch(url: str) -> dict:
+    """{"text": normalized text, "error": ""}. Successful fetches are cached."""
+    return with_ocr_snapshot(url, _fetch(url))
+
+
+def _fetch(url: str) -> dict:
     """{"text": normalized text, "error": ""}. Successful fetches are cached."""
     cached = CACHE / (hashlib.sha256(url.encode()).hexdigest() + ".json")
     if cached.exists():
@@ -611,7 +627,7 @@ def retry_blocked(pages: dict) -> None:
                 result = {"text": to_text(body, ctype), "error": ""}
                 cached = CACHE / (hashlib.sha256(url.encode()).hexdigest() + ".json")
                 cached.write_text(json.dumps(result))
-                pages[url] = result
+                pages[url] = with_ocr_snapshot(url, result)
                 recovered += 1
             except Exception:  # keep the original error
                 continue

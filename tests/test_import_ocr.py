@@ -60,3 +60,20 @@ def test_a_cached_page_with_no_text_is_fetched_again(tmp_path, monkeypatch):
     result = ie.fetch(url)
     assert calls, "a near-empty cached page must be fetched again"
     assert result["error"]
+
+
+def test_a_committed_ocr_snapshot_verifies_a_scanned_pdf(tmp_path, monkeypatch):
+    """With no OCR tool installed, the committed snapshot in evidence/ocr/ supplies the scanned PDF's text."""
+    monkeypatch.setattr(ie, "OCR_SNAPSHOTS", tmp_path)
+    url = "https://example.invalid/scanned.pdf"
+    (tmp_path / (ie.hashlib.sha256(url.encode()).hexdigest() + ".txt")).write_text("# OCR of it\n" + SENTENCE)
+    result = ie.with_ocr_snapshot(url, {"text": "", "error": ""})
+    assert ie.normalize(SENTENCE) in result["text"] and not result["error"]
+
+
+def test_the_san_francisco_owner_quote_verifies_from_its_snapshot():
+    url = "https://www.sf.gov/sites/default/files/2023-11/IS%20E-03.pdf"
+    quote = ("Permits for electrical work in or about a single-family dwelling may be issued to the homeowner, "
+             "provided the work will be performed by the homeowner.")
+    text = ie.with_ocr_snapshot(url, {"text": "", "error": ""})["text"]
+    assert ie.normalize(quote) in text
