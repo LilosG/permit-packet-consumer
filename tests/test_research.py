@@ -29,6 +29,9 @@ def test_official_sources_are_decided_in_code():
     assert rs.official("https://codelibrary.amlegal.com/codes/ftworth/latest/overview")
     assert rs.official("https://library.municode.com/fl/tampa/codes/code_of_ordinances")
     assert not rs.official("https://www.nfpa.org/education-and-research/codes-adoption")
+    assert not rs.official("https://corpuslaw.us/city/AZ-MESA/ordinances/4-1-4-permits")  # third party, not .gov
+    assert rs.official("https://www.cityofexample.tx.us/permits")  # government .us pattern
+    assert rs.official("https://example-city.org/permits", frozenset({"example-city.org"}))
     assert not rs.official("https://permitmint.com/permits/texas/dallas/ev_charger/")
     assert not rs.official("https://www.google.com/search?q=permit")
     assert not rs.official("https://search.houstontx.gov/texis/search/x")
@@ -86,7 +89,7 @@ def test_a_city_run_keeps_only_verified_and_supported_quotes(tmp_path, monkeypat
 
     result = rs.research_city("san-diego-ca", "m", "j")
 
-    found = {f for f, _, _ in result["accepted"]}
+    found = {a[0] for a in result["accepted"]}
     assert found == {"who_may_file", "ev_charger.permit_required", "service_upgrade.plans_required"}
     reasons = dict(result["rejected"])
     assert "word for word" in reasons["generator.plans_required"]
