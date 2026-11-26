@@ -21,8 +21,14 @@ def test_parse_json_accepts_fenced_and_plain_replies():
     assert rs.parse_json("no json here") == {}
 
 
-def test_unofficial_and_search_links_are_dropped():
-    assert rs.official("https://www.houstonpermittingcenter.org/hpwcode1056")
+def test_official_sources_are_decided_in_code():
+    houston = frozenset({"houstonpermittingcenter.org"})
+    assert rs.official("https://www.houstonpermittingcenter.org/hpwcode1056", houston)
+    assert not rs.official("https://www.houstonpermittingcenter.org/hpwcode1056")  # not that city's domain
+    assert rs.official("https://www.plano.gov/692/Building-Inspections")
+    assert rs.official("https://codelibrary.amlegal.com/codes/ftworth/latest/overview")
+    assert rs.official("https://library.municode.com/fl/tampa/codes/code_of_ordinances")
+    assert not rs.official("https://www.nfpa.org/education-and-research/codes-adoption")
     assert not rs.official("https://permitmint.com/permits/texas/dallas/ev_charger/")
     assert not rs.official("https://www.google.com/search?q=permit")
     assert not rs.official("https://search.houstontx.gov/texis/search/x")
@@ -60,6 +66,7 @@ def test_a_city_run_keeps_only_verified_and_supported_quotes(tmp_path, monkeypat
     monkeypatch.setattr(rs, "find_pages", lambda *a, **k: [URL])
     monkeypatch.setattr(rs, "fetch", lambda url: PAGE)
     monkeypatch.setattr(rs, "fetch_in_browser", lambda urls: {})
+    monkeypatch.setattr(rs, "crawl_links", lambda url, domains, limit=15: [])
     monkeypatch.setattr(rs, "extract", lambda *a, **k: {"facts": [
         {"fact": "who_may_file", "value": True, "conditions": "owner-occupied",
          "quote": "A homeowner may obtain an electrical permit for work on a single-family dwelling they own and occupy.",
@@ -73,7 +80,9 @@ def test_a_city_run_keeps_only_verified_and_supported_quotes(tmp_path, monkeypat
         {"fact": "code_edition", "value": "2023 NEC",                    # on the page, but the check rejects it
          "quote": "The City enforces the 2023 National Electrical Code effective January 1, 2025.", "url": URL},
     ]})
-    monkeypatch.setattr(rs, "judge", lambda model, city, fact, item: (fact != "code_edition", "test"))
+    seen_context = []
+    monkeypatch.setattr(rs, "judge", lambda model, city, fact, item, context="":
+                        (seen_context.append(context) or fact != "code_edition", "test"))
 
     result = rs.research_city("san-diego-ca", "m", "j")
 
@@ -86,6 +95,26 @@ def test_a_city_run_keeps_only_verified_and_supported_quotes(tmp_path, monkeypat
     assert written["jurisdiction_key"] == "san-diego-ca"
     assert written["who_may_file"]["owner_may_file"] is True
     assert "generator" not in written["jobs"]
+    assert all("Electrical Permits" in c for c in seen_context)  # the check sees the page around the quote
+
+
+def test_context_around_finds_the_quote_in_the_page():
+    quote = "Plans are not required for residential electrical service upgrades up to 200 amps."
+    around = rs.context_around(PAGE, quote, chars=40)
+    assert quote in around and len(around) < len(PAGE)
+    assert rs.context_around(PAGE, "words that are not on the page at all") == ""
+
+
+def test_pages_are_ranked_per_group():
+    pages = {"https://a.gov/solar": "solar photovoltaic battery storage permit " * 5,
+             "https://a.gov/owner": "homeowner affidavit owner occupied " * 5}
+    assert list(rs.rank_pages(pages, rs.GROUP_WORDS["generator_and_solar"]))[0] == "https://a.gov/solar"
+    assert list(rs.rank_pages(pages, rs.GROUP_WORDS["filing_and_code"]))[0] == "https://a.gov/owner"
+
+
+def test_every_fact_is_in_exactly_one_group():
+    grouped = [f for facts in rs.GROUPS.values() for f in facts]
+    assert sorted(grouped) == sorted(rs.gaps("never-researched")) and len(grouped) == len(set(grouped))
 
 
 def test_the_importer_verifies_what_the_research_tool_writes():

@@ -87,8 +87,12 @@ def chat(model: str, messages: list[dict], *, web: bool = False, timeout: float 
                           headers={"Authorization": f"Bearer {api_key()}", "X-Title": "permit-packet research"})
     response.raise_for_status()
     data = response.json()
-    content = data["choices"][0]["message"]["content"] or "{}"
-    return parse_json(content)
+    message = data["choices"][0]["message"]
+    parsed = parse_json(message.get("content") or "{}")
+    cited = [a.get("url_citation", {}).get("url") for a in message.get("annotations") or []
+             if a.get("type") == "url_citation"]
+    parsed["_cited"] = [u for u in cited if isinstance(u, str)]
+    return parsed
 
 
 def parse_json(content: str) -> dict:
@@ -105,10 +109,37 @@ def parse_json(content: str) -> dict:
         return {}
 
 
-def official(url: str) -> bool:
-    host = re.sub(r"^https?://", "", url).split("/")[0].lower()
-    return url.startswith(("http://", "https://")) and not any(bad in host for bad in NOT_OFFICIAL) \
-        and "google." not in host and "/search" not in url.lower()
+# Hosts that publish cities' own adopted codes and documents, or run their permit portals.
+CODE_HOSTS = ("library.municode.com", "codelibrary.amlegal.com", "ecode360.com", "codepublishing.com",
+              "content.civicplus.com", "accela.com", "azurewebsites.us", "floridabuilding.org")
+
+
+def host_of(url: str) -> str:
+    return re.sub(r"^https?://", "", url).split("/")[0].split(":")[0].lower()
+
+
+def base_domain(host: str) -> str:
+    parts = host.split(".")
+    return ".".join(parts[-2:]) if len(parts) >= 2 else host
+
+
+def official(url: str, city_domains: frozenset = frozenset()) -> bool:
+    """Government sites, the city's own domains (from its module) and official code/portal hosts. Decided here,
+    in code, never by the model."""
+    if not url.startswith(("http://", "https://")):
+        return False
+    host = host_of(url)
+    if any(bad in host for bad in NOT_OFFICIAL) or "google." in host or "/search" in url.lower() \
+            or host.startswith("search."):
+        return False
+    return (host.endswith((".gov", ".us", ".mil")) or ".gov." in host or base_domain(host) in city_domains
+            or any(host == h or host.endswith("." + h) for h in CODE_HOSTS))
+
+
+def city_domains(city_obj) -> frozenset:
+    urls = [city_obj.portal_url, city_obj.website, *city_obj.sources]
+    return frozenset(base_domain(host_of(u)) for u in urls if isinstance(u, str) and u.startswith("http")
+                     and not any(h in host_of(u) for h in CODE_HOSTS))
 
 
 # ---------------------------------------------------------------- what is missing
@@ -238,38 +269,123 @@ def windows(text: str, limit: int = PAGE_CHARS) -> str:
 # ---------------------------------------------------------------- research
 
 SYSTEM = ("You research residential electrical permit rules for one US city. Use only official sources: the city or "
-          "county building/permit office, the state licensing or building agency, or the local electric utility. "
-          "Never use blogs, contractor sites, permit-guide websites, forums or AI summaries.")
+          "county building/permit office, its published municipal code, the state licensing or building agency, or "
+          "the local electric utility. Never use blogs, contractor sites, permit-guide websites, forums or AI summaries.")
+
+# Facts are researched in small groups: one search and one reading pass per group, so none gets skipped.
+GROUPS = {
+    "filing_and_code": ("who_may_file", "code_edition"),
+    "ev_and_appliance": ("ev_charger.permit_required", "ev_charger.plans_required",
+                         "appliance_circuit.permit_required", "appliance_circuit.plans_required"),
+    "service_and_subpanel": ("service_upgrade.permit_required", "service_upgrade.plans_required",
+                             "subpanel.permit_required", "subpanel.plans_required"),
+    "generator_and_solar": ("generator.permit_required", "generator.plans_required",
+                            "solar_storage.permit_required", "solar_storage.plans_required"),
+}
+SEARCH_HINTS = {
+    "filing_and_code": "homeowner / owner-builder electrical permit rules or affidavit, and the code adoption page "
+                       "or ordinance that names the National Electrical Code edition",
+    "ev_and_appliance": "electrical permit page, permits that need no plans / express or over-the-counter permits, "
+                        "EV charger permit page",
+    "service_and_subpanel": "electrical permit page, service change / panel upgrade permit, permits that need no "
+                            "plans / express or over-the-counter permits",
+    "generator_and_solar": "standby generator permit page or checklist, residential solar and battery storage "
+                           "permit page or checklist",
+}
+GROUP_WORDS = {
+    "filing_and_code": r"owner|homeowner|homestead|affidavit|occup|license|contractor|NEC|national electrical code|"
+                       r"electrical code|edition|adopt|ordinance|amendment",
+    "ev_and_appliance": r"EV|electric vehicle|charg|appliance|circuit|range|dryer|water heater|plan|exempt|express|"
+                        r"over.the.counter|no plans|permit",
+    "service_and_subpanel": r"service|panel|subpanel|sub-panel|meter|amp|upgrade|change of service|plan|exempt|"
+                            r"express|over.the.counter|no plans|permit",
+    "generator_and_solar": r"generator|transfer switch|interlock|standby|solar|photovoltaic|PV|battery|storage|ESS|"
+                           r"plan|checklist|permit",
+}
+LINK_WORDS = re.compile(r"electric|permit|homeowner|owner|solar|photovoltaic|generator|vehicle|charg|code|plan review|"
+                        r"express|checklist|residential|panel|service", re.I)
+SKIP_LINKS = re.compile(r"police|alarm|hydrant|complaint|enforcement|login|log in|sign in|register|\bpay\b|payment|fees|career|"
+                        r"news|agenda|calendar|/cap/|captcha|facebook|twitter|instagram|linkedin", re.I)
+MAX_PAGES_PER_GROUP = 8
+MAX_FETCH = 30
 
 
-def find_pages(model: str, city: str, state: str, facts: list[str]) -> list[str]:
+def find_pages(model: str, city: str, state: str, facts: list[str], domains: frozenset = frozenset(),
+               hint: str = "") -> list[str]:
+    """One web search for one group of facts: the URLs the model lists plus the real search results it cites."""
     asks = "\n".join("- " + describe(f, f"{city}, {state}") for f in facts)
+    sites = ", ".join(sorted(domains)) or "the city's own website"
     answer = chat(model, [
         {"role": "system", "content": SYSTEM},
         {"role": "user", "content": (
             f"Find the official web pages and PDFs that answer these questions for {city}, {state}:\n{asks}\n\n"
-            "Prefer the city's permit pages for each job type, its homeowner/owner-builder permit page or affidavit, "
-            "its list of permits that need no plans, and the code-adoption page. Return JSON: "
+            f"Look for: {hint}. The city's own sites are {sites}; prefer pages there, then the city's published "
+            "municipal code, then the state agency. Return JSON: "
             '{"urls": ["<direct url>", ...]} with at most 10 direct links (no search-result links).')},
     ], web=True)
-    urls = [u for u in answer.get("urls") or [] if isinstance(u, str) and official(u)]
-    return list(dict.fromkeys(urls))[:MAX_PAGES + 2]
+    urls = [u for u in (answer.get("urls") or []) + answer.get("_cited", []) if isinstance(u, str)]
+    return list(dict.fromkeys(u.split("#")[0] for u in urls if official(u, domains)))
 
 
-def extract(model: str, city: str, state: str, facts: list[str], pages: dict[str, str]) -> dict:
+def crawl_links(url: str, domains: frozenset, limit: int = 15) -> list[str]:
+    """Links on one of the city's own pages that look like permit pages (one level deep, no model involved)."""
+    try:
+        with httpx.Client(headers={"User-Agent": UA}, timeout=30, follow_redirects=True) as client:
+            response = client.get(url)
+        if response.status_code >= 400 or "html" not in response.headers.get("content-type", ""):
+            return []
+        page, base = response.text, str(response.url)
+    except Exception:
+        return []
+    scored = []
+    for href, label in re.findall(r'(?is)<a\b[^>]*href=["\']([^"\'#]+)["\'][^>]*>(.*?)</a>', page):
+        link = str(httpx.URL(base).join(html.unescape(href.strip())))
+        text = re.sub(r"<[^>]*>", " ", label) + " " + link
+        hits = len(LINK_WORDS.findall(text))
+        if hits and not SKIP_LINKS.search(text) and official(link, domains) and link.split("#")[0] != base \
+                and "accela.com" not in host_of(link):
+            scored.append((hits, link.split("#")[0]))
+    return list(dict.fromkeys(link for _, link in sorted(scored, key=lambda x: -x[0])))[:limit]
+
+
+def windows(text: str, limit: int = PAGE_CHARS, words: str = "") -> str:
+    """The parts of a long page that mention permits, plans, owners and the job types."""
+    if len(text) <= limit:
+        return text
+    pattern = re.compile(words, re.I) if words else KEYWORDS
+    sentences = re.split(r"(?<=[.!?:;])\s+", text)
+    keep = set()
+    for i, sentence in enumerate(sentences):
+        if pattern.search(sentence):
+            keep.update((i - 1, i, i + 1))
+    picked = " … ".join(sentences[i] for i in sorted(keep) if 0 <= i < len(sentences))
+    return picked[:limit]
+
+
+def rank_pages(pages: dict[str, str], words: str) -> dict[str, str]:
+    """The pages most about this group of facts, best first."""
+    pattern = re.compile(words, re.I)
+    scored = sorted(pages.items(), key=lambda kv: -len(pattern.findall(kv[1][:200000])))
+    return dict(scored[:MAX_PAGES_PER_GROUP])
+
+
+def extract(model: str, city: str, state: str, facts: list[str], pages: dict[str, str], words: str = "") -> dict:
     asks = "\n".join("- " + describe(f, f"{city}, {state}") for f in facts)
-    sources = "\n\n".join(f"=== SOURCE {i + 1}: {url}\n{windows(text)}" for i, (url, text) in enumerate(pages.items()))
+    sources = "\n\n".join(f"=== SOURCE {i + 1}: {url}\n{windows(text, words=words)}"
+                           for i, (url, text) in enumerate(pages.items()))
     return chat(model, [
         {"role": "system", "content": SYSTEM},
         {"role": "user", "content": (
             f"Answer these questions for {city}, {state} using ONLY the sources below:\n{asks}\n\n"
             "Rules:\n"
-            "1. The quote must be copied character for character from one source, one continuous piece, 8 to 45 "
-            "words. Never paraphrase or join pieces.\n"
-            "2. The quote must itself state the answer: someone reading only the quote must see it. A heading or a "
-            "general sentence that merely sits on the same page does not count.\n"
-            "3. If no source states an answer, omit that fact. Do not guess.\n"
-            "4. value: for permit_required yes/no; for plans_required yes/no/depends; for who_may_file use "
+            "1. Go through every question. For each one a source answers, give one fact.\n"
+            "2. The quote must be copied character for character from one source, one continuous piece, 8 to 60 "
+            "words. Never paraphrase, never join pieces, never add or drop words.\n"
+            "3. The quote must show the answer. When the answer comes from a list (for example the kinds of work an "
+            "electrical permit covers, or work that needs no plans), copy the list's lead-in together with the item "
+            "if they are close enough to fit, otherwise the item with the words around it.\n"
+            "4. If no source answers a question, leave it out. Do not guess.\n"
+            "5. value: for permit_required yes/no; for plans_required yes/no/depends; for who_may_file use "
             "owner_may_file true/false; for code_edition a short text like '2023 NEC'.\n\n"
             'Return JSON: {"facts": [{"fact": "<fact id>", "value": ..., "conditions": "<limits or none>", '
             '"effective_date": "<YYYY-MM-DD or unknown, code_edition only>", "quote": "<exact text>", '
@@ -277,15 +393,34 @@ def extract(model: str, city: str, state: str, facts: list[str], pages: dict[str
     ])
 
 
-def judge(model: str, city: str, fact: str, item: dict) -> tuple[bool, str]:
+def context_around(page: str, quote: str, chars: int = 700) -> str:
+    """The page text around the quote, so the check reads it the way a person reading the page would."""
+    flat = re.sub(r"\s+", " ", page)
+    words = quote.split()
+    probe = " ".join(words[:6]) if len(words) >= 6 else quote
+    at = flat.lower().find(probe.lower())
+    if at == -1:
+        return ""
+    return flat[max(0, at - chars):at + len(quote) + chars]
+
+
+def judge(model: str, city: str, fact: str, item: dict, context: str = "") -> tuple[bool, str]:
     answer = chat(model, [
-        {"role": "system", "content": "You check evidence strictly. Answer only with JSON."},
+        {"role": "system", "content": "You check evidence for a permit-rules database. Be strict about meaning, "
+                                      "not about wording. Answer only with JSON."},
         {"role": "user", "content": (
             f"City: {city}\nQuestion: {describe(fact, city)}\nClaimed answer: {json.dumps(item.get('value'))}"
-            f" (conditions: {item.get('conditions', '')})\nSource URL: {item.get('url')}\nQuote: \"{item.get('quote')}\"\n\n"
-            "Does the quote by itself clearly state this answer for this city, and is the URL an official government "
-            "or electric-utility source for this city or its state? Return JSON: "
-            '{"supported": true/false, "reason": "<one short sentence>"}')},
+            f" (conditions: {item.get('conditions', '')})\nSource URL: {item.get('url')}\n"
+            f"Quote: \"{item.get('quote')}\"\nPage text around the quote: \"{context}\"\n\n"
+            "Does the quote, read with the page text around it, support this answer for this city?\n"
+            "- Yes when the page is this city's (or, for a state-wide rule, this state's) and the quote states the "
+            "answer, or is the item in a list whose lead-in states it (for example work listed under an electrical "
+            "permit means that work needs that permit; work listed as needing no plans means no plans).\n"
+            "- No when the quote is about different work, a different place, a commercial-only rule, or only a "
+            "heading or general sentence that does not decide the question.\n"
+            "- Do not judge whether the website is official (that is checked separately) and do not require an "
+            "effective date.\n"
+            'Return JSON: {"supported": true/false, "reason": "<one short sentence>"}')},
     ], timeout=90)
     return bool(answer.get("supported")), str(answer.get("reason", ""))[:200]
 
@@ -324,22 +459,44 @@ def research_city(key: str, model: str, judge_model: str) -> dict:
     from permit_packets.jurisdictions import KNOWN
     city_obj = next(j for j in KNOWN.values() if j.key == key)
     city, state = city_obj.name, city_obj.state
+    domains = city_domains(city_obj)
     facts = gaps(key)
-    result = {"key": key, "city": f"{city}, {state}", "asked": facts, "accepted": [], "rejected": [], "file": None}
+    result = {"key": key, "city": f"{city}, {state}", "asked": facts, "accepted": [], "rejected": [], "file": None,
+              "pages": [], "blocked": []}
     if not facts:
         return result
-    urls = find_pages(model, city, state, facts)
+    groups = {g: [f for f in fs if f in facts] for g, fs in GROUPS.items()}
+    groups = {g: fs for g, fs in groups.items() if fs}
+
+    # 1. pages: the city's own pages from its module, permit links found on them, and one search per group
+    seeds = [u for u in dict.fromkeys([city_obj.portal_url, city_obj.website, *city_obj.sources])
+             if isinstance(u, str) and official(u, domains)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+        searches = pool.map(lambda g: find_pages(model, city, state, groups[g], domains, SEARCH_HINTS[g]), groups)
+        crawled = pool.map(lambda u: crawl_links(u, domains), seeds)
+        found = [u for batch in searches for u in batch]
+        linked = [u for batch in crawled for u in batch]
+    urls = list(dict.fromkeys(found + seeds + linked))[:MAX_FETCH]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         texts = dict(zip(urls, pool.map(fetch, urls)))
     texts.update(fetch_in_browser([u for u, t in texts.items() if not t]))
     pages = {u: t for u, t in texts.items() if t}
     result["pages"] = list(pages)
+    result["blocked"] = [u for u, t in texts.items() if not t]
+    print(f"  pages: {len(urls)} found, {len(pages)} read, {len(result['blocked'])} unreadable", flush=True)
     if not pages:
         result["rejected"].append(("all", "no official page could be read"))
         return result
-    answer = extract(model, city, state, facts, dict(list(pages.items())[:MAX_PAGES]))
-    accepted = []
-    for item in answer.get("facts") or []:
+
+    # 2. one reading pass per group, over the pages most about that group
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        answers = list(pool.map(lambda g: extract(model, city, state, groups[g],
+                                                  rank_pages(pages, GROUP_WORDS[g]), GROUP_WORDS[g]), groups))
+    items = [item for answer in answers for item in answer.get("facts") or [] if isinstance(item, dict)]
+
+    # 3. word-for-word quote test (the importer's own), then the meaning check
+    candidates = []
+    for item in items:
         fact = item.get("fact")
         if fact not in facts or not isinstance(item.get("quote"), str) or item.get("url") not in pages:
             result["rejected"].append((str(fact), "not one of the asked facts, or no quote/source"))
@@ -350,13 +507,16 @@ def research_city(key: str, model: str, judge_model: str) -> dict:
         if len(normalize(item["quote"])) < 25 or normalize(item["quote"]) not in normalize(pages[item["url"]]):
             result["rejected"].append((fact, "quote not found word for word in the page"))
             continue
-        supported, reason = judge(judge_model, f"{city}, {state}", fact, item)
+        candidates.append((fact, item))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+        verdicts = list(pool.map(lambda fi: judge(judge_model, f"{city}, {state}", fi[0], fi[1],
+                                                  context_around(pages[fi[1]["url"]], fi[1]["quote"])), candidates))
+    accepted = []
+    for (fact, item), (supported, reason) in zip(candidates, verdicts):
         if not supported:
             result["rejected"].append((fact, f"check failed: {reason}"))
-            continue
-        if any(f == fact for f, _ in accepted):
-            continue
-        accepted.append((fact, item))
+        elif not any(f == fact for f, _ in accepted):
+            accepted.append((fact, item))
     result["accepted"] = [(f, i["value"], i["url"]) for f, i in accepted]
     if accepted:
         path = EVIDENCE / f"{key}.auto-{TODAY}.yaml"
@@ -456,11 +616,15 @@ def main() -> None:
         except Exception as exc:  # one city failing must not stop the batch
             r = {"key": key, "city": key, "asked": [], "accepted": [], "rejected": [("all", f"error: {exc}")]}
         still = [f for f in r["asked"] if f not in {a[0] for a in r["accepted"]}]
-        lines += [f"## {r['city']}", "", f"Asked: {len(r['asked'])} facts. Found: {len(r['accepted'])}.", ""]
-        lines += [f"- found `{f}` = {v!r} ({u})" for f, v, u in r["accepted"]]
-        lines += [f"- dropped `{f}`: {why}" for f, why in r["rejected"]]
-        lines += [f"- still unknown: {', '.join(still) or 'none'}", ""]
-        print("\n".join(lines[-(len(r['accepted']) + len(r['rejected']) + 2):]), flush=True)
+        summary = [f"Asked: {len(r['asked'])} facts. Found: {len(r['accepted'])}.", ""]
+        summary += [f"- found `{f}` = {v!r} ({u})" for f, v, u in r["accepted"]]
+        summary += [f"- dropped `{f}`: {why}" for f, why in r["rejected"]]
+        summary += [f"- still unknown: {', '.join(still) or 'none'}", ""]
+        print("\n".join(summary), flush=True)
+        lines += [f"## {r['city']}", ""] + summary
+        lines += ([f"<details><summary>{len(r.get('pages', []))} pages read, {len(r.get('blocked', []))} unreadable"
+                   "</summary>", ""] + [f"- read: {u}" for u in r.get("pages", [])]
+                  + [f"- unreadable: {u}" for u in r.get("blocked", [])] + ["", "</details>", ""])
     report = REPORTS / f"{TODAY}-{hashlib.sha1(','.join(keys).encode()).hexdigest()[:6]}.md"
     report.write_text("\n".join(lines) + "\n")
     print(f"\nReport: {report.relative_to(ROOT)}")
