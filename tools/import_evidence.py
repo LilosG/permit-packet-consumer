@@ -27,6 +27,8 @@ from urllib.parse import urlsplit
 import httpx
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tools/ (browser_fetch)
+
 ROOT = Path(__file__).resolve().parent.parent
 EVIDENCE = ROOT / "evidence"
 OUT = EVIDENCE / "verified"
@@ -607,24 +609,16 @@ def retry_blocked(pages: dict) -> None:
     except Exception:
         print(f"{len(failed)} blocked URLs retried in a browser, 0 recovered")
         return
+    import browser_fetch
     with sync_playwright() as p:
-        try:
-            browser = p.chromium.launch(channel="chrome", headless=False)
-        except Exception:
-            browser = p.chromium.launch(headless=False)
+        browser = browser_fetch.launch(p)
         context = browser.new_context(user_agent=HEADERS["User-Agent"])
         for url in failed:
             try:
-                response = context.request.get(url, timeout=60000)
-                if response.ok and ("pdf" in response.headers.get("content-type", "")
-                                    or response.body()[:5] == b"%PDF"):
-                    body, ctype = response.body(), response.headers.get("content-type", "")
-                else:
-                    page = context.new_page()
-                    page.goto(url, wait_until="networkidle", timeout=60000)
-                    body, ctype = page.content().encode(), "text/html"
-                    page.close()
+                body, ctype = browser_fetch.read_url(context, url)
                 result = {"text": to_text(body, ctype), "error": ""}
+                if "access denied" in result["text"][:400].lower():
+                    continue  # still blocked: keep the original error
                 cached = CACHE / (hashlib.sha256(url.encode()).hexdigest() + ".json")
                 cached.write_text(json.dumps(result))
                 pages[url] = with_ocr_snapshot(url, result)

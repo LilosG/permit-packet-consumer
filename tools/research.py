@@ -35,6 +35,7 @@ import httpx
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tools/ (browser_fetch)
 EVIDENCE = ROOT / "evidence"
 VERIFIED = EVIDENCE / "verified"
 CACHE = ROOT / ".cache" / "research"
@@ -225,26 +226,18 @@ def fetch(url: str) -> str:
 
 
 def fetch_in_browser(urls: list[str]) -> dict[str, str]:
-    """Blocked pages, one at a time, in a real Chrome window."""
+    """Blocked pages and PDFs, one at a time, in a real Chrome window."""
     if not urls:
         return {}
     out = {}
     from playwright.sync_api import sync_playwright
+    import browser_fetch
     with sync_playwright() as p:
-        try:
-            browser = p.chromium.launch(channel="chrome", headless=False)
-        except Exception:
-            browser = p.chromium.launch(headless=False)
+        browser = browser_fetch.launch(p)
         context = browser.new_context(user_agent=UA)
         for url in urls:
             try:
-                response = context.request.get(url, timeout=60000)
-                body, ctype = response.body(), response.headers.get("content-type", "")
-                if not (response.ok and (body[:5] == b"%PDF" or "pdf" in ctype)):
-                    page = context.new_page()
-                    page.goto(url, wait_until="networkidle", timeout=60000)
-                    body, ctype = page.content().encode(), "text/html"
-                    page.close()
+                body, ctype = browser_fetch.read_url(context, url)
                 text = page_text(body, ctype)
                 if len(normalize(text)) >= 200 and "access denied" not in text[:400].lower():
                     (CACHE / (hashlib.sha256(url.encode()).hexdigest() + ".txt")).write_text(text)
