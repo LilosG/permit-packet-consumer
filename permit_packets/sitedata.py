@@ -104,11 +104,11 @@ def popular_cities(limit: int = 8) -> list[tuple[str, str]]:
 
 # ---- Header navigation ----
 
-NAV_WHO = [
-    ("DIY Homeowners", "/for/diy-homeowners/"),
-    ("Hiring an Electrician", "/for/homeowners-hiring-an-electrician/"),
+NAV_WHO = [  # pros lead; the "Who it's for" cards follow this order too (pages.who_cards)
     ("Electricians", "/for/electricians/"),
     ("Contractors", "/for/contractors/"),
+    ("DIY Homeowners", "/for/diy-homeowners/"),
+    ("Hiring an Electrician", "/for/homeowners-hiring-an-electrician/"),
 ]
 NAV_PERMITS = [
     ("EV Charger", "/ev-charger-permit/"),

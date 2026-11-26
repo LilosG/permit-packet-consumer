@@ -37,6 +37,7 @@
     <label class="field">Email<input type="email" name="email" required maxlength="200"></label>
     <label class="field">Credits<input type="number" name="credits" min="1" max="1000" required></label>
     <label class="field">Reason<input type="text" name="reason" maxlength="200"></label>
+    <label class="flag"><input type="checkbox" name="notify"><span>Send email notification</span></label>
     <button type="submit">Grant credits</button>
   </form>
   <p id="grant-msg" class="note" aria-live="polite"></p>
@@ -123,9 +124,11 @@
     const form = event.target, note = document.getElementById('grant-msg');
     const result = await fetch('/api/admin/credits/grant', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: form.email.value.trim(), credits: Number(form.credits.value), reason: form.reason.value.trim() }) });
-    if (!result.ok) { const data = await result.json().catch(() => ({})); note.textContent = typeof data.detail === 'string' ? data.detail : `Could not grant (${result.status}).`; return; }
-    note.textContent = `Granted ${form.credits.value} credits to ${form.email.value.trim()}.`;
+      body: JSON.stringify({ email: form.email.value.trim(), credits: Number(form.credits.value), reason: form.reason.value.trim(), notify: form.notify.checked }) });
+    const data = await result.json().catch(() => ({}));
+    if (!result.ok) { note.textContent = typeof data.detail === 'string' ? data.detail : `Could not grant (${result.status}).`; return; }
+    const mail = data.notified === true ? ' Notification email sent.' : data.notified === false ? ' The notification email was NOT sent; contact them directly.' : '';
+    note.textContent = `Granted ${form.credits.value} credits to ${form.email.value.trim()}.${mail}`;
     form.reset();
     loadCredits();
   });

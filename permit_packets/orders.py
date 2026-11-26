@@ -539,6 +539,13 @@ def get_pack_order_by_provider_order_id(provider_order_id: str) -> dict[str, Any
     return _pack_row(rows[0]) if rows else None
 
 
+def paid_pack_count(email: str, pack: str) -> int:
+    """How many times this email has paid for this pack. Unpaid checkouts don't count."""
+    rows = _query("SELECT COUNT(*) FROM pack_orders WHERE lower(customer_email) = ? AND pack = ? AND status = 'paid'",
+                  (email.strip().lower(), pack))
+    return int(rows[0][0])
+
+
 def set_pack_provider_order_id(pack_id: str, provider_order_id: str) -> None:
     _run("UPDATE pack_orders SET provider_order_id = ? WHERE id = ?", (provider_order_id, pack_id))
 

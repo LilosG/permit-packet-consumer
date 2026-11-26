@@ -11,6 +11,20 @@
 
 <p class="note" id="purchased" role="status" hidden>Thanks for your payment. Your credits arrive by email as soon as the payment is confirmed.</p>
 
+{%- set starter = pricing.STARTER_PACK %}{% set starter_price = pricing.pack_price(starter) %}
+<article class="card price starter-card" id="starter">
+  <div class="starter-copy">
+    <h2>First-Time Contractor Starter Pack — {{ pricing.pack_credits(starter) }} Credits for ${{ starter_price }}</h2>
+    {% if starter_price < pricing.pack_regular_price(starter) %}<p class="starter-was">Regularly <s>${{ pricing.pack_regular_price(starter) }}</s></p>{% endif %}
+    <p class="price-desc">{% if starter_price == pricing.regular_price("instant_packet") %}Pay the regular single-packet rate, get {{ pricing.pack_credits(starter) - 1 }} bonus packets included{% else %}${{ '%.2f'|format(pricing.per_credit(starter)) }} per packet{% endif %} · Limit 1 per shop</p>
+  </div>
+  <form class="pack-form starter-form" data-pack="{{ starter }}" data-price="{{ starter_price }}" novalidate>
+    <label class="field">Email address<input type="email" name="email" required maxlength="200" autocomplete="email" placeholder="you@example.com"></label>
+    <button type="submit" class="btn-primary full">Buy the Starter Pack</button>
+    <p class="error" role="alert" hidden></p>
+  </form>
+</article>
+
 <div class="price-grid" id="packs">
 {%- for key in packs %}
   {%- set base = pricing.PACKS[key] %}{% set total = pricing.pack_credits(key) %}

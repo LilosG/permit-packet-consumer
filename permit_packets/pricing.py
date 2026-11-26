@@ -21,6 +21,13 @@ PACKS = {"pack_5": 5, "pack_10": 10, "pack_25": 25}  # credits
 PACK_REGULAR = {"pack_5": 299, "pack_10": 449, "pack_25": 899}
 PACK_LAUNCH = {"pack_5": 199, "pack_10": 349, "pack_25": 749}
 
+# The one-time Starter Pack (limit 1 per email). Kept out of PACKS: it isn't a repeat-purchase pack and gets no bonus.
+STARTER_PACK = "pack_starter"
+STARTER_CREDITS = 3
+STARTER_REGULAR = 179
+STARTER_LAUNCH = 89
+ALL_PACKS = (*PACKS, STARTER_PACK)  # every pack that can be bought
+
 BONUS_START = datetime.datetime(2026, 11, 27, 0, 0, 0, tzinfo=TZ)
 BONUS_END = datetime.datetime(2026, 12, 1, 23, 59, 59, tzinfo=TZ)
 BONUS_CREDITS = {"pack_5": 6, "pack_10": 13, "pack_25": 33}
@@ -63,7 +70,7 @@ def regular_price(key: str, now: datetime.datetime | None = None) -> int:
 
 
 def on_sale(key: str, now: datetime.datetime | None = None) -> bool:
-    return launch_active(now) and (key in LAUNCH or key in PACK_LAUNCH)
+    return launch_active(now) and (key in LAUNCH or key in ALL_PACKS)
 
 
 def price(key: str, now: datetime.datetime | None = None) -> int:
@@ -72,15 +79,19 @@ def price(key: str, now: datetime.datetime | None = None) -> int:
 
 
 def pack_price(key: str, now: datetime.datetime | None = None) -> int:
-    return PACK_LAUNCH[key] if launch_active(now) else PACK_REGULAR[key]
+    if not launch_active(now):
+        return pack_regular_price(key)
+    return STARTER_LAUNCH if key == STARTER_PACK else PACK_LAUNCH[key]
 
 
 def pack_regular_price(key: str, now: datetime.datetime | None = None) -> int:
-    return PACK_REGULAR[key]
+    return STARTER_REGULAR if key == STARTER_PACK else PACK_REGULAR[key]
 
 
 def pack_credits(key: str, now: datetime.datetime | None = None) -> int:
     """Credits in a pack: the bonus count during the Black Friday-Cyber Monday window, else the base count."""
+    if key == STARTER_PACK:
+        return STARTER_CREDITS
     return BONUS_CREDITS[key] if bonus_active(now) else PACKS[key]
 
 

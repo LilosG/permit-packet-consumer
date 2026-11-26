@@ -466,7 +466,16 @@
       $('#credit-total').textContent = `$${TIER_PRICE[tier] - credit}`;
     } catch { $('#credit-summary').hidden = true; }
   }
-  $$('input[name="who"]').forEach((radio) => radio.addEventListener('change', () => { applyRole(); applyTier(); applyCreditOption(); }));
+  /* /start/ reached without ?role= (a bookmark, a typed address): a pro seen earlier this session stays a pro. */
+  function restoreProRole() {
+    if (new URLSearchParams(location.search).get('role')) return;
+    const saved = window.PP.savedRole();
+    if (PRO_ROLES.includes(saved)) $(`input[name="who"][value="${saved}"]`).checked = true;
+  }
+  $$('input[name="who"]').forEach((radio) => radio.addEventListener('change', () => {
+    window.PP.saveRole(role());  // the visitor's own choice replaces what earlier pages suggested
+    applyRole(); applyTier(); applyCreditOption();
+  }));
   $$('input[name="tier"]').forEach((radio) => radio.addEventListener('change', () => {
     tierTouched = true; syncCredit();
     track('tier_selected', { tier: chosenTier(), role: role() });
@@ -723,6 +732,7 @@
     const wanted = studio.dataset.job;  // ?job= on /start/
     chooseType(jobTypes.some((type) => type.key === wanted) ? wanted
       : jobTypes.some((type) => type.key === 'ev_charger') ? 'ev_charger' : jobTypes[0].key);
+    restoreProRole();
     applyRole();
     applyTier();
     applyCreditOption();

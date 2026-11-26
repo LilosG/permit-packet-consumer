@@ -192,3 +192,35 @@ def test_permits_link_is_always_present(client, monkeypatch):
 
 def test_location_pages_stay_out_of_the_pages_sitemap(client):
     assert "/permits/" not in client.get("/sitemap-pages.xml").text
+
+
+def test_pros_lead_the_menu_and_the_who_cards(client):
+    html = client.get("/").text
+    grid = html[html.index('class="link-cards who-grid"'):]
+    grid = grid[:grid.index("</ul>")]
+    order = ["/for/electricians/", "/for/contractors/", "/for/diy-homeowners/", "/for/homeowners-hiring-an-electrician/"]
+    assert hrefs(grid) == order
+    assert re.findall(r'class="lc-tag">(.*?)<', grid) == ["ELECTRICIAN", "CONTRACTOR", "OWNER-BUILDER", "PANEL AUDIT"]
+    menu = html[html.index('id="dd-who"'):]
+    assert hrefs(menu[:menu.index("</ul>")]) == order
+
+
+def test_home_pro_callout_sits_below_the_pricing_cards(client):
+    html = client.get("/").text
+    section = html[html.index('id="pricing"'):html.index('id="resources"')]
+    assert section.rindex('class="card price') < section.index('class="pro-callout"')
+    assert "/pro-credits/" in hrefs(section)
+
+
+def test_electricians_page_covers_all_six_jobs_and_the_logo(client):
+    html = client.get("/for/electricians/").text
+    section = html[html.index("Which jobs does it cover?"):]
+    section = section[:section.index("</article>")]
+    assert sorted(hrefs(section)) == sorted(HUB_PATHS)
+    assert "company logo, which prints on the cover and page headers" in html
+
+
+def test_sample_answer_explains_the_contractor_title_block(client):
+    html = client.get("/sample-packet/").text
+    answer = re.search(r'class="answer">(.*?)</p>', html, re.S).group(1)
+    assert "business name and license number" in answer and "logo prints on the cover and page headers" in answer

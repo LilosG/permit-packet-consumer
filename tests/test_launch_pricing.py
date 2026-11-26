@@ -123,10 +123,13 @@ def test_trust_cards_and_who_submits(client):
 def test_home_hero_and_metric_copy(client, at):
     at(DEC_15)
     page = text_of(client.get("/"))
-    assert ("Electricians charge customers $300–$450 to prepare permit paperwork like this. Build yours from one "
+    assert ("CAD drafters and permit services charge $300–$500+ to prepare permit plans like this. Build yours from one "
             "address in minutes: site plan, single-line diagram, load calc, panel schedule and UL cut sheets.") in page
     assert "Any US address · Complete packet $59 (reg. $89) · Preview free" in page
-    assert "$59 vs $300–$450" in page and "What electricians charge customers for permit paperwork" in page
+    assert "$59 vs $300–$500+" in page and "Typical CAD drafter & permit service fee" in page
+    assert "Electricians charge customers" not in page and "What electricians charge" not in page
+    assert "Built for licensed electricians, contractors & homeowners" in page
+    assert "Explore all 8 free NEC calculators" in page
     assert "Starting at $39" not in page
     at(JAN_1)
     page = text_of(client.get("/"))

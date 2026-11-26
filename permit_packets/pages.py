@@ -180,7 +180,9 @@ def start(request: Request, job: str = "", city: str = "", address: str = "", ro
 # ---- Content pages: job hubs, audience pages, sample, pricing, FAQ, about ----
 
 def who_cards() -> list[tuple[str, str, str]]:
-    return [(a.path, a.crumb, a.benefit) for a in content.AUDIENCES.values()]
+    """One card per audience, in the header menu's order."""
+    by_path = {a.path: a for a in content.AUDIENCES.values()}
+    return [(path, by_path[path].crumb, by_path[path].benefit) for _label, path in sitedata.NAV_WHO]
 
 
 def job_links() -> list[tuple[str, str, str]]:

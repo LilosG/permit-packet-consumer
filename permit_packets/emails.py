@@ -161,6 +161,20 @@ def pack_ready(to_email: str, credits: int, expires: str, link: str) -> bool:
         link, "Start a packet")
 
 
+def credit_granted(to_email: str, credits: int, expires: str, link: str) -> bool:
+    """Sent when an admin adds complimentary credits and asks for the email. `expires` is a date such as "November 24, 2027"."""
+    noun = "credit" if credits == 1 else "credits"
+    verb = "has" if credits == 1 else "have"
+    return _send(
+        to_email, f"{credits} complimentary Instant Permit Packet {noun} for you",
+        [f"{credits} complimentary Instant Permit Packet {noun} {verb} been added to {to_email}. To use a credit:",
+         f"1. Preview any job free, starting at {link}",
+         "2. Choose \"I'm an electrician\" or \"I'm a contractor\", and at the package step choose \"Use a prepaid credit\".",
+         "3. Enter this email address. We'll send you a confirmation link; opening it and confirming spends one credit and unlocks your packet.",
+         f"Unused credits expire on {expires}."],
+        link, "Preview a job")
+
+
 def credit_confirm(to_email: str, link: str) -> bool:
     return _send(
         to_email, "Confirm your prepaid credit",

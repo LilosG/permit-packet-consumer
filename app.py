@@ -862,6 +862,10 @@ def _fulfil(kind: str, record: dict[str, Any], request: Request) -> None:
         lot = orders.mark_pack_paid(record["id"])
         if lot is not None:
             log.info("Pack %s paid: %s credits for %s", record["id"], lot["credits_total"], record["customer_email"])
+            # Two checkouts opened before either was paid can both be paid. The money is in, so the credits are delivered.
+            if record["pack"] == pricing.STARTER_PACK and orders.paid_pack_count(record["customer_email"], record["pack"]) > 1:
+                log.warning("Pack %s is a repeat Starter Pack for %s; refund it if the limit should hold",
+                            record["id"], record["customer_email"])
             _notify(emails.pack_ready, record["customer_email"], lot["credits_total"],
                     _date_label(lot["expires_at"]), f"{_base_url(request)}/start/")
         return
@@ -893,8 +897,13 @@ def buy_pack(request: Request, body: dict[str, Any] = Body(...)) -> dict:
     pack = body.get("pack")
     if not EMAIL.match(email) or len(email) > 200:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Enter a valid email address")
-    if pack not in pricing.PACKS:
-        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"pack must be one of {', '.join(pricing.PACKS)}")
+    if pack not in pricing.ALL_PACKS:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"pack must be one of {', '.join(pricing.ALL_PACKS)}")
+    if pack == pricing.STARTER_PACK and orders.paid_pack_count(email, pack):
+        *sizes, last = (str(size) for size in pricing.PACKS.values())
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            f"The Starter Pack is limited to one per email. Choose the {', '.join(sizes)} or {last} credit pack.")
     credits = pricing.pack_credits(pack)
     record = orders.create_pack_order(email, pack, credits, pricing.pack_price(pack) * 100)
     try:
@@ -1057,7 +1066,9 @@ def admin_credits() -> JSONResponse:
 
 
 @app.post("/api/admin/credits/grant", dependencies=[Depends(require_admin)])
-def admin_grant_credits(body: dict[str, Any] = Body(...)) -> dict:
+def admin_grant_credits(request: Request, body: dict[str, Any] = Body(...)) -> dict:
+    """Add credits by hand. Body: {email, credits, reason, notify}. Only notify: true emails the contractor."""
+    notify = body.get("notify", False) is True
     email = str(body.get("email") or "").strip()
     reason = str(body.get("reason") or "").strip()[:200]
     try:
@@ -1070,7 +1081,15 @@ def admin_grant_credits(body: dict[str, Any] = Body(...)) -> dict:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Credits must be a number from 1 to 1000")
     lot = orders.grant_credits(email, count, reason)
     log.info("Admin granted %s credits to %s (%s)", count, lot["customer_email"], reason or "no reason given")
-    return {"id": lot["id"], "expires_at": lot["expires_at"]}
+    answer = {"id": lot["id"], "expires_at": lot["expires_at"]}
+    if notify:  # the credits stay granted if the email fails; the admin is told whether it went out
+        try:
+            answer["notified"] = emails.credit_granted(
+                lot["customer_email"], count, _date_label(lot["expires_at"]), f"{_base_url(request)}/for/electricians/")
+        except Exception:
+            log.exception("Credit grant email failed")
+            answer["notified"] = False
+    return answer
 
 
 @app.get("/api/admin/orders/{order_id}/pdf", dependencies=[Depends(require_admin)])

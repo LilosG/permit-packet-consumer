@@ -1721,3 +1721,14 @@ table.compare tbody th { color: var(--ink); font-weight: 600; }
 .launch-note { margin: 6px 0 0; }
 .plan .badge.launch { margin-top: 4px; }
 .guarantee-note { margin: 20px auto 0; max-width: 760px; text-align: center; color: var(--muted, #475569); font-size: 15px; }
+
+/* ---- Pro offer: home callout, audience-page pair, Starter Pack card ---- */
+.pro-callout { max-width: 860px; margin: 28px auto 0; padding: 14px 20px; border: 1px solid #bfdbfe; border-radius: var(--r-md); background: var(--blue-tint); color: var(--ink); text-align: center; font-size: 15px; }
+.pro-callout a { color: var(--blue); font-weight: 700; white-space: nowrap; }
+.price-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 20px; align-items: stretch; }
+.pack-rows { margin: 4px 0; padding: 0; list-style: none; }
+.pack-rows li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.page-main.content .starter-card { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px; align-items: center; margin-top: 28px; border: 2px solid var(--blue); background: linear-gradient(135deg, #eff6ff 0%, #ffffff 55%); }
+.page-main.content .starter-card h2 { margin: 0; padding: 0; border: 0; font-size: 22px; }
+.starter-card .starter-form { display: grid; gap: 10px; }
+@media (max-width: 700px) { .price-pair, .page-main.content .starter-card { grid-template-columns: minmax(0, 1fr); } }

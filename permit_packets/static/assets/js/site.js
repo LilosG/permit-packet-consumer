@@ -15,6 +15,52 @@
   }
   const landingPage = () => safely(() => sessionStorage.getItem(LANDING_KEY)) || '';
 
+  /* ---- Who the visitor is, kept for the session, so a pro who browses on doesn't start the wizard as a homeowner. ---- */
+  const ROLE_KEY = 'pp_role';
+  const ROLES = ['diy', 'hiring', 'electrician', 'contractor'];
+  const PRO_ROLES = ['electrician', 'contractor'];
+  const ROLE_PAGES = {
+    '/for/electricians/': 'electrician', '/for/contractors/': 'contractor',
+    '/for/diy-homeowners/': 'diy', '/for/homeowners-hiring-an-electrician/': 'hiring',
+  };
+  const savedRole = () => {
+    const role = safely(() => sessionStorage.getItem(ROLE_KEY));
+    return ROLES.includes(role) ? role : '';
+  };
+  const saveRole = (role) => { if (ROLES.includes(role)) safely(() => sessionStorage.setItem(ROLE_KEY, role)); };
+  /* An explicit ?role= wins over what the page implies. Pro Credits keeps a contractor a contractor. */
+  const askedRole = safely(() => new URLSearchParams(location.search).get('role'));
+  if (ROLES.includes(askedRole)) saveRole(askedRole);
+  else if (ROLE_PAGES[location.pathname]) saveRole(ROLE_PAGES[location.pathname]);
+  else if (location.pathname === '/pro-credits/' && savedRole() !== 'contractor') saveRole('electrician');
+
+  /* For a pro, links and forms that go to /start/ without a role of their own carry the saved one. Done in the browser
+     only: the HTML the server sends is unchanged. */
+  function carryRole() {
+    const role = savedRole();
+    if (!PRO_ROLES.includes(role)) return;
+    const startUrl = (value) => safely(() => {
+      const url = new URL(value, location.href);
+      return url.origin === location.origin && url.pathname === '/start/' ? url : null;
+    });
+    $$('a[href]').forEach((link) => {
+      const url = startUrl(link.getAttribute('href'));
+      if (!url || url.searchParams.has('role')) return;
+      url.searchParams.set('role', role);
+      link.setAttribute('href', url.pathname + url.search + url.hash);
+    });
+    $$('form[action]').forEach((form) => {
+      const url = startUrl(form.getAttribute('action'));
+      if (!url || url.searchParams.has('role') || form.querySelector('[name="role"]')) return;
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'role';
+      input.value = role;
+      form.append(input);
+    });
+  }
+  carryRole();
+
   /* Sends a GA4 event with the landing page added. Returns true when it was handed to gtag. */
   function track(name, params = {}) {
     if (typeof window.gtag !== 'function') return false;
@@ -107,7 +153,7 @@
     return { cancel() { requestId += 1; clearTimeout(timer); close(); } };
   }
 
-  window.PP = { esc, api, attachSuggest, track, calculatorUsed, landingPage };
+  window.PP = { esc, api, attachSuggest, track, calculatorUsed, landingPage, savedRole, saveRole };
 
   /* ---- Header: the two dropdowns ---- */
   const dropdowns = $$('.dd');

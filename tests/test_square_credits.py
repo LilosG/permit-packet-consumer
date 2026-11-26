@@ -314,3 +314,113 @@ def test_no_whop_remains_in_templates_static_files_or_app():
     hits = [str(path) for path in paths if path.is_file() and path.suffix in (".py", ".html", ".js", ".css", ".txt", ".json", ".svg")
             and "whop" in path.read_text(errors="ignore").lower()]
     assert hits == []
+
+
+# ---- The one-time Starter Pack ----
+
+STARTER = pricing.STARTER_PACK
+
+
+@pytest.mark.parametrize("when, dollars", [(IN_WINDOW, pricing.STARTER_LAUNCH), (AFTER_WINDOW, pricing.STARTER_LAUNCH),
+                                           (datetime.datetime(2027, 1, 2, tzinfo=pricing.TZ), pricing.STARTER_REGULAR)])
+def test_the_starter_pack_is_three_credits_with_no_bonus(client, monkeypatch, outbox, when, dollars):
+    freeze(monkeypatch, when)
+    record = buy_pack(client, STARTER)
+    assert (record["pack"], record["credits"], record["amount_cents"]) == (STARTER, 3, dollars * 100)
+    pay_pack(client, record)
+    (lot,) = lots()
+    assert (lot["credits_total"], lot["credits_used"]) == (3, 0)
+    paid = datetime.datetime.fromisoformat(orders.get_pack_order(record["id"])["paid_at"])
+    assert datetime.datetime.fromisoformat(lot["expires_at"]) - paid == datetime.timedelta(days=365)
+    assert outbox[-1][1] == "Your 3 Permit Packets credits are ready"
+
+
+def test_the_starter_pack_is_limited_to_one_paid_order_per_email(client, monkeypatch):
+    freeze(monkeypatch, AFTER_WINDOW)
+    buy_pack(client, STARTER)  # abandoned: an unpaid checkout doesn't use up the offer
+    pay_pack(client, buy_pack(client, STARTER))
+    checkouts = len(CALLS)
+    refused = client.post("/api/public/packs", json={"pack": STARTER, "email": " PRO@Example.com "})
+    assert refused.status_code == 422
+    assert refused.json()["detail"] == "The Starter Pack is limited to one per email. Choose the 5, 10 or 25 credit pack."
+    assert len(CALLS) == checkouts  # no checkout was made
+    buy_pack(client, "pack_5")  # the standard packs stay open to that email
+    buy_pack(client, STARTER, "other@example.com")
+
+
+def test_two_open_starter_checkouts_both_paid_deliver_and_warn(client, monkeypatch, caplog):
+    freeze(monkeypatch, AFTER_WINDOW)
+    one, two = buy_pack(client, STARTER), buy_pack(client, STARTER)
+    with caplog.at_level("WARNING"):
+        pay_pack(client, one)
+        assert "repeat Starter Pack" not in caplog.text
+        pay_pack(client, two)
+    assert len(lots()) == 2 and "repeat Starter Pack" in caplog.text
+
+
+def test_the_starter_card_on_pro_credits(client, monkeypatch):
+    freeze(monkeypatch, AFTER_WINDOW)
+    html = client.get("/pro-credits/").text
+    assert f"First-Time Contractor Starter Pack — 3 Credits for ${pricing.STARTER_LAUNCH}" in html
+    assert "Pay the regular single-packet rate, get 2 bonus packets included · Limit 1 per shop" in html
+    assert f'data-pack="{STARTER}"' in html and len(re.findall(r'class="pack-form\b', html)) == 4
+    assert html.index('id="starter"') < html.index('id="packs"')
+    # After launch the starter no longer costs the single-packet rate, so the page stops saying it does.
+    freeze(monkeypatch, datetime.datetime(2027, 1, 2, tzinfo=pricing.TZ))
+    html = client.get("/pro-credits/").text
+    assert f"3 Credits for ${pricing.STARTER_REGULAR}" in html and "Limit 1 per shop" in html
+    assert "single-packet rate" not in html and 'class="starter-was"' not in html
+
+
+@pytest.mark.parametrize("path", ["/for/electricians/", "/for/contractors/"])
+def test_pro_audience_pages_show_pack_prices_from_pricing(client, monkeypatch, path):
+    freeze(monkeypatch, AFTER_WINDOW)
+    html = client.get(path).text
+    card = html[html.index("pro-card"):]
+    card = card[:card.index("</article>")]
+    for key in pricing.PACKS:
+        assert f"<span>{pricing.pack_credits(key)} credits</span><b>${pricing.pack_price(key)}</b>" in card
+    assert f"3 credits for ${pricing.STARTER_LAUNCH}" in card and 'href="/pro-credits/"' in card
+
+
+def test_homeowner_pages_have_no_pro_card(client):
+    for path in ("/for/diy-homeowners/", "/for/homeowners-hiring-an-electrician/"):
+        assert "pro-card" not in client.get(path).text
+
+
+# ---- Admin grant email ----
+
+def admin_grant(client, **extra):
+    response = client.post("/api/admin/credits/grant", auth=ADMIN,
+                           json={"email": "Trial@Example.com", "credits": 2, "reason": "trial", **extra})
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+@pytest.mark.parametrize("extra", [{}, {"notify": False}, {"notify": "false"}])
+def test_an_admin_grant_is_silent_unless_notify_is_true(client, outbox, extra):
+    assert "notified" not in admin_grant(client, **extra)
+    assert outbox == [] and lots("trial@example.com")[0]["credits_total"] == 2
+
+
+def test_an_admin_grant_with_notify_emails_the_contractor(client, outbox):
+    answer = admin_grant(client, notify=True)
+    assert answer["notified"] is True
+    ((to, subject, text),) = outbox
+    assert to == "trial@example.com" and subject == "2 complimentary Instant Permit Packet credits for you"
+    assert "2 complimentary Instant Permit Packet credits have been added to trial@example.com" in text
+    assert all(f"\n\n{step}. " in text for step in (1, 2, 3))
+    assert "https://permits.example.com/for/electricians/" in text and "Use a prepaid credit" in text
+    assert datetime.datetime.fromisoformat(answer["expires_at"]).strftime("%B %-d, %Y") in text
+
+
+def test_a_failed_grant_email_keeps_the_credits_and_says_so(client, monkeypatch):
+    monkeypatch.setattr(emails, "send", lambda *args: False)
+    assert admin_grant(client, notify=True)["notified"] is False
+    assert lots("trial@example.com")[0]["credits_total"] == 2
+
+
+def test_the_admin_page_has_the_notify_checkbox(client):
+    html = client.get("/admin", auth=ADMIN).text
+    assert 'type="checkbox" name="notify"' in html and "Send email notification" in html
+    assert "notify: form.notify.checked" in html
