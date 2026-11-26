@@ -50,7 +50,7 @@ def test_doc_and_compare_pages_link_to_tools_guides_and_pricing(client):
 
 
 def test_40_cities_registered_and_indexable(client):
-    assert len(sitedata.known_cities()) == 50
+    assert len(sitedata.known_cities()) == 53
     for path in ("/permits/fl/miami/", "/permits/mn/minneapolis/", "/permits/oh/columbus/", "/permits/ut/salt-lake-city/"):
         assert client.get(path).status_code == 200
         assert f"{path}</loc>" in client.get("/sitemap-locations.xml").text

@@ -164,10 +164,12 @@ class Jurisdiction:
 # The city modules import the classes above, so they come after them.
 from permit_packets.jurisdictions.bellevue_wa import BELLEVUE  # noqa: E402
 from permit_packets.jurisdictions.chandler_az import CHANDLER  # noqa: E402
+from permit_packets.jurisdictions.chico_ca import CHICO  # noqa: E402
 from permit_packets.jurisdictions.charlotte_nc import CHARLOTTE  # noqa: E402
 from permit_packets.jurisdictions.el_cajon_ca import EL_CAJON  # noqa: E402
 from permit_packets.jurisdictions.general import GENERAL_CHECKLISTS, STATE_AMENDMENTS  # noqa: E402
 from permit_packets.jurisdictions.mesa_az import MESA  # noqa: E402
+from permit_packets.jurisdictions.monte_sereno_ca import MONTE_SERENO  # noqa: E402
 from permit_packets.jurisdictions.nashville_tn import NASHVILLE  # noqa: E402
 from permit_packets.jurisdictions.oro_valley_az import ORO_VALLEY  # noqa: E402
 from permit_packets.jurisdictions.san_francisco_ca import SAN_FRANCISCO  # noqa: E402
@@ -214,12 +216,13 @@ from permit_packets.jurisdictions.frisco_tx import FRISCO  # noqa: E402
 from permit_packets.jurisdictions.orlando_fl import ORLANDO  # noqa: E402
 from permit_packets.jurisdictions.jacksonville_fl import JACKSONVILLE  # noqa: E402
 from permit_packets.jurisdictions.irvine_ca import IRVINE  # noqa: E402
+from permit_packets.jurisdictions.las_vegas_nv import LAS_VEGAS  # noqa: E402
 from permit_packets.jurisdictions.fresno_ca import FRESNO  # noqa: E402
 from permit_packets.jurisdictions.durham_nc import DURHAM  # noqa: E402
 from permit_packets.jurisdictions.henderson_nv import HENDERSON  # noqa: E402
 from permit_packets.jurisdictions.colorado_springs_co import COLORADO_SPRINGS  # noqa: E402
 
-KNOWN = {(j.name.lower(), j.state): j for j in (FORT_WORTH, PLANO, FRISCO, ORLANDO, JACKSONVILLE, IRVINE, FRESNO, DURHAM, HENDERSON, COLORADO_SPRINGS, MIAMI, MINNEAPOLIS, COLUMBUS, SALT_LAKE_CITY, ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE, SAN_DIEGO, LOS_ANGELES, SAN_JOSE, SEATTLE, PORTLAND, AUSTIN, DALLAS, DENVER, PHOENIX, SCOTTSDALE, SACRAMENTO, OAKLAND, AURORA, TAMPA, RALEIGH, HOUSTON, SAN_ANTONIO, TACOMA, BOSTON, CAMBRIDGE, NEWARK, JERSEY_CITY, NEW_YORK, BUFFALO, CHICAGO, NAPERVILLE, ATLANTA, SAVANNAH)}
+KNOWN = {(j.name.lower(), j.state): j for j in (CHICO, LAS_VEGAS, MONTE_SERENO, FORT_WORTH, PLANO, FRISCO, ORLANDO, JACKSONVILLE, IRVINE, FRESNO, DURHAM, HENDERSON, COLORADO_SPRINGS, MIAMI, MINNEAPOLIS, COLUMBUS, SALT_LAKE_CITY, ORO_VALLEY, EL_CAJON, NASHVILLE, SAN_FRANCISCO, CHARLOTTE, MESA, CHANDLER, BELLEVUE, SAN_DIEGO, LOS_ANGELES, SAN_JOSE, SEATTLE, PORTLAND, AUSTIN, DALLAS, DENVER, PHOENIX, SCOTTSDALE, SACRAMENTO, OAKLAND, AURORA, TAMPA, RALEIGH, HOUSTON, SAN_ANTONIO, TACOMA, BOSTON, CAMBRIDGE, NEWARK, JERSEY_CITY, NEW_YORK, BUFFALO, CHICAGO, NAPERVILLE, ATLANTA, SAVANNAH)}
 
 
 def jurisdiction_for(city: str | None, state: str | None) -> Jurisdiction:
