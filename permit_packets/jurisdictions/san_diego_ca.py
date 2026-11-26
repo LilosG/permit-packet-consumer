@@ -38,7 +38,8 @@ SOLAR_GENERAL_NOTES = (
 
 SAN_DIEGO = Jurisdiction(
     key="san-diego-ca", name="San Diego", state="CA", known=True,
-    permit_rules_verified="2026-11-21",
+    last_verified="2026-11-25",
+    permit_rules_verified="2026-11-25",
     who_may_pull="Property owner or lessee may be issued an electrical permit; property owner doing the work or hiring different contractors must sign and upload Owner-Builder Verification Form (DS-3042) before permit issuance.",
     owner_may_file=True,
     portal_url="https://www.sandiego.gov/development-services/permits/electrical-permit",

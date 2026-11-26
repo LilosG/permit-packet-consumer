@@ -14,7 +14,7 @@ SOURCE_LABEL = "From LADBS Information Bulletins and the Los Angeles Electrical 
 LOS_ANGELES = Jurisdiction(
     key="los-angeles-ca", name="Los Angeles", state="CA", known=True,
     no_plan_jobs={'ev_charger': 'https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf', 'service_upgrade': 'https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf', 'subpanel': 'https://dbs.lacity.gov/start', 'appliance_circuit': 'https://dbs.lacity.gov/start', 'solar_storage': 'https://dbs.lacity.gov/sites/default/files/efs/forms/pc17/ib-p-gi-2020-003-express-permits_rev-5-28-2024.pdf'},
-    permit_rules_verified="2026-11-21",
+    permit_rules_verified="2026-11-25",
     who_may_pull="Perform the work prior to sale of the dwelling. Be a homeowner that has resided in the residence for at least 12 months prior to the completion of the work.",
     owner_may_file=True,
     portal_url="https://www.ladbs.org/services/core-services/plan-check-permit/electrical-permit",

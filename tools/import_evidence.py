@@ -15,6 +15,7 @@ import hashlib
 import html
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -30,6 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 EVIDENCE = ROOT / "evidence"
 OUT = EVIDENCE / "verified"
 CACHE = ROOT / ".cache" / "evidence_fetch"
+OCR_SNAPSHOTS = EVIDENCE / "ocr"  # committed OCR text of scanned PDFs, named <sha256 of url>.txt
 MODULES = ROOT / "permit_packets" / "jurisdictions"
 TODAY = datetime.date.today().isoformat()
 VERIFIED_MARKER = "# Verified from evidence/verified/ by tools/import_evidence.py."
@@ -116,6 +118,26 @@ def normalize(text: str) -> str:
     return re.sub(r"[^a-z0-9]", "", text.lower())
 
 
+MIN_TEXT_CHARS = 300  # below this, a PDF (or a cached page) has no usable text layer
+_ocr_warned = False
+
+
+def ocr_pdf(path: str) -> str:
+    """Normalized OCR text of a scanned PDF (pdftoppm + tesseract). Empty if either tool is missing."""
+    global _ocr_warned
+    if not (shutil.which("pdftoppm") and shutil.which("tesseract")):
+        if not _ocr_warned:
+            print("warning: scanned PDF found but pdftoppm/tesseract are not installed (brew install tesseract poppler)")
+            _ocr_warned = True
+        return ""
+    with tempfile.TemporaryDirectory() as tmp:
+        subprocess.run(["pdftoppm", "-r", "200", "-png", path, f"{tmp}/page"], capture_output=True, timeout=300)
+        pages = sorted(Path(tmp).glob("page*.png"))
+        out = [subprocess.run(["tesseract", str(png), "-"], capture_output=True, timeout=120).stdout.decode("utf-8", "replace")
+               for png in pages]
+    return normalize(" ".join(out))
+
+
 def to_text(body: bytes, content_type: str) -> str:
     if body[:1024].lstrip().startswith(b"%PDF") or "application/pdf" in content_type:
         with tempfile.NamedTemporaryFile(suffix=".pdf") as handle:
@@ -125,6 +147,8 @@ def to_text(body: bytes, content_type: str) -> str:
             for flags in ([], ["-layout"]):
                 done = subprocess.run(["pdftotext", *flags, handle.name, "-"], capture_output=True, timeout=120)
                 texts.append(normalize(done.stdout.decode("utf-8", "replace")))
+            if max(len(t) for t in texts) < MIN_TEXT_CHARS:  # a scanned PDF with no text layer
+                texts.append(ocr_pdf(handle.name))
         return "\n".join(texts)
     charset = re.search(r"charset=([\w-]+)", content_type)
     try:
@@ -134,11 +158,28 @@ def to_text(body: bytes, content_type: str) -> str:
     return normalize(html.unescape(re.sub(r"<[^>]*>", " ", page)))
 
 
+def with_ocr_snapshot(url: str, result: dict) -> dict:
+    """A scanned PDF has no text layer: use its committed OCR snapshot when one exists."""
+    if len(result.get("text", "")) >= MIN_TEXT_CHARS:
+        return result
+    snapshot = OCR_SNAPSHOTS / (hashlib.sha256(url.encode()).hexdigest() + ".txt")
+    if snapshot.exists():
+        return {"text": result.get("text", "") + "\n" + normalize(snapshot.read_text()), "error": ""}
+    return result
+
+
 def fetch(url: str) -> dict:
+    """{"text": normalized text, "error": ""}. Successful fetches are cached."""
+    return with_ocr_snapshot(url, _fetch(url))
+
+
+def _fetch(url: str) -> dict:
     """{"text": normalized text, "error": ""}. Successful fetches are cached."""
     cached = CACHE / (hashlib.sha256(url.encode()).hexdigest() + ".json")
     if cached.exists():
-        return json.loads(cached.read_text())
+        result = json.loads(cached.read_text())
+        if len(result.get("text", "")) >= MIN_TEXT_CHARS:
+            return result  # pages cached with almost no text (e.g. scanned PDFs before OCR) are fetched again
     error = ""
     for _ in range(2):  # one retry
         try:
@@ -586,7 +627,7 @@ def retry_blocked(pages: dict) -> None:
                 result = {"text": to_text(body, ctype), "error": ""}
                 cached = CACHE / (hashlib.sha256(url.encode()).hexdigest() + ".json")
                 cached.write_text(json.dumps(result))
-                pages[url] = result
+                pages[url] = with_ocr_snapshot(url, result)
                 recovered += 1
             except Exception:  # keep the original error
                 continue

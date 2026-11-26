@@ -1,0 +1,132 @@
+# OCR (tesseract 200 dpi) of https://www.sf.gov/sites/default/files/2023-11/IS%20E-03.pdf, 2026-11-25
+London N. Breed, Mayor
+Patrick O’Riordan, C.B.O., Director
+
+City and County of San Francisco
+Department of Building Inspection
+
+INFORMATION SHEET
+
+NO. E-03
+DATE : November 15, 2023
+CATAGORY : General
+TITLE : License Requirements for Electrical Permit Issuance and Installations
+PURPOSE : The purpose of this Information Sheet is to provide contractor license
+requirements for electrical permit issuance and installations.
+REFERENCES : San Francisco Electrical Code, Current Edition
+California Code of Regulations
+California Business and Professions Code
+DISCUSSION
+
+Electrical Permit Issuance
+
+Under San Francisco Electrical Code (SFEC) Section 89.120, permits for electrical work may
+be issued to duly licensed contractors who have registered with the Department of Building
+Inspection Central Permit Bureau by having their contractor's license verified by the Department.
+
+Contractor licenses are issued by the State of California Contractors State License Board
+(CSLB) with specialty classifications for the performance of construction work requiring special
+skill and when the principal contracting business involves the use of specialized building trades
+or crafts.
+
+The following specialty contractor licenses issued by the CSLB are necessary for the safe
+installation of electrical and communications work in San Francisco.
+
+C-10 Electrical: An electrical contractor places, installs, erects or connects any electrical wires,
+fixtures, appliances, apparatus, raceways, conduits, solar photovoltaic cells or any part thereof,
+which generate, transmit, transform or utilize electrical energy in any form or for any purpose.
+(832.10 CCR)
+
+Examples of electrical work performed by electrical contractors include the layout, placement,
+installation, alteration, removal, maintenance, modification, manipulation, processing, handling,
+
+Page 1 of 3
+
+Department of Building Inspection — Technical Services Division
+49 South Van Ness Avenue — San Francisco CA 94103
+(628) 652-3720 | sfdbi.org
+INFORMATION SHEET E-03
+
+testing, erection, or connection of any electrical material, devices, wires, conductors, cables,
+fixtures, fittings, hardware, appliances, apparatus, busway, equipment, raceways, conduits,
+panels, arrays, supports or fasteners, or any combination which serve to generate, store,
+transmit, transform, utilize, or control electrical energy for light, heat, power, or other purposes
+including all work subject to the provisions of the SFEC.
+
+Electrical contractors also install Fire Alarm Systems, Life Safety Systems, Lighting Control
+Systems, Low Voltage Light Fixture Installations, Low Voltage Electrical Control Systems,
+Control Systems, Industrial Systems such as process controls, robotics, and manufacturing,
+Building Automation Control Systems, Electrical (Non Pneumatic) HVAC Control Systems, or
+Streetlight and Traffic Signal Systems.
+
+C-7 Low Voltage Systems: A communication and low voltage systems contractor installs,
+services and maintains all types of communication and low voltage systems which are energy
+limited and do not exceed 91 volts. These systems include, but are not limited to, telephone
+systems, sound systems, cable television systems, closed-circuit video systems, satellite dish
+antennas, instrumentation and temperature controls, and low voltage landscape lighting. Low
+voltage fire alarm systems are specifically not included in this section. (832.07 CCR)
+
+Examples of work performed by communication and low voltage systems contractors include
+the installation, maintenance, service and testing of all apparatus and interconnecting cables,
+including fiber optics and/or ethereal aid associated with systems utilizing the transmission
+and/or transference of voice, audio, video, data, interactive services, and internet for systems
+such as CCTV monitoring and surveillance, background-foreground music, intercom and
+telephone interconnect, inventory control systems, microwave transmission, multi-media,
+multiplex, nurse call systems, radio page, school intercom and sound, sound masking, sound
+reinforcement, teleconference and satellite television systems, security systems, access control
+systems, burglar alarm systems and data systems.
+
+Communications work does not mean or include Fire Alarm Systems, Life Safety Systems,
+Lighting Control Systems, Low Voltage Light Fixture Installations, Low Voltage Control Systems,
+or Building Automation Control Systems.
+
+C-46 Solar Contractor: A solar contractor installs, modifies, maintains, and repairs thermal and
+photovoltaic solar energy systems. A licensee classified in this section shall not undertake or
+perform building or construction trades, crafts, or skills, except when required to install a thermal
+or photovoltaic solar energy system. (832.46 CCR)
+
+Examples of work performed by solar contractors include the installation, configuration, support,
+testing, maintenance and repair of solar panels and ground mount collectors in (a) solar
+photovoltaic systems and (b) hot water and pool thermal heating systems.
+
+Exceptions:
+
+Class B General Building Contractor: Permits for electrical work may be issued to a Class B
+General Building Contractor when the contractor has entered into either a prime or sub-contract
+for two or more separate and unrelated trades and self-perform the work. Framing and carpentry
+cannot count as one of the trades. (California Business and Professions Code Section 7057)
+
+Page 2 of 3
+
+Department of Building Inspection — Technical Services Division
+49 South Van Ness Avenue — San Francisco CA 94103
+(628) 652-3720 | sfdbi.org
+INFORMATION SHEET E-03
+
+Homeowner: Permits for electrical work in or about a single-family dwelling may be issued to
+the homeowner, provided the work will be performed by the homeowner. If the electrical work
+performed under the homeowner's permit does not comply with the requirements of the SFEC
+and if corrections are not made as required by the Department of Building Inspection, then the
+deficiencies shall be corrected by a State licensed electrical contractor under a separate permit.
+(SFEC Section 89.120(E))
+
+Electrical Installation Requirements
+
+Under SFEC Section 89.122, proposed electrical installations delineated on a permit application
+shall be performed only by the permittee or bona fide employee of the permittee in accordance
+with the California Code of Regulations (CCR), Title 8, Chapter 2, Part IV.
+
+(eC jon _ U(r l2z
+
+Patrick O’Riordan Date
+C.B.O., Director
+Department of Building Inspection
+
+This Information Sheet is subject to modification at any time. For the most current version, visit our
+website at sfdbi.org
+
+Page 3 of 3
+
+Department of Building Inspection — Technical Services Division
+49 South Van Ness Avenue — San Francisco CA 94103
+(628) 652-3720 | sfdbi.org

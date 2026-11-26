@@ -40,10 +40,11 @@ CODE_NOTE = (
 
 SAN_FRANCISCO = Jurisdiction(
     key="san-francisco-ca", name="San Francisco", state="CA", known=True,
+    last_verified="2026-11-25",
     no_plan_jobs={'service_upgrade': 'https://www.sf.gov/apply-electrical-permit', 'subpanel': 'https://www.sf.gov/apply-electrical-permit', 'appliance_circuit': 'https://www.sf.gov/apply-electrical-permit', 'generator': 'https://www.sf.gov/apply-electrical-permit'},
-    permit_rules_verified="2026-11-17",
-    who_may_pull="Contractors must hold a B, C7, C10, C45, C46, C61 or D34 license (a C7 covers only low-voltage work). Only owners of a stand-alone single-family dwelling (R-3 occupancy) may apply to do the work themselves; staff may direct an owner to hire a licensed contractor.",
-    owner_may_file=None,
+    permit_rules_verified="2026-11-25",
+    who_may_pull="Single-family dwelling only; homeowner must perform the electrical work themselves and sign the declaration not to hire a contractor (SFEC Section 89.120(E)); LLCs are not eligible; must present ID to prove ownership (plus proof of ownership if recently purchased, or proof of authorized signatory status if owned by a trust). If work fails to comply with SFEC and corrections are not made as required by DBI, deficiencies must be corrected by a State licensed electrical contractor under a separate permit. Note: Solar PV and energy storage permits are restricted to California-licensed contractors (C-10, or C-46 without battery storage).",
+    owner_may_file=True,
     portal_url="https://sf.gov/apply-electrical-permit",
     fee_note="San Francisco permit fees depend on the scope of work. DBI publishes a fee schedule (Table 1A-E, 2026) that the permit page links.",
     sources=(PERMIT_PAGE_URL, E02_URL, SFBC_EVSE_URL, SFEC_URL),

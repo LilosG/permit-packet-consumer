@@ -25,7 +25,7 @@ jobs:
   solar_storage:
     plans_required_single_family:
       value: true
-      conditions: All new installations of energy storage systems (ESS) require SDCI plan review under 2023 SEC 80.51(B)(1)(k); standalone solar PV requires plan review at 12 kW or greater
+      conditions: All new installations of energy storage systems (ESS) require SDCI plan review under 2023 SEC 80.51(B)(1)(k)
       quote: An SDCI plan review is now required for new installations of energy storage systems.
       url: https://www.seattle.gov/documents/departments/sdci/codes/2023secquickreference.pdf
     load_calculation:

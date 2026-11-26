@@ -75,6 +75,8 @@
     "Electric Vehicle Charging Station (EVCS) Permit Worksheet (2.0) (Form 66-114, 66-114.pdf) at https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20 and Residential EVCS Application Package (Updated 2024) at https://www.cityofirvine.gov/files-repo/community-development/residential-evcs-application-packageupdated-2024pdf could not be opened directly; opening them in a browser should confirm whether Irvine specifies an EV charger load factor or requires Form 66-108 alongside Form 66-114.",
     "No dedicated residential permanent standby generator, transfer switch, or generator interlock permit webpage or submittal checklist was found on cityofirvine.gov. The Forms Directory at https://cityofirvine.gov/forms-directory lists Temporary Generator Permit Application (Form 57-88), which could not be opened directly, and https://cityofirvine.gov/building-permits-and-inspections/same-day-permits directs applicants for projects not listed as eligible same-day permits to contact Community Development at 949-724-6313 regarding standard plan-check requirements.",
     "Regarding the prior unresolved portal conflict: https://cityofirvine.gov/building-permits-and-inspections/same-day-permits states that as of September 14 the legacy site (permits.cityofirvine.org) no longer accepts new no-plan-check permit applications and all eligible no-plan-check permits (including Electrical Panel Upgrades and Miscellaneous Residential Work) must be submitted through PermitsDIRECT! powered by Symbium; EVCS is not listed as an eligible same-day permit type on that page.",
+    "No City of Irvine webpage, ordinance, or PDF explicitly states whether plans are required for a single-family residential standby generator, transfer switch, or generator interlock; https://cityofirvine.gov/building-permits-and-inspections/same-day-permits states that projects not listed as eligible same-day permits may require a standard plan-check permit and directs applicants to contact Community Development at 949-724-6313 to confirm.",
+    "Temporary Generator Permit Application (Form 57-88) is listed at https://cityofirvine.gov/forms-directory, but its direct PDF link is not indexed and could not be opened to check whether it addresses permanent residential standby generators.",
     "Conflicting EVCS submittal paths: https://cityofirvine.gov/building-permits-and-inspections/adding-electric-vehicle-charging-station-evcs-single-family states all EVCS applications must be submitted via IrvineReady!, while https://permits.cityofirvine.org/irvinepermits/ApplyInstrutctions.htm still instructs applicants to use the online self-service WMSR permit for single-family EVCS and panelboards up to 400 amps.",
     "The EVCS Permit Worksheet (2.0) PDF (Form 66-114, referenced at https://www.cityofirvine.gov/content/electric-vehicle-charging-station-evcs-permit-worksheet-20) could not be opened directly to verify whether it specifies a residential NEC 220 load calculation method or EV charger load factor.",
     "No dedicated residential standby or portable generator electrical permit webpage or checklist was found on cityofirvine.gov or permits.cityofirvine.org.",
@@ -397,9 +399,10 @@
     },
     "generator": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": true,
+        "quote": "A permit is required for all electrical, mechanical, plumbing, and structural modifications to your home.",
+        "url": "https://www.cityofirvine.gov/sites/default/files/legacy-documents/civica-10045-udinorder.pdf",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",

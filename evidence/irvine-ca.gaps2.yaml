@@ -1,0 +1,22 @@
+jurisdiction_key: irvine-ca
+city: Irvine
+state: CA
+checked_on: 2026-11-25
+jobs:
+  generator:
+    permit_required:
+      value: true
+      quote: A permit is required for all electrical, mechanical, plumbing, and structural modifications to your home.
+      url: https://www.cityofirvine.gov/sites/default/files/legacy-documents/civica-10045-udinorder.pdf
+    plans_required_single_family:
+      value: not_stated
+      conditions: none
+      quote: unknown
+      url: unknown
+forms_found:
+- name: Home Modifications Universal Design
+  url: https://www.cityofirvine.gov/sites/default/files/legacy-documents/civica-10045-udinorder.pdf
+  opened: true
+open_questions:
+- No City of Irvine webpage, ordinance, or PDF explicitly states whether plans are required for a single-family residential standby generator, transfer switch, or generator interlock; https://cityofirvine.gov/building-permits-and-inspections/same-day-permits states that projects not listed as eligible same-day permits may require a standard plan-check permit and directs applicants to contact Community Development at 949-724-6313 to confirm.
+- Temporary Generator Permit Application (Form 57-88) is listed at https://cityofirvine.gov/forms-directory, but its direct PDF link is not indexed and could not be opened to check whether it addresses permanent residential standby generators.

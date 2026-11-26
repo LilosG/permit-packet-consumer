@@ -1,0 +1,14 @@
+jurisdiction_key: san-diego-ca
+city: San Diego
+state: CA
+checked_on: 2026-11-25
+jobs:
+  generator:
+    plans_required_single_family:
+      value: true
+      conditions: 'IB 103 Table 2: ''Generator Only'' does not qualify for Simple Permit-MEP for Single Family, Duplex, Townhouse (columns: Qualifies for Simple Permit-MEP, Single Family/Duplex/Townhouse = No; Non-Residential or MDU = No). Items that qualify for Simple Permits-MEP do not require plan review, so a generator does.'
+      quote: Generator Only View Table 2 Footnote 2 Each $176.57 Not applicable No No
+      url: https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103
+forms_found: []
+open_questions:
+- Information Bulletin 103 (https://www.sandiego.gov/development-services/forms-publications/information-bulletins/103) Table 2 lists 'Generator Only' as 'No' under both Simple Permit—MEP columns (Single Dwelling Unit/Duplex and Non-Residential/MDU), meaning plan review is required; however, no standalone residential generator/interlock submittal bulletin exists on sandiego.gov to specify whether a portable generator inlet with interlock alone qualifies as a standard branch circuit or triggers 'Generator Only' plan review.
