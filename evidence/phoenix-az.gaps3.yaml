@@ -1,0 +1,21 @@
+jurisdiction_key: phoenix-az
+checked_on: '2026-11-25'
+jobs:
+  ev_charger:
+    plans_required_single_family:
+      value: depends
+      conditions: Over the counter (no formal plan review) when the existing service is 200 A single-phase or less and is not upgraded; a service upgrade beyond 200 A needs plan review.
+      quote: EVSE equipment installations can be reviewed and permitted over the counter if the existing electrical service entrance section does not exceed 200-amp 1 phase and does not require an upgrade
+      url: https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00311.pdf
+  service_upgrade:
+    plans_required_single_family:
+      value: depends
+      conditions: Services of 400 A or more need plan review; online permits cover service upgrades up to 200 A.
+      quote: (1) Projects including alteration, replacement, or installation of a 400 amp or greater electrical service require submittal for review with a 3-day target review time.
+      url: https://www.phoenix.gov/content/dam/phoenix/pddsite/documents/trt/external/dsd_trt_pdf_00366.pdf
+  appliance_circuit:
+    plans_required_single_family:
+      value: depends
+      conditions: Phoenix's online residential permits cover adding or extending circuits without plan review; larger projects go to plan review.
+      quote: Permits available for minor residential, commercial, and fire prevention work that does not need plan review.
+      url: https://pilot.phoenix.gov/pddsite/Documents/TRT/dsd_trt_pdf_00933.pdf

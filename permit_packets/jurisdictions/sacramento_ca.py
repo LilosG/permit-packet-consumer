@@ -13,6 +13,7 @@ SOURCE_LABEL = "From Sacramento Community Development electrical permit guidelin
 
 SACRAMENTO = Jurisdiction(
     key="sacramento-ca", name="Sacramento", state="CA", known=True,
+    no_plan_jobs={'service_upgrade': 'https://www.cityofsacramento.gov/community-development/building/permit-services/electronic-plan-check', 'subpanel': 'https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Sacramento-Streamline/Citizen-Portal-Public-User-Registration-Guide.pdf'},
     code_name="CEC",
     permit_rules_verified="2026-11-21",
     who_may_pull="Owner must personally perform work or assume contractor responsibility, complete Owner-Builder Acknowledgment and Information Verification Form (CDD-0220), and verify signature with driver's license or notarization.",

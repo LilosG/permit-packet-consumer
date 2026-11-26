@@ -11,10 +11,10 @@
     "ok": true
   },
   "who_may_file": {
-    "owner_may_file": "unknown",
-    "conditions": "State law exempts homeowners who own and reside in a dwelling from state electrician licensing (Tex. Occ. Code 1305.003(a)(6)), unless regulated by city ordinance; Houston Permitting Center electrical permit pages state 'Registered electrical contractors' must apply.",
-    "quote": "Also, there is an exemption for homeowners who reside in the home to do the work if the electrical work is not regulated by city ordinance.",
-    "url": "https://www.tdlr.texas.gov/electricians/compliance-guide.htm",
+    "owner_may_file": false,
+    "conditions": "Electrical permits are issued only to registered master electricians; a homeowner cannot pull one.",
+    "quote": "Licensed electrical contractors seeking an electrical permit must register their master and contractor licenses with the City of Houston. Note: Electrical permits are only issued to registered master electricians.",
+    "url": "https://www.houstonpermittingcenter.org/hpwcode1056",
     "ok": true
   },
   "forms_found": [
@@ -85,10 +85,11 @@
   "jobs": {
     "ev_charger": {
       "plans_required_single_family": {
-        "value": "unknown",
-        "conditions": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "depends",
+        "conditions": "Plans are required for a Level 3 charging outlet; the page does not require them for Level 1 or 2.",
+        "quote": "Conditions & Exceptions Plans are required for a Level 3 charging outlet.",
+        "url": "https://www.houstonpermittingcenter.org/hpwcode1056",
+        "ok": true
       },
       "load_calculation": {
         "method": "unknown",
@@ -134,10 +135,11 @@
     },
     "service_upgrade": {
       "plans_required_single_family": {
-        "value": "unknown",
-        "conditions": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "yes",
+        "conditions": "none",
+        "quote": "Plan review fee: May be subject to valuation plan review Additional Information Plan Review: Required Inspection: Required",
+        "url": "https://www.houstonpermittingcenter.org/hpwcode1055",
+        "ok": true
       },
       "load_calculation": {
         "method": "unknown",
@@ -183,10 +185,11 @@
     },
     "subpanel": {
       "plans_required_single_family": {
-        "value": "unknown",
-        "conditions": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "yes",
+        "conditions": "none",
+        "quote": "Plan review fee: May be subject to valuation plan review Additional Information Plan Review: Required Inspection: Required",
+        "url": "https://www.houstonpermittingcenter.org/hpwcode1062",
+        "ok": true
       },
       "load_calculation": {
         "method": "unknown",
@@ -231,10 +234,11 @@
     },
     "appliance_circuit": {
       "plans_required_single_family": {
-        "value": "unknown",
-        "conditions": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "yes",
+        "conditions": "none",
+        "quote": "Plan review fee: May be subject to valuation plan review Additional Information Plan Review: Required Inspection: Required",
+        "url": "https://www.houstonpermittingcenter.org/hpwcode1053",
+        "ok": true
       },
       "load_calculation": {
         "method": "unknown",
@@ -279,10 +283,11 @@
     },
     "generator": {
       "plans_required_single_family": {
-        "value": "unknown",
-        "conditions": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "yes",
+        "conditions": "none",
+        "quote": "Plan review fee: May be subject to valuation plan review Additional Information Plan Review: Required Inspection: Required",
+        "url": "https://www.houstonpermittingcenter.org/hpwcode1118",
+        "ok": true
       },
       "load_calculation": {
         "method": "unknown",
@@ -327,9 +332,10 @@
     },
     "solar_storage": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "yes",
+        "quote": "Solar Panel Permit HPWCODE1119 Permit Description Conditions & Exceptions Plan review required depending on the scope of work.",
+        "url": "https://www.houstonpermittingcenter.org/hpwcode1119",
+        "ok": true
       },
       "load_calculation": {
         "method": "unknown",
@@ -348,8 +354,8 @@
       "requirements": [],
       "plans_required_single_family": {
         "value": "depends",
-        "program_name": "Solar Panel Permit (HPWCODE1119) / Solar Panel Plan Review (ProjectDox)",
-        "quote": "Conditions & Exceptions Plan review required depending on the scope of work.",
+        "conditions": "Plan review depends on the scope of work.",
+        "quote": "Solar Panel Permit HPWCODE1119 Permit Description Conditions & Exceptions Plan review required depending on the scope of work.",
         "url": "https://www.houstonpermittingcenter.org/hpwcode1119",
         "ok": true
       },

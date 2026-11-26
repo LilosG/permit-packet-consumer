@@ -41,7 +41,7 @@
   "portal_url": "https://aca-prod.accela.com/FRESNO",
   "who_may_file": {
     "owner_may_file": true,
-    "conditions": "Owner of a detached single-family dwelling occupied or to be occupied by the owner; historical ordinance (1991-002) also required a written competency examination, while current Building Permit Center lists an Owner Builder Checklist",
+    "conditions": "Owner of a detached single-family dwelling they occupy or will occupy, applying as an owner-builder (see the City of Fresno Owner Builder Checklist).",
     "quote": "The owner of a single-family dwelling, including the usual accessory buildings, may obtain permits for work in such dwelling or accessory buildings provided",
     "url": "https://documents.fresno.gov/WebLink/edoc/4030353/Ordinance%20-%201991-002%20-%20181991.pdf?dbid=0&repo=LF-Repository",
     "ok": true

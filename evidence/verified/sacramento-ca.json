@@ -82,15 +82,17 @@
   "jobs": {
     "subpanel": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "yes",
+        "quote": "A permit is required for projects such as new construction, additions, remodeling, and repairs to electrical, mechanical, and plumbing systems.",
+        "url": "https://www.cityofsacramento.gov/community-development/building/permit-services/required-permits",
+        "ok": true
       },
       "plans_required_single_family": {
-        "value": "unknown",
-        "conditions": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "no",
+        "conditions": "Main and sub service panels are residential minor permits; a minor permit is a permit for which no construction plans are required.",
+        "quote": "Residential Electrical Minor work  Main and Sub Service Panels  Rewire work  Whole House Fans  Ceiling Fans  New Electrical Circuits",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Sacramento-Streamline/Citizen-Portal-Public-User-Registration-Guide.pdf",
+        "ok": true
       },
       "checklist_published": false,
       "checklist": {
@@ -156,9 +158,10 @@
     },
     "generator": {
       "permit_required": {
-        "value": "unknown",
-        "quote": "unknown",
-        "url": "unknown"
+        "value": "yes",
+        "quote": "A permit is required for projects such as new construction, additions, remodeling, and repairs to electrical, mechanical, and plumbing systems.",
+        "url": "https://www.cityofsacramento.gov/community-development/building/permit-services/required-permits",
+        "ok": true
       },
       "plans_required_single_family": {
         "value": "unknown",
@@ -274,6 +277,95 @@
         "site:cityofsacramento.gov/community-development/building/permit-services/residential-solar"
       ]
     },
+    "service_upgrade": {
+      "plans_required_single_family": {
+        "value": "no",
+        "conditions": "Sacramento's plans-required chart lists electrical panel changeout as No; minor permits need no plan review for residential projects.",
+        "quote": "Ceiling fan No * Electrical panel changeout No * Siding No * Sewer/water replacements No *",
+        "url": "https://www.cityofsacramento.gov/community-development/building/permit-services/electronic-plan-check",
+        "ok": true
+      },
+      "permit_required": {
+        "value": true,
+        "quote": "Note: All new or upgraded services require a commitment letter from SMUD.",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+        "ok": true
+      },
+      "checklist_published": true,
+      "checklist": {
+        "title": "Electrical Plan Check Requirements (CDD-0212)",
+        "revision_date": "01-01-2026",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"
+      },
+      "requirements": [
+        {
+          "item": "Complete set of Electrical Plans and Building Permit Application CDD-0200",
+          "section": "application",
+          "quote": "Provide a complete set of Electrical Plans. Also Include a completed Building Permit Application Form CDD-0200 with your submittal.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Single-line drawings showing main service size, conductors, OCPDs, AIC, and grounding",
+          "section": "one_line",
+          "quote": "Provide Single Line Drawings.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Complete CEC load calculations and complete panel schedules",
+          "section": "load",
+          "quote": "Complete CEC calculations based on sq. ft. and with actual loads, include 125% for continuous loads and add 25% of largest motor.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+          "page": 1,
+          "ok": true
+        },
+        {
+          "item": "Commitment letter from SMUD for new or upgraded services",
+          "section": "utility",
+          "quote": "Note: All new or upgraded services require a commitment letter from SMUD.",
+          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+          "page": 1,
+          "ok": true
+        }
+      ],
+      "load_calculation": {
+        "method": "city_worksheet",
+        "city_worksheet": "Electrical Load Calculation Worksheet (CDD-0213) - https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0213_Electrical-Load-Calculation-Worksheet.pdf",
+        "ev_charger_load_factor": "not_stated",
+        "quote": "Provide Load Calculations.",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
+        "ok": true
+      },
+      "sheet_requirements": {
+        "sheet_size": "not_stated",
+        "copies_or_format": "Electronic PDF files (APP, PLANS, SUPP) via Electronic Plan Check",
+        "signature_or_stamp": "Unsigned electronic architect/engineer stamps on initial submittal; signed on cycle 2 and beyond when required",
+        "quote": "The electronic process simply involves PDF file submission instead of paper.",
+        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Plan-Review/Electronic-Plan-Check/EPC-Submittal-Guide-Full-Version.pdf",
+        "ok": true
+      },
+      "local_rules": [
+        {
+          "rule": "SMUD meter must be within 3 feet of building corner closest to service point and 3 feet from property lines",
+          "quote": "The meter(s) shall be located within three (3) feet of the corner of the building closest to the SMUD service point and shall be a minimum of three (3) feet from all property lines.",
+          "url": "https://www.smud.org/-/media/Documents/Business-Solutions-and-Rebates/Design-and-Constructions-Services/ResidentialOverhead_Sec_II.ashx",
+          "ok": true
+        },
+        {
+          "rule": "Service main disconnect normally installed within 10 feet of where service enters building",
+          "quote": "A customer's service main disconnect, or fused disconnect, will normally be installed within 10 feet of where the service enters the building structure.",
+          "url": "https://www.smud.org/-/media/Documents/Business-Solutions-and-Rebates/Design-and-Constructions-Services/ResidentialOverhead_Sec_II.ashx",
+          "ok": true
+        }
+      ],
+      "searched": [
+        "site:cityofsacramento.gov \"panel\" OR \"service upgrade\" OR \"subpanel\" electrical permit",
+        "site:cityofsacramento.gov/community-development/building \"minor\" electrical permit"
+      ]
+    },
     "ev_charger": {
       "permit_required": {
         "value": true,
@@ -367,95 +459,6 @@
       "searched": [
         "site:cityofsacramento.gov \"EV charger\" OR \"electric vehicle\" residential permit",
         "site:cityofsacramento.gov \"CDD-0213\""
-      ]
-    },
-    "service_upgrade": {
-      "permit_required": {
-        "value": true,
-        "quote": "Note: All new or upgraded services require a commitment letter from SMUD.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-        "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "unknown",
-        "quote": "All plan review submittals/resubmittals must be submitted electronically at: https://aca-prod.accela.com/sacramento/Default.aspx.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-        "ok": true
-      },
-      "checklist_published": true,
-      "checklist": {
-        "title": "Electrical Plan Check Requirements (CDD-0212)",
-        "revision_date": "01-01-2026",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf"
-      },
-      "requirements": [
-        {
-          "item": "Complete set of Electrical Plans and Building Permit Application CDD-0200",
-          "section": "application",
-          "quote": "Provide a complete set of Electrical Plans. Also Include a completed Building Permit Application Form CDD-0200 with your submittal.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-          "page": 1,
-          "ok": true
-        },
-        {
-          "item": "Single-line drawings showing main service size, conductors, OCPDs, AIC, and grounding",
-          "section": "one_line",
-          "quote": "Provide Single Line Drawings.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-          "page": 1,
-          "ok": true
-        },
-        {
-          "item": "Complete CEC load calculations and complete panel schedules",
-          "section": "load",
-          "quote": "Complete CEC calculations based on sq. ft. and with actual loads, include 125% for continuous loads and add 25% of largest motor.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-          "page": 1,
-          "ok": true
-        },
-        {
-          "item": "Commitment letter from SMUD for new or upgraded services",
-          "section": "utility",
-          "quote": "Note: All new or upgraded services require a commitment letter from SMUD.",
-          "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-          "page": 1,
-          "ok": true
-        }
-      ],
-      "load_calculation": {
-        "method": "city_worksheet",
-        "city_worksheet": "Electrical Load Calculation Worksheet (CDD-0213) - https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0213_Electrical-Load-Calculation-Worksheet.pdf",
-        "ev_charger_load_factor": "not_stated",
-        "quote": "Provide Load Calculations.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Forms/CDD-0212_Electrical-Plancheck-Requirements.pdf",
-        "ok": true
-      },
-      "sheet_requirements": {
-        "sheet_size": "not_stated",
-        "copies_or_format": "Electronic PDF files (APP, PLANS, SUPP) via Electronic Plan Check",
-        "signature_or_stamp": "Unsigned electronic architect/engineer stamps on initial submittal; signed on cycle 2 and beyond when required",
-        "quote": "The electronic process simply involves PDF file submission instead of paper.",
-        "url": "https://www.cityofsacramento.gov/content/dam/portal/cdd/Building/Plan-Review/Electronic-Plan-Check/EPC-Submittal-Guide-Full-Version.pdf",
-        "ok": true
-      },
-      "local_rules": [
-        {
-          "rule": "SMUD meter must be within 3 feet of building corner closest to service point and 3 feet from property lines",
-          "quote": "The meter(s) shall be located within three (3) feet of the corner of the building closest to the SMUD service point and shall be a minimum of three (3) feet from all property lines.",
-          "url": "https://www.smud.org/-/media/Documents/Business-Solutions-and-Rebates/Design-and-Constructions-Services/ResidentialOverhead_Sec_II.ashx",
-          "ok": true
-        },
-        {
-          "rule": "Service main disconnect normally installed within 10 feet of where service enters building",
-          "quote": "A customer's service main disconnect, or fused disconnect, will normally be installed within 10 feet of where the service enters the building structure.",
-          "url": "https://www.smud.org/-/media/Documents/Business-Solutions-and-Rebates/Design-and-Constructions-Services/ResidentialOverhead_Sec_II.ashx",
-          "ok": true
-        }
-      ],
-      "searched": [
-        "site:cityofsacramento.gov \"panel\" OR \"service upgrade\" OR \"subpanel\" electrical permit",
-        "site:cityofsacramento.gov/community-development/building \"minor\" electrical permit"
       ]
     },
     "appliance_circuit": {

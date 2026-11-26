@@ -96,6 +96,8 @@ def _fallback(job: str) -> Note:
 
 LAS_VEGAS = Jurisdiction(
     key="las-vegas-nv", name="Las Vegas", state="NV", known=True,
+    owner_may_file=True,
+    who_may_pull="Owner-builder for their own work (Nevada owner-builder exemption).",
     nec_edition="2023 NEC",
     # Approximate extent of the city (west, south, east, north) and (lon, lat), used only to keep address suggestions
     # near Las Vegas; the permit area still comes from the address.

@@ -13,7 +13,8 @@ SOURCE_LABEL = "From Dallas Development Services electrical rules"
 
 DALLAS = Jurisdiction(
     key="dallas-tx", name="Dallas", state="TX", known=True,
-    permit_rules_verified="2026-11-21",
+    last_verified="2026-11-25",
+    permit_rules_verified="2026-11-25",
     who_may_pull="Residential homesteaded property only; homeowner must reside in the property, perform all work without hired assistance, pass a homeowner's exam, and have the district electrical inspector witness the exemption form at the field office",
     owner_may_file=True,
     portal_url="https://dallascityhall.com/departments/sustainabledevelopment/buildinginspection",

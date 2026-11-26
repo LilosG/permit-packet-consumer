@@ -14,9 +14,9 @@ SOURCE_LABEL = "From Houston Permitting Center electrical code guidelines"
 HOUSTON = Jurisdiction(
     key="houston-tx", name="Houston", state="TX", known=True,
     code_name="NEC",
-    permit_rules_verified="2026-11-21",
-    who_may_pull="State law exempts homeowners who own and reside in a dwelling from state electrician licensing (Tex. Occ. Code 1305.003(a)(6)), unless regulated by city ordinance; Houston Permitting Center electrical permit pages state 'Registered electrical contractors' must apply.",
-    owner_may_file=None,
+    permit_rules_verified="2026-11-25",
+    who_may_pull="Electrical permits are issued only to registered master electricians; a homeowner cannot pull one.",
+    owner_may_file=False,
     portal_url="https://www.houstonpermittingcenter.org/",
     fee_note="Permit fees are calculated per the Houston Permitting Center fee schedule.",
     sources=("https://www.houstonpermittingcenter.org/",),
