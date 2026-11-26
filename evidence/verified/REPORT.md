@@ -2,26 +2,28 @@
 
 | City | Quotes verified/total | Fields set unknown | URL rewrites | Blocked hosts | permit_rules_verified |
 |---|---|---|---|---|---|
-| atlanta-ga | 22/22 | 6 | 0 | none | False |
+| atlanta-ga | 22/23 | 6 | 0 | none | False |
 | austin-tx | 27/28 | 6 | 0 | none | True |
-| dallas-tx | 24/27 | 9 | 0 | none | False |
+| dallas-tx | 25/28 | 5 | 0 | none | True |
 | denver-co | 19/20 | 7 | 0 | none | False |
 | el-cajon-ca | 14/15 | 6 | 0 | none | False |
 | fresno-ca | 27/27 | 7 | 0 | none | False |
 | henderson-nv | 16/18 | 0 | 0 | none | True |
-| houston-tx | 11/16 | 18 | 1 | none | False |
+| houston-tx | 18/23 | 12 | 1 | none | True |
 | irvine-ca | 37/38 | 6 | 0 | none | False |
+| las-vegas-nv | 4/4 | 0 | 0 | none | False |
 | los-angeles-ca | 22/22 | 4 | 1 | none | True |
 | miami-fl | 35/35 | 5 | 0 | none | False |
+| monte-sereno-ca | 3/3 | 0 | 0 | none | False |
 | oakland-ca | 49/54 | 6 | 0 | none | True |
-| phoenix-az | 33/36 | 4 | 0 | none | False |
+| phoenix-az | 36/39 | 1 | 0 | none | False |
 | portland-or | 33/34 | 0 | 0 | none | True |
-| sacramento-ca | 37/37 | 6 | 0 | none | False |
+| sacramento-ca | 40/40 | 3 | 0 | none | False |
 | san-antonio-tx | 25/25 | 4 | 0 | none | True |
 | san-diego-ca | 59/62 | 0 | 0 | none | True |
 | san-francisco-ca | 37/37 | 5 | 0 | none | True |
 | san-jose-ca | 60/60 | 2 | 0 | none | False |
-| seattle-wa | 31/32 | 1 | 0 | none | False |
+| seattle-wa | 32/33 | 0 | 0 | none | True |
 
 ## atlanta-ga
 
@@ -56,7 +58,7 @@ Replaced module values:
 
 ## dallas-tx
 
-Fields set unknown: service_upgrade.plans_required_single_family, service_upgrade.sheet_requirements, ev_charger.plans_required_single_family, ev_charger.sheet_requirements, subpanel.plans_required_single_family, subpanel.sheet_requirements, appliance_circuit.plans_required_single_family, appliance_circuit.sheet_requirements, generator.sheet_requirements
+Fields set unknown: service_upgrade.sheet_requirements, ev_charger.sheet_requirements, subpanel.sheet_requirements, appliance_circuit.sheet_requirements, generator.sheet_requirements
 
 URL rewrites:
 - none
@@ -68,6 +70,7 @@ Replaced module values:
 - `checklists[appliance_circuit]` (6 base items + 0 verified city items)
 - `checklists[generator]` (9 base items + 0 verified city items)
 - `checklists[solar_storage]` (9 base items + 0 verified city items)
+- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
 
 ## denver-co
 
@@ -113,7 +116,7 @@ Replaced module values:
 - `checklists[appliance_circuit]` (5 base items + 2 verified city items)
 - `checklists[generator]` (5 base items + 2 verified city items)
 - `checklists[solar_storage]` (5 base items + 4 verified city items)
-- `who_may_pull`: 'California C-10 contractors or occupant owner-builders.' -> 'Owner of a detached single-family dwelling occupied or to be occupied by the owner; historical ordinance (1991-002) also required a written competency examination, while current Building Permit Center lists an Owner Builder Checklist'
+- `who_may_pull`: 'California C-10 contractors or occupant owner-builders.' -> 'Owner of a detached single-family dwelling they occupy or will occupy, applying as an owner-builder (see the City of Fresno Owner Builder Checklist).'
 
 ## henderson-nv
 
@@ -134,7 +137,7 @@ Replaced module values:
 
 ## houston-tx
 
-Fields set unknown: ev_charger.plans_required_single_family, ev_charger.load_calculation, ev_charger.sheet_requirements, service_upgrade.plans_required_single_family, service_upgrade.load_calculation, service_upgrade.sheet_requirements, subpanel.plans_required_single_family, subpanel.load_calculation, subpanel.sheet_requirements, appliance_circuit.plans_required_single_family, appliance_circuit.load_calculation, appliance_circuit.sheet_requirements, generator.plans_required_single_family, generator.load_calculation, generator.sheet_requirements, solar_storage.permit_required, solar_storage.load_calculation, solar_storage.sheet_requirements
+Fields set unknown: ev_charger.load_calculation, ev_charger.sheet_requirements, service_upgrade.load_calculation, service_upgrade.sheet_requirements, subpanel.load_calculation, subpanel.sheet_requirements, appliance_circuit.load_calculation, appliance_circuit.sheet_requirements, generator.load_calculation, generator.sheet_requirements, solar_storage.load_calculation, solar_storage.sheet_requirements
 
 URL rewrites:
 - https://search.houstontx.gov/texis/search/mlt.html?query=gov&pr=all&prox=page&rorder=500&rprox=500&rdfreq=500&rwfreq=500&rlead=500&rdepth=0&sufs=0&order=r&cmd=mlt&id=6af2cf49191&m=0&p=5 -> https://www.houstonpermittingcenter.org/hpwcode1050
@@ -150,6 +153,8 @@ Replaced module values:
 - `checklists[subpanel]` (6 base items + 0 verified city items)
 - `checklists[appliance_circuit]` (6 base items + 0 verified city items)
 - `checklists[generator]` (6 base items + 0 verified city items)
+- `who_may_pull`: "State law exempts homeowners who own and reside in a dwelling from state electrician licensing (Tex. Occ. Code 1305.003(a)(6)), unless regulated by city ordinance; Houston Permitting Center electrical permit pages state 'Registered electrical contractors' must apply." -> 'Electrical permits are issued only to registered master electricians; a homeowner cannot pull one.'
+- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
 
 ## irvine-ca
 
@@ -166,6 +171,16 @@ Replaced module values:
 - `checklists[solar_storage]` (5 base items + 4 verified city items)
 - `who_may_pull`: 'California C-10 contractors or occupant owner-builders.' -> 'Property owner must read, initial, sign, and return the Owner-Builder Acknowledgment and Information Verification Form (Form 66-18); same-day rooftop solar/battery permits via PermitsDIRECT! are restricted to licensed contractors'
 
+## las-vegas-nv
+
+Fields set unknown: none
+
+URL rewrites:
+- none
+
+Replaced module values:
+- none
+
 ## los-angeles-ca
 
 Fields set unknown: subpanel.load_calculation, appliance_circuit.load_calculation, generator.load_calculation, solar_storage.load_calculation
@@ -178,7 +193,6 @@ Replaced module values:
 - `checklists[service_upgrade]` (8 base items + 0 verified city items)
 - `checklists[generator]` (6 base items + 0 verified city items)
 - `checklists[solar_storage]` (7 base items + 0 verified city items)
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
 
 ## miami-fl
 
@@ -195,6 +209,16 @@ Replaced module values:
 - `checklists[generator]` (5 base items + 2 verified city items)
 - `checklists[solar_storage]` (5 base items + 9 verified city items)
 - `who_may_pull`: 'Florida state-licensed electrical contractors (EC/ER) or qualifying owner-builders.' -> 'Strictly limited to owner-occupied one-family and two-family residential work only; requires in-person interview and test at Miami Riverside Center (444 SW 2nd Ave, 1st Floor), proof of residency (ID with property address and utility bill), and a signed and notarized Owner-Builder disclosure statement.'
+
+## monte-sereno-ca
+
+Fields set unknown: none
+
+URL rewrites:
+- none
+
+Replaced module values:
+- none
 
 ## oakland-ca
 
@@ -213,7 +237,7 @@ Replaced module values:
 
 ## phoenix-az
 
-Fields set unknown: ev_charger.plans_required_single_family, service_upgrade.plans_required_single_family, appliance_circuit.plans_required_single_family, generator.plans_required_single_family
+Fields set unknown: generator.plans_required_single_family
 
 URL rewrites:
 - none
@@ -243,7 +267,7 @@ Replaced module values:
 
 ## sacramento-ca
 
-Fields set unknown: subpanel.permit_required, subpanel.plans_required_single_family, generator.permit_required, generator.plans_required_single_family, generator.load_calculation, solar_storage.load_calculation
+Fields set unknown: generator.plans_required_single_family, generator.load_calculation, solar_storage.load_calculation
 
 URL rewrites:
 - none
@@ -287,7 +311,6 @@ Replaced module values:
 - `checklists[appliance_circuit]` (10 base items + 0 verified city items)
 - `checklists[generator]` (10 base items + 0 verified city items)
 - `checklists[solar_storage]` (11 base items + 0 verified city items)
-- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'
 
 ## san-francisco-ca
 
@@ -303,8 +326,6 @@ Replaced module values:
 - `checklists[appliance_circuit]` (8 base items + 0 verified city items)
 - `checklists[generator]` (9 base items + 0 verified city items)
 - `checklists[solar_storage]` (9 base items + 0 verified city items)
-- `who_may_pull`: 'Contractors must hold a B, C7, C10, C45, C46, C61 or D34 license (a C7 covers only low-voltage work). Only owners of a stand-alone single-family dwelling (R-3 occupancy) may apply to do the work themselves; staff may direct an owner to hire a licensed contractor.' -> 'Single-family dwelling only; homeowner must perform the electrical work themselves and sign the declaration not to hire a contractor (SFEC Section 89.120(E)); LLCs are not eligible; must present ID to prove ownership (plus proof of ownership if recently purchased, or proof of authorized signatory status if owned by a trust). If work fails to comply with SFEC and corrections are not made as required by DBI, deficiencies must be corrected by a State licensed electrical contractor under a separate permit. Note: Solar PV and energy storage permits are restricted to California-licensed contractors (C-10, or C-46 without battery storage).'
-- `permit_rules_verified`: '2026-11-17' -> '2026-11-25'
 
 ## san-jose-ca
 
@@ -326,7 +347,7 @@ Replaced module values:
 
 ## seattle-wa
 
-Fields set unknown: generator.plans_required_single_family
+Fields set unknown: none
 
 URL rewrites:
 - none
@@ -341,3 +362,5 @@ Replaced module values:
 - `checklists[appliance_circuit]` (6 base items + 0 verified city items)
 - `checklists[generator]` (9 base items + 0 verified city items)
 - `checklists[solar_storage]` (6 base items + 0 verified city items)
+- `no_plan_jobs`: {'ev_charger': 'https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf', 'service_upgrade': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'subpanel': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'appliance_circuit': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf'} -> {'ev_charger': 'https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf', 'service_upgrade': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'subpanel': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'appliance_circuit': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'generator': 'https://seattlegov.zendesk.com/hc/en-us/articles/115004979048-Which-Electrical-Permit-Should-I-Choose'}
+- `permit_rules_verified`: '2026-11-21' -> '2026-11-25'

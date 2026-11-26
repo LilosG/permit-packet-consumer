@@ -363,17 +363,18 @@
         "url": "https://www.seattle.gov/Documents/Departments/SDCI/Permits/SubmittalRequirementsforElectricalPlanReview.pdf",
         "ok": true
       },
+      "plans_required_single_family": {
+        "value": "no",
+        "conditions": "Over-the-counter permit for one- and two-family homes; plan review applies to services or feeders of 400 A or more and to emergency or legally required standby systems.",
+        "quote": "(one- or two-family dwellings, and their associated accessory dwelling units, do not require plan review regardless of square footage)",
+        "url": "https://seattlegov.zendesk.com/hc/en-us/articles/115004979048-Which-Electrical-Permit-Should-I-Choose",
+        "ok": true
+      },
       "permit_required": {
         "value": true,
         "quote": "You need to get a permit for all electrical work, with a few exceptions.",
         "url": "https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf",
         "ok": true
-      },
-      "plans_required_single_family": {
-        "value": "unknown",
-        "program_name": "none",
-        "quote": "unknown",
-        "url": "unknown"
       },
       "checklist_published": true,
       "checklist": {

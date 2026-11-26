@@ -13,8 +13,9 @@ SOURCE_LABEL = "From SDCI electrical permit guidelines"
 
 SEATTLE = Jurisdiction(
     key="seattle-wa", name="Seattle", state="WA", known=True,
-    no_plan_jobs={'ev_charger': 'https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf', 'service_upgrade': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'subpanel': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'appliance_circuit': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf'},
-    permit_rules_verified="2026-11-21",
+    last_verified="2026-11-25",
+    no_plan_jobs={'ev_charger': 'https://www.seattle.gov/DPD/Publications/CAM/cam132.pdf', 'service_upgrade': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'subpanel': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'appliance_circuit': 'https://www.seattle.gov/documents/Departments/SDCI/Permits/ElectricalPermitQA.pdf', 'generator': 'https://seattlegov.zendesk.com/hc/en-us/articles/115004979048-Which-Electrical-Permit-Should-I-Choose'},
+    permit_rules_verified="2026-11-25",
     who_may_pull="Homeowner must perform their own work; if not doing the work, must hire an electrical contractor.",
     owner_may_file=True,
     portal_url="https://www.seattle.gov/sdci/permits/permits-we-issue-(a-z)/electrical-permit",

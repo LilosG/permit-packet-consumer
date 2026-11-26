@@ -125,6 +125,7 @@ def test_last_verified_prints_only_where_set():
     verified = {j.key: j.last_verified for j in KNOWN.values() if j.last_verified}
     assert verified == {
         "austin-tx": "2026-11-25",
+        "dallas-tx": "2026-11-25",
         "el-cajon-ca": "2026-11-16",
         "henderson-nv": "2026-11-25",
         "oakland-ca": "2026-11-25",
@@ -133,6 +134,7 @@ def test_last_verified_prints_only_where_set():
         "san-antonio-tx": "2026-11-25",
         "san-diego-ca": "2026-11-25",
         "san-francisco-ca": "2026-11-25",
+        "seattle-wa": "2026-11-25",
     }
     el_cajon = {**_model_sample("ev_charger"), "jurisdiction_key": "el-cajon-ca", "city": "El Cajon", "state": "CA"}
     assert "City checklist last verified: 2026-11-16" in " ".join(packet_pages(build("ev_charger", el_cajon).pdf)[0].split())

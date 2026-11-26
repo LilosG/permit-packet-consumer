@@ -1,0 +1,40 @@
+{
+  "jurisdiction_key": "monte-sereno-ca",
+  "checked_on": "2026-11-25",
+  "city": "Monte Sereno",
+  "state": "CA",
+  "utility": {
+    "name": null,
+    "requirements": []
+  },
+  "open_questions": [],
+  "jobs": {
+    "ev_charger": {
+      "permit_required": {
+        "value": "yes",
+        "quote": "An electrical permit is required for the installation of electrical vehicle charging circuits and equipment.",
+        "url": "https://www.montesereno.org/DocumentCenter/View/4019/Electric-Vehicle-Charger-Installation",
+        "ok": true
+      },
+      "plans_required_single_family": {
+        "value": "yes",
+        "conditions": "Building permit application with load calculations, a floor plan and the manufacturer instructions (3 copies).",
+        "quote": "Floor plan showing the location of the charging equipment and all new or proposed electrical panels and sub-panels.",
+        "url": "https://www.montesereno.org/DocumentCenter/View/4019/Electric-Vehicle-Charger-Installation",
+        "ok": true
+      },
+      "requirements": [],
+      "local_rules": []
+    },
+    "service_upgrade": {
+      "permit_required": {
+        "value": "yes",
+        "quote": "An electrical permit is required for replacement and upgrade of the main electrical service panel prior to installation of the new panel.",
+        "url": "https://www.montesereno.org/DocumentCenter/View/3795/Electrical-Panel-Replacement",
+        "ok": true
+      },
+      "requirements": [],
+      "local_rules": []
+    }
+  }
+}
