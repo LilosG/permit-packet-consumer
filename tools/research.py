@@ -52,7 +52,7 @@ JOB_NAMES = {
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 NOT_OFFICIAL = ("permitmint", "propertyzoned", "permitflow", "scribd", "buildpermitguide", "reddit", "yelp",
-                "angi", "homeadvisor", "thumbtack", "quora", "facebook", "youtube", "wikipedia", "consumeraffairs")
+                "angi", "homeadvisor", "thumbtack", "quora", "facebook", "youtube", "wikipedia", "consumeraffairs", "corpuslaw", "municipalcodeonline", "casetext", "justia", "law.cornell")
 KEYWORDS = re.compile(r"permit|plan|owner|homeowner|homestead|electric|generator|solar|photovoltaic|battery|storage|"
                       r"charg|panel|service|circuit|NEC|electrical code|license|contractor|affidavit|review", re.I)
 PAGE_CHARS = 9000      # text kept per page for the model (keyword windows)
@@ -111,7 +111,7 @@ def parse_json(content: str) -> dict:
 
 # Hosts that publish cities' own adopted codes and documents, or run their permit portals.
 CODE_HOSTS = ("library.municode.com", "codelibrary.amlegal.com", "ecode360.com", "codepublishing.com",
-              "content.civicplus.com", "accela.com", "azurewebsites.us", "floridabuilding.org")
+              "content.civicplus.com", "accela.com", "floridabuilding.org")
 
 
 def host_of(url: str) -> str:
@@ -132,7 +132,9 @@ def official(url: str, city_domains: frozenset = frozenset()) -> bool:
     if any(bad in host for bad in NOT_OFFICIAL) or "google." in host or "/search" in url.lower() \
             or host.startswith("search."):
         return False
-    return (host.endswith((".gov", ".us", ".mil")) or ".gov." in host or base_domain(host) in city_domains
+    # .us only in the government pattern (city.tx.us); a bare name.us is anyone's site
+    return (host.endswith((".gov", ".mil")) or ".gov." in host or re.search(r"\.[a-z]{2}\.us$", host)
+            or base_domain(host) in city_domains
             or any(host == h or host.endswith("." + h) for h in CODE_HOSTS))
 
 
@@ -517,7 +519,7 @@ def research_city(key: str, model: str, judge_model: str) -> dict:
             result["rejected"].append((fact, f"check failed: {reason}"))
         elif not any(f == fact for f, _ in accepted):
             accepted.append((fact, item))
-    result["accepted"] = [(f, i["value"], i["url"]) for f, i in accepted]
+    result["accepted"] = [(f, i["value"], i["url"], " ".join(i["quote"].split())) for f, i in accepted]
     if accepted:
         path = EVIDENCE / f"{key}.auto-{TODAY}.yaml"
         path.write_text(yaml.safe_dump(to_evidence(key, city, state, accepted), sort_keys=False, allow_unicode=True,
@@ -617,9 +619,10 @@ def main() -> None:
             r = {"key": key, "city": key, "asked": [], "accepted": [], "rejected": [("all", f"error: {exc}")]}
         still = [f for f in r["asked"] if f not in {a[0] for a in r["accepted"]}]
         summary = [f"Asked: {len(r['asked'])} facts. Found: {len(r['accepted'])}.", ""]
-        summary += [f"- found `{f}` = {v!r} ({u})" for f, v, u in r["accepted"]]
+        summary += [f"- found `{f}` = {v!r} ({u})\n    quote: \"{q[:220]}\"" for f, v, u, q in r["accepted"]]
         summary += [f"- dropped `{f}`: {why}" for f, why in r["rejected"]]
         summary += [f"- still unknown: {', '.join(still) or 'none'}", ""]
+        summary += [f"- unreadable page: {u}" for u in r.get("blocked", [])] + [""]
         print("\n".join(summary), flush=True)
         lines += [f"## {r['city']}", ""] + summary
         lines += ([f"<details><summary>{len(r.get('pages', []))} pages read, {len(r.get('blocked', []))} unreadable"
