@@ -7,7 +7,7 @@ FRESNO = make_city(*('fresno-ca', 'Fresno', 'CA', 'CEC', 'California C-10 contra
 FRESNO = replace(
     FRESNO,
     owner_may_file=True,
-    who_may_pull="Owner of a detached single-family dwelling occupied or to be occupied by the owner; historical ordinance (1991-002) also required a written competency examination, while current Building Permit Center lists an Owner Builder Checklist",
+    who_may_pull="Owner of a detached single-family dwelling they occupy or will occupy, applying as an owner-builder (see the City of Fresno Owner Builder Checklist).",
     no_plan_jobs={'service_upgrade': 'https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf', 'subpanel': 'https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf', 'appliance_circuit': 'https://www.fresno.gov/wp-content/uploads/2024/01/2023.10.02-Building-Safety-Booklet1.pdf'},
     checklists={
         **FRESNO.checklists,
