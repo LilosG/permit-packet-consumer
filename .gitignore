@@ -7,3 +7,4 @@ __pycache__/
 .env*
 .cache/evidence_fetch/
 evidence_backup_*/
+.cache/research/
