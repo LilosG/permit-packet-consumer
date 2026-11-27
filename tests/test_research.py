@@ -136,3 +136,43 @@ def test_the_importer_verifies_what_the_research_tool_writes():
     assert doc["who_may_file"]["ok"] is True
     assert doc["jobs"]["service_upgrade"]["plans_required_single_family"]["ok"] is True
     assert ie.known_value(doc["jobs"]["service_upgrade"]["plans_required_single_family"])
+
+
+def gate(fact, quote, value="yes"):
+    return rs.quote_gate(fact, {"quote": quote, "value": value})
+
+
+def test_generic_and_off_topic_quotes_are_rejected_by_the_gate():
+    # real quotes the model offered for Plano and Orlando that must never count
+    assert gate("generator.permit_required", "Electrical work. (Repair work such as replacing switches, plugs and ballasts is exempt).")
+    assert gate("solar_storage.permit_required", "Electrical work. (Repair work such as replacing switches, plugs and ballasts is exempt).")
+    assert gate("service_upgrade.permit_required", "A homeowner may personally install electrical conductors or equipment within his place of residence if the owner applies for and receives a permit")
+    assert gate("subpanel.permit_required", "A homeowner may personally install electrical conductors or equipment within his place of residence if the owner applies for and receives a permit")
+    assert gate("service_upgrade.permit_required", "ELE ELE ELE Sewer Disconnect Fee Electrical Board of Appeal Application Change of Service")
+    assert gate("subpanel.plans_required", "Electrical Plans: Any electrical system requiring an aggregate service capacity greater than 400 amperes, or the value of work exceeds", "depends")
+
+
+def test_specific_quotes_pass_the_gate():
+    assert not gate("generator.plans_required", "Generators Site Plan Location and Dimensions: Plan indicating location of proposed generator and all dimensions to property lines", "yes")
+    assert not gate("service_upgrade.plans_required", "Electrical Plans: Any electrical system requiring an aggregate service capacity greater than 400 amperes, or the value of work exceeds", "depends")
+    assert not gate("ev_charger.permit_required", "A permit is required to install an electric vehicle charging station at a one- or two-family dwelling.")
+    assert not gate("who_may_file", "Homeowners may obtain permits for their private residence without being registered, however a contractor must be licensed.", True)
+    assert not gate("code_edition", "The 2023 Edition of the National Electrical Code, as published by NFPA, is hereby adopted as the electrical code.", "2023 NEC")
+    assert gate("code_edition", "The National Electrical Code as published by NFPA is hereby adopted as the electrical code of the city.", "2023 NEC")
+
+
+def test_a_run_that_finds_nothing_removes_an_older_file(tmp_path, monkeypatch):
+    monkeypatch.setattr(rs, "EVIDENCE", tmp_path)
+    monkeypatch.setattr(rs, "gaps", lambda key: ["generator.permit_required"])
+    monkeypatch.setattr(rs, "find_pages", lambda *a, **k: [URL])
+    monkeypatch.setattr(rs, "fetch", lambda url: PAGE)
+    monkeypatch.setattr(rs, "fetch_in_browser", lambda urls: {})
+    monkeypatch.setattr(rs, "crawl_links", lambda url, domains, limit=15: [])
+    monkeypatch.setattr(rs, "extract", lambda *a, **k: {"facts": [
+        {"fact": "generator.permit_required", "value": "yes", "url": URL,
+         "quote": "An electrical permit is required to install an electric vehicle charging station."}]})
+    old = tmp_path / f"san-diego-ca.auto-{rs.TODAY}.yaml"
+    old.write_text("jurisdiction_key: san-diego-ca\n")
+    result = rs.research_city("san-diego-ca", "m", "j")
+    assert result["accepted"] == [] and not old.exists()
+    assert "not specific enough" in dict(result["rejected"])["generator.permit_required"]
