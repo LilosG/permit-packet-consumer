@@ -261,6 +261,46 @@ def windows(text: str, limit: int = PAGE_CHARS) -> str:
     return picked[:limit]
 
 
+# ---------------------------------------------------------------- evidence gate (fixed rules, no model)
+
+JOB_WORDS = {
+    "ev_charger": r"\bEV\b|\bEVSE\b|electric vehicle|vehicle charg|charging station|car charger",
+    "service_upgrade": r"service|main panel|panel upgrade|panel change|panel replacement|meter",
+    "subpanel": r"sub-?\s?panel|distribution panel|additional panel|new panel|panel addition|panelboard",
+    "appliance_circuit": r"appliance|\brange\b|\boven\b|dryer|water heater|hot tub|\bspa\b|240|dedicated circuit|"
+                         r"new circuit|additional circuit|branch circuit",
+    "generator": r"generator|transfer switch|standby|interlock",
+    "solar_storage": r"solar|photovoltaic|\bPV\b|batter(y|ies)|energy storage|\bESS\b",
+}
+PERMIT_WORD = re.compile(r"permit", re.I)
+PLANS_WORD = re.compile(r"\bplans?\b|drawing|submittal|plan review|diagram", re.I)
+OWNER_WORD = re.compile(r"owner|homeowner|homestead", re.I)
+
+
+def quote_gate(fact: str, item: dict) -> str:
+    """'' when the quote can support the fact; otherwise why not. The quote itself must name the kind of work and
+    the permit or plans, so a generic line about 'electrical work' or a fee-table fragment can never count."""
+    quote = " ".join(str(item.get("quote", "")).split())
+    if len(quote.split()) < 8:
+        return "quote too short to state a rule"
+    if fact == "who_may_file":
+        return "" if OWNER_WORD.search(quote) and PERMIT_WORD.search(quote) else \
+            "quote does not mention the owner and a permit"
+    if fact == "code_edition":
+        year = re.search(r"\b(20\d\d)\b", str(item.get("value", "")))
+        if not re.search(r"NEC|National Electrical Code|NFPA 70", quote, re.I):
+            return "quote does not name the electrical code"
+        return "" if year and year.group(1) in quote else "the edition year is not in the quote"
+    job, kind = fact.split(".")
+    if not re.search(JOB_WORDS[job], quote, re.I):
+        return f"quote does not name this kind of work ({JOB_NAMES[job]})"
+    if kind == "permit_required" and not PERMIT_WORD.search(quote):
+        return "quote does not mention a permit"
+    if kind == "plans_required" and not PLANS_WORD.search(quote):
+        return "quote does not mention plans or plan review"
+    return ""
+
+
 # ---------------------------------------------------------------- research
 
 SYSTEM = ("You research residential electrical permit rules for one US city. Use only official sources: the city or "
@@ -408,13 +448,13 @@ def judge(model: str, city: str, fact: str, item: dict, context: str = "") -> tu
             f" (conditions: {item.get('conditions', '')})\nSource URL: {item.get('url')}\n"
             f"Quote: \"{item.get('quote')}\"\nPage text around the quote: \"{context}\"\n\n"
             "Does the quote, read with the page text around it, support this answer for this city?\n"
-            "- Yes when the page is this city's (or, for a state-wide rule, this state's) and the quote states the "
-            "answer, or is the item in a list whose lead-in states it (for example work listed under an electrical "
-            "permit means that work needs that permit; work listed as needing no plans means no plans).\n"
-            "- No when the quote is about different work, a different place, a commercial-only rule, or only a "
-            "heading or general sentence that does not decide the question.\n"
-            "- Do not judge whether the website is official (that is checked separately) and do not require an "
-            "effective date.\n"
+            "- Yes only when the quote itself names this kind of work (or a clear equivalent) and states the answer "
+            "for a single-family home, or is an item in a list whose lead-in states it (work listed under an "
+            "electrical permit needs that permit; work listed as needing no plans needs none).\n"
+            "- No when the quote is a general statement about electrical or building work, covers other work "
+            "(commercial, other permit types, repairs), is a heading, a fee-table fragment, or a rule about who "
+            "may do the work rather than whether a permit or plans are needed.\n"
+            "- Do not judge whether the website is official and do not require an effective date.\n"
             'Return JSON: {"supported": true/false, "reason": "<one short sentence>"}')},
     ], timeout=90)
     return bool(answer.get("supported")), str(answer.get("reason", ""))[:200]
@@ -502,6 +542,10 @@ def research_city(key: str, model: str, judge_model: str) -> dict:
         if len(normalize(item["quote"])) < 25 or normalize(item["quote"]) not in normalize(pages[item["url"]]):
             result["rejected"].append((fact, "quote not found word for word in the page"))
             continue
+        gate_reason = quote_gate(fact, item)
+        if gate_reason:
+            result["rejected"].append((fact, f"not specific enough: {gate_reason}"))
+            continue
         candidates.append((fact, item))
     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
         verdicts = list(pool.map(lambda fi: judge(judge_model, f"{city}, {state}", fi[0], fi[1],
@@ -513,8 +557,10 @@ def research_city(key: str, model: str, judge_model: str) -> dict:
         elif not any(f == fact for f, _ in accepted):
             accepted.append((fact, item))
     result["accepted"] = [(f, i["value"], i["url"], " ".join(i["quote"].split())) for f, i in accepted]
+    path = EVIDENCE / f"{key}.auto-{TODAY}.yaml"
+    if not accepted and path.exists():
+        path.unlink()  # an older run's file must not outlive a run that found nothing
     if accepted:
-        path = EVIDENCE / f"{key}.auto-{TODAY}.yaml"
         path.write_text(yaml.safe_dump(to_evidence(key, city, state, accepted), sort_keys=False, allow_unicode=True,
                                        width=1000))
         result["file"] = str(path.relative_to(ROOT))
